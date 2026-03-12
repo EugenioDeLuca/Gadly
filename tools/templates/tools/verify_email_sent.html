@@ -1,0 +1,36 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Check your email - Gadly{% endblock %}
+{% block body_class %}static-page login-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container login-container">
+    <h1>Check your email</h1>
+
+    <p style="margin: 24px 0; color: #555; line-height: 1.6;">
+        We've sent a verification link to your email address. Click the link to verify your email and enable password reset.
+    </p>
+    <p style="margin: 20px 0;">
+        {% if verify_url %}
+        <a href="{{ verify_url }}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">Verify email now</a>
+        {% else %}
+        <a href="{% url 'resend_verification' %}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">Request verification email</a>
+        {% endif %}
+    </p>
+    <p style="font-size: 0.9rem; color: #666;">
+        If you don't see the email, check your spam folder.
+    </p>
+    <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">
+        <a href="{% url 'resend_verification' %}">Link not working? Request a new one</a>
+    </p>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}

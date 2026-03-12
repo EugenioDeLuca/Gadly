@@ -1,0 +1,24 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}About - Gadly{% endblock %}
+{% block body_class %}static-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container">
+    <h1>About Gadly</h1>
+
+    <p>Gadly is a collection of free online tools for text editing, social media, finance, web/SEO, file management, and more.</p>
+
+    <p>All tools run in your browser. No installation required. Use them on any device—desktop, tablet, or smartphone.</p>
+
+    <p>If you have questions or suggestions, feel free to <a href="{% url 'contact' %}">contact us</a>.</p>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}

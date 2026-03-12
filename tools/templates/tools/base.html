@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gadly{% endblock %}</title>
+
+    <!-- CSS globale -->
+    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}">
+
+    {% block extra_css %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+    {% block blockbots %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="header-logo">
+                <img src="{% static 'tools/images/logo.svg' %}" alt="" class="header-logo-icon header-logo-light">
+                <img src="{% static 'tools/images/logo-dark.svg' %}" alt="" class="header-logo-icon header-logo-dark">
+                <span class="header-logo-text">Gadly</span>
+            </a>
+            <button type="button" id="header-menu-btn" class="header-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
+                <span class="header-menu-icon"></span>
+            </button>
+            <nav class="header-nav" id="header-nav" aria-label="Main navigation">
+                <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
+                <a href="{% url 'home' %}" class="header-link">Home</a>
+                <a href="{% url 'faq' %}" class="header-link">FAQ</a>
+                <a href="{% url 'about' %}" class="header-link">About</a>
+                {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'accounts_home' %}" class="header-link">Accounts</a>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <div class="header-user-wrap">
+                    <button type="button" class="header-user-trigger" id="header-user-btn" aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+                        {% if user_profile.avatar %}
+                        <img src="{{ user_profile.avatar.url }}" alt="" class="header-avatar">
+                        {% else %}
+                        <span class="header-avatar header-avatar--letter">{{ user.username|slice:":1"|upper }}</span>
+                        {% endif %}
+                        <span class="header-username">{{ user.username }}</span>
+                        <span class="header-user-chevron">▼</span>
+                    </button>
+                    <div class="header-user-dropdown" id="header-user-dropdown" hidden>
+                        <a href="{% url 'account_profile' %}" class="header-dropdown-item">Account</a>
+                        <a href="{% url 'password_change' %}" class="header-dropdown-item">Change password</a>
+                        <form method="post" action="{% url 'logout' %}" class="header-dropdown-form">
+                            {% csrf_token %}
+                            <button type="submit" class="header-dropdown-item header-dropdown-item--btn header-dropdown-item--logout">Logout</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="header-link">Login</a>
+                <a href="{% url 'register' %}" class="header-link">Sign up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="{% url 'privacy' %}">Privacy</a>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="{% url 'faq' %}">FAQ</a>
+            </div>
+            <div class="footer-copy">&copy; {% now "Y" %} Gadly. All rights reserved.</div>
+        </div>
+    </footer>
+    <div id="cookie-banner" class="cookie-banner">
+        <p>We use cookies to improve your experience. By continuing you accept our <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+        <button type="button" class="cookie-banner-btn" id="cookie-accept">Accept</button>
+    </div>
+    <script src="{% static 'tools/js/theme.js' %}"></script>
+    <script src="{% static 'tools/js/cookie-banner.js' %}"></script>
+    <script>
+    (function() {
+        var menuBtn = document.getElementById('header-menu-btn');
+        var nav = document.getElementById('header-nav');
+        if (menuBtn && nav) {
+            menuBtn.addEventListener('click', function() {
+                var open = nav.classList.toggle('is-open');
+                menuBtn.setAttribute('aria-expanded', open);
+                document.body.classList.toggle('nav-open', open);
+            });
+            nav.querySelectorAll('a').forEach(function(a) {
+                a.addEventListener('click', function() {
+                    nav.classList.remove('is-open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('nav-open');
+                });
+            });
+            document.body.addEventListener('click', function(e) {
+                if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) {
+                    nav.classList.remove('is-open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('nav-open');
+                }
+            });
+        }
+    })();
+    </script>
+    {% if user.is_authenticated %}
+    <script>
+    (function() {
+        var btn = document.getElementById('header-user-btn');
+        var dd = document.getElementById('header-user-dropdown');
+        if (btn && dd) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var open = dd.hasAttribute('hidden');
+                dd.toggleAttribute('hidden', !open);
+                btn.setAttribute('aria-expanded', open);
+            });
+            document.addEventListener('click', function() {
+                dd.setAttribute('hidden', '');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+            dd.addEventListener('click', function(e) { e.stopPropagation(); });
+        }
+    })();
+    </script>
+    {% endif %}
+</body>
+</html>

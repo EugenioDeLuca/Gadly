@@ -1,0 +1,46 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Data Visualizer{% endblock %}
+{% block body_class %}data-viz{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}">
+{% endblock %}
+{% block content %}
+<div class="data-viz">
+    <div class="container">
+        <h1>Data Visualizer</h1>
+
+        <div class="viz-controls">
+            <div class="data-input-section">
+                <label for="data-input">Paste your data (CSV format: label,value per line)</label>
+                <textarea id="data-input" placeholder="e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,150"></textarea>
+            </div>
+            <div class="chart-options">
+                <label for="chart-type">Chart type:</label>
+                <div class="chart-select-wrap">
+                    <select id="chart-type">
+                        <option value="bar">Bar</option>
+                        <option value="line">Line</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                </div>
+                <button type="button" id="btn-generate">Generate Chart</button>
+            </div>
+        </div>
+
+        <div class="chart-container hidden">
+            <canvas id="chart-canvas"></canvas>
+        </div>
+
+        <div style="margin-top: 25px; text-align: center;">
+            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'tools/js/data-viz.js' %}"></script>
+{% endblock %}

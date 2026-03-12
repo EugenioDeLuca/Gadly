@@ -1,0 +1,138 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Register - Gadly{% endblock %}
+{% block body_class %}static-page login-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container login-container">
+    <h1>Register</h1>
+
+    {% if form.non_field_errors %}
+    <div class="login-error">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="username-input-wrap">
+                <input type="text" name="username" id="id_username" autofocus required maxlength="150"
+                       placeholder="Username" class="login-input"
+                       value="{{ form.username.value|default:'' }}" autocomplete="username">
+                <span id="username-check" class="username-check" aria-hidden="true"></span>
+            </div>
+            <span id="username-feedback" class="username-feedback username-feedback--hint" aria-live="polite"><span id="username-feedback-text">Username must be at least 3 characters</span></span>
+            {% if form.username.errors %}
+            <span class="field-error">{{ form.username.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <input type="email" name="email" id="id_email" required
+                   placeholder="Email (for password reset)" class="login-input"
+                   value="{{ form.email.value|default:'' }}" autocomplete="email">
+            {% if form.email.errors %}
+            <span class="field-error">{{ form.email.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <input type="password" name="password1" id="id_password1" required minlength="12"
+                   placeholder="Password (min 12 characters)" class="login-input" autocomplete="new-password">
+            {% if form.password1.errors %}
+            <span class="field-error">{{ form.password1.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <input type="password" name="password2" id="id_password2" required
+                   placeholder="Confirm password" class="login-input" autocomplete="new-password">
+            {% if form.password2.errors %}
+            <span class="field-error">{{ form.password2.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <button type="submit" class="login-btn">Sign up</button>
+    </form>
+
+    <p class="login-hint">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script>
+(function() {
+    var input = document.getElementById('id_username');
+    var feedback = document.getElementById('username-feedback');
+    var timeout;
+    var lastChecked = '';
+
+    var checkEl = document.getElementById('username-check');
+    var feedbackText = document.getElementById('username-feedback-text');
+
+    function checkUsername() {
+        var val = (input.value || '').trim();
+        if (val.length < 3) {
+            feedbackText.textContent = 'Username must be at least 3 characters';
+            feedback.className = 'username-feedback username-feedback--hint';
+            checkEl.textContent = '';
+            checkEl.className = 'username-check';
+            return;
+        }
+        if (val === lastChecked) return;
+        lastChecked = val;
+        feedbackText.textContent = 'Checking...';
+        feedback.className = 'username-feedback username-feedback--checking';
+        checkEl.textContent = '';
+        checkEl.className = 'username-check';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{% url "check_username" %}?username=' + encodeURIComponent(val));
+        xhr.onload = function() {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (data.available) {
+                    checkEl.textContent = '✓';
+                    checkEl.className = 'username-check username-check--ok';
+                    feedbackText.textContent = 'Username must be at least 3 characters';
+                    feedback.className = 'username-feedback username-feedback--hint';
+                } else {
+                    feedbackText.textContent = '✗ Username already taken';
+                    feedback.className = 'username-feedback username-feedback--taken';
+                }
+            } catch (e) {
+                feedbackText.textContent = 'Username must be at least 3 characters';
+                feedback.className = 'username-feedback username-feedback--hint';
+            }
+        };
+        xhr.onerror = function() {
+            feedbackText.textContent = 'Username must be at least 3 characters';
+            feedback.className = 'username-feedback username-feedback--hint';
+        };
+        xhr.send();
+    }
+
+    input.addEventListener('blur', function() {
+        if ((input.value || '').trim().length >= 3) checkUsername();
+    });
+    input.addEventListener('input', function() {
+        clearTimeout(timeout);
+        var val = (input.value || '').trim();
+        checkEl.textContent = '';
+        checkEl.className = 'username-check';
+        lastChecked = '';
+        if (val.length >= 3) {
+            timeout = setTimeout(checkUsername, 400);
+        } else {
+            feedbackText.textContent = 'Username must be at least 3 characters';
+            feedback.className = 'username-feedback username-feedback--hint';
+        }
+    });
+})();
+</script>
+{% endblock %}

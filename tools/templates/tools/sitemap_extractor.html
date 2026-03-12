@@ -1,0 +1,27 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Sitemap Extractor{% endblock %}
+{% block body_class %}web-seo{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Sitemap Extractor</h1>
+    <p class="tool-desc">Enter the URL of a sitemap.xml to extract all URLs.</p>
+    <div class="form-group">
+        <label for="url-input">Sitemap URL</label>
+        <input type="url" id="url-input" placeholder="https://example.com/sitemap.xml" />
+    </div>
+    <div class="button-group">
+        <button type="button" id="btn-extract">Extract</button>
+    </div>
+    <div id="result-area" class="result-area hidden"></div>
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="{% static 'tools/js/sitemap_extractor.js' %}"></script>
+{% endblock %}

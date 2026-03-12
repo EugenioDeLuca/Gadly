@@ -1,0 +1,247 @@
+/* =========================
+   TRANSLATOR TOOL
+========================= */
+
+.translator .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+    border-radius: 16px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.translator h1 {
+    font-size: 2em;
+    color: #003f7f;
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+
+.translator textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 180px;
+    padding: 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.translator textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.translator textarea::placeholder {
+    color: #999;
+}
+
+/* Contenitore controlli */
+.translate-btn-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#translate-btn {
+    height: 44px;
+    padding: 0 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #003f7f;
+    color: white;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    margin-right: auto;
+    transition: transform 0.2s, background 0.2s;
+}
+
+#translate-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Custom select wrapper */
+.custom-select-wrap {
+    position: relative;
+}
+
+.custom-select-wrap select {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.custom-select-trigger {
+    position: relative;
+    height: 44px;
+    min-width: 160px;
+    padding: 0 36px 0 12px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.custom-select-trigger::after {
+    content: "▼";
+    position: absolute;
+    right: 12px;
+    font-size: 0.7em;
+    color: #666;
+}
+
+.custom-select-wrap.open .custom-select-trigger {
+    border-color: #007BFF;
+}
+
+.custom-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 100;
+}
+
+.custom-select-option:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.custom-select-option:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+.custom-select-wrap.open .custom-select-dropdown {
+    display: block;
+}
+
+.custom-select-option {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.custom-select-option:hover {
+    background: #f0f7ff;
+}
+
+.custom-select-option.selected {
+    background: #007BFF;
+    color: white;
+}
+
+/* Bottone Swap */
+#swap-btn {
+    height: 44px;
+    width: 44px;
+    font-size: 1.2em;
+    padding: 0;
+    background: #003f7f;
+    color: white;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+#swap-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Area risultato */
+.translator .result {
+    margin-top: 8px;
+    padding: 24px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 80px;
+    display: flex;
+    align-items: flex-start;
+    word-wrap: break-word;
+}
+
+.translator .result:empty::before {
+    content: "Translation will appear here...";
+    color: #94a3b8;
+}
+
+/* Responsività */
+@media (max-width: 768px) {
+    .translator .container {
+        margin: 20px 16px;
+        padding: 28px 24px;
+    }
+
+    .translate-btn-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #translate-btn {
+        margin-right: 0;
+    }
+
+    .custom-select-wrap {
+        width: 100%;
+    }
+
+    .custom-select-trigger {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .translator .container {
+        margin: 12px 10px;
+        padding: 24px 18px;
+    }
+    .translator h1 {
+        font-size: 1.5em;
+    }
+    .translator textarea {
+        min-height: 140px;
+        font-size: 16px;
+    }
+    #translate-btn {
+        min-height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .translator .container {
+        margin: 8px 8px;
+        padding: 20px 14px;
+    }
+}

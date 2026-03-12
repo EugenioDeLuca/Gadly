@@ -1,0 +1,87 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}FAQ{% endblock %}
+{% block body_class %}faq-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/faq.css' %}">
+{% endblock %}
+{% block content %}
+<div class="faq-container">
+    <h1>FAQ</h1>
+    <p class="faq-intro">Find answers to common questions.</p>
+
+    <section class="faq-section">
+        <h2>General</h2>
+        <div class="faq-item">
+            <h3>What is Gadly?</h3>
+            <p>Gadly is a collection of free online utilities for text editing, social media, finance, web/SEO, file management, and more. All tools run in your browser—no installation required.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Is my data safe?</h3>
+            <p>Most tools process data locally in your browser or send it only for the specific operation (e.g., translation, meta tag check). We do not store or log your personal data. For sensitive content, always check the privacy policy.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Does it work on mobile?</h3>
+            <p>Yes! The site is responsive and optimized for smartphones and tablets. You can use all tools from your mobile device.</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Text Tools</h2>
+        <div class="faq-item">
+            <h3>Word Counter</h3>
+            <p>Paste your text and click "Count Words" or "Count Characters" to get instant counts. Useful for essays, blog posts, and character-limited platforms.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Remove Spaces</h3>
+            <p>Choose a mode: remove all spaces or collapse multiple spaces into one. Great for cleaning pasted text.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Username / Bio / Hashtag / Caption Generator</h3>
+            <p>Select options (style, platform, niche) and click Generate. Use the Copy button to copy the result to your clipboard.</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Social Media & Video</h2>
+        <div class="faq-item">
+            <h3>Video Downloader</h3>
+            <p>Paste a video URL from a supported site, click Download, and wait for the file. Large videos may take a few moments.</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Finance Calculators</h2>
+        <div class="faq-item">
+            <h3>How to use the calculators?</h3>
+            <p>Select the tab (Percentage, VAT, Currency, Loan, etc.), enter the values in the fields, and click the calculate button. Results appear below.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Currency conversion</h3>
+            <p>Enter the amount and the exchange rate (e.g., 1 EUR = 1.08 USD). The result shows the converted amount.</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Web / SEO</h2>
+        <div class="faq-item">
+            <h3>Meta Tag Checker</h3>
+            <p>Enter a URL to see the meta tags (title, description, Open Graph, Twitter cards) of that page.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Sitemap Extractor</h3>
+            <p>Paste the URL of a sitemap.xml file to extract all listed URLs. Useful for SEO audits.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Robots.txt Generator</h3>
+            <p>Configure User-agent, Disallow/Allow paths, and Sitemap URL to generate a robots.txt file. Copy the result and paste it into your site's root.</p>
+        </div>
+    </section>
+
+    <div class="faq-footer home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}

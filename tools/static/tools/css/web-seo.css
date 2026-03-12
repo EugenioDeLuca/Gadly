@@ -1,0 +1,236 @@
+/* =========================
+   WEB / SEO TOOLS
+========================= */
+
+.web-seo .container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+}
+
+.web-seo h1 {
+    text-align: center;
+    color: #003f7f;
+    margin: 0 0 8px 0;
+    font-size: 2em;
+}
+
+.web-seo .tool-desc {
+    text-align: center;
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.web-seo .form-group {
+    margin-bottom: 16px;
+}
+
+.web-seo .form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.web-seo .form-group input,
+.web-seo .form-group textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.web-seo .form-group input:focus,
+.web-seo .form-group textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+.web-seo .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.web-seo .button-group button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    background: #003f7f;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.web-seo .button-group button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.web-seo .button-group button.copied {
+    background: #dc3545;
+}
+
+.web-seo .button-group button.copied:hover {
+    background: #e74c3c;
+}
+
+.robots-txt-gen .button-group {
+    justify-content: space-between;
+}
+
+/* Video Downloader - multicolor loading bar */
+.video-downloader .video-download-loader {
+    width: 100%;
+    height: 10px;
+    background: #e8eef5;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.video-downloader .video-download-loader-bar {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    background: linear-gradient(
+        90deg,
+        #ff3366 0%,
+        #ff9933 15%,
+        #ffcc00 30%,
+        #33cc33 50%,
+        #3399ff 70%,
+        #9933ff 85%,
+        #ff3366 100%
+    );
+    background-size: 200% 100%;
+    animation: video-download-bar 1.5s linear infinite;
+}
+
+@keyframes video-download-bar {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.video-downloader .result-area.hidden,
+.web-seo .result-area.hidden {
+    display: none;
+}
+
+.web-seo .result-area {
+    margin-top: 24px;
+    padding: 20px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.web-seo .result-area:empty,
+.web-seo .result-area.placeholder {
+    color: #999;
+}
+
+.web-seo .meta-tag-item {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #007BFF;
+}
+
+.web-seo .meta-tag-name {
+    font-weight: 600;
+    color: #003f7f;
+}
+
+.web-seo .meta-tag-value {
+    color: #333;
+    margin-top: 4px;
+}
+
+.web-seo .url-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.web-seo .url-list li {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #007BFF;
+    word-break: break-all;
+}
+
+.web-seo .home-link-wrap {
+    margin-top: 28px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .web-seo .container {
+        margin: 20px 16px;
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .web-seo .container {
+        margin: 12px 10px;
+        padding: 24px 18px;
+    }
+    .web-seo h1 {
+        font-size: 1.4em;
+    }
+    .web-seo .tool-desc {
+        font-size: 0.95rem;
+    }
+    .web-seo .form-group input,
+    .web-seo .form-group textarea {
+        padding: 12px 14px;
+        font-size: 16px; /* prevent zoom on iOS */
+    }
+    .web-seo .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .web-seo .button-group button {
+        min-height: 48px;
+        padding: 12px 20px;
+        flex: 1;
+        min-width: 140px;
+    }
+    .robots-txt-gen .button-group {
+        flex-direction: column;
+    }
+    .robots-txt-gen .button-group button {
+        width: 100%;
+    }
+    .web-seo .result-area {
+        padding: 16px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .web-seo .container {
+        margin: 8px 8px;
+        padding: 20px 14px;
+    }
+}

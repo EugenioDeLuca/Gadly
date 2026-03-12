@@ -1,0 +1,280 @@
+/* =========================
+   TEXT TOOLS (Remove Spaces, Username Gen, Bio Gen)
+========================= */
+
+.text-tool .container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+}
+
+.text-tool h1 {
+    text-align: center;
+    color: #003f7f;
+    margin: 0 0 8px 0;
+    font-size: 2em;
+}
+
+.text-tool .tool-desc {
+    text-align: center;
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.text-tool textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 180px;
+    padding: 16px 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    resize: vertical;
+}
+
+.text-tool textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+.text-tool .text-tool-row {
+    margin-bottom: 20px;
+}
+
+.text-tool .form-group {
+    margin-bottom: 16px;
+}
+
+.text-tool .form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.text-tool .form-group input,
+.text-tool .form-group select {
+    width: 100%;
+    max-width: 320px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+}
+
+.text-tool .form-group input:focus,
+.text-tool .form-group select:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+.text-tool-select {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+}
+
+.text-tool-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+}
+
+.text-tool-select-trigger:hover {
+    border-color: #007BFF;
+    background: #f8fcff;
+}
+
+.text-tool-select-trigger::after {
+    content: "";
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    flex-shrink: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #555;
+}
+
+.text-tool-select-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 4px 0 0 0;
+    padding: 6px 0;
+    width: 100%;
+    list-style: none;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 63, 127, 0.15);
+    z-index: 100;
+    display: none;
+}
+
+.text-tool-select.open .text-tool-select-menu {
+    display: block;
+}
+
+.text-tool-select-menu li {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.text-tool-select-menu li:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.text-tool-select-menu li:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+.text-tool-select-menu li:hover {
+    background: #e8f4fd;
+}
+
+.text-tool-select-menu li.selected {
+    background: #d0e8f9;
+    font-weight: 600;
+}
+
+.text-tool .text-tool-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.text-tool .text-tool-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.text-tool .text-tool-options input[type="radio"] {
+    width: 18px;
+    height: 18px;
+}
+
+.text-tool .button-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.text-tool .button-group button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    background: #003f7f;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.text-tool .button-group button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.text-tool .button-group button.copied {
+    background: #dc3545;
+}
+
+.text-tool .button-group button.copied:hover {
+    background: #e74c3c;
+}
+
+
+.text-tool .result-area {
+    padding: 20px;
+    min-height: 100px;
+    border-radius: 12px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.text-tool .result-area:empty {
+    color: #999;
+}
+
+.text-tool .result-area.hidden {
+    display: none;
+}
+
+.text-tool .home-link-wrap {
+    margin-top: 28px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .text-tool .container {
+        margin: 20px 16px;
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .text-tool .container {
+        margin: 12px 10px;
+        padding: 24px 18px;
+    }
+    .text-tool h1 {
+        font-size: 1.4em;
+    }
+    .text-tool .tool-desc {
+        font-size: 0.95rem;
+    }
+    .text-tool textarea {
+        min-height: 140px;
+        font-size: 16px; /* prevent zoom on iOS */
+    }
+    .text-tool .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .text-tool .button-group button {
+        min-height: 48px;
+        flex: 1;
+        min-width: 120px;
+    }
+    .text-tool .text-tool-select,
+    .text-tool .text-tool-select-trigger {
+        max-width: 100%;
+    }
+    .text-tool .result-area {
+        padding: 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-tool .container {
+        margin: 8px 8px;
+        padding: 20px 14px;
+    }
+}

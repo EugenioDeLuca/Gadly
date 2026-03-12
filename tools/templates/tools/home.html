@@ -1,0 +1,98 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}Gadly{% endblock %}
+{% block body_class %}homepage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <p class="intro">Welcome to Gadly – free online tools for text, files, social media, web and more.</p>
+
+    <div class="search-wrap">
+        <input type="text" id="tool-search" placeholder="Search tools..." class="tool-search-input" autocomplete="off">
+    </div>
+
+    <section class="shortcuts-section" id="shortcuts-section" style="display:none">
+        <h2 class="shortcuts-title">Quick access</h2>
+        <div class="shortcuts-grid" id="shortcuts-grid"></div>
+    </section>
+
+    <!-- Text Tools -->
+    <section class="tool-section">
+        <h2>Text Tools</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'word_counter' %}" class="tool-btn">Word Counter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'translator' %}" class="tool-btn">Translator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'remove_spaces' %}" class="tool-btn">Remove Spaces</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'username_generator' %}" class="tool-btn">Username Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>Social Media</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'bio_generator' %}" class="tool-btn">Bio Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'hashtag_generator' %}" class="tool-btn">Hashtag Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'caption_generator' %}" class="tool-btn">Caption Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'video_downloader' %}" class="tool-btn">Video Downloader</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>File Tools</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'file_analyzer' %}" class="tool-btn">File Analyzer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'pdf_merger' %}" class="tool-btn">PDF Merge</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'pdf_split' %}" class="tool-btn">PDF Split</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>Image & Data Tools</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'image_editor' %}" class="tool-btn">Image Editor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'data_viz' %}" class="tool-btn">Data Visualizer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>Finance</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'calc_percentage' %}" class="tool-btn">Percentage</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_vat' %}" class="tool-btn">VAT</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_net_salary' %}" class="tool-btn">Net Salary</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_interest' %}" class="tool-btn">Interest</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_currency' %}" class="tool-btn">Currency</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_loan' %}" class="tool-btn">Loan</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_discount' %}" class="tool-btn">Discount</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_margin' %}" class="tool-btn">Margin</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_split_bill' %}" class="tool-btn">Split Bill</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>Web / SEO</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'meta_tag_checker' %}" class="tool-btn">Meta Tag Checker</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'sitemap_extractor' %}" class="tool-btn">Sitemap Extractor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'robots_txt_generator' %}" class="tool-btn">Robots.txt Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'site_speed_check' %}" class="tool-btn">Site Speed Check</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section">
+        <h2>Security & Misc</h2>
+        <div class="tool-grid">
+            <div class="tool-btn-wrap"><a href="{% url 'password_gen' %}" class="tool-btn">Password Gen</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'qr_generator' %}" class="tool-btn">QR Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+        </div>
+    </section>
+
+</div>
+<script src="{% static 'tools/js/home.js' %}"></script>
+{% endblock %}

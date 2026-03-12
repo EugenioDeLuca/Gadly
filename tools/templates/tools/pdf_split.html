@@ -1,0 +1,60 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}PDF Split{% endblock %}
+{% block body_class %}pdf-split{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/pdf-merge.css' %}">
+{% endblock %}
+{% block content %}
+<div class="pdf-merger">
+    <div class="container">
+        <h1>PDF Split</h1>
+        <form id="pdf-split-form" enctype="multipart/form-data">
+            <div id="file-inputs-wrapper">
+                <div class="upload-area">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="pdf-file" class="pdf-file-input" name="file" accept=".pdf" />
+                        <label for="pdf-file" class="choose-file-btn"><span class="file-name-display">Choose file</span></label>
+                    </div>
+                    <p class="upload-hint">Choose a PDF file to split</p>
+                </div>
+                <div class="split-options-card">
+                    <div class="split-options-label">Pages per file</div>
+                    <div class="split-presets">
+                        <button type="button" class="split-preset-btn active" data-pages="1">1</button>
+                        <button type="button" class="split-preset-btn" data-pages="2">2</button>
+                        <button type="button" class="split-preset-btn" data-pages="5">5</button>
+                        <button type="button" class="split-preset-btn" data-pages="10">10</button>
+                        <button type="button" class="split-preset-btn" data-pages="15">15</button>
+                        <button type="button" class="split-preset-btn" data-pages="20">20</button>
+                        <button type="button" class="split-preset-btn" data-pages="25">25</button>
+                        <button type="button" class="split-preset-btn" data-pages="30">30</button>
+                        <button type="button" class="split-preset-btn" data-pages="35">35</button>
+                    </div>
+                    <div class="split-input-wrap">
+                        <input type="number" id="pages-per-split" name="pages_per_split" value="1" min="1" class="split-pages-input" title="Number of pages in each output PDF" />
+                    </div>
+                    <p class="split-options-hint">Each output file will contain this many pages. You can also type a number manually.</p>
+                </div>
+            </div>
+            <div id="file-preview" class="file-preview">
+                <p class="file-preview-title">Preview – File to split:</p>
+                <ul id="file-list"></ul>
+            </div>
+            <button type="submit" id="submit-files">Split PDF</button>
+        </form>
+        <div id="pdf-result">
+            <span id="result-message" style="display:none;"></span>
+        </div>
+        <div id="error-message" style="display:none; color: red; font-weight: bold; text-align: center;">
+            Please select a PDF file.
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="{% static 'tools/js/pdf-split.js' %}"></script>
+{% endblock %}

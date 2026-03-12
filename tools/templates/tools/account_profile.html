@@ -1,0 +1,119 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Account - {{ user.username }} - Gadly{% endblock %}
+{% block body_class %}static-page login-page account-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/account.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container account-container">
+    <h1>Account</h1>
+
+    {% if msg %}
+    <div class="account-msg account-msg--ok">{{ msg }}</div>
+    {% endif %}
+
+    <!-- Avatar -->
+    <section class="account-section">
+        <h2 class="account-section-title--center">Profile image</h2>
+        <div class="account-avatar-wrap">
+            {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="account-avatar">
+            {% else %}
+            <div class="account-avatar account-avatar--placeholder">{{ user.username|slice:":1"|upper }}</div>
+            {% endif %}
+        </div>
+        <form method="post" enctype="multipart/form-data" class="account-form">
+            {% csrf_token %}
+            <input type="hidden" name="update_avatar" value="1">
+            <div class="form-group">
+                <div class="account-file-input-wrapper">
+                    <input type="file" name="avatar" id="id_avatar" accept="image/*">
+                    <label for="id_avatar" class="account-choose-file-btn" id="avatar-btn-label">Choose image</label>
+                </div>
+                {% if avatar_form.non_field_errors %}
+                <span class="field-error">{{ avatar_form.non_field_errors|join:", " }}</span>
+                {% endif %}
+                {% if avatar_form.avatar.errors %}
+                <span class="field-error">{{ avatar_form.avatar.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="account-avatar-buttons">
+                <button type="submit" class="login-btn" name="avatar_action" value="upload">Upload</button>
+                <button type="submit" class="login-btn login-btn--save-avatar {% if avatar_saved %}login-btn--saved{% endif %}" name="avatar_action" value="save">
+                    Save{% if avatar_saved %} <span class="save-check" aria-hidden="true">✓</span>{% endif %}
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Username & Email -->
+    <section class="account-section">
+        <h2>Profile</h2>
+        <form method="post" class="account-form">
+            {% csrf_token %}
+            <input type="hidden" name="update_profile" value="1">
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" required maxlength="150"
+                       value="{{ profile_form.username.value|default:user.username }}"
+                       class="login-input" autocomplete="username">
+                {% if profile_form.username.errors %}
+                <span class="field-error">{{ profile_form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" name="email" id="id_email" required
+                       value="{{ profile_form.email.value|default:user.email }}"
+                       class="login-input" autocomplete="email">
+                {% if profile_form.email.errors %}
+                <span class="field-error">{{ profile_form.email.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <button type="submit" class="login-btn">Save</button>
+        </form>
+    </section>
+
+    <!-- Password -->
+    <section class="account-section account-section--danger-centered">
+        <h2>Password</h2>
+        <p style="color: #555; font-size: 0.95rem; margin-bottom: 16px;">
+            Change your password to keep your account secure.
+        </p>
+        <a href="{% url 'password_change' %}" class="login-btn login-btn--password" style="display: inline-block; text-decoration: none; text-align: center;">Change password</a>
+    </section>
+
+    <!-- Delete account -->
+    <section class="account-section account-section--danger account-section--danger-centered">
+        <h2>Delete account</h2>
+        <p style="color: #555; font-size: 0.95rem; margin-bottom: 16px;">
+            Permanently delete your account and all associated data. This action cannot be undone.
+        </p>
+        <a href="{% url 'account_delete' %}" class="login-btn login-btn--danger" style="text-decoration: none;">Delete account</a>
+    </section>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script>
+(function() {
+    var input = document.getElementById('id_avatar');
+    var btnLabel = document.getElementById('avatar-btn-label');
+    if (input && btnLabel) {
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                btnLabel.textContent = this.files[0].name;
+            } else {
+                btnLabel.textContent = 'Choose image';
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}

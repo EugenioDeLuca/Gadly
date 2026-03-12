@@ -1,0 +1,167 @@
+/* Theme: light (default) and dark */
+:root {
+    --btn-primary: #003f7f;
+    --btn-primary-dark: #002d5c;
+    --bg-body: radial-gradient(circle at bottom right, #6a0dad, #3554a6 30%, #f4f4f4 70%);
+    --bg-header: rgba(255, 255, 255, 0.75);
+    --bg-card: #fff;
+    --text-primary: #003f7f;
+    --text-secondary: #555;
+    --text-muted: #666;
+    --border-color: #b8d4f0;
+    --accent: #007BFF;
+    --accent-hover: #0066cc;
+}
+
+body.dark-mode {
+    --btn-primary: #003f7f;
+    --btn-primary-dark: #002d5c;
+    --bg-body: radial-gradient(circle at bottom right, #1a0a2e, #16213e 40%, #0f0f23 70%);
+    --bg-header: rgba(15, 15, 35, 0.85);
+    --bg-card: #1a1a2e;
+    --text-primary: #7eb8f0;
+    --text-secondary: #b0c4de;
+    --text-muted: #8892a6;
+    --border-color: #2a3a5a;
+    --accent: #5a9fd4;
+    --accent-hover: #7eb8f0;
+}
+
+body {
+    background: var(--bg-body) !important;
+}
+
+.header-logo .header-logo-dark {
+    display: none !important;
+}
+
+body.dark-mode .header-logo .header-logo-light {
+    display: none !important;
+}
+
+body.dark-mode .header-logo .header-logo-dark {
+    display: block !important;
+}
+
+body.dark-mode .header-logo .header-logo-text {
+    color: #b0c4de !important;
+}
+
+body.dark-mode .header-logo:hover .header-logo-text {
+    color: #7eb8f0 !important;
+}
+
+.site-header {
+    background: var(--bg-header) !important;
+}
+
+/* Dark mode overrides for main containers */
+body.dark-mode .homepage .container,
+body.dark-mode .web-seo .container,
+body.dark-mode .text-tool .container,
+body.dark-mode .faq-page .faq-container,
+body.dark-mode .password-gen .container,
+body.dark-mode .translator .container,
+body.dark-mode .word-counter .container,
+body.dark-mode .video-downloader .container {
+    background: var(--bg-card) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dark mode: container bianco per file/PDF/image/data/calc/QR */
+body.dark-mode.file-analyzer .container,
+body.dark-mode.pdf-merger .container,
+body.dark-mode.pdf-split .container,
+body.dark-mode.image-editor .container,
+body.dark-mode.data-viz .container,
+body.dark-mode.calculators .container,
+body.dark-mode.qr-generator .container {
+    background: white !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-mode .homepage h2,
+body.dark-mode .calculators h1,
+body.dark-mode .calculators h2,
+body.dark-mode .web-seo h1,
+body.dark-mode .text-tool h1,
+body.dark-mode .faq-page h1,
+body.dark-mode .faq-section h2,
+body.dark-mode .data-viz h1,
+body.dark-mode .file-analyzer h1,
+body.dark-mode .pdf-merger h1,
+body.dark-mode .pdf-split h1,
+body.dark-mode .image-editor h1,
+body.dark-mode .qr-generator h1,
+body.dark-mode .password-gen h1,
+body.dark-mode .translator h1,
+body.dark-mode .video-downloader h1,
+body.dark-mode .word-counter h1,
+body.dark-mode .static-container h1 {
+    color: #003f7f !important;
+}
+
+body.dark-mode .homepage .intro,
+body.dark-mode .header-link {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .header-link:hover {
+    color: var(--accent) !important;
+}
+
+body.dark-mode .header-logout-form .header-link:hover,
+body.dark-mode .header-dropdown-item--logout:hover {
+    color: #e84c4c !important;
+    background: rgba(232, 76, 76, 0.25) !important;
+}
+
+body.dark-mode .home-link {
+    color: #003f7f !important;
+}
+
+body.dark-mode .home-link:hover {
+    color: #0056b3 !important;
+}
+
+body.dark-mode .home-link svg {
+    fill: currentColor !important;
+}
+
+body.dark-mode .shortcuts-section .shortcuts-title {
+    color: #e84c4c !important;
+}
+
+body.dark-mode .shortcuts-btn {
+    background: rgba(232, 76, 76, 0.25);
+    color: #e84c4c;
+    border-color: #e84c4c;
+}
+
+body.dark-mode .shortcuts-btn:hover {
+    background: #e84c4c;
+    color: white;
+    border-color: #b01830;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+    background: rgba(0, 123, 255, 0.15);
+    color: var(--accent);
+}
+

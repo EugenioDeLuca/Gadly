@@ -1,0 +1,348 @@
+/* =========================
+   QR GENERATOR
+========================= */
+
+.qr-generator .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+    border-radius: 16px;
+    background: white;
+}
+
+.qr-generator h1 {
+    font-size: 2em;
+    color: #003f7f;
+    margin: 0 0 28px 0;
+    text-align: center;
+}
+
+.qr-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.qr-controls label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.qr-input-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.qr-controls textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.file-upload-area {
+    display: flex;
+    justify-content: center;
+}
+
+.file-upload-area input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.file-upload-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    background: #e8f4fd;
+    color: #007BFF;
+    border: 2px dashed #b8d4f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.file-upload-btn:hover {
+    background: #d0e8f9;
+    border-color: #007BFF;
+}
+
+.qr-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.qr-option-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.qr-option-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.qr-option-group input[type="color"] {
+    width: 48px;
+    height: 36px;
+    padding: 2px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.qr-custom-select {
+    position: relative;
+}
+
+.qr-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 140px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.qr-select-trigger:hover {
+    border-color: #007BFF;
+    background: #f8fcff;
+}
+
+.qr-select-trigger::after {
+    content: "";
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #555;
+}
+
+.qr-select-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 4px 0 0 0;
+    padding: 6px 0;
+    min-width: 100%;
+    list-style: none;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 63, 127, 0.15);
+    z-index: 100;
+    display: none;
+}
+
+.qr-custom-select.open .qr-select-menu {
+    display: block;
+}
+
+.qr-select-menu li {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.qr-select-menu li:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.qr-select-menu li:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+.qr-select-menu li:hover {
+    background: #e8f4fd;
+}
+
+.qr-select-menu li.selected {
+    background: #d0e8f9;
+    font-weight: 600;
+}
+
+.qr-presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.qr-presets-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.qr-preset {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.qr-preset:hover {
+    border-color: #007BFF;
+    background: #f0f7ff;
+}
+
+.qr-preset.selected {
+    border-color: #007BFF;
+    background: #d0e8f9;
+    font-weight: 600;
+}
+
+.qr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.reset-qr-btn {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: white;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.reset-qr-btn:hover {
+    border-color: #e8a5a5;
+    background: #ffe6e6;
+    color: #c82333;
+}
+
+.qr-controls textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+#generate-qr {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #003f7f;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+#generate-qr:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.qr-result {
+    margin-top: 28px;
+    padding: 24px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    border-radius: 16px;
+    min-height: 200px;
+}
+
+.qr-result.show {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.download-qr-btn {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.download-qr-btn:hover {
+    background: #34c759;
+    transform: scale(1.05);
+}
+
+#qr-output {
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 63, 127, 0.15);
+}
+
+#qr-output canvas,
+#qr-output img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .qr-generator .container {
+        margin: 20px 16px;
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .qr-generator .container {
+        margin: 12px 10px;
+        padding: 24px 18px;
+    }
+    .qr-generator h1 {
+        font-size: 1.5em;
+    }
+    .qr-controls textarea {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .qr-generator .container {
+        margin: 8px 8px;
+        padding: 20px 14px;
+    }
+}

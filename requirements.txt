@@ -1,0 +1,10 @@
+Django>=6.0
+Pillow
+PyPDF2
+googletrans>=4.0
+rembg[cpu]
+pypdf
+httpx
+yt-dlp
+gunicorn
+whitenoise

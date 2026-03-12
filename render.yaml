@@ -1,0 +1,22 @@
+# Render Blueprint - Deploy Gadly
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: gadly
+    runtime: python
+
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
+    startCommand: python manage.py migrate --no-input && gunicorn config.wsgi:application
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        sync: false
+        # Imposta nel Dashboard Render quando aggiungi gadly.it: gadly.it,www.gadly.it
+        # Per il primo deploy l'URL .onrender.com viene aggiunto automaticamente

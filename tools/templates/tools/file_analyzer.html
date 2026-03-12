@@ -1,0 +1,53 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}File Analyzer Tool{% endblock %}
+{% block body_class %}file-analyzer{% endblock %}
+
+{% block extra_css %}
+<!-- Include il CSS per il File Analyzer Tool -->
+<link rel="stylesheet" href="{% static 'tools/css/file-analyzer.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="file-analyzer">
+    <div class="container">
+        <h1>File Analyzer</h1>
+
+        <form id="file-analyzer-form" enctype="multipart/form-data">
+            <div class="upload-area">
+                <div class="file-input-wrapper">
+                    <input type="file" id="file-upload" name="file" />
+                    <label for="file-upload" class="choose-file-btn"><span id="file-name-display">Choose file</span></label>
+                </div>
+                <p class="upload-hint">Choose a file to analyze</p>
+            </div>
+            <div class="analysis-options">
+                <span class="analysis-options-label">Show in results</span>
+                <div class="analysis-options-row">
+                <label class="analysis-option"><input type="checkbox" name="opt" value="file_name" checked><span class="check-box"></span>File name</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="file_size_human" checked><span class="check-box"></span>Size</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="file_type" checked><span class="check-box"></span>Type</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="file_extension" checked><span class="check-box"></span>Extension</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="md5_hash" checked><span class="check-box"></span>MD5</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="line_count" checked><span class="check-box"></span>Lines</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="word_count" checked><span class="check-box"></span>Words</label>
+                <label class="analysis-option"><input type="checkbox" name="opt" value="char_count" checked><span class="check-box"></span>Characters</label>
+                </div>
+            </div>
+            <button type="submit" id="submit-file">Analyze</button>
+        </form>
+
+        <div id="file-results"></div>
+
+        <div style="margin-top: 25px; text-align: center;">
+            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Include the JavaScript for File Analyzer Tool -->
+<script src="{% static 'tools/js/file-analyzer.js' %}"></script>
+{% endblock %}

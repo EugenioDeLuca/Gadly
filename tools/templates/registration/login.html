@@ -1,0 +1,52 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Login - Gadly{% endblock %}
+{% block body_class %}static-page login-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container login-container">
+    <h1>Login</h1>
+
+    {% if form.non_field_errors %}
+    <div class="login-error">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="username" id="id_username" autofocus required
+                   placeholder="Username" class="login-input"
+                   value="{{ form.username.value|default:'' }}" autocomplete="username">
+            {% if form.username.errors %}
+            <span class="field-error">{{ form.username.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" id="id_password" required
+                   placeholder="Password" class="login-input">
+            {% if form.password.errors %}
+            <span class="field-error">{{ form.password.errors.0 }}</span>
+            {% endif %}
+        </div>
+        <button type="submit" class="login-btn">Sign in</button>
+    </form>
+
+    <p class="login-hint">
+        <a href="{% url 'password_reset' %}">Forgot password?</a>
+    </p>
+    <p class="login-hint">Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}

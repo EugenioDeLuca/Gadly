@@ -1,0 +1,52 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}Word & Character Counter{% endblock %}
+{% block body_class %}word-counter{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>Word & Character Counter</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <textarea name="text" placeholder="Enter your text here..." rows="10">{{ text }}</textarea>
+
+        <div class="result">
+            {% if count_words is not None %}
+                <div class="result-item">
+                    <span class="result-label">Words</span>
+                    <span class="result-value">{{ count_words }}</span>
+                </div>
+            {% endif %}
+            {% if count_chars is not None %}
+                <div class="result-item">
+                    <span class="result-label">Characters</span>
+                    <span class="result-value">{{ count_chars }}</span>
+                </div>
+            {% endif %}
+            {% if count_words is None and count_chars is None %}
+                <p class="result-placeholder">Click a button below to count.</p>
+            {% endif %}
+        </div>
+
+        <div class="button-group">
+            <button type="submit" name="count_words_btn">Count Words</button>
+            <button type="submit" name="count_chars_btn">Count Characters</button>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Bio Generator{% endblock %}
+{% block body_class %}text-tool bio-gen{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Bio Generator</h1>
+    <p class="tool-desc">Generate short bios for social media or full biography paragraphs.</p>
+    <div class="text-tool-row">
+        <div class="form-group">
+            <label>Type</label>
+            <div class="text-tool-select" id="bio-type-wrap" data-value="short">
+                <button type="button" class="text-tool-select-trigger">Short (Instagram/TikTok)</button>
+                <ul class="text-tool-select-menu">
+                    <li data-value="short" class="selected">Short (Instagram/TikTok)</li>
+                    <li data-value="full">Full biography (2–3 sentences)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Platform</label>
+            <div class="text-tool-select" id="bio-platform-wrap" data-value="instagram">
+                <button type="button" class="text-tool-select-trigger">Instagram</button>
+                <ul class="text-tool-select-menu">
+                    <li data-value="instagram" class="selected">Instagram</li>
+                    <li data-value="tiktok">TikTok</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Niche / topic (optional)</label>
+            <input type="text" id="bio-niche" placeholder="e.g. travel, fitness, food" />
+        </div>
+    </div>
+    <div class="button-group">
+        <button type="button" id="btn-generate">Generate</button>
+        <button type="button" id="btn-copy">Copy</button>
+    </div>
+    <div id="result-area" class="result-area hidden"></div>
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="{% static 'tools/js/bio_generator.js' %}"></script>
+{% endblock %}

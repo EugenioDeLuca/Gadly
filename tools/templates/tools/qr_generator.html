@@ -1,0 +1,84 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}QR Generator{% endblock %}
+{% block body_class %}qr-generator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}">
+{% endblock %}
+{% block content %}
+<div class="qr-generator">
+    <div class="container">
+        <h1>QR Generator</h1>
+
+        <div class="qr-controls">
+            <label for="qr-input">Enter text or URL</label>
+            <div class="qr-input-row">
+                <textarea id="qr-input" placeholder="Type or paste text, URL, etc." rows="4"></textarea>
+                <div class="file-upload-area">
+                    <input type="file" id="file-upload" accept=".txt,.pdf" />
+                    <label for="file-upload" class="file-upload-btn">Load from file (.txt, .pdf)</label>
+                </div>
+            </div>
+            <div class="qr-options">
+                <div class="qr-option-group">
+                    <label>QR color</label>
+                    <input type="color" id="color-dark" value="#003f7f" />
+                </div>
+                <div class="qr-option-group">
+                    <label>Background</label>
+                    <input type="color" id="color-light" value="#ffffff" />
+                </div>
+                <div class="qr-option-group">
+                    <label>Size</label>
+                    <div class="qr-custom-select" id="qr-size-wrap" data-value="256">
+                        <button type="button" class="qr-select-trigger">Medium (256px)</button>
+                        <ul class="qr-select-menu">
+                            <li data-value="128">Small (128px)</li>
+                            <li data-value="256" class="selected">Medium (256px)</li>
+                            <li data-value="384">Large (384px)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="qr-option-group">
+                    <label>Error correction</label>
+                    <div class="qr-custom-select" id="qr-ec-wrap" data-value="L">
+                        <button type="button" class="qr-select-trigger">Low (7%)</button>
+                        <ul class="qr-select-menu">
+                            <li data-value="L" class="selected">Low (7%)</li>
+                            <li data-value="M">Medium (15%)</li>
+                            <li data-value="Q">Quartile (25%)</li>
+                            <li data-value="H">High (30%)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="qr-presets">
+                <span class="qr-presets-label">Presets:</span>
+                <button type="button" class="qr-preset" data-dark="#000000" data-light="#ffffff">Black</button>
+                <button type="button" class="qr-preset" data-dark="#003f7f" data-light="#ffffff">Blue</button>
+                <button type="button" class="qr-preset" data-dark="#28a745" data-light="#ffffff">Green</button>
+                <button type="button" class="qr-preset" data-dark="#dc3545" data-light="#ffffff">Red</button>
+                <button type="button" class="qr-preset" data-dark="#000000" data-light="#f8fcff">Light bg</button>
+            </div>
+            <div class="qr-actions">
+                <button type="button" id="generate-qr">Generate QR Code</button>
+                <button type="button" id="reset-qr" class="reset-qr-btn">Reset</button>
+            </div>
+        </div>
+
+        <div id="qr-result" class="qr-result">
+            <div id="qr-output"></div>
+            <button type="button" id="download-qr" class="download-qr-btn">Download QR</button>
+        </div>
+
+        <div style="margin-top: 25px; text-align: center;">
+            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="{% static 'tools/js/qrcode.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="{% static 'tools/js/qr-generator.js' %}"></script>
+{% endblock %}

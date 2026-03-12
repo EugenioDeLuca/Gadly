@@ -1,0 +1,39 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Privacy Policy - Gadly{% endblock %}
+{% block body_class %}static-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container">
+    <h1>Privacy Policy</h1>
+    <p class="static-updated">Last updated: {% now "F Y" %}</p>
+
+    <section>
+        <h2>Data collection</h2>
+        <p>Gadly processes most data locally in your browser. Data sent to our servers (e.g. for translation or meta tag checks) is used only for the requested operation and is not stored or logged.</p>
+    </section>
+
+    <section>
+        <h2>Cookies</h2>
+        <p>We use minimal cookies to remember your preferences (e.g. theme, cookie consent). No third-party tracking cookies are used by default.</p>
+    </section>
+
+    <section>
+        <h2>Third-party services</h2>
+        <p>Some tools may use external APIs (e.g. translation services). Their privacy policies apply to data processed by those services.</p>
+    </section>
+
+    <section>
+        <h2>Contact</h2>
+        <p>For privacy-related questions, please use our <a href="{% url 'contact' %}">contact page</a>.</p>
+    </section>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}

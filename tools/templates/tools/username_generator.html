@@ -1,0 +1,45 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Username Generator{% endblock %}
+{% block body_class %}text-tool username-gen{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Username Generator</h1>
+    <p class="tool-desc">Generate random usernames for social media, games, or profiles.</p>
+    <div class="text-tool-row">
+        <div class="form-group">
+            <label>Style</label>
+            <div class="text-tool-select" id="username-style-wrap" data-value="word_number">
+                <button type="button" class="text-tool-select-trigger">Word + Number (e.g. cosmic42)</button>
+                <ul class="text-tool-select-menu">
+                    <li data-value="word_number" class="selected">Word + Number (e.g. cosmic42)</li>
+                    <li data-value="word_number_at">With @ (e.g. @cosmic42)</li>
+                    <li data-value="word_at_number">Word@Number (e.g. cosmic@42)</li>
+                    <li data-value="word_at_word">Word@Word (e.g. cosmic@panda)</li>
+                    <li data-value="word_word">Two words (e.g. cosmic_panda)</li>
+                    <li data-value="adjective_noun">Adjective + Noun (e.g. happy_cloud)</li>
+                    <li data-value="random_chars">Random mix</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>How many</label>
+            <input type="number" id="username-count" value="5" min="1" max="5000" />
+        </div>
+    </div>
+    <div class="button-group">
+        <button type="button" id="btn-generate">Generate</button>
+        <button type="button" id="btn-copy">Copy</button>
+    </div>
+    <div id="result-area" class="result-area hidden"></div>
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="{% static 'tools/js/username_generator.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}PDF Merger Tool{% endblock %}
+{% block body_class %}pdf-merger{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/pdf-merge.css' %}">
+{% endblock %}
+{% block content %}
+<div class="pdf-merger">
+    <div class="container">
+        <h1>PDF Merger Tool</h1>
+        <!-- Form con selezione multipla - supporta file da cartelle diverse -->
+        <form id="pdf-merger-form" enctype="multipart/form-data">
+            <div id="file-inputs-wrapper">
+                <div class="upload-area">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="pdf-file-1" class="pdf-file-input" name="files" accept=".pdf" multiple />
+                        <label for="pdf-file-1" class="choose-file-btn"><span class="file-name-display">Choose file</span></label>
+                    </div>
+                    <p class="upload-hint">Choose PDF files to merge</p>
+                </div>
+            </div>
+            <button type="button" id="add-more-files">Add files from another folder</button>
+            <div id="file-preview" class="file-preview">
+                <p class="file-preview-title">Preview – File order (use ↑ ↓ to reorder):</p>
+                <ul id="file-list"></ul>
+            </div>
+            <button type="submit" id="submit-files">Merge PDFs</button>
+        </form>
+        <!-- Messaggio di successo -->
+        <div id="pdf-result">
+            <span id="result-message" style="display:none;"></span>
+        </div>
+        <!-- Messaggio di errore -->
+        <div id="error-message" style="display:none; color: red; font-weight: bold; text-align: center;">
+            Please select at least two PDF files.
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="{% static 'tools/js/pdf-merge.js' %}"></script>
+{% endblock %}

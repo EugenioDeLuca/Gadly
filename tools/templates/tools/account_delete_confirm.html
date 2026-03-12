@@ -1,0 +1,44 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Delete account - Gadly{% endblock %}
+{% block body_class %}static-page login-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/account.css' %}">
+{% endblock %}
+{% block content %}
+<div class="static-container login-container">
+    <h1>Delete account</h1>
+
+    <p style="margin: 20px 0; color: #555; line-height: 1.6;">
+        This will permanently delete your account and all your data. This action cannot be undone.
+    </p>
+    <p style="margin-bottom: 24px; color: #555;">
+        Enter your password to confirm:
+    </p>
+
+    {% if err %}
+    <div class="login-error">{{ err }}</div>
+    {% endif %}
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="password" name="password" id="id_password" required
+                   placeholder="Your password" class="login-input" autocomplete="current-password">
+        </div>
+        <button type="submit" class="login-btn login-btn--danger">Delete my account</button>
+    </form>
+
+    <p class="login-hint" style="margin-top: 24px;">
+        <a href="{% url 'account_profile' %}">Cancel - back to account</a>
+    </p>
+
+    <div class="static-footer">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+{% endblock %}
