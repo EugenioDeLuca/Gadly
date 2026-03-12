@@ -15,7 +15,13 @@ class Command(BaseCommand):
         User = get_user_model()
         username = os.environ.get("DJANGO_SUPERUSER_USERNAME", "").strip()
         email = os.environ.get("DJANGO_SUPERUSER_EMAIL", "").strip()
-        password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", "")
+        password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", "").strip()
+
+        # Debug: show what we see (no secrets)
+        has_u = "yes" if username else "no"
+        has_e = "yes" if email else "no"
+        has_p = f"yes (len={len(password)})" if password else "no"
+        print(f"[GADLY] Env: USERNAME={has_u}, EMAIL={has_e}, PASSWORD={has_p}")
 
         if not username:
             print("[GADLY] Superuser NOT created: DJANGO_SUPERUSER_USERNAME is empty. Add it in Render Environment.")
@@ -37,6 +43,10 @@ class Command(BaseCommand):
             user.set_password(password)
             user.save()
             print(f"[GADLY] Superuser '{username}' created successfully.")
+            # Verify credentials work
+            from django.contrib.auth import authenticate
+            auth_user = authenticate(username=username, password=password)
+            print(f"[GADLY] Login test: {'OK' if auth_user else 'FAILED - wrong password?'}")
         except Exception as e:
             print(f"[GADLY] Superuser creation FAILED: {e}")
             # Do not exit(1) - site must start even without admin
