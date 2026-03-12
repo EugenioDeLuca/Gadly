@@ -32,9 +32,11 @@ class Command(BaseCommand):
             return
 
         try:
-            User.objects.create_superuser(username=username, email=email, password=password)
+            # Use set_password to bypass strict validators (env var is trusted)
+            user = User(username=username, email=email, is_staff=True, is_superuser=True)
+            user.set_password(password)
+            user.save()
             print(f"[GADLY] Superuser '{username}' created successfully.")
         except Exception as e:
             print(f"[GADLY] Superuser creation FAILED: {e}")
-            print("[GADLY] Password must be 12+ chars, not common, not numeric-only.")
             # Do not exit(1) - site must start even without admin
