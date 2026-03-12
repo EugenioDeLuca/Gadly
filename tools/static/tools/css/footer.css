@@ -57,7 +57,7 @@ body.dark-mode .footer-links a {
 }
 
 body.dark-mode .footer-links a:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: #e8f4fd;
     color: var(--accent);
 }
 
