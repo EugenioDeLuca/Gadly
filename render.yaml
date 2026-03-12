@@ -7,7 +7,7 @@ services:
     runtime: python
 
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
-    startCommand: python manage.py migrate --no-input && gunicorn config.wsgi:application
+    startCommand: python manage.py migrate --no-input && python manage.py create_superuser_if_missing && gunicorn config.wsgi:application
 
     envVars:
       - key: PYTHON_VERSION
@@ -20,3 +20,10 @@ services:
         sync: false
         # Imposta nel Dashboard Render quando aggiungi gadly.it: gadly.it,www.gadly.it
         # Per il primo deploy l'URL .onrender.com viene aggiunto automaticamente
+      # Credenziali admin (createsuperuser automatico all'avvio - senza Shell)
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
