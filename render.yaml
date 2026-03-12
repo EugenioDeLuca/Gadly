@@ -10,7 +10,7 @@ services:
       - www.gadly.it
 
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
-    startCommand: python manage.py migrate --no-input && (python manage.py create_superuser_if_missing || true) && gunicorn config.wsgi:application
+    startCommand: python manage.py migrate --no-input && (python manage.py create_superuser_if_missing || true) && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
 
     envVars:
       - key: PYTHON_VERSION
