@@ -337,7 +337,7 @@ body.dark-mode .header-dropdown-item:hover {
     flex: 1;
     padding: 24px 16px 40px;
     padding-top: calc(24px + 82px);  /* space for fixed header */
-    padding-bottom: calc(40px + 90px); /* space for fixed footer */
+    padding-bottom: calc(40px + 82px); /* space for fixed footer - same as header */
 }
 
 /* Link icona Casa (Back to Home) - stesso colore di h1 (#003f7f) */
@@ -445,7 +445,7 @@ body.dark-mode .header-dropdown-item:hover {
     .site-main {
         padding: 20px 16px 36px;
         padding-top: calc(20px + 78px);
-        padding-bottom: calc(36px + 90px);
+        padding-bottom: calc(36px + 78px);
     }
 }
 
@@ -475,7 +475,7 @@ body.dark-mode .header-dropdown-item:hover {
     .site-main {
         padding: 12px 12px 28px;
         padding-top: calc(12px + 70px);
-        padding-bottom: calc(28px + 90px);
+        padding-bottom: calc(28px + 70px);
     }
 }
 
@@ -493,6 +493,6 @@ body.dark-mode .header-dropdown-item:hover {
     }
     .site-main {
         padding-top: calc(12px + 66px);
-        padding-bottom: calc(28px + 85px);
+        padding-bottom: calc(28px + 66px);
     }
 }

@@ -1,4 +1,4 @@
-/* Site Footer - fixed on all pages */
+/* Site Footer - fixed on all pages, same height as header */
 .site-footer {
     position: fixed;
     bottom: 0;
@@ -7,7 +7,9 @@
     width: 100%;
     z-index: 100;
     margin-top: 0;
-    padding: 28px 20px;
+    padding: 20px 28px;
+    min-height: 82px;
+    box-sizing: border-box;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -72,7 +74,8 @@ body.dark-mode .footer-copy {
 
 @media (max-width: 768px) {
     .site-footer {
-        padding: 20px 16px;
+        padding: 18px 22px;
+        min-height: 78px;
     }
     .footer-inner {
         gap: 16px;
@@ -84,7 +87,8 @@ body.dark-mode .footer-copy {
 
 @media (max-width: 600px) {
     .site-footer {
-        padding: 16px 12px;
+        padding: 14px 16px;
+        min-height: 70px;
     }
     .footer-inner {
         flex-direction: column;
@@ -100,5 +104,12 @@ body.dark-mode .footer-copy {
     }
     .footer-copy {
         font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-footer {
+        padding: 12px 14px;
+        min-height: 66px;
     }
 }
