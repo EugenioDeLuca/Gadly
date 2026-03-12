@@ -5,6 +5,9 @@ services:
   - type: web
     name: gadly
     runtime: python
+    domains:
+      - gadly.it
+      - www.gadly.it
 
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
     startCommand: python manage.py migrate --no-input && (python manage.py create_superuser_if_missing || true) && gunicorn config.wsgi:application
@@ -26,4 +29,18 @@ services:
       - key: DJANGO_SUPERUSER_EMAIL
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      # Email (SMTP) - set in Dashboard to send verification emails
+      # Use SendGrid, Mailgun, or your provider (e.g. Aruba)
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "true"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
         sync: false
