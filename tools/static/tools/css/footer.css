@@ -35,19 +35,30 @@ body.dark-mode .site-footer {
     flex-wrap: wrap;
 }
 
+/* Match header-link style: light + dark mode */
 .footer-links a {
+    display: inline-block;
+    padding: 10px 20px;
     color: #003f7f;
     text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-body.dark-mode .footer-links a {
-    color: #7eb8f0;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
 }
 
 .footer-links a:hover {
-    text-decoration: underline;
+    background: #e8f4fd;
+    color: #007BFF;
+}
+
+body.dark-mode .footer-links a {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .footer-links a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--accent);
 }
 
 .footer-copy {
@@ -83,7 +94,10 @@ body.dark-mode .footer-copy {
     .footer-links {
         gap: 16px;
     }
-    .footer-links a,
+    .footer-links a {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
     .footer-copy {
         font-size: 0.85rem;
     }
