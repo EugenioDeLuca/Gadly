@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
             workCtx.drawImage(img, 0, 0);
             updateResizeInputs();
             drawToDisplay();
+            updateResetButton();
         };
         img.src = dataUrl;
     }
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function drawToDisplay() {
         if (!workCanvas) return;
         const dpr = window.devicePixelRatio || 1;
-        const wrapper = canvas.parentElement;
+        const wrapper = document.getElementById("canvas-wrapper");
         const availW = wrapper && wrapper.clientWidth > 0 ? wrapper.clientWidth : 1100;
         const maxW = Math.max(900, availW);
         const maxH = 2400;
@@ -78,7 +79,8 @@ document.addEventListener("DOMContentLoaded", function() {
         canvas.height = Math.round(dispH * dpr);
         canvas.style.width = dispW + "px";
         canvas.style.height = dispH + "px";
-        canvas.style.transform = "translate(" + panX + "px, " + panY + "px)";
+        var container = document.getElementById("canvas-container");
+        if (container) container.style.transform = "translate(" + panX + "px, " + panY + "px)";
         ctx.save();
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.imageSmoothingEnabled = true;
@@ -103,26 +105,71 @@ document.addEventListener("DOMContentLoaded", function() {
         return imageData;
     }
 
+    var editorLoading = document.getElementById("editor-loading");
+    var editorToast = document.getElementById("editor-toast");
+    var editorError = document.getElementById("editor-error");
+    var IMAGE_MAX_MP = 12;
+
+    function showError(msg) {
+        if (editorError) {
+            editorError.textContent = msg;
+            editorError.style.display = "block";
+            editorError.style.animation = "none";
+            editorError.offsetHeight;
+            editorError.style.animation = "toastFade 3s ease forwards";
+            setTimeout(function() { editorError.style.display = "none"; }, 3000);
+        }
+    }
+
+    function updateResetButton() {
+        var btn = document.getElementById("btn-reset");
+        if (!btn) return;
+        var canReset = originalImage && (history.length > 1 || redoStack.length > 0 || brightness !== 100 || contrast !== 100 || saturation !== 100);
+        btn.disabled = !canReset;
+    }
+
     function loadImage(file) {
-        const img = new Image();
+        if (editorLoading) editorLoading.style.display = "flex";
+        var url = URL.createObjectURL(file);
+        var img = new Image();
         img.onload = function() {
-            originalImage = img;
-            createWorkCanvas(img.width, img.height);
-            workCtx.drawImage(img, 0, 0);
-            history.length = 0;
-            saveState();
-            clearLastTextObject();
-            zoomLevel = 100;
-            panX = 0;
-            panY = 0;
-            document.querySelector(".upload-area").style.display = "none";
-            editorArea.style.display = "flex";
-            requestAnimationFrame(function() {
-                drawToDisplay();
-                updateResizeInputs();
-            });
+            if (editorLoading) editorLoading.style.display = "none";
+            var mp = (img.width * img.height) / 1000000;
+            if (mp > IMAGE_MAX_MP) {
+                if (confirm("This image is very large (" + Math.round(mp) + " MP). Editing may be slow. Continue anyway?")) {
+                    doLoadImage(img);
+                }
+                URL.revokeObjectURL(url);
+                return;
+            }
+            doLoadImage(img);
+            URL.revokeObjectURL(url);
         };
-        img.src = URL.createObjectURL(file);
+        img.onerror = function() {
+            if (editorLoading) editorLoading.style.display = "none";
+            URL.revokeObjectURL(url);
+            showError("Failed to load image. Please try another file.");
+        };
+        img.src = url;
+    }
+    function doLoadImage(img) {
+        originalImage = img;
+        createWorkCanvas(img.width, img.height);
+        workCtx.drawImage(img, 0, 0);
+        history.length = 0;
+        saveState();
+        clearLastTextObject();
+        zoomLevel = 100;
+        panX = 0;
+        panY = 0;
+        document.querySelector(".upload-area").style.display = "none";
+        editorArea.style.display = "flex";
+        document.body.classList.add("editor-active");
+        requestAnimationFrame(function() {
+            drawToDisplay();
+            updateResizeInputs();
+            updateResetButton();
+        });
     }
 
     function updateResizeInputs() {
@@ -145,6 +192,55 @@ document.addEventListener("DOMContentLoaded", function() {
     imageInput.addEventListener("change", function(e) {
         const file = e.target.files[0];
         if (file) loadImage(file);
+    });
+
+    var uploadArea = document.getElementById("upload-area");
+    if (uploadArea) {
+        uploadArea.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.add("drag-over");
+        });
+        uploadArea.addEventListener("dragleave", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove("drag-over");
+        });
+        uploadArea.addEventListener("drop", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove("drag-over");
+            var files = e.dataTransfer.files;
+            if (files && files.length > 0 && files[0].type.indexOf("image/") === 0) loadImage(files[0]);
+        });
+    }
+
+    document.addEventListener("paste", function(e) {
+        var active = document.activeElement;
+        if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) return;
+        if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+            var file = e.clipboardData.files[0];
+            if (file.type.indexOf("image/") === 0) {
+                e.preventDefault();
+                loadImage(file);
+            }
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === "z") {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    document.getElementById("btn-redo").click();
+                } else {
+                    document.getElementById("btn-undo").click();
+                }
+            } else if (e.key === "y") {
+                e.preventDefault();
+                document.getElementById("btn-redo").click();
+            }
+        }
     });
 
     document.getElementById("btn-rotate-left").addEventListener("click", function() {
@@ -170,6 +266,7 @@ document.addEventListener("DOMContentLoaded", function() {
         clearLastTextObject();
         updateResizeInputs();
         drawToDisplay();
+        updateResetButton();
     }
 
     document.getElementById("btn-flip-h").addEventListener("click", function() {
@@ -194,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function() {
         workCtx = workCanvas.getContext("2d");
         clearLastTextObject();
         drawToDisplay();
+        updateResetButton();
     }
 
     document.getElementById("resize-width").addEventListener("input", function() {
@@ -238,6 +336,7 @@ document.addEventListener("DOMContentLoaded", function() {
         clearLastTextObject();
         updateResizeInputs();
         drawToDisplay();
+        updateResetButton();
     }
 
     document.getElementById("btn-crop-start").addEventListener("click", function() {
@@ -341,6 +440,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("btn-crop-apply").disabled = true;
         document.getElementById("btn-crop-cancel").style.display = "none";
         clearLastTextObject();
+        updateResetButton();
     });
 
     function drawCropSelection() {
@@ -487,17 +587,20 @@ document.addEventListener("DOMContentLoaded", function() {
         brightness = parseInt(this.value);
         document.getElementById("brightness-val").textContent = brightness + "%";
         drawToDisplay();
+        updateResetButton();
     });
     document.getElementById("filter-contrast").addEventListener("input", function() {
         contrast = parseInt(this.value);
         document.getElementById("contrast-val").textContent = contrast + "%";
         drawToDisplay();
+        updateResetButton();
     });
 
     document.getElementById("filter-saturation").addEventListener("input", function() {
         saturation = parseInt(this.value);
         document.getElementById("saturation-val").textContent = saturation + "%";
         drawToDisplay();
+        updateResetButton();
     });
 
     document.getElementById("btn-grayscale").addEventListener("click", function() {
@@ -510,6 +613,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         workCtx.putImageData(imgData, 0, 0);
         drawToDisplay();
+        updateResetButton();
     });
 
     document.getElementById("btn-sepia").addEventListener("click", function() {
@@ -524,6 +628,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         workCtx.putImageData(imgData, 0, 0);
         drawToDisplay();
+        updateResetButton();
     });
 
     document.getElementById("btn-invert").addEventListener("click", function() {
@@ -537,6 +642,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         workCtx.putImageData(imgData, 0, 0);
         drawToDisplay();
+        updateResetButton();
     });
 
     document.getElementById("btn-sharpen").addEventListener("click", function() {
@@ -564,6 +670,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         workCtx.putImageData(new ImageData(out, w, h), 0, 0);
         drawToDisplay();
+        updateResetButton();
     });
 
     function getTextStyleFont() {
@@ -657,6 +764,7 @@ document.addEventListener("DOMContentLoaded", function() {
             drawToDisplay();
             lastTextObject = null;
         }
+        if (text) updateResetButton();
         finalizeTextOverlay(!!text, !!text);
     }
 
@@ -704,8 +812,31 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!blurMode && !drawMode) canvas.style.cursor = "default";
     }
 
+    function showAlertModal(msg) {
+        var modal = document.getElementById("alert-modal");
+        var title = document.getElementById("alert-modal-title");
+        if (modal && title) {
+            title.textContent = msg;
+            modal.style.display = "flex";
+        }
+    }
+    var alertModal = document.getElementById("alert-modal");
+    var alertModalOk = document.getElementById("alert-modal-ok");
+    var alertModalBackdrop = alertModal && alertModal.querySelector(".alert-modal-backdrop");
+    if (alertModalOk) alertModalOk.addEventListener("click", function() {
+        if (alertModal) alertModal.style.display = "none";
+    });
+    if (alertModalBackdrop) alertModalBackdrop.addEventListener("click", function() {
+        if (alertModal) alertModal.style.display = "none";
+    });
+    document.addEventListener("keydown", function alertModalKeydown(e) {
+        if (e.key === "Escape" && alertModal && alertModal.style.display === "flex") {
+            alertModal.style.display = "none";
+        }
+    });
+
     document.getElementById("btn-watermark").addEventListener("click", function() {
-        if (!workCanvas) { alert("Carica prima un'immagine."); return; }
+        if (!workCanvas) { showAlertModal("Load an image first."); return; }
         if (textOverlayApplied) saveState();
         finalizeTextOverlay(false);
         clearLastTextObject();
@@ -893,11 +1024,12 @@ document.addEventListener("DOMContentLoaded", function() {
         workCtx = workCanvas.getContext("2d");
         updateResizeInputs();
         drawToDisplay();
+        updateResetButton();
     });
 
     function callImageApi(url, onSuccess, onError) {
         if (!workCanvas) {
-            alert("Please load an image first.");
+            showAlertModal("Please load an image first.");
             return;
         }
         workCanvas.toBlob(function(blob) {
@@ -1087,6 +1219,7 @@ document.addEventListener("DOMContentLoaded", function() {
             isPanning = false;
             canvas.style.cursor = zoomLevel > 100 ? "grab" : "default";
         }
+        if (isDrawing) updateResetButton();
         isDrawing = false;
         isDraggingWatermark = false;
     });
@@ -1095,6 +1228,7 @@ document.addEventListener("DOMContentLoaded", function() {
             isPanning = false;
             canvas.style.cursor = zoomLevel > 100 ? "grab" : "default";
         }
+        if (isDrawing) updateResetButton();
         isDrawing = false;
         isDraggingWatermark = false;
     });
@@ -1104,23 +1238,31 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!selectEl) return;
         var trigger = document.createElement("div");
         trigger.className = "custom-select-trigger";
-        trigger.textContent = selectEl.options[selectEl.selectedIndex].text;
+        var span = document.createElement("span");
+        span.className = "custom-select-trigger-text";
+        span.textContent = selectEl.options[selectEl.selectedIndex].text;
+        trigger.appendChild(span);
         var dropdown = document.createElement("div");
         dropdown.className = "custom-select-dropdown";
         function updateDropdown() {
             dropdown.innerHTML = "";
             var currentVal = selectEl.value;
+            var showAll = selectEl.options.length > 2;
             for (var i = 0; i < selectEl.options.length; i++) {
                 var opt = selectEl.options[i];
-                if (opt.value === currentVal) continue;
+                if (!showAll && opt.value === currentVal) continue;
                 var div = document.createElement("div");
-                div.className = "custom-select-option";
-                div.textContent = opt.text;
+                div.className = "custom-select-option" + (opt.value === currentVal ? " selected" : "");
+                var optSpan = document.createElement("span");
+                optSpan.className = "custom-select-option-text";
+                optSpan.textContent = opt.text;
+                div.appendChild(optSpan);
                 div.dataset.value = opt.value;
                 div.addEventListener("click", function() {
                     selectEl.value = this.dataset.value;
-                    trigger.textContent = this.textContent;
+                    span.textContent = this.textContent;
                     wrap.classList.remove("open");
+                    dropdown.style.position = dropdown.style.left = dropdown.style.top = dropdown.style.bottom = dropdown.style.width = dropdown.style.minWidth = dropdown.style.maxWidth = dropdown.style.height = dropdown.style.minHeight = dropdown.style.maxHeight = "";
                     updateDropdown();
                     selectEl.dispatchEvent(new Event("change"));
                 });
@@ -1129,9 +1271,40 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         trigger.addEventListener("click", function(e) {
             e.stopPropagation();
-            document.querySelectorAll(".toolbar .custom-select-wrap.open").forEach(function(w) { w.classList.remove("open"); });
+            document.querySelectorAll(".toolbar .custom-select-wrap.open").forEach(function(w) {
+                w.classList.remove("open");
+                var d = w.querySelector(".custom-select-dropdown");
+                if (d) { d.style.position = d.style.left = d.style.top = d.style.bottom = d.style.width = d.style.minWidth = d.style.maxWidth = d.style.height = d.style.minHeight = d.style.maxHeight = ""; }
+            });
             updateDropdown();
             wrap.classList.toggle("open");
+            if (wrap.classList.contains("open")) {
+                var rect = trigger.getBoundingClientRect();
+                var spaceBelow = window.innerHeight - rect.bottom;
+                var openUp = spaceBelow < 180;
+                dropdown.style.position = "fixed";
+                dropdown.style.left = rect.left + "px";
+                dropdown.style.width = rect.width + "px";
+                dropdown.style.minWidth = rect.width + "px";
+                dropdown.style.maxWidth = rect.width + "px";
+                var optCount = dropdown.querySelectorAll(".custom-select-option").length;
+                if (optCount === 1) {
+                    dropdown.style.height = rect.height + "px";
+                    dropdown.style.minHeight = rect.height + "px";
+                    dropdown.style.maxHeight = rect.height + "px";
+                } else {
+                    dropdown.style.height = dropdown.style.minHeight = dropdown.style.maxHeight = "";
+                }
+                if (openUp) {
+                    dropdown.style.top = "";
+                    dropdown.style.bottom = (window.innerHeight - rect.top + 2) + "px";
+                } else {
+                    dropdown.style.bottom = "";
+                    dropdown.style.top = (rect.bottom + 2) + "px";
+                }
+            } else {
+                dropdown.style.position = dropdown.style.left = dropdown.style.top = dropdown.style.bottom = dropdown.style.width = dropdown.style.minWidth = dropdown.style.maxWidth = dropdown.style.height = dropdown.style.minHeight = dropdown.style.maxHeight = "";
+            }
         });
         dropdown.addEventListener("click", function(e) {
             e.stopPropagation();
@@ -1139,25 +1312,20 @@ document.addEventListener("DOMContentLoaded", function() {
         wrap.insertBefore(trigger, selectEl);
         wrap.appendChild(dropdown);
         document.addEventListener("click", function() {
-            wrap.classList.remove("open");
+            if (wrap.classList.contains("open")) {
+                wrap.classList.remove("open");
+                dropdown.style.position = dropdown.style.left = dropdown.style.top = dropdown.style.bottom = dropdown.style.width = dropdown.style.minWidth = dropdown.style.maxWidth = dropdown.style.height = dropdown.style.minHeight = dropdown.style.maxHeight = "";
+            }
         });
     }
     document.querySelectorAll(".toolbar .custom-select-wrap").forEach(function(wrap) {
         initCustomSelect(wrap);
     });
 
-    document.getElementById("export-format").addEventListener("change", function() {
-        document.getElementById("quality-label").style.display = this.value === "jpeg" ? "flex" : "none";
-    });
-
-    document.getElementById("export-quality").addEventListener("input", function() {
-        document.getElementById("quality-val").textContent = this.value + "%";
-    });
-
     document.getElementById("btn-download").addEventListener("click", function() {
         const format = document.getElementById("export-format").value;
         const mime = format === "jpeg" ? "image/jpeg" : "image/png";
-        const quality = format === "jpeg" ? document.getElementById("export-quality").value / 100 : 1;
+        const quality = format === "jpeg" ? 0.9 : 1;
         const exportCanvas = document.createElement("canvas");
         exportCanvas.width = workCanvas.width;
         exportCanvas.height = workCanvas.height;
@@ -1169,18 +1337,70 @@ document.addEventListener("DOMContentLoaded", function() {
         a.href = dataUrl;
         a.download = "edited-image." + format;
         a.click();
+        if (editorToast) {
+            editorToast.style.display = "block";
+            editorToast.style.animation = "none";
+            editorToast.offsetHeight;
+            editorToast.style.animation = "toastFade 2.5s ease forwards";
+            setTimeout(function() { editorToast.style.display = "none"; }, 2500);
+        }
     });
 
-    document.getElementById("btn-reset").addEventListener("click", function() {
+    var resetModal = document.getElementById("reset-confirm-modal");
+    var resetConfirmYes = document.getElementById("reset-confirm-yes");
+    var resetConfirmNo = document.getElementById("reset-confirm-no");
+    var resetConfirmBackdrop = resetModal && resetModal.querySelector(".reset-confirm-backdrop");
+
+    function doReset() {
         if (!originalImage) return;
         createWorkCanvas(originalImage.width, originalImage.height);
         workCtx.drawImage(originalImage, 0, 0);
+        history.length = 0;
+        redoStack.length = 0;
+        saveState();
         resetFilters();
         updateResizeInputs();
         drawToDisplay();
+        updateResetButton();
+    }
+
+    document.getElementById("btn-reset").addEventListener("click", function() {
+        if (!originalImage) return;
+        if (resetModal) resetModal.style.display = "flex";
+    });
+
+    function closeResetModal() {
+        if (resetModal) resetModal.style.display = "none";
+    }
+
+    if (resetConfirmYes) resetConfirmYes.addEventListener("click", function() {
+        closeResetModal();
+        doReset();
+    });
+    if (resetConfirmNo) resetConfirmNo.addEventListener("click", closeResetModal);
+    if (resetConfirmBackdrop) resetConfirmBackdrop.addEventListener("click", closeResetModal);
+    document.addEventListener("keydown", function resetModalKeydown(e) {
+        if (e.key === "Escape" && resetModal && resetModal.style.display === "flex") {
+            closeResetModal();
+        }
     });
 
     document.getElementById("btn-load-new").addEventListener("click", function() {
         imageInput.click();
     });
+
+    /* Mobile/tablet: un solo accordion aperto alla volta, tutti chiusi di default */
+    if (window.matchMedia("(max-width: 768px)").matches) {
+        var accords = document.querySelectorAll(".toolbar-accordion");
+        accords.forEach(function(el) {
+            el.removeAttribute("open");
+            el.addEventListener("toggle", function() {
+                if (el.hasAttribute("open")) {
+                    accords.forEach(function(other) {
+                        if (other !== el) other.removeAttribute("open");
+                    });
+                }
+            });
+        });
+    }
 });

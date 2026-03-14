@@ -52,13 +52,16 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderShortcuts() {
         var section = document.getElementById('shortcuts-section');
         var grid = document.getElementById('shortcuts-grid');
+        var container = document.querySelector('.homepage .container');
         if (!section || !grid) return;
         var favs = getFavorites();
         if (favs.length === 0) {
             section.style.display = 'none';
+            if (container) container.classList.remove('has-shortcuts');
             return;
         }
         section.style.display = 'block';
+        if (container) container.classList.add('has-shortcuts');
         grid.innerHTML = favs.map(function(url) {
             var name = getToolName(url);
             return '<a href="' + url + '" class="tool-btn shortcuts-btn">' + name + '</a>';

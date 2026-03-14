@@ -57,8 +57,10 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'login' %}" class="header-link">Login</a>
-                <a href="{% url 'register' %}" class="header-link">Sign up</a>
+                <div class="header-auth-wrap">
+                    <a href="{% url 'login' %}" class="header-link">Login</a>
+                    <a href="{% url 'register' %}" class="header-link">Sign up</a>
+                </div>
                 {% endif %}
                 </nav>
             </div>

@@ -7,10 +7,32 @@
 {% endblock %}
 {% block content %}
 <div class="image-editor">
+    <div id="editor-loading" class="editor-loading" style="display: none;" aria-live="polite">Loading...</div>
+    <div id="editor-toast" class="editor-toast" style="display: none;" aria-live="polite">Image downloaded</div>
+    <div id="editor-error" class="editor-error" style="display: none;" aria-live="assertive" role="alert"></div>
+    <div id="reset-confirm-modal" class="reset-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-title">
+        <div class="reset-confirm-backdrop"></div>
+        <div class="reset-confirm-box">
+            <p id="reset-confirm-title" class="reset-confirm-text">Are you sure you want to reset all changes?</p>
+            <div class="reset-confirm-buttons">
+                <button type="button" id="reset-confirm-yes" class="btn-reset-confirm">Yes</button>
+                <button type="button" id="reset-confirm-no" class="btn-reset-cancel">No</button>
+            </div>
+        </div>
+    </div>
+    <div id="alert-modal" class="reset-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="alert-modal-title">
+        <div class="reset-confirm-backdrop alert-modal-backdrop"></div>
+        <div class="reset-confirm-box">
+            <p id="alert-modal-title" class="reset-confirm-text"></p>
+            <div class="reset-confirm-buttons">
+                <button type="button" id="alert-modal-ok" class="btn-reset-cancel">OK</button>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <h1>Image Editor</h1>
 
-        <div class="upload-area">
+        <div class="upload-area" id="upload-area" aria-label="Drop image here or click to choose">
             <div class="file-input-wrapper">
                 <input type="file" id="image-input" accept="image/*" />
                 <label for="image-input" class="choose-file-btn">Choose file</label>
@@ -20,39 +42,41 @@
 
         <div id="editor-area" class="editor-area" style="display: none;">
             <div class="toolbar">
-                <div class="toolbar-row">
+                <details class="toolbar-accordion" open>
+                    <summary class="toolbar-accordion-summary">Transform</summary>
+                    <div class="toolbar-row">
                     <div class="toolbar-section">
                         <span class="toolbar-label">Transform</span>
-                        <button type="button" id="btn-rotate-left" title="Rotate left">↶</button>
-                        <button type="button" id="btn-rotate-right" title="Rotate right">↷</button>
-                        <button type="button" id="btn-flip-h" title="Flip horizontal">⇄</button>
-                        <button type="button" id="btn-flip-v" title="Flip vertical">⇅</button>
+                        <button type="button" id="btn-rotate-left" aria-label="Rotate left">↶</button>
+                        <button type="button" id="btn-rotate-right" aria-label="Rotate right">↷</button>
+                        <button type="button" id="btn-flip-h" aria-label="Flip horizontal">⇄</button>
+                        <button type="button" id="btn-flip-v" aria-label="Flip vertical">⇅</button>
                     </div>
                     <div class="toolbar-divider"></div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Resize</span>
                         <label class="ratio-check"><input type="checkbox" id="resize-ratio" /> Ratio</label>
-                        <input type="number" id="resize-width" min="1" placeholder="W" />
+                        <input type="number" id="resize-width" min="1" placeholder="W" aria-label="Width" />
                         <span class="toolbar-sep">×</span>
-                        <input type="number" id="resize-height" min="1" placeholder="H" />
-                        <button type="button" id="btn-resize">Apply</button>
+                        <input type="number" id="resize-height" min="1" placeholder="H" aria-label="Height" />
+                        <button type="button" id="btn-resize" aria-label="Apply resize">Apply</button>
                         <span class="quick-resize">
-                            <button type="button" data-scale="0.5">50%</button>
-                            <button type="button" data-scale="0.25">25%</button>
-                            <button type="button" data-scale="2">200%</button>
+                            <button type="button" data-scale="0.5" aria-label="Resize to 50%">50%</button>
+                            <button type="button" data-scale="0.25" aria-label="Resize to 25%">25%</button>
+                            <button type="button" data-scale="2" aria-label="Resize to 200%">200%</button>
                         </span>
                     </div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Rotate</span>
-                        <input type="number" id="rotate-angle" placeholder="°" min="-180" max="180" value="0" style="width:55px" />
-                        <button type="button" id="btn-rotate-free">Apply</button>
+                        <input type="number" id="rotate-angle" placeholder="°" min="-180" max="180" value="0" style="width:55px" aria-label="Rotation angle" />
+                        <button type="button" id="btn-rotate-free" aria-label="Apply rotation">Apply</button>
                     </div>
                     <div class="toolbar-divider"></div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Crop</span>
                         <div class="custom-select-wrap crop-ratio-wrap toolbar-select">
-                            <select id="crop-ratio" title="Proporzione">
-                                <option value="free">Libero</option>
+                            <select id="crop-ratio" title="Crop ratio" aria-label="Crop ratio">
+                                <option value="free">Free</option>
                                 <option value="1:1">1:1</option>
                                 <option value="16:9">16:9</option>
                                 <option value="4:3">4:3</option>
@@ -60,19 +84,22 @@
                                 <option value="9:16">9:16</option>
                             </select>
                         </div>
-                        <button type="button" id="btn-crop-start">Select</button>
-                        <button type="button" id="btn-crop-apply" disabled>Apply</button>
-                        <button type="button" id="btn-crop-cancel" style="display: none;">Cancel</button>
+                        <button type="button" id="btn-crop-start" aria-label="Select crop area">Select</button>
+                        <button type="button" id="btn-crop-apply" disabled aria-label="Apply crop">Apply</button>
+                        <button type="button" id="btn-crop-cancel" style="display: none;" aria-label="Cancel crop">Cancel</button>
                     </div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Zoom</span>
-                        <button type="button" id="zoom-out" title="Zoom indietro">−</button>
+                        <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
                         <span id="zoom-val" class="toolbar-val">100%</span>
-                        <button type="button" id="zoom-in" title="Zoom avanti">+</button>
-                        <button type="button" id="zoom-fit" title="Adatta">Fit</button>
+                        <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+                        <button type="button" id="zoom-fit" aria-label="Fit to view">Fit</button>
                     </div>
-                </div>
-                <div class="toolbar-row">
+                    </div>
+                </details>
+                <details class="toolbar-accordion" open>
+                    <summary class="toolbar-accordion-summary">Filters, Export & Reset</summary>
+                    <div class="toolbar-row">
                     <div class="toolbar-section toolbar-filters">
                         <span class="toolbar-label">Brightness</span>
                         <input type="range" id="filter-brightness" min="0" max="200" value="100" />
@@ -83,9 +110,9 @@
                         <input type="range" id="filter-contrast" min="0" max="200" value="100" />
                         <span id="contrast-val" class="toolbar-val">100%</span>
                     </div>
-                    <button type="button" id="btn-grayscale">Grayscale</button>
-                    <button type="button" id="btn-sepia">Sepia</button>
-                    <button type="button" id="btn-invert">Invert</button>
+                    <button type="button" id="btn-grayscale" aria-label="Apply grayscale">Grayscale</button>
+                    <button type="button" id="btn-sepia" aria-label="Apply sepia">Sepia</button>
+                    <button type="button" id="btn-invert" aria-label="Invert colors">Invert</button>
                     <div class="toolbar-section toolbar-filters">
                         <span class="toolbar-label">Saturation</span>
                         <input type="range" id="filter-saturation" min="0" max="200" value="100" />
@@ -93,39 +120,40 @@
                     </div>
                     <div class="toolbar-section toolbar-blur-slot">
                         <span class="toolbar-label">Blur</span>
-                        <button type="button" id="btn-blur-start">Blur</button>
-                        <span class="blur-cancel-slot"><button type="button" id="btn-blur-cancel" style="display: none;">Cancel</button></span>
-                        <input type="range" id="blur-radius" min="2" max="12" value="6" title="Blur strength" style="width:60px;vertical-align:middle" />
-                        <span id="blur-radius-val" class="toolbar-val">6</span>
+                        <span class="blur-controls">
+                            <button type="button" id="btn-blur-start" aria-label="Apply blur">Blur</button>
+                            <input type="range" id="blur-radius" min="2" max="12" value="6" title="Blur strength" aria-label="Blur strength" />
+                            <span id="blur-radius-val" class="toolbar-val">6</span>
+                        </span>
+                        <span class="blur-cancel-slot"><button type="button" id="btn-blur-cancel" style="display: none;" aria-label="Cancel blur">Cancel</button></span>
                     </div>
-                    <button type="button" id="btn-sharpen">Sharpen</button>
+                    <button type="button" id="btn-sharpen" aria-label="Sharpen image">Sharpen</button>
                     <div class="toolbar-divider"></div>
                     <div class="toolbar-section">
-                        <div class="custom-select-wrap toolbar-select">
-                            <select id="export-format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
+                        <div class="custom-select-wrap export-format-wrap toolbar-select">
+                            <select id="export-format" title="Export format" aria-label="Export format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
                         </div>
-                        <label id="quality-label" class="quality-wrap" style="display: none;">
-                            <input type="range" id="export-quality" min="1" max="100" value="90" />
-                            <span id="quality-val">90%</span>
-                        </label>
-                        <button type="button" id="btn-download" class="btn-download">Download</button>
+                        <button type="button" id="btn-download" class="btn-download" aria-label="Download image">Download</button>
                     </div>
-                    <button type="button" id="btn-load-new" class="btn-secondary" title="Load new image">📁 New</button>
-                    <button type="button" id="btn-undo" class="btn-secondary" title="Undo">↶ Undo</button>
-                    <button type="button" id="btn-redo" class="btn-secondary" title="Redo">↷ Redo</button>
-                    <button type="button" id="btn-reset" class="btn-secondary">Reset</button>
-                </div>
-                <div class="toolbar-row">
+                    <button type="button" id="btn-load-new" class="btn-secondary" aria-label="Load new image">📁 New</button>
+                    <button type="button" id="btn-undo" class="btn-secondary" aria-label="Undo">↶ Undo</button>
+                    <button type="button" id="btn-redo" class="btn-secondary" aria-label="Redo">↷ Redo</button>
+                    <button type="button" id="btn-reset" class="btn-secondary" aria-label="Reset to original" disabled>Reset</button>
+                    </div>
+                </details>
+                <details class="toolbar-accordion" open>
+                    <summary class="toolbar-accordion-summary">Text & Draw</summary>
+                    <div class="toolbar-row">
                     <div class="toolbar-section">
                         <span class="toolbar-label">Text</span>
-                        <input type="color" id="text-color" value="#ffffff" title="Colore testo" />
-                        <input type="range" id="text-size" min="12" max="120" value="36" title="Dimensione testo" style="width:70px" />
+                        <input type="color" id="text-color" value="#ffffff" title="Text color" aria-label="Text color" />
+                        <input type="range" id="text-size" min="12" max="120" value="36" title="Text size" aria-label="Text size" style="width:70px" />
                         <span id="text-size-val" class="toolbar-val">36</span>
-                        <button type="button" id="text-bold" class="text-style-btn" title="Grassetto">B</button>
-                        <button type="button" id="text-italic" class="text-style-btn" title="Corsivo">I</button>
-                        <button type="button" id="text-uppercase" class="text-style-btn" title="Maiuscolo">Aa</button>
+                        <button type="button" id="text-bold" class="text-style-btn" aria-label="Bold">B</button>
+                        <button type="button" id="text-italic" class="text-style-btn" aria-label="Italic">I</button>
+                        <button type="button" id="text-uppercase" class="text-style-btn" aria-label="Uppercase">Aa</button>
                         <div class="text-emoji-wrap">
-                            <button type="button" id="text-emoji-btn" class="text-style-btn" title="Emoticon">😊</button>
+                            <button type="button" id="text-emoji-btn" class="text-style-btn" aria-label="Emoji">😊</button>
                             <div id="text-emoji-picker" class="text-emoji-picker">
                                 <span class="emoji" data-emoji="😀">😀</span><span class="emoji" data-emoji="😊">😊</span><span class="emoji" data-emoji="😎">😎</span><span class="emoji" data-emoji="🥳">🥳</span>
                                 <span class="emoji" data-emoji="❤️">❤️</span><span class="emoji" data-emoji="👍">👍</span><span class="emoji" data-emoji="👋">👋</span><span class="emoji" data-emoji="🙌">🙌</span>
@@ -135,7 +163,7 @@
                             </div>
                         </div>
                         <div class="custom-select-wrap watermark-font-wrap">
-                            <select id="watermark-font" title="Font">
+                            <select id="watermark-font" title="Font" aria-label="Watermark font">
                                 <option value="Arial">Arial</option>
                                 <option value="Helvetica">Helvetica</option>
                                 <option value="Georgia">Georgia</option>
@@ -145,34 +173,37 @@
                                 <option value="Impact">Impact</option>
                             </select>
                         </div>
-                        <button type="button" id="btn-watermark">Add</button>
-                        <button type="button" id="btn-watermark-apply" style="display: none;">Apply</button>
-                        <button type="button" id="btn-watermark-cancel" style="display: none;">Cancel</button>
+                        <button type="button" id="btn-watermark" aria-label="Add text watermark">Add</button>
+                        <button type="button" id="btn-watermark-apply" style="display: none;" aria-label="Apply watermark">Apply</button>
+                        <button type="button" id="btn-watermark-cancel" style="display: none;" aria-label="Cancel watermark">Cancel</button>
                     </div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Border</span>
-                        <input type="number" id="border-size" min="0" max="100" value="5" style="width:50px" placeholder="px" />
-                        <input type="color" id="border-color" value="#000000" />
-                        <button type="button" id="btn-border">Add</button>
+                        <input type="number" id="border-size" min="0" max="100" value="5" style="width:50px" placeholder="px" aria-label="Border size" />
+                        <input type="color" id="border-color" value="#000000" title="Border color" aria-label="Border color" />
+                        <button type="button" id="btn-border" aria-label="Add border">Add</button>
                     </div>
                     <div class="toolbar-divider"></div>
                     <div class="toolbar-section">
                         <span class="toolbar-label">Draw</span>
-                        <button type="button" id="btn-draw-mode">Draw</button>
-                        <input type="color" id="brush-color" value="#000000" />
-                        <input type="range" id="brush-size" min="1" max="50" value="5" style="width:60px" />
+                        <button type="button" id="btn-draw-mode" aria-label="Draw mode">Draw</button>
+                        <input type="color" id="brush-color" value="#000000" title="Brush color" aria-label="Brush color" />
+                        <input type="range" id="brush-size" min="1" max="50" value="5" style="width:60px" aria-label="Brush size" />
                         <span id="brush-size-val" class="toolbar-val">5</span>
                     </div>
-                </div>
+                    </div>
+                </details>
             </div>
             <div class="canvas-wrapper" id="canvas-wrapper">
-                <canvas id="canvas"></canvas>
-                <canvas id="crop-canvas" class="crop-canvas" style="display: none;"></canvas>
+                <div class="canvas-container" id="canvas-container">
+                    <canvas id="canvas"></canvas>
+                    <canvas id="crop-canvas" class="crop-canvas" style="display: none;"></canvas>
+                </div>
                 <div id="blur-cursor" class="blur-cursor" style="display: none;"></div>
                 <div id="text-box-overlay" class="text-box-overlay" style="display: none;">
-                    <div class="text-box-drag-handle" title="Trascina per spostare">⋮⋮</div>
-                    <textarea id="text-box-input" placeholder="Scrivi qui..." maxlength="100"></textarea>
-                    <div class="text-box-resize-handle" title="Trascina per ridimensionare"></div>
+                    <div class="text-box-drag-handle" title="Drag to move">⋮⋮</div>
+                    <textarea id="text-box-input" placeholder="Type here..." maxlength="100" aria-label="Text input"></textarea>
+                    <div class="text-box-resize-handle" title="Drag to resize"></div>
                 </div>
             </div>
         </div>
@@ -190,5 +221,5 @@ window.IMAGE_EDITOR_API = {
     upscale: "{% url 'image_upscale_api' %}"
 };
 </script>
-<script src="{% static 'tools/js/image-editor.js' %}?v=22"></script>
+<script src="{% static 'tools/js/image-editor.js' %}?v=26"></script>
 {% endblock %}
