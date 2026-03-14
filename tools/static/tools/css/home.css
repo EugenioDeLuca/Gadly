@@ -2,6 +2,97 @@
    HOMEPAGE
 ========================= */
 
+/* Login required modal */
+.login-required-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.login-required-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+.login-required-box {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 320px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+.login-required-text {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+    color: #333;
+}
+.login-required-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+.login-required-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    background: #003f7f;
+    color: white;
+}
+.login-required-btn:hover {
+    background: #0056b3;
+}
+.login-required-btn--close {
+    background: #e84c4c;
+    color: white;
+}
+.login-required-btn--close:hover {
+    background: #b01830;
+}
+body.dark-mode .login-required-box {
+    background: var(--bg-secondary, #1e2a3a);
+}
+body.dark-mode .login-required-text {
+    color: var(--text-primary, #e8f4fd);
+}
+body.dark-mode .login-required-btn--close {
+    background: #e84c4c;
+    color: white;
+}
+body.dark-mode .login-required-btn--close:hover {
+    background: #b01830;
+}
+
+@media (min-width: 769px) {
+    .login-required-btn--close {
+        background: #e84c4c;
+        color: white;
+    }
+    .login-required-btn--close:hover {
+        background: #b01830;
+    }
+    body.dark-mode .login-required-btn--close {
+        background: #e84c4c;
+        color: white;
+    }
+    body.dark-mode .login-required-btn--close:hover {
+        background: #b01830;
+    }
+}
+
+/* Quick access section: only for logged-in users */
+.homepage:not(.user-authenticated) #shortcuts-section {
+    display: none !important;
+}
+
 .homepage .container {
     max-width: 900px;
     margin: 30px auto;

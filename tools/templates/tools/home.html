@@ -2,13 +2,23 @@
 {% load static %}
 
 {% block title %}Gadly{% endblock %}
-{% block body_class %}homepage{% endblock %}
+{% block body_class %}homepage{% if user.is_authenticated %} user-authenticated{% endif %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/home.css' %}">
 {% endblock %}
 
 {% block content %}
+<div id="login-required-modal" class="login-required-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="login-required-text">
+    <div class="login-required-backdrop"></div>
+    <div class="login-required-box">
+        <p id="login-required-text" class="login-required-text">You cannot use this feature. Please log in.</p>
+        <div class="login-required-buttons">
+            <a href="{% url 'login' %}?next={{ request.path }}" class="login-required-btn">Log in</a>
+            <button type="button" class="login-required-btn login-required-btn--close">Close</button>
+        </div>
+    </div>
+</div>
 <div class="container">
 
     <p class="intro">Welcome to Gadly – free online tools for text, files, social media, web and more.</p>
@@ -115,5 +125,6 @@
     </section>
 
 </div>
+<script>window.GADLY_USER_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};</script>
 <script src="{% static 'tools/js/home.js' %}"></script>
 {% endblock %}

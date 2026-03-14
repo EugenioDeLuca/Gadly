@@ -36,6 +36,13 @@
                 {% if user.is_authenticated and user.is_staff %}
                 <a href="{% url 'accounts_home' %}" class="header-link">Accounts</a>
                 {% endif %}
+                {% if not user.is_authenticated %}
+                <div class="header-auth-wrap">
+                    <a href="{% url 'login' %}" class="header-link">Login</a>
+                    <a href="{% url 'register' %}" class="header-link">Sign up</a>
+                </div>
+                {% endif %}
+                </nav>
                 {% if user.is_authenticated %}
                 <div class="header-user-wrap">
                     <button type="button" class="header-user-trigger" id="header-user-btn" aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
@@ -56,13 +63,7 @@
                         </form>
                     </div>
                 </div>
-                {% else %}
-                <div class="header-auth-wrap">
-                    <a href="{% url 'login' %}" class="header-link">Login</a>
-                    <a href="{% url 'register' %}" class="header-link">Sign up</a>
-                </div>
                 {% endif %}
-                </nav>
             </div>
         </div>
     </header>
@@ -123,6 +124,13 @@
                 var open = dd.hasAttribute('hidden');
                 dd.toggleAttribute('hidden', !open);
                 btn.setAttribute('aria-expanded', open);
+                var nav = document.getElementById('header-nav');
+                var menuBtn = document.getElementById('header-menu-btn');
+                if (open && nav && menuBtn) {
+                    nav.classList.remove('is-open');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('nav-open');
+                }
             });
             document.addEventListener('click', function() {
                 dd.setAttribute('hidden', '');

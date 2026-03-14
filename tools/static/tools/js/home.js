@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var searchInput = document.getElementById("tool-search");
     var toolSections = document.querySelectorAll(".homepage .tool-section");
     var favKey = "gadly-favorites";
+    var userAuthenticated = window.GADLY_USER_AUTHENTICATED === true;
 
     /* Category accordion (mobile/tablet) */
     var categoryBtns = document.querySelectorAll(".homepage .category-btn");
@@ -104,12 +105,35 @@ document.addEventListener("DOMContentLoaded", function() {
         star.addEventListener("click", function(e) {
             e.preventDefault();
             e.stopPropagation();
+            if (!userAuthenticated) {
+                var modal = document.getElementById("login-required-modal");
+                if (modal) {
+                    modal.style.display = "flex";
+                } else {
+                    alert("You cannot use this feature. Please log in.");
+                }
+                return;
+            }
             var wrap = star.closest(".tool-btn-wrap");
             var a = wrap ? wrap.querySelector("a.tool-btn") : null;
             if (a) toggleFavorite(a.getAttribute("href"));
         });
     });
 
-    updateStarIcons();
-    renderShortcuts();
+    if (userAuthenticated) {
+        updateStarIcons();
+        renderShortcuts();
+    }
+
+    var loginModal = document.getElementById("login-required-modal");
+    if (loginModal) {
+        var closeBtn = loginModal.querySelector(".login-required-btn--close");
+        var backdrop = loginModal.querySelector(".login-required-backdrop");
+        function closeLoginModal() { loginModal.style.display = "none"; }
+        if (closeBtn) closeBtn.addEventListener("click", closeLoginModal);
+        if (backdrop) backdrop.addEventListener("click", closeLoginModal);
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape" && loginModal.style.display === "flex") closeLoginModal();
+        });
+    }
 });
