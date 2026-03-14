@@ -3,6 +3,27 @@ document.addEventListener("DOMContentLoaded", function() {
     var toolSections = document.querySelectorAll(".homepage .tool-section");
     var favKey = "gadly-favorites";
 
+    /* Category accordion (mobile/tablet) */
+    var categoryBtns = document.querySelectorAll(".homepage .category-btn");
+    var isMobileView = function() { return window.innerWidth <= 768; };
+    categoryBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            if (!isMobileView()) return;
+            var section = btn.closest(".tool-section");
+            if (!section) return;
+            var wasOpen = section.classList.contains("is-open");
+            section.classList.toggle("is-open", !wasOpen);
+            btn.setAttribute("aria-expanded", !wasOpen);
+        });
+    });
+    /* On resize: remove is-open from all if we switch back to desktop */
+    window.addEventListener("resize", function() {
+        if (!isMobileView()) {
+            toolSections.forEach(function(s) { s.classList.remove("is-open"); });
+            categoryBtns.forEach(function(b) { b.setAttribute("aria-expanded", "true"); });
+        }
+    });
+
     function getFavorites() {
         try {
             return JSON.parse(localStorage.getItem(favKey) || "[]");
@@ -71,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (match) visible++;
                 });
                 section.style.display = visible > 0 ? "" : "none";
+                if (visible > 0 && isMobileView()) section.classList.add("is-open");
             });
         });
     }

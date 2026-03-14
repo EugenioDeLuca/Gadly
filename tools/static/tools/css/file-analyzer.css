@@ -265,7 +265,14 @@
         margin: 20px 16px;
         padding: 28px 24px;
     }
-
+    .analysis-options-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .analysis-option {
+        flex-shrink: 0;
+    }
     .results-grid {
         grid-template-columns: 1fr;
     }

@@ -49,19 +49,17 @@
         <div id="panel-iva" class="calc-panel {% if active_panel == 'iva' %}active{% endif %}">
             <h2>VAT calculator</h2>
             <div class="calc-group">
+                <label>Country</label>
+                <div class="calc-custom-select" id="iva-country-wrap" data-value="IT">
+                    <button type="button" class="calc-select-trigger">Italy (IT)</button>
+                    <ul class="calc-select-menu" id="iva-country-menu"></ul>
+                </div>
+            </div>
+            <div class="calc-group">
                 <label>VAT rate (%)</label>
                 <div class="calc-custom-select" id="iva-rate-wrap" data-value="22">
                     <button type="button" class="calc-select-trigger">22% (standard)</button>
-                    <ul class="calc-select-menu">
-                        <li data-value="27" class="">27% (Ungheria)</li>
-                        <li data-value="25" class="">25% (Danimarca, Svezia, Norvegia)</li>
-                        <li data-value="24" class="">24% (Finlandia, Grecia, Islanda)</li>
-                        <li data-value="23" class="">23% (Irlanda, Polonia, Portogallo)</li>
-                        <li data-value="22" class="selected">22% (Italia standard)</li>
-                        <li data-value="10" class="">10% (Italia ridotta)</li>
-                        <li data-value="4" class="">4% (Italia minima)</li>
-                        <li data-value="0" class="">0%</li>
-                    </ul>
+                    <ul class="calc-select-menu" id="iva-rate-menu"></ul>
                 </div>
             </div>
             <div class="calc-group">
@@ -135,6 +133,7 @@
         <div id="panel-currency" class="calc-panel {% if active_panel == 'currency' %}active{% endif %}">
             <h2>Currency conversion</h2>
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Rates are fetched automatically from the European Central Bank.</p>
+            <div class="calc-currency-wrap">
             <div class="calc-row calc-currency-row">
                 <div class="calc-group">
                     <label>Amount</label>
@@ -167,6 +166,7 @@
                 </div>
             </div>
             <button type="button" class="calc-btn" id="btn-currency">Convert</button>
+            </div>
             <div id="result-currency" class="calc-result"></div>
         </div>
 

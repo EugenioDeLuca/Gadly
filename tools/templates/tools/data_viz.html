@@ -13,7 +13,7 @@
         <div class="viz-controls">
             <div class="data-input-section">
                 <label for="data-input">Paste your data (CSV format: label,value per line)</label>
-                <textarea id="data-input" placeholder="e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,150"></textarea>
+                <textarea id="data-input" rows="4" placeholder="e.g.&#10;January,120&#10;February,190&#10;March,80"></textarea>
             </div>
             <div class="chart-options">
                 <label for="chart-type">Chart type:</label>
@@ -31,7 +31,10 @@
         </div>
 
         <div class="chart-container hidden">
-            <canvas id="chart-canvas"></canvas>
+            <div class="chart-preview">
+                <canvas id="chart-canvas"></canvas>
+            </div>
+            <button type="button" id="btn-download" class="chart-download-btn" title="Download chart as PNG">Download PNG</button>
         </div>
 
         <div style="margin-top: 25px; text-align: center;">

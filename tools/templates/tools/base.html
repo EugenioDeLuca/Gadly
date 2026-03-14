@@ -7,9 +7,9 @@
     <title>{% block title %}Gadly{% endblock %}</title>
 
     <!-- CSS globale -->
-    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=4">
     <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}">
-    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}">
 
     {% block extra_css %}{% endblock %}
@@ -24,11 +24,12 @@
                 <img src="{% static 'tools/images/logo-dark.svg' %}" alt="" class="header-logo-icon header-logo-dark">
                 <span class="header-logo-text">Gadly</span>
             </a>
-            <button type="button" id="header-menu-btn" class="header-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
-                <span class="header-menu-icon"></span>
-            </button>
-            <nav class="header-nav" id="header-nav" aria-label="Main navigation">
+            <div class="header-actions">
                 <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
+                <button type="button" id="header-menu-btn" class="header-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
+                    <span class="header-menu-icon"></span>
+                </button>
+                <nav class="header-nav" id="header-nav" aria-label="Main navigation">
                 <a href="{% url 'home' %}" class="header-link">Home</a>
                 <a href="{% url 'faq' %}" class="header-link">FAQ</a>
                 <a href="{% url 'about' %}" class="header-link">About</a>
@@ -59,7 +60,8 @@
                 <a href="{% url 'login' %}" class="header-link">Login</a>
                 <a href="{% url 'register' %}" class="header-link">Sign up</a>
                 {% endif %}
-            </nav>
+                </nav>
+            </div>
         </div>
     </header>
     <main class="site-main">

@@ -53,10 +53,142 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".calc-custom-select.open").forEach(function(s) { s.classList.remove("open"); });
     });
 
-    // === IVA ===
+    // === IVA (VAT rates from vat-api.eu) ===
+    var ivaCountryWrap = document.getElementById("iva-country-wrap");
     var ivaRateWrap = document.getElementById("iva-rate-wrap");
     var ivaAmount = document.getElementById("iva-amount");
     var resultIva = document.getElementById("result-iva");
+    var vatRatesCache = null;
+
+    function buildIvaCountryMenu(rates) {
+        var menu = document.getElementById("iva-country-menu");
+        if (!menu) return;
+        menu.innerHTML = "";
+        rates.forEach(function(r) {
+            var li = document.createElement("li");
+            li.dataset.value = r.country_code;
+            li.textContent = r.country + " (" + r.country_code + ")";
+            if (r.country_code === "IT") li.classList.add("selected");
+            menu.appendChild(li);
+        });
+    }
+
+    function buildIvaRateMenu(rates, countryCode) {
+        var r = rates.find(function(x) { return x.country_code === countryCode; });
+        var menu = document.getElementById("iva-rate-menu");
+        if (!menu || !r) return;
+        menu.innerHTML = "";
+        var items = [{ value: r.standard_rate, label: r.standard_rate + "% (standard)" }];
+        (r.reduced_rates || []).forEach(function(v) {
+            items.push({ value: v, label: v + "% (reduced)" });
+        });
+        items.sort(function(a, b) { return b.value - a.value; });
+        items.forEach(function(item, i) {
+            var li = document.createElement("li");
+            li.dataset.value = String(item.value);
+            li.textContent = item.label;
+            if (i === 0) li.classList.add("selected");
+            menu.appendChild(li);
+        });
+        if (ivaRateWrap) {
+            ivaRateWrap.dataset.value = String(items[0].value);
+            var trigger = ivaRateWrap.querySelector(".calc-select-trigger");
+            if (trigger) trigger.textContent = items[0].label;
+        }
+    }
+
+    function initIvaFromApi() {
+        if (vatRatesCache) {
+            buildIvaCountryMenu(vatRatesCache);
+            buildIvaRateMenu(vatRatesCache, ivaCountryWrap ? ivaCountryWrap.dataset.value : "IT");
+            if (ivaCountryWrap) {
+                var r = vatRatesCache.find(function(x) { return x.country_code === (ivaCountryWrap.dataset.value || "IT"); });
+                var trigger = ivaCountryWrap.querySelector(".calc-select-trigger");
+                if (trigger && r) trigger.textContent = r.country + " (" + r.country_code + ")";
+            }
+            return;
+        }
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() { controller.abort(); }, 8000);
+        fetch("https://vat-api.eu/api/v1/rates", { signal: controller.signal })
+            .then(function(res) { return res.json(); })
+            .then(function(rates) {
+                clearTimeout(timeoutId);
+                vatRatesCache = rates;
+                buildIvaCountryMenu(rates);
+                buildIvaRateMenu(rates, "IT");
+                var trigger = ivaCountryWrap ? ivaCountryWrap.querySelector(".calc-select-trigger") : null;
+                if (trigger) trigger.textContent = "Italy (IT)";
+            })
+            .catch(function(err) {
+                clearTimeout(timeoutId);
+                vatRatesCache = [
+                    { country: "Austria", country_code: "AT", standard_rate: 20, reduced_rates: [10, 13] },
+                    { country: "Belgium", country_code: "BE", standard_rate: 21, reduced_rates: [0, 6, 12] },
+                    { country: "Bulgaria", country_code: "BG", standard_rate: 20, reduced_rates: [0, 9] },
+                    { country: "Croatia", country_code: "HR", standard_rate: 25, reduced_rates: [5, 13] },
+                    { country: "Cyprus", country_code: "CY", standard_rate: 19, reduced_rates: [5, 9] },
+                    { country: "Czech Republic", country_code: "CZ", standard_rate: 21, reduced_rates: [0, 12] },
+                    { country: "Denmark", country_code: "DK", standard_rate: 25, reduced_rates: [0] },
+                    { country: "Estonia", country_code: "EE", standard_rate: 22, reduced_rates: [9] },
+                    { country: "Finland", country_code: "FI", standard_rate: 25.5, reduced_rates: [0, 10, 13.5] },
+                    { country: "France", country_code: "FR", standard_rate: 20, reduced_rates: [2.1, 5.5, 10] },
+                    { country: "Germany", country_code: "DE", standard_rate: 19, reduced_rates: [0, 7] },
+                    { country: "Greece", country_code: "GR", standard_rate: 24, reduced_rates: [6, 13] },
+                    { country: "Hungary", country_code: "HU", standard_rate: 27, reduced_rates: [0, 5, 18] },
+                    { country: "Ireland", country_code: "IE", standard_rate: 23, reduced_rates: [0, 4.8, 9, 13.5] },
+                    { country: "Italy", country_code: "IT", standard_rate: 22, reduced_rates: [4, 5, 10] },
+                    { country: "Latvia", country_code: "LV", standard_rate: 21, reduced_rates: [0, 5, 12] },
+                    { country: "Lithuania", country_code: "LT", standard_rate: 21, reduced_rates: [5, 12] },
+                    { country: "Luxembourg", country_code: "LU", standard_rate: 17, reduced_rates: [3, 8, 14] },
+                    { country: "Malta", country_code: "MT", standard_rate: 18, reduced_rates: [0, 5, 7, 12] },
+                    { country: "Netherlands", country_code: "NL", standard_rate: 21, reduced_rates: [0, 9] },
+                    { country: "Poland", country_code: "PL", standard_rate: 23, reduced_rates: [0, 5, 8] },
+                    { country: "Portugal", country_code: "PT", standard_rate: 23, reduced_rates: [6, 13] },
+                    { country: "Romania", country_code: "RO", standard_rate: 19, reduced_rates: [0, 5, 9] },
+                    { country: "Slovakia", country_code: "SK", standard_rate: 23, reduced_rates: [5, 19] },
+                    { country: "Slovenia", country_code: "SI", standard_rate: 22, reduced_rates: [5, 9.5] },
+                    { country: "Spain", country_code: "ES", standard_rate: 21, reduced_rates: [0, 4, 10] },
+                    { country: "Sweden", country_code: "SE", standard_rate: 25, reduced_rates: [0, 6, 12] }
+                ];
+                buildIvaCountryMenu(vatRatesCache);
+                buildIvaRateMenu(vatRatesCache, "IT");
+                if (ivaCountryWrap) {
+                    var t = ivaCountryWrap.querySelector(".calc-select-trigger");
+                    if (t) t.textContent = "Italy (IT)";
+                }
+            });
+    }
+
+    if (ivaCountryWrap) {
+        ivaCountryWrap.querySelector("ul").addEventListener("click", function(e) {
+            var li = e.target.closest("li");
+            if (!li || !vatRatesCache) return;
+            ivaCountryWrap.dataset.value = li.dataset.value;
+            ivaCountryWrap.querySelector(".calc-select-trigger").textContent = li.textContent;
+            ivaCountryWrap.querySelectorAll("li").forEach(function(l) { l.classList.remove("selected"); });
+            li.classList.add("selected");
+            buildIvaRateMenu(vatRatesCache, li.dataset.value);
+            ivaCountryWrap.classList.remove("open");
+        });
+    }
+    if (ivaRateWrap) {
+        ivaRateWrap.querySelector(".calc-select-menu").addEventListener("click", function(e) {
+            var li = e.target.closest("li");
+            if (!li) return;
+            ivaRateWrap.dataset.value = li.dataset.value;
+            ivaRateWrap.querySelector(".calc-select-trigger").textContent = li.textContent;
+            ivaRateWrap.querySelectorAll("li").forEach(function(l) { l.classList.remove("selected"); });
+            li.classList.add("selected");
+            ivaRateWrap.classList.remove("open");
+        });
+    }
+
+    var panelIva = document.getElementById("panel-iva");
+    if (panelIva && panelIva.classList.contains("active")) initIvaFromApi();
+    document.querySelectorAll(".calc-tab[data-panel='iva']").forEach(function(tab) {
+        tab.addEventListener("click", function() { setTimeout(initIvaFromApi, 50); });
+    });
 
     document.getElementById("btn-iva-net").addEventListener("click", function() {
         var rateVal = ivaRateWrap ? ivaRateWrap.dataset.value : "22";

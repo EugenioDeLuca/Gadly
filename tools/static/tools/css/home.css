@@ -5,7 +5,7 @@
 .homepage .container {
     max-width: 900px;
     margin: 30px auto;
-    padding: 48px 40px;
+    padding: 56px 40px;
     text-align: center;
     box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25);
     border-radius: 16px;
@@ -51,34 +51,68 @@
 
 .shortcuts-section {
     margin-bottom: 28px;
-    text-align: left;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcuts-section .shortcuts-title {
     font-size: 1em;
-    color: #c41e3a;
+    color: #e84c4c;
     margin: 0 0 12px 0;
     font-weight: 600;
+    text-align: center;
 }
 
 .shortcuts-grid {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcuts-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    background: #ffd6d6;
-    color: #c41e3a;
-    border: 2px solid #e8a0a0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    min-height: 52px;
+    padding: 14px 44px 14px 20px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: rgba(232, 76, 76, 0.25) !important;
+    color: #e84c4c !important;
+    border: 2px solid #e84c4c !important;
     transition: all 0.2s;
-    border-radius: 10px;
+    border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.2s;
+    text-align: center;
+}
+.homepage .shortcuts-btn {
+    border-radius: 12px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    background: rgba(232, 76, 76, 0.25) !important;
+    color: #e84c4c !important;
+    border: 2px solid #e84c4c !important;
+}
+.homepage .shortcuts-btn:hover {
+    background: #e84c4c !important;
+    color: white !important;
+    border-color: #b01830 !important;
+}
+.shortcuts-grid .shortcuts-btn {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
 }
 
 .shortcuts-btn:hover {
@@ -100,7 +134,7 @@
     background: rgba(0,0,0,0.2);
     border: none;
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: rgba(255,255,255,0.9);
     cursor: pointer;
     padding: 2px 6px;
@@ -109,7 +143,6 @@
 }
 
 .tool-fav:hover {
-    color: #ffd700;
     background: rgba(0,0,0,0.3);
 }
 
@@ -129,16 +162,32 @@
     margin-top: 0;
 }
 
-.homepage h2 {
+/* Category button - desktop: looks like h2 */
+.category-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: default;
+    font: inherit;
     color: #003f7f;
     text-align: center;
     font-weight: bold;
     font-size: 1.2em;
-    margin: 28px 0 16px 0;
     letter-spacing: 0.02em;
+    margin-bottom: 16px;
 }
 
-.tool-section:first-of-type h2 {
+.category-btn-chevron {
+    display: none;
+}
+
+.tool-section:first-of-type .category-btn {
     margin-top: 0;
 }
 
@@ -148,6 +197,14 @@
     justify-content: center;
     gap: 16px;
     margin-bottom: 32px;
+}
+
+/* Shortcuts = stesse dimensioni dei category-btn, non dei tool-btn */
+.homepage .shortcuts-grid .shortcuts-btn {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: 52px !important;
 }
 
 .homepage .tool-btn {
@@ -171,48 +228,321 @@
     transform: scale(1.05);
 }
 
+/* Tablet & Mobile: categorie come bottoni accordion, scritte blu scuro */
 @media (max-width: 768px) {
-    .homepage .container {
-        margin: 20px 16px;
-        padding: 36px 28px;
+    .homepage .intro,
+    .homepage .intro a {
+        color: #003f7f;
     }
-    .homepage .tool-btn {
-        width: 160px;
+    .shortcuts-section .shortcuts-title {
+        color: #e84c4c;
+    }
+    .shortcuts-grid {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+    .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn {
+        width: 100% !important;
+        min-height: 52px !important;
+        height: auto !important;
+        padding: 14px 44px 14px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        background: rgba(232, 76, 76, 0.25);
+        color: #e84c4c;
+        border: 2px solid #e84c4c;
+        border-radius: 12px !important;
+    }
+    .shortcuts-btn:hover {
+        background: #e84c4c;
+        color: white;
+        border-color: #b01830;
+    }
+    .homepage .container {
+        margin: 16px;
+        padding: 24px;
+    }
+    .homepage .intro {
+        margin-bottom: 0;
+    }
+    .search-wrap {
+        margin-bottom: 0;
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+    .shortcuts-section {
+        margin-bottom: 16px;
+    }
+    .tool-section {
+        margin-bottom: 22px;
+    }
+    /* Category = full-width button */
+    .category-btn {
+        position: relative;
+        width: 100%;
         min-height: 52px;
+        padding: 14px 44px 14px 20px;
+        margin-bottom: 0;
+        cursor: pointer;
+        border: 2px solid #b8d4f0;
+        border-radius: 12px;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #003f7f;
+        justify-content: flex-start;
+        text-align: left;
+        transition: background 0.2s, border-color 0.2s;
+    }
+    .category-btn .category-btn-chevron {
+        position: absolute;
+        right: 16px;
+    }
+    .category-btn:hover {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%);
+        border-color: #003f7f;
+    }
+    .category-btn-chevron {
+        display: inline-block;
+        font-size: 0.75em;
+        transition: transform 0.3s ease;
+    }
+    .tool-section.is-open .category-btn-chevron {
+        transform: rotate(180deg);
+    }
+    /* Sezione aperta light: bottone e menu bordo blu scuro */
+    .tool-section.is-open .category-btn {
+        border-color: #003f7f;
+    }
+    /* Tool menu (lista) - leggermente più stretto del bottone, righe compatte */
+    .tool-section .tool-grid {
+        display: none;
+        flex-direction: column;
+        padding: 0;
+        margin: 6px 10px 20px 10px;
+        width: calc(100% - 20px);
+        gap: 0;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
+        border-radius: 12px;
+        border: 2px solid #b8d4f0;
+        overflow: hidden;
+    }
+    .tool-section.is-open .tool-grid {
+        display: flex;
+        border: 2px solid #003f7f;
+    }
+    .homepage .tool-section .tool-grid .tool-btn-wrap {
+        padding-left: 20px;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 0 !important;
+    }
+    .homepage .tool-btn-wrap {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(0, 63, 127, 0.08);
+        padding-left: 20px;
+    }
+    .homepage .tool-btn-wrap:last-child {
+        border-bottom: none;
+    }
+    .homepage .tool-section .tool-grid .tool-btn-wrap .tool-fav {
+        padding: 3px 5px;
+        min-width: 28px;
+        font-size: 1rem;
+        margin-left: 4px;
+        margin-right: 8px;
+    }
+    .homepage .tool-section .tool-grid .tool-btn {
+        flex: 1;
+        min-width: 0;
+        min-height: 20px !important;
+        padding: 2px 10px 2px 0 !important;
+        font-size: 0.9rem !important;
+        line-height: 1.15 !important;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start !important;
+        text-align: left !important;
+        background: transparent;
+        color: #003f7f;
+        border-radius: 0;
+        transform: translateY(-2px);
+    }
+    .homepage .tool-btn:hover {
+        background: rgba(0, 63, 127, 0.08);
+        transform: none;
+    }
+    .homepage .tool-section .tool-grid .tool-btn:hover {
+        transform: translateY(-2px);
+    }
+    .homepage .tool-btn-wrap .tool-fav {
+        position: static;
+        margin-right: 12px;
+        margin-left: 8px;
+        padding: 6px 8px;
+        min-width: 40px;
+        font-size: 1.15rem;
+        color: #003f7f;
+        background: transparent;
+        font-size: 1rem;
+    }
+    .homepage .tool-btn-wrap .tool-fav:hover {
+        background: rgba(0, 63, 127, 0.08);
+    }
+    .homepage .tool-btn-wrap .tool-fav.is-favorite {
+        color: #dc3545;
+    }
+    .homepage .tool-btn-wrap .tool-fav.is-favorite:hover {
+        color: #ff4d5a;
     }
 }
 
 @media (max-width: 600px) {
     .homepage .container {
-        margin: 12px 10px;
-        padding: 24px 18px;
+        margin: 16px;
+        padding: 24px;
     }
     .homepage .intro {
         font-size: 1rem;
-        margin-bottom: 24px;
+        margin-bottom: 0;
     }
-    .homepage h2 {
-        font-size: 1.1em;
-        margin: 24px 0 12px 0;
+    .search-wrap {
+        margin-bottom: 0;
+        padding-top: 72px;
+        padding-bottom: 72px;
     }
-    .homepage .tool-grid {
-        gap: 12px;
-        margin-bottom: 24px;
+    .category-btn {
+        min-height: 48px;
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+    .homepage .tool-section .tool-grid .tool-btn-wrap {
+        padding-left: 16px;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .homepage .tool-section .tool-grid .tool-btn {
+        min-height: 18px !important;
+        padding: 1px 10px 2px 0 !important;
+        font-size: 0.95em;
+        align-items: center;
+        transform: translateY(-2px);
+    }
+    .shortcuts-btn,
+    body.dark-mode .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn,
+    body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
+        min-height: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
     }
     .homepage .tool-btn {
-        width: 100%;
-        max-width: 100%;
-        min-height: 48px;
+        padding: 12px 16px;
         font-size: 0.95em;
     }
 }
 
 @media (max-width: 480px) {
     .homepage .container {
-        margin: 8px 8px;
-        padding: 20px 14px;
+        margin: 12px;
+        padding: 20px;
     }
-    .homepage h2 {
-        font-size: 1em;
+    .homepage .intro {
+        margin-bottom: 0;
+    }
+    .search-wrap {
+        margin-bottom: 0;
+        padding-top: 64px;
+        padding-bottom: 64px;
+    }
+    .category-btn {
+        font-size: 0.95rem;
+    }
+    .shortcuts-btn,
+    body.dark-mode .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn,
+    body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
+        font-size: 0.95rem !important;
+    }
+}
+
+/* Desktop: categorie sempre blu #003f7f */
+@media (min-width: 769px) {
+    .category-btn,
+    body.dark-mode .category-btn {
+        color: #003f7f;
+    }
+}
+
+/* Dark mode: category buttons e scritte mobile/tablet - blu scuro #003f7f */
+@media (max-width: 768px) {
+    body.dark-mode .homepage .intro,
+    body.dark-mode .homepage .intro a {
+        color: #003f7f;
+    }
+    body.dark-mode .shortcuts-section .shortcuts-title {
+        color: #e84c4c;
+    }
+    body.dark-mode .shortcuts-btn,
+    body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
+        width: 100% !important;
+        min-height: 52px !important;
+        height: auto !important;
+        padding: 14px 44px 14px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        background: rgba(232, 76, 76, 0.25);
+        color: #e84c4c;
+        border-color: rgba(232, 76, 76, 0.5);
+    }
+    body.dark-mode .shortcuts-btn:hover {
+        background: #e84c4c;
+        color: white;
+        border-color: #b01830;
+    }
+    body.dark-mode .category-btn {
+        color: #003f7f;
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        border-color: var(--border-color, #2a3a5a);
+    }
+    body.dark-mode .category-btn:hover {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%);
+        border-color: #003f7f;
+    }
+    body.dark-mode .tool-section .tool-grid {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid #2a3a5a !important;
+    }
+    /* Sezione aperta: bottone e menu stesso effetto azzurro */
+    body.dark-mode .tool-section.is-open .category-btn {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
+        border-color: #003f7f !important;
+    }
+    body.dark-mode .tool-section.is-open .tool-grid {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
+        border: 2px solid #003f7f !important;
+    }
+    body.dark-mode .homepage .tool-btn-wrap {
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+    body.dark-mode .homepage .tool-btn {
+        color: #003f7f;
+    }
+    body.dark-mode .homepage .tool-btn:hover {
+        background: rgba(0, 63, 127, 0.2);
+    }
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav {
+        color: #003f7f;
+    }
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite {
+        color: #dc3545;
     }
 }

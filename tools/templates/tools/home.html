@@ -24,8 +24,11 @@
 
     <!-- Text Tools -->
     <section class="tool-section">
-        <h2>Text Tools</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text">
+            <span class="category-btn-label">Text Tools</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-text">
             <div class="tool-btn-wrap"><a href="{% url 'word_counter' %}" class="tool-btn">Word Counter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'translator' %}" class="tool-btn">Translator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'remove_spaces' %}" class="tool-btn">Remove Spaces</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
@@ -34,8 +37,11 @@
     </section>
 
     <section class="tool-section">
-        <h2>Social Media</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social">
+            <span class="category-btn-label">Social Media</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-social">
             <div class="tool-btn-wrap"><a href="{% url 'bio_generator' %}" class="tool-btn">Bio Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'hashtag_generator' %}" class="tool-btn">Hashtag Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'caption_generator' %}" class="tool-btn">Caption Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
@@ -44,8 +50,11 @@
     </section>
 
     <section class="tool-section">
-        <h2>File Tools</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file">
+            <span class="category-btn-label">File Tools</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-file">
             <div class="tool-btn-wrap"><a href="{% url 'file_analyzer' %}" class="tool-btn">File Analyzer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'pdf_merger' %}" class="tool-btn">PDF Merge</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'pdf_split' %}" class="tool-btn">PDF Split</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
@@ -53,16 +62,22 @@
     </section>
 
     <section class="tool-section">
-        <h2>Image & Data Tools</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image">
+            <span class="category-btn-label">Image & Data Tools</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-image">
             <div class="tool-btn-wrap"><a href="{% url 'image_editor' %}" class="tool-btn">Image Editor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'data_viz' %}" class="tool-btn">Data Visualizer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
         </div>
     </section>
 
     <section class="tool-section">
-        <h2>Finance</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance">
+            <span class="category-btn-label">Finance</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-finance">
             <div class="tool-btn-wrap"><a href="{% url 'calc_percentage' %}" class="tool-btn">Percentage</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'calc_vat' %}" class="tool-btn">VAT</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'calc_net_salary' %}" class="tool-btn">Net Salary</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
@@ -76,8 +91,11 @@
     </section>
 
     <section class="tool-section">
-        <h2>Web / SEO</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web">
+            <span class="category-btn-label">Web / SEO</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-web">
             <div class="tool-btn-wrap"><a href="{% url 'meta_tag_checker' %}" class="tool-btn">Meta Tag Checker</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'sitemap_extractor' %}" class="tool-btn">Sitemap Extractor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'robots_txt_generator' %}" class="tool-btn">Robots.txt Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
@@ -86,8 +104,11 @@
     </section>
 
     <section class="tool-section">
-        <h2>Security & Misc</h2>
-        <div class="tool-grid">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security">
+            <span class="category-btn-label">Security & Misc</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-security">
             <div class="tool-btn-wrap"><a href="{% url 'password_gen' %}" class="tool-btn">Password Gen</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'qr_generator' %}" class="tool-btn">QR Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
         </div>

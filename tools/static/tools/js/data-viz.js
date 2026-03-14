@@ -125,5 +125,16 @@ document.addEventListener("DOMContentLoaded", function() {
         if (chartContainer) chartContainer.classList.remove("hidden");
     }
 
+    function downloadChart() {
+        if (!chart) return;
+        const link = document.createElement("a");
+        link.download = "chart.png";
+        link.href = chart.toDataURL("image/png");
+        link.click();
+    }
+
+    const btnDownload = document.getElementById("btn-download");
+    if (btnDownload) btnDownload.addEventListener("click", downloadChart);
+
     btnGenerate.addEventListener("click", generateChart);
 });

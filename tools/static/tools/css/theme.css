@@ -165,3 +165,24 @@ body.dark-mode .shortcuts-btn:hover {
     color: var(--accent);
 }
 
+/* Mobile/tablet: niente riga sotto l'header */
+@media (max-width: 768px) {
+    .site-header {
+        box-shadow: none !important;
+        border-bottom: none !important;
+        outline: none !important;
+    }
+    .site-header::after,
+    .site-header::before {
+        display: none !important;
+    }
+}
+
+/* Dark mode: menu categoria (tool-grid) stesso sfondo del bottone */
+@media (max-width: 768px) {
+    body.dark-mode .homepage .tool-section .tool-grid {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: #2a3a5a !important;
+    }
+}
+

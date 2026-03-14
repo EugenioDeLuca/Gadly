@@ -90,7 +90,8 @@
     flex-wrap: wrap;
 }
 
-.word-counter button {
+.word-counter .container button,
+.word-counter .button-group button {
     padding: 14px 28px;
     font-size: 1rem;
     font-weight: 600;
@@ -102,7 +103,8 @@
     transition: transform 0.2s, background 0.2s;
 }
 
-.word-counter button:hover {
+.word-counter .container button:hover,
+.word-counter .button-group button:hover {
     background: #0056b3;
     transform: scale(1.05);
 }
@@ -129,7 +131,7 @@
     .word-counter .button-group {
         flex-direction: column;
     }
-    .word-counter button {
+    .word-counter .button-group button {
         width: 100%;
         min-height: 48px;
     }

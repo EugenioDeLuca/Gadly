@@ -24,13 +24,20 @@
     margin-bottom: 25px;
 }
 
-.data-input-section label,
-.chart-options label {
+.data-input-section label {
     display: block;
     font-size: 14px;
     font-weight: 600;
     color: #333;
     margin-bottom: 8px;
+}
+
+.chart-options label {
+    display: inline;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0;
 }
 
 #data-input {
@@ -43,6 +50,7 @@
     border-radius: 12px;
     resize: vertical;
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 #data-input:focus {
@@ -54,6 +62,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-start;
     gap: 15px;
 }
 
@@ -70,14 +79,19 @@
     pointer-events: none;
 }
 
-.chart-select-trigger {
-    position: relative;
+.chart-select-trigger,
+#btn-generate {
     min-width: 180px;
     padding: 10px 36px 10px 24px;
     font-size: 15px;
     font-weight: 600;
     box-sizing: border-box;
     border-radius: 12px;
+    min-height: 44px;
+}
+
+.chart-select-trigger {
+    position: relative;
     border: 2px solid #ddd;
     background: white;
     cursor: pointer;
@@ -140,15 +154,9 @@
 }
 
 #btn-generate {
-    padding: 10px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    min-width: 180px;
-    box-sizing: border-box;
     background: var(--btn-primary, #003f7f);
     color: white;
     border: none;
-    border-radius: 12px;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
 }
@@ -165,7 +173,6 @@
 .chart-container {
     width: 100%;
     max-width: 100%;
-    max-height: 500px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
@@ -173,9 +180,19 @@
     border-radius: 10px;
     border: 1px solid #eee;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    gap: 16px;
+}
+
+.chart-container .chart-preview {
+    width: 100%;
+    min-height: 350px;
+    max-height: 450px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #chart-canvas {
@@ -183,14 +200,51 @@
     max-height: 450px;
 }
 
+.chart-download-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.chart-download-btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
+    .site-main .data-viz {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
     .data-viz .container {
-        margin: 20px 16px;
+        margin: 20px 0;
         padding: 28px 24px;
+        width: 100%;
+        max-width: 100%;
+        align-self: stretch;
+        box-sizing: border-box;
+    }
+    .data-viz h1 {
+        margin-bottom: 18px;
     }
     .chart-options {
         flex-direction: column;
         align-items: stretch;
+        gap: 6px 8px;
+    }
+    .chart-options label {
+        display: block;
+        margin-bottom: 0;
     }
     #btn-generate {
         width: 100%;
@@ -198,8 +252,11 @@
 }
 
 @media (max-width: 600px) {
+    .site-main .data-viz {
+        padding: 0 10px;
+    }
     .data-viz .container {
-        margin: 12px 10px;
+        margin: 12px 0;
         padding: 24px 18px;
     }
     .data-viz h1 {
@@ -218,7 +275,10 @@
     }
     .chart-container {
         padding: 16px;
-        max-height: 400px;
+    }
+    .chart-container .chart-preview {
+        min-height: 280px;
+        max-height: 350px;
     }
     #chart-canvas {
         max-height: 350px;
@@ -226,8 +286,11 @@
 }
 
 @media (max-width: 480px) {
+    .site-main .data-viz {
+        padding: 0 8px;
+    }
     .data-viz .container {
-        margin: 8px 8px;
+        margin: 8px 0;
         padding: 20px 14px;
     }
 }

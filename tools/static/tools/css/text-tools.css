@@ -155,6 +155,7 @@
     font-weight: 600;
 }
 
+
 .text-tool .text-tool-options {
     display: flex;
     flex-wrap: wrap;
@@ -235,6 +236,41 @@
         margin: 20px 16px;
         padding: 28px 24px;
     }
+    /* Hashtag generator: input massima larghezza */
+    .hashtag-gen .form-group input {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* Username generator: How many e Style stessa larghezza */
+    .username-gen .text-tool-row .form-group input,
+    .username-gen .text-tool-row .text-tool-select,
+    .username-gen .text-tool-row .text-tool-select .text-tool-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* Caption generator: Topic/mood stessa larghezza di Platform */
+    .caption-gen #caption-topic {
+        width: 100%;
+        max-width: 320px;
+        box-sizing: border-box;
+    }
+    /* Bio generator: niche input stessa dimensione di Type/Platform solo su mobile/tablet */
+    .bio-gen #bio-niche {
+        width: 100%;
+        max-width: 320px;
+        min-height: 44px;
+        padding: 10px 14px;
+        font-size: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        box-sizing: border-box;
+    }
+    .bio-gen #bio-niche:focus {
+        outline: none;
+        border-color: #007BFF;
+    }
 }
 
 @media (max-width: 600px) {
@@ -264,6 +300,12 @@
     }
     .text-tool .text-tool-select,
     .text-tool .text-tool-select-trigger {
+        max-width: 100%;
+    }
+    .caption-gen #caption-topic {
+        max-width: 100%;
+    }
+    .bio-gen #bio-niche {
         max-width: 100%;
     }
     .text-tool .result-area {

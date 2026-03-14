@@ -3,29 +3,45 @@ const generateBtn = document.getElementById('generate-btn');
 const copyBtn = document.getElementById('copy-btn');
 const passwordInput = document.getElementById('password');
 const lengthInput = document.getElementById('length');
+const pwdError = document.getElementById('pwd-error');
 const includeLower = document.getElementById('include-lower');
 const includeUpper = document.getElementById('include-upper');
 const includeNumbers = document.getElementById('include-numbers');
 const includeSymbols = document.getElementById('include-symbols');
+
+function showError(msg) {
+    if (pwdError) {
+        pwdError.textContent = msg;
+        pwdError.classList.add('is-visible');
+    }
+}
+function hideError() {
+    if (pwdError) {
+        pwdError.textContent = '';
+        pwdError.classList.remove('is-visible');
+    }
+}
+
 function generatePassword(showAlert) {
+    hideError();
     const raw = parseInt(lengthInput.value, 10);
     if (lengthInput.value.trim() === "" || isNaN(raw)) {
-        if (showAlert) alert("Please enter a number of characters.");
+        if (showAlert) showError("Please enter a number of characters.");
         return "";
     }
     const length = raw;
 
     if (length < 14) {
-        if (showAlert) alert("Password must be at least 14 characters.");
+        if (showAlert) showError("Password must be at least 14 characters.");
         return "";
     }
     if (length > 128) {
-        if (showAlert) alert("Password cannot exceed 128 characters.");
+        if (showAlert) showError("Password cannot exceed 128 characters.");
         return "";
     }
 
     if (!includeLower.checked || !includeUpper.checked || !includeNumbers.checked || !includeSymbols.checked) {
-        if (showAlert) alert("You must select all options to generate a password!");
+        if (showAlert) showError("You must select all options to generate a password!");
         return "";
     }
 
@@ -44,8 +60,11 @@ function updatePassword(showAlert) {
 
 generateBtn.addEventListener('click', function() { updatePassword(true); });
 
-lengthInput.addEventListener('input', function() { updatePassword(false); });
-lengthInput.addEventListener('change', function() { updatePassword(false); });
+lengthInput.addEventListener('input', function() { hideError(); updatePassword(false); });
+lengthInput.addEventListener('change', function() { hideError(); updatePassword(false); });
+[includeLower, includeUpper, includeNumbers, includeSymbols].forEach(function(cb) {
+    cb.addEventListener('change', function() { hideError(); });
+});
 
 copyBtn.addEventListener('click', () => {
     if (!passwordInput.value) return;
