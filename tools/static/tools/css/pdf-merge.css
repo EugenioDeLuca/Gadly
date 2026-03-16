@@ -1,17 +1,11 @@
 /* PDF Merger Tool Styles */
 .pdf-merger .container {
     max-width: 900px;
-    width: 100%;
-    margin: 30px auto;
-    padding: 40px;
-    box-shadow: 0 20px 40px rgba(0,123,255,0.5);
-    border-radius: 10px;
+    margin: 40px auto;
     background: white;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    overflow: visible;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
 }
 .pdf-merger h1 {
     font-size: 2em;
@@ -93,6 +87,23 @@
     transform: translateY(-1px);
 }
 
+@media (max-width: 600px) {
+    /* PDF Split mobile: 5 bottoni sopra, 5 sotto, centrati */
+    .split-presets {
+        display: grid;
+        grid-template-columns: repeat(5, 40px);
+        column-gap: 8px;
+        row-gap: 8px;
+        width: max-content;   /* la griglia è larga solo quanto i bottoni */
+        margin: 0 auto;       /* e viene centrata nel contenitore */
+    }
+    .split-preset-btn {
+        width: 40px;
+        height: 40px;
+    }
+    /* Nessun posizionamento speciale: con 10 bottoni riempiamo 5 sopra + 5 sotto */
+}
+
 .split-input-wrap {
     display: flex;
     justify-content: center;
@@ -155,13 +166,12 @@
 }
 #add-more-files:hover {
     background: rgba(0, 123, 255, 0.1);
-    transform: scale(1.05);
 }
 /* Contenitore scelta file (uguale a File Analyzer) */
 .pdf-merger .upload-area {
     width: 100%;
     text-align: center;
-    padding: 48px 40px;
+    padding: 48px 40px; /* ripristino dimensioni originali del contenitore scelta file */
     border: 2px dashed #b8d4f0;
     border-radius: 16px;
     background: linear-gradient(145deg, #f8fcff 0%, #e8f4fd 50%, #f0f7fc 100%);
@@ -170,8 +180,15 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* 12px effettivi tra area upload e messaggio risultato/errore:
+   - 0 di margin-bottom sull'upload-area
+   - 12px di margin-top sulla result-area/error */
+.pdf-merger .upload-area {
+    margin-bottom: 0;
+}
+
 .pdf-merger .upload-hint {
-    margin: 16px 0 0 0;
+    margin: 16px 0 0 0; /* ripristino margine originale sotto il testo di hint */
     color: #666;
     font-size: 0.95rem;
 }
@@ -209,7 +226,6 @@
 
 .pdf-merger .choose-file-btn:hover {
     background: #dc3545;
-    transform: scale(1.03);
 }
 
 .pdf-file-input {
@@ -277,42 +293,93 @@
     opacity: 0.4;
     cursor: not-allowed;
 }
-#submit-files {
-    padding: 10px 20px;
-    font-size: 18px;
+/* Stesso layout degli altri tool: area risultato a tutta larghezza, poi button-group, poi home-link-wrap */
+.pdf-merger .result-area {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;         /* nessun margine aggiuntivo sopra: usiamo solo il padding del box upload */
+    margin-bottom: 0;      /* lo spazio sotto è dato dal margin-top del button-group */
+    padding: 20px;
+    min-height: 60px;
+    border-radius: 12px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    font-size: 1rem;
+    text-align: center;
+    color: #003f7f;
+    font-weight: 600;
+}
+
+.pdf-merger .result-area.hidden {
+    display: none;
+}
+
+.pdf-merger .result-area.error {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;         /* stesso distacco anche per l'errore */
+    margin-bottom: 0;      /* lo spazio sotto è dato dal margin-top del button-group */
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
+    white-space: normal;
+    word-break: normal;
+}
+
+.pdf-merger .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;      /* 12px tra errore/risultato e bottone Merge */
+    margin-bottom: 20px;
+}
+
+.pdf-merger .button-group button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    min-width: 140px;
     background: var(--btn-primary, #003f7f);
     color: white;
     border-radius: 12px;
     border: none;
     cursor: pointer;
-    min-width: 160px;
-    width: auto;
-    text-align: center;
-    margin-top: 20px;
     transition: transform 0.2s ease, background 0.2s ease;
 }
-#submit-files:hover {
+
+.pdf-merger .button-group button:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
-#pdf-result {
-    font-size: 16px;
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #fafafa;
-    display: none;
+
+.pdf-merger .home-link-wrap {
+    margin-top: 28px;
+    text-align: center;
 }
-#result-message {
-    color: #28a745;
-    font-weight: bold;
+
+/* PDF Split: distanza 12px effettivi fra form, errore e bottone */
+.pdf-split .pdf-merger .result-area {
+    margin-top: 12px;      /* 12px tra form (upload + options) e messaggio */
+    margin-bottom: 12px;   /* 12px tra messaggio e bottone Split */
+}
+
+.pdf-split .pdf-merger .button-group {
+    margin-top: 12px;      /* distanzia il bottone Split PDF dal messaggio */
 }
 
 @media (max-width: 768px) {
     .pdf-merger .container {
-        margin: 20px 16px;
+        margin: 20px auto;
         padding: 28px 24px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
@@ -336,7 +403,9 @@
 
 @media (max-width: 480px) {
     .pdf-merger .container {
-        margin: 8px 8px;
+        margin: 8px auto;
         padding: 20px 14px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }

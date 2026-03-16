@@ -71,7 +71,6 @@
 
 .file-analyzer .choose-file-btn:hover {
     background: #dc3545;
-    transform: scale(1.03);
 }
 
 .file-analyzer .upload-hint {
@@ -85,7 +84,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 12px 16px;
-    margin-bottom: 24px;
+    margin-bottom: 0; /* nessun margine extra, gestiamo il distacco con #file-results e button-group */
     padding: 16px 20px;
     background: linear-gradient(135deg, #f8fcff 0%, #eef6fc 100%);
     border-radius: 14px;
@@ -116,11 +115,11 @@
 .analysis-option {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.78rem;
+    gap: 8px;
+    font-size: 0.9rem;
     color: #444;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 8px 12px;
     background: white;
     border-radius: 8px;
     border: 1px solid #e2e8f0;
@@ -143,9 +142,9 @@
 
 .analysis-option .check-box {
     flex-shrink: 0;
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
     border: 1.5px solid #b8d4f0;
     background: white;
     transition: all 0.2s ease;
@@ -161,12 +160,12 @@
 .analysis-option input:checked + .check-box::after {
     content: "";
     position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 4px;
-    height: 7px;
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 9px;
     border: solid white;
-    border-width: 0 1.5px 1.5px 0;
+    border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
 
@@ -174,9 +173,27 @@
     color: #003f7f;
 }
 
-/* Analyze button */
-#submit-file {
-    padding: 14px 32px;
+/* Stesso layout degli altri tool: area risultato, poi button-group, poi home-link-wrap */
+#file-results {
+    margin-top: 12px;       /* 12px tra il bordo delle opzioni e il bordo dell'errore/risultato */
+    margin-bottom: 12px;    /* 12px sotto il risultato/errore verso il bottone */
+    min-height: 60px;
+}
+
+#file-results.hidden {
+    display: none;
+}
+
+.file-analyzer .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;       /* quando non c'è errore, 12px tra opzioni e bottone */
+    margin-bottom: 20px;
+}
+
+.file-analyzer .button-group button {
+    padding: 12px 24px;
     font-size: 1rem;
     font-weight: 600;
     background: #003f7f;
@@ -185,25 +202,17 @@
     border: none;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
+    min-width: 160px;
 }
 
-#submit-file:hover {
+.file-analyzer .button-group button:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
-/* Results area */
-#file-results {
+.file-analyzer .home-link-wrap {
     margin-top: 28px;
-    min-height: 60px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-#file-results.show {
-    opacity: 1;
-    visibility: visible;
+    text-align: center;
 }
 
 .results-grid {
@@ -250,14 +259,20 @@
     margin: 0;
 }
 
-#file-results .error-msg {
-    display: block;
-    width: 100%;
-    color: #dc3545;
+#file-results.error {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
     text-align: center;
-    font-weight: bold;
-    margin: 0;
-    padding: 16px;
+    min-height: 44px;
+    white-space: normal;
+    word-break: normal;
 }
 
 @media (max-width: 768px) {
@@ -285,6 +300,16 @@
     }
     .file-analyzer h1 {
         font-size: 1.5em;
+    }
+    /* File Analyzer mobile: bottone Analyze a tutta larghezza del contenitore */
+    .file-analyzer .button-group {
+        justify-content: stretch;
+    }
+    .file-analyzer .button-group button {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 }
 

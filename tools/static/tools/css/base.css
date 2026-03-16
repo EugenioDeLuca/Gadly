@@ -405,9 +405,14 @@ body.dark-mode .header-dropdown-item:hover {
         position: relative;
     }
     .header-actions .theme-toggle {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    .header-actions .warm-tone-toggle {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.85em;
     }
     .header-menu-btn {
         display: flex;
@@ -427,9 +432,9 @@ body.dark-mode .header-dropdown-item:hover {
         justify-content: center;
         gap: 8px;
         padding: 0 16px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,252,255,0.98) 100%);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: var(--bg-header);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         box-shadow: none;
         border: none;
         border-radius: 0 0 12px 12px;
@@ -478,9 +483,6 @@ body.dark-mode .header-dropdown-item:hover {
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
         border-color: rgba(255, 255, 255, 0.1);
     }
-    body.dark-mode .header-nav {
-        background: linear-gradient(180deg, rgba(20,30,48,0.98) 0%, rgba(15,22,35,0.98) 100%);
-    }
     body.dark-mode .header-nav .header-link:hover {
         background: rgba(255, 255, 255, 0.08);
     }
@@ -494,11 +496,18 @@ body.dark-mode .header-dropdown-item:hover {
         content: "";
         position: fixed;
         inset: 0;
-        background: rgba(0, 63, 127, 0.12);
-        backdrop-filter: blur(2px);
+        background: rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         z-index: 98;
         cursor: pointer;
         animation: fadeIn 0.25s ease;
+    }
+    /* Con warm tone attivo: quando il menu è aperto l’overlay è solo blur, come in light/dark */
+    body.nav-open.warm-tone::before {
+        background: rgba(0, 0, 0, 0.04);
+        mix-blend-mode: normal;
+        opacity: 1;
     }
     @keyframes fadeIn {
         from { opacity: 0; }
@@ -519,6 +528,10 @@ body.dark-mode .header-dropdown-item:hover {
 
 /* Mobile */
 @media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em !important;
+        font-weight: 700 !important;
+    }
     .header-username {
         max-width: 70px;
     }
@@ -573,6 +586,14 @@ body.dark-mode .header-dropdown-item:hover {
     .header-link {
         padding: 10px 12px;
         font-size: 0.95rem;
+    }
+    .header-actions .theme-toggle {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    .header-actions .warm-tone-toggle {
+        padding: 10px 12px;
+        font-size: 0.85em;
     }
     .site-main {
         padding-top: calc(12px + 66px);

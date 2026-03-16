@@ -3,22 +3,25 @@ const generateBtn = document.getElementById('generate-btn');
 const copyBtn = document.getElementById('copy-btn');
 const passwordInput = document.getElementById('password');
 const lengthInput = document.getElementById('length');
-const pwdError = document.getElementById('pwd-error');
+const pwdResultArea = document.getElementById('pwd-result-area');
 const includeLower = document.getElementById('include-lower');
 const includeUpper = document.getElementById('include-upper');
 const includeNumbers = document.getElementById('include-numbers');
 const includeSymbols = document.getElementById('include-symbols');
 
 function showError(msg) {
-    if (pwdError) {
-        pwdError.textContent = msg;
-        pwdError.classList.add('is-visible');
+    if (pwdResultArea) {
+        pwdResultArea.textContent = (msg || '').replace(/\.$/, '');
+        pwdResultArea.classList.add('error');
+        pwdResultArea.classList.remove('hidden');
+        pwdResultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
 function hideError() {
-    if (pwdError) {
-        pwdError.textContent = '';
-        pwdError.classList.remove('is-visible');
+    if (pwdResultArea) {
+        pwdResultArea.textContent = '';
+        pwdResultArea.classList.remove('error');
+        pwdResultArea.classList.add('hidden');
     }
 }
 

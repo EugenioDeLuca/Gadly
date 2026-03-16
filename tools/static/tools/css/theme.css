@@ -3,7 +3,7 @@
     --btn-primary: #003f7f;
     --btn-primary-dark: #002d5c;
     --bg-body: radial-gradient(circle at bottom right, #6a0dad, #3554a6 30%, #f4f4f4 70%);
-    --bg-header: rgba(255, 255, 255, 0.75);
+    --bg-header: rgba(255, 255, 255, 0.95);
     --bg-card: #fff;
     --text-primary: #003f7f;
     --text-secondary: #555;
@@ -144,25 +144,62 @@ body.dark-mode .shortcuts-btn:hover {
     border-color: #b01830;
 }
 
-/* Theme toggle */
+/* Theme toggle – stesso effetto e stessa dimensione evidenziamento di header-link (Home, FAQ, About) */
 .theme-toggle {
-    width: 40px;
-    height: 40px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
+    font-size: 1rem;
     background: transparent;
-    color: var(--text-secondary);
+    color: #003f7f;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
     transition: background 0.2s, color 0.2s;
 }
 
 .theme-toggle:hover {
-    background: rgba(0, 123, 255, 0.15);
+    background: #e8f4fd;
+    color: #007BFF;
+}
+
+body.dark-mode .theme-toggle {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .theme-toggle:hover {
     color: var(--accent);
+}
+
+/* Warm tone (tono caldo): ingiallisce senza opacizzare (blend color = solo tinta).
+   z-index basso così in mobile il menu hamburger resta sopra e non si sfoca. */
+body.warm-tone::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: hsl(42, 70%, 88%);
+    mix-blend-mode: color;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Stesse dimensioni del tasto dark/light per hover; icona leggermente più piccola */
+.warm-tone-toggle {
+    font-size: 0.85em;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.warm-tone-toggle.is-active {
+    background: rgba(255, 180, 100, 0.35);
+    color: #b86a00;
+}
+
+body.dark-mode .warm-tone-toggle.is-active {
+    background: rgba(255, 200, 120, 0.25);
+    color: #e8a040;
 }
 
 /* Mobile/tablet: niente riga sotto l'header */
@@ -175,6 +212,15 @@ body.dark-mode .shortcuts-btn:hover {
     .site-header::after,
     .site-header::before {
         display: none !important;
+    }
+    /* Con warm tone: menu aperto = overlay solo blur, come in light/dark */
+    body.nav-open.warm-tone::before {
+        background: rgba(0, 0, 0, 0.04) !important;
+        mix-blend-mode: normal !important;
+        opacity: 1 !important;
+        z-index: 98 !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
     }
 }
 

@@ -1,0 +1,33 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}Robots.txt guide{% endblock %}
+{% block body_class %}web-seo help-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Robots.txt guide</h1>
+    <p class="tool-desc">Basic tips on how search engines read your robots.txt file.</p>
+
+    <div class="help-section">
+        <h2>What is robots.txt?</h2>
+        <p>It is a simple text file at the root of your site (for example <code>https://example.com/robots.txt</code>) that tells search engine crawlers which areas they can or cannot crawl.</p>
+    </div>
+
+    <div class="help-section">
+        <h2>Common examples</h2>
+        <pre><code>User-agent: *
+Disallow: /admin/
+Allow: /</code></pre>
+        <p>This allows all crawlers to access the whole site except the <code>/admin/</code> area.</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'robots_txt_generator' %}" class="home-link">Back to Robots.txt Generator</a>
+    </div>
+</div>
+{% endblock %}
+

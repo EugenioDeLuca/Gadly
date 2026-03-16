@@ -9,6 +9,9 @@
 <div class="container">
     <h1>Robots.txt Generator</h1>
     <p class="tool-desc">Generate a robots.txt file with custom rules.</p>
+    <p class="tool-help">
+        <a href="{% url 'help_robots_txt' %}">Learn more about robots.txt and how search engines use it</a>
+    </p>
     <div class="form-group">
         <label for="user-agent">User-agent</label>
         <input type="text" id="user-agent" value="*" placeholder="*" />
@@ -25,11 +28,11 @@
         <label for="sitemap">Sitemap URL</label>
         <input type="url" id="sitemap" placeholder="https://example.com/sitemap.xml" />
     </div>
+    <div id="result-area" class="result-area hidden"></div>
     <div class="button-group">
         <button type="button" id="btn-generate">Generate</button>
         <button type="button" id="btn-copy">Copy</button>
     </div>
-    <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">
         <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>

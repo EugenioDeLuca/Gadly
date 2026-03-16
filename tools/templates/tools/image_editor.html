@@ -29,9 +29,19 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        <h1>Image Editor</h1>
-
+    <div class="container" id="editor-container">
+        <div class="image-editor-mobile-message" aria-live="polite">
+            <p class="image-editor-mobile-message-title">Image Editor</p>
+            <p class="image-editor-mobile-message-text">This tool is only available on desktop.</p>
+            <p class="image-editor-mobile-message-hint">Please use a computer to edit images.</p>
+            <div class="home-link-wrap">
+                <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+                </a>
+            </div>
+        </div>
+        <div class="image-editor-desktop-content">
+        <h1 class="image-editor-title">Image Editor</h1>
         <div class="upload-area" id="upload-area" aria-label="Drop image here or click to choose">
             <div class="file-input-wrapper">
                 <input type="file" id="image-input" accept="image/*" />
@@ -41,7 +51,12 @@
         </div>
 
         <div id="editor-area" class="editor-area" style="display: none;">
+            <div class="toolbar-wrap" id="toolbar-wrap">
             <div class="toolbar">
+                <div class="toolbar-float-controls">
+                    <button type="button" class="toolbar-reset-pos-btn" id="toolbar-reset-pos" title="Reset toolbar to default position" aria-label="Reset toolbar position">⟲</button>
+                    <span class="toolbar-drag-handle" id="toolbar-drag-handle" title="Drag to move toolbar" aria-label="Drag to move toolbar">⋮⋮</span>
+                </div>
                 <details class="toolbar-accordion" open>
                     <summary class="toolbar-accordion-summary">Transform</summary>
                     <div class="toolbar-row">
@@ -102,26 +117,25 @@
                     <div class="toolbar-row">
                     <div class="toolbar-section toolbar-filters">
                         <span class="toolbar-label">Brightness</span>
-                        <input type="range" id="filter-brightness" min="0" max="200" value="100" />
-                        <span id="brightness-val" class="toolbar-val">100%</span>
+                        <span class="filter-slider-wrap"><input type="range" id="filter-brightness" min="0" max="200" value="100" /><span id="brightness-val" class="toolbar-val">100%</span></span>
                     </div>
                     <div class="toolbar-section toolbar-filters">
                         <span class="toolbar-label">Contrast</span>
-                        <input type="range" id="filter-contrast" min="0" max="200" value="100" />
-                        <span id="contrast-val" class="toolbar-val">100%</span>
+                        <span class="filter-slider-wrap"><input type="range" id="filter-contrast" min="0" max="200" value="100" /><span id="contrast-val" class="toolbar-val">100%</span></span>
                     </div>
                     <button type="button" id="btn-grayscale" aria-label="Apply grayscale">Grayscale</button>
                     <button type="button" id="btn-sepia" aria-label="Apply sepia">Sepia</button>
                     <button type="button" id="btn-invert" aria-label="Invert colors">Invert</button>
                     <div class="toolbar-section toolbar-filters">
                         <span class="toolbar-label">Saturation</span>
-                        <input type="range" id="filter-saturation" min="0" max="200" value="100" />
-                        <span id="saturation-val" class="toolbar-val">100%</span>
+                        <span class="filter-slider-wrap"><input type="range" id="filter-saturation" min="0" max="200" value="100" /><span id="saturation-val" class="toolbar-val">100%</span></span>
                     </div>
                     <div class="toolbar-section toolbar-blur-slot">
                         <span class="toolbar-label">Blur</span>
                         <span class="blur-controls">
                             <button type="button" id="btn-blur-start" aria-label="Apply blur">Blur</button>
+                            <input type="range" id="blur-size" min="10" max="80" value="30" title="Blur area size" aria-label="Blur area size" style="width:50px" />
+                            <span id="blur-size-val" class="toolbar-val">30</span>
                             <input type="range" id="blur-radius" min="2" max="12" value="6" title="Blur strength" aria-label="Blur strength" />
                             <span id="blur-radius-val" class="toolbar-val">6</span>
                         </span>
@@ -146,7 +160,7 @@
                     <div class="toolbar-row">
                     <div class="toolbar-section">
                         <span class="toolbar-label">Text</span>
-                        <input type="color" id="text-color" value="#ffffff" title="Text color" aria-label="Text color" />
+                        <input type="color" id="text-color" value="#000000" title="Text color" aria-label="Text color" />
                         <input type="range" id="text-size" min="12" max="120" value="36" title="Text size" aria-label="Text size" style="width:70px" />
                         <span id="text-size-val" class="toolbar-val">36</span>
                         <button type="button" id="text-bold" class="text-style-btn" aria-label="Bold">B</button>
@@ -194,6 +208,7 @@
                     </div>
                 </details>
             </div>
+            </div>
             <div class="canvas-wrapper" id="canvas-wrapper">
                 <div class="canvas-container" id="canvas-container">
                     <canvas id="canvas"></canvas>
@@ -212,6 +227,7 @@
             <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>
+        </div>
         </div>
     </div>
 </div>

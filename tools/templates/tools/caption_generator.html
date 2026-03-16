@@ -4,6 +4,28 @@
 {% block body_class %}text-tool caption-gen{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.caption-gen .button-group button { min-width: 140px; }
+/* Solo desktop: input/select fino in fondo al container, Copy tutto a destra */
+@media (min-width: 769px) {
+    .caption-gen .form-group input,
+    .caption-gen .form-group .text-tool-select,
+    .caption-gen .form-group .text-tool-select .text-tool-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .caption-gen .text-tool-select { max-width: 100%; }
+    .caption-gen .button-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .caption-gen .button-group #btn-copy { margin-left: auto; }
+}
+@media (max-width: 768px) {
+    .caption-gen .button-group { justify-content: space-between; }
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">

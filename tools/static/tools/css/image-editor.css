@@ -137,14 +137,51 @@
     box-sizing: border-box;
 }
 
-.image-editor h1 {
-    font-size: 2em;
+.image-editor-mobile-message {
+    display: none;
+    text-align: center;
+    padding: 48px 24px 0 24px;
+}
+.image-editor-mobile-message-title {
+    font-size: 1.75em;
     color: #003f7f;
-    margin-bottom: 25px;
+    margin: 0 0 16px;
+    font-weight: 700;
+}
+.image-editor-mobile-message-text {
+    font-size: 1.1em;
+    color: #2c3e50;
+    margin: 0 0 8px;
+    font-weight: 600;
+}
+.image-editor-mobile-message-hint {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin: 0 0 0;
+}
+.image-editor-mobile-message .home-link-wrap {
+    margin-top: 28px;
     text-align: center;
 }
 
+@media (max-width: 1024px) {
+    .image-editor-mobile-message {
+        display: block;
+    }
+    .image-editor-desktop-content {
+        display: none !important;
+    }
+    .image-editor .container {
+        padding-bottom: 40px;
+    }
+}
 
+.image-editor-title {
+    font-size: 2em;
+    color: #003f7f;
+    margin: 0 0 25px;
+    text-align: center;
+}
 .upload-area {
     width: 100%;
     text-align: center;
@@ -208,6 +245,10 @@
     align-items: stretch;
     box-sizing: border-box;
 }
+.toolbar-wrap {
+    width: 100%;
+    flex-shrink: 0;
+}
 
 .canvas-wrapper {
     position: relative;
@@ -230,6 +271,12 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     display: block;
+}
+@media (max-width: 768px) {
+    #canvas {
+        max-width: 100%;
+        max-height: calc(100vh - 180px);
+    }
 }
 
 .crop-canvas {
@@ -368,11 +415,61 @@
 .toolbar {
     width: 100%;
     padding: 4px 8px;
-    background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
+    background: linear-gradient(180deg, rgba(52, 73, 94, 0.97) 0%, rgba(44, 62, 80, 0.97) 100%);
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     box-sizing: border-box;
     flex-shrink: 0;
+    position: relative;
+}
+.toolbar-float-controls {
+    display: none;
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    z-index: 10;
+}
+.toolbar-drag-handle {
+    padding: 4px 6px;
+    cursor: move;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    user-select: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.toolbar-drag-handle:hover {
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.2);
+}
+.toolbar-reset-pos-btn {
+    display: none;
+    padding: 4px 6px;
+    cursor: pointer;
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+}
+.toolbar-reset-pos-btn:hover {
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+}
+@media (min-width: 769px) {
+    body.editor-active .toolbar-float-controls {
+        display: flex;
+    }
+    body.editor-active .toolbar-reset-pos-btn.visible {
+        display: flex;
+    }
 }
 
 .toolbar-row {
@@ -415,6 +512,10 @@
     width: 60px;
     min-width: 60px;
 }
+.blur-controls #blur-radius {
+    width: 40px;
+    min-width: 40px;
+}
 .blur-controls .toolbar-val {
     min-width: 24px;
 }
@@ -427,10 +528,14 @@
 .toolbar-section.toolbar-filters {
     align-items: center;
 }
+.filter-slider-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
 
 .toolbar-section.toolbar-filters .toolbar-label,
-.toolbar-section.toolbar-filters input[type="range"],
-.toolbar-section.toolbar-filters .toolbar-val {
+.toolbar-section.toolbar-filters .filter-slider-wrap {
     vertical-align: middle;
 }
 
@@ -470,6 +575,12 @@
     min-width: 45px;
     flex-shrink: 0;
 }
+#zoom-val {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+}
 
 .toolbar button {
     padding: 4px 8px;
@@ -483,10 +594,14 @@
     transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-.toolbar button:hover {
+.toolbar button:not(#btn-blur-start):hover {
     background: #0056b3;
     color: white;
     transform: scale(1.05);
+}
+.toolbar #btn-blur-start:hover {
+    background: #0056b3;
+    color: white;
 }
 
 .toolbar button:disabled {
@@ -645,6 +760,12 @@
     border-color: #e67e22;
     background: rgba(230, 126, 34, 0.2);
 }
+@media (min-width: 769px) {
+    .toolbar .custom-select-trigger:hover {
+        border-color: #e67e22;
+        background: rgba(230, 126, 34, 0.2);
+    }
+}
 
 .toolbar .custom-select-dropdown {
     display: none;
@@ -755,13 +876,21 @@
     color: white !important;
     border-color: #c0392b !important;
     box-shadow: 0 0 0 2px rgba(255,255,255,0.8);
+    transform: none;
+}
+.toolbar button.active:hover {
+    transform: none;
 }
 
-.toolbar input:focus,
+.toolbar input:not([type="range"]):focus,
 .toolbar select:focus {
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.4);
+}
+.toolbar input[type="range"]:focus {
+    outline: none;
+    box-shadow: none;
 }
 .toolbar button:focus-visible,
 .toolbar .custom-select-trigger:focus-visible,
@@ -776,6 +905,9 @@
 
 /* Desktop - dimensioni più comode */
 @media (min-width: 769px) {
+    .toolbar-section.toolbar-filters .filter-slider-wrap .toolbar-val {
+        white-space: nowrap;
+    }
     .toolbar .custom-select-option {
         min-height: 36px;
     }
@@ -840,42 +972,69 @@
     }
 }
 
-/* Tablet - accordion compatto, no page scroll quando editor attivo */
+/* Desktop - immagine alta o toolbar trascinata: menu fixed, trascinabile */
+@media (min-width: 769px) {
+    body.editor-active.editor-tall-image .site-main,
+    body.editor-active.toolbar-floated .site-main {
+        overflow: visible;
+    }
+    body.editor-active.editor-tall-image .image-editor .container,
+    body.editor-active.toolbar-floated .image-editor .container {
+        overflow: visible;
+    }
+    body.editor-active.editor-tall-image .editor-area .toolbar,
+    body.editor-active.toolbar-floated .editor-area .toolbar {
+        position: fixed;
+        z-index: 50;
+        box-sizing: border-box;
+    }
+    body.editor-active.editor-tall-image .canvas-wrapper {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+/* Tablet - accordion compatto */
 @media (max-width: 768px) {
     body.editor-active .site-main {
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        overflow: visible;
+        display: block;
         padding-bottom: 0;
     }
     body.editor-active .image-editor .container {
-        flex: 1;
-        min-height: 0;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow: visible;
+        transition: none;
     }
-    body.editor-active .image-editor .container > h1,
     body.editor-active .image-editor .container > div:last-child {
         flex-shrink: 0;
     }
     body.editor-active .editor-area {
         flex: 1;
-        min-height: 0;
+        min-height: min-content;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow: visible;
         gap: 10px;
     }
-    body.editor-active .editor-area .toolbar {
-        flex-shrink: 0;
+    body.editor-active.editor-tall-image .site-main {
         overflow: visible;
     }
-    body.editor-active .canvas-wrapper {
-        flex: 1;
+    body.editor-active.editor-tall-image .image-editor .container {
+        overflow: visible;
+    }
+    /* Immagine alta su mobile: menu fixed nella stessa posizione, segue lo scroll */
+    body.editor-active.editor-tall-image .editor-area .toolbar {
+        position: fixed;
+        z-index: 50;
+        box-sizing: border-box;
+        flex-shrink: 0;
+    }
+    body.editor-active.editor-tall-image .canvas-wrapper {
         min-height: 120px;
         max-height: none;
-        overflow: hidden;
+        overflow: visible;
     }
     .image-editor .container {
         padding: 28px 24px;
@@ -994,12 +1153,12 @@
     }
 }
 
-/* Mobile - accordion compatto, no page scroll */
+/* Mobile - accordion compatto */
 @media (max-width: 600px) {
     .image-editor .container {
         padding: 24px 18px;
     }
-    .image-editor h1 {
+    .image-editor-title {
         font-size: 1.5em;
     }
     .upload-area {
@@ -1140,3 +1299,4 @@
         min-height: 120px;
     }
 }
+

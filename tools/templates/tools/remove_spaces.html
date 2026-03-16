@@ -4,6 +4,38 @@
 {% block body_class %}text-tool remove-spaces{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.remove-spaces .text-tool-row {
+    margin-bottom: 12px; /* 12px sopra l'errore */
+}
+.remove-spaces .button-group {
+    width: 100%;
+    justify-content: space-between;
+}
+.remove-spaces .button-group button { min-width: 140px; }
+.remove-spaces .button-group .btn-copy-right {
+    margin-left: auto;
+}
+.remove-spaces-error {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: 12px; /* 12px sotto l'errore */
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    background: #fff5f5;
+    border: 2px solid #fcc;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
+}
+.remove-spaces-error.hidden {
+    display: none;
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -12,13 +44,14 @@
     <div class="text-tool-row">
         <textarea id="text-input" placeholder="Paste your text here..." rows="8"></textarea>
     </div>
+    <div id="remove-spaces-error" class="remove-spaces-error hidden" aria-live="polite"></div>
     <div class="text-tool-options">
         <label><input type="radio" name="mode" value="all" checked> Remove all spaces</label>
         <label><input type="radio" name="mode" value="extra"> Collapse multiple spaces</label>
     </div>
     <div class="button-group">
         <button type="button" id="btn-transform">Transform</button>
-        <button type="button" id="btn-copy">Copy result</button>
+        <button type="button" id="btn-copy" class="btn-copy-right">Copy</button>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">

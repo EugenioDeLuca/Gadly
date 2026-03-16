@@ -11,7 +11,7 @@
     background: white;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 12px;
 }
 
 .translator h1 {
@@ -56,6 +56,8 @@
 
 #translate-btn {
     height: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
     padding: 0 24px;
     font-size: 1rem;
     font-weight: 600;
@@ -70,7 +72,7 @@
 
 #translate-btn:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 /* Custom select wrapper */
@@ -168,15 +170,15 @@
     border-radius: 12px;
     border: none;
     cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
+    transition: transform 0.2s, background 0.2s; /* come gli altri bottoni */
 }
 
 #swap-btn:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03); /* stessa trasformazione hover del Translate */
 }
 
-/* Area risultato */
+/* Area risultato testo tradotto (stile "normale") */
 .translator .result {
     margin-top: 8px;
     padding: 24px;
@@ -195,6 +197,40 @@
 .translator .result:empty::before {
     content: "Translation will appear here...";
     color: #94a3b8;
+}
+
+/* Area errore (stesso pattern degli altri tool) */
+.translator-result-area {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: 0;   /* distanza gestita dal gap del container (12px sopra e sotto) */
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+    color: #003f7f;
+    font-weight: 500;
+}
+
+.translator-result-area.hidden {
+    display: none;
+}
+
+.translator-result-area.error {
+    background: #fff5f5;
+    border: 2px solid #fcc;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
+    white-space: normal;
+    word-break: normal;
 }
 
 /* Responsività - mobile e tablet */

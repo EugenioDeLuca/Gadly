@@ -1,0 +1,132 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}JSON Formatter{% endblock %}
+{% block body_class %}text-tool json-formatter{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.json-formatter .form-group {
+    margin-bottom: 12px; /* 12px tra textarea e messaggio errore/risultato */
+}
+.json-formatter .form-group textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 200px;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    resize: vertical;
+    font-family: monospace;
+}
+.json-formatter .form-group textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+.json-formatter .button-group button {
+    min-width: 140px;
+}
+.json-formatter .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+}
+.json-formatter .button-group #btn-copy {
+    margin-left: auto;
+}
+.json-formatter .json-result {
+    padding: 20px;
+    min-height: 100px;
+    margin-top: 0;
+    margin-bottom: 0; /* distanza sotto gestita dalla variante errore */
+    border-radius: 12px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-family: monospace;
+}
+.json-formatter .json-result.hidden {
+    display: none;
+}
+/* Layout errore allineato agli altri tool (12px sopra e sotto, min-height 44px, padding 10x16) */
+.json-formatter .json-result.error {
+    margin-top: 12px;      /* 12px tra textarea e errore */
+    margin-bottom: 12px;   /* 12px tra errore e button-group */
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
+    white-space: normal;
+    word-break: normal;
+}
+@media (max-width: 768px) {
+    .json-formatter .button-group {
+        justify-content: flex-start;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .json-formatter .button-group button {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    .json-formatter .button-group #btn-copy {
+        margin-left: 0;
+    }
+}
+body.dark-mode .json-formatter .json-result {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--border-color);
+}
+body.dark-mode .json-formatter .json-result.error {
+    background: rgba(220,80,80,0.15);
+    color: #e88;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>JSON Formatter</h1>
+    <p class="tool-desc">Format, minify, or validate JSON. Paste your JSON below.</p>
+    <p class="tool-help">
+        <a href="{% url 'help_json_guide' %}">What is JSON and how to fix common errors</a>
+    </p>
+
+    <div class="form-group">
+        <label for="json-input">JSON input</label>
+        <textarea id="json-input" placeholder='e.g. {"name":"John","age":30}' rows="8"></textarea>
+    </div>
+
+    <div id="json-result" class="json-result hidden" aria-live="polite"></div>
+
+    <div class="button-group">
+        <button type="button" id="btn-format">Format</button>
+        <button type="button" id="btn-minify">Minify</button>
+        <button type="button" id="btn-copy">Copy</button>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="{% static 'tools/js/json_formatter.js' %}"></script>
+{% endblock %}

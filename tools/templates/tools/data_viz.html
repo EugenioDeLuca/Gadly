@@ -13,21 +13,23 @@
         <div class="viz-controls">
             <div class="data-input-section">
                 <label for="data-input">Paste your data (CSV format: label,value per line)</label>
-                <textarea id="data-input" rows="4" placeholder="e.g.&#10;January,120&#10;February,190&#10;March,80"></textarea>
+                <textarea id="data-input" rows="4" placeholder="e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,20"></textarea>
             </div>
-            <div class="chart-options">
-                <label for="chart-type">Chart type:</label>
-                <div class="chart-select-wrap">
-                    <select id="chart-type">
-                        <option value="bar">Bar</option>
-                        <option value="line">Line</option>
-                        <option value="pie">Pie</option>
-                        <option value="doughnut">Doughnut</option>
-                        <option value="polarArea">Polar Area</option>
-                    </select>
-                </div>
-                <button type="button" id="btn-generate">Generate Chart</button>
+        </div>
+
+        <div id="data-viz-result" class="result-area hidden" aria-live="polite"></div>
+
+        <div class="chart-options">
+            <div class="chart-select-wrap">
+                <select id="chart-type">
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="pie">Pie</option>
+                    <option value="doughnut">Doughnut</option>
+                    <option value="polarArea">Polar Area</option>
+                </select>
             </div>
+            <button type="button" id="btn-generate">Generate Chart</button>
         </div>
 
         <div class="chart-container hidden">
@@ -37,7 +39,7 @@
             <button type="button" id="btn-download" class="chart-download-btn" title="Download chart as PNG">Download PNG</button>
         </div>
 
-        <div style="margin-top: 25px; text-align: center;">
+        <div class="home-link-wrap">
             <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>

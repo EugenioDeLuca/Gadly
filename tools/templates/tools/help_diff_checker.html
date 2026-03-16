@@ -1,0 +1,33 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}Diff Checker help{% endblock %}
+{% block body_class %}text-tool help-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>How the Diff Checker works</h1>
+    <p class="tool-desc">Understand the meaning of colors and how changes are detected.</p>
+
+    <div class="help-section">
+        <h2>Colors</h2>
+        <ul>
+            <li><strong>Red with strikethrough</strong>: text that was removed.</li>
+            <li><strong>Green</strong>: text that was added.</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>Best practices</h2>
+        <p>Paste the original text on the left and the modified text on the right. Small, focused changes are easier to read than very large blocks of text.</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'diff_checker' %}" class="home-link">Back to Diff Checker</a>
+    </div>
+</div>
+{% endblock %}
+

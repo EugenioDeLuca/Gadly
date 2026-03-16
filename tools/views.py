@@ -262,6 +262,11 @@ def data_viz(request):
 def qr_generator(request):
     return render(request, 'tools/qr_generator.html')
 
+
+def qr_decoder(request):
+    return render(request, 'tools/qr_decoder.html')
+
+
 def password_gen(request):
     return render(request, 'tools/password_gen.html')
 
@@ -276,6 +281,47 @@ def bio_generator(request):
 
 def markdown_preview(request):
     return render(request, 'tools/markdown_preview.html')
+
+
+def diff_checker(request):
+    return render(request, 'tools/diff_checker.html')
+
+
+def json_formatter(request):
+    return render(request, 'tools/json_formatter.html')
+
+
+def base64_encoder(request):
+    return render(request, 'tools/base64_encoder.html')
+
+
+def case_converter(request):
+    return render(request, 'tools/case_converter.html')
+
+
+def uuid_generator(request):
+    return render(request, 'tools/uuid_generator.html')
+
+
+def lorem_ipsum(request):
+    return render(request, 'tools/lorem_ipsum.html')
+
+
+def regex_tester(request):
+    return render(request, 'tools/regex_tester.html')
+
+
+def cron_explainer(request):
+    return render(request, 'tools/cron_explainer.html')
+
+
+def hash_generator(request):
+    return render(request, 'tools/hash_generator.html')
+
+
+def color_converter(request):
+    return render(request, 'tools/color_converter.html')
+
 
 def meta_tag_checker(request):
     return render(request, 'tools/meta_tag_checker.html')
@@ -297,6 +343,25 @@ def caption_generator(request):
 
 def video_downloader(request):
     return render(request, 'tools/video_downloader.html')
+
+
+# -------------------------
+# Help pages for tools
+# -------------------------
+def help_robots_txt(request):
+    return render(request, 'tools/help_robots_txt.html')
+
+
+def help_json_guide(request):
+    return render(request, 'tools/help_json_guide.html')
+
+
+def help_diff_checker(request):
+    return render(request, 'tools/help_diff_checker.html')
+
+
+def help_text_tools(request):
+    return render(request, 'tools/help_text_tools.html')
 
 # -------------------------
 # Word Counter view
@@ -417,11 +482,10 @@ def pdf_merger(request):
 
         # Usa tempfile per creare un file temporaneo per il PDF unito
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf', dir='temp_pdfs') as tmp_file:
-                output_path = tmp_file.name  # Ottieni il percorso del file temporaneo
-
-            # Assicurati che la cartella 'temp_pdfs' esista
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            temp_dir = os.path.join(tempfile.gettempdir(), 'gadly_pdf_merge')
+            os.makedirs(temp_dir, exist_ok=True)
+            fd, output_path = tempfile.mkstemp(suffix='.pdf', dir=temp_dir)
+            os.close(fd)
 
             # Scrivi il PDF unito nel file temporaneo
             with open(output_path, 'wb') as output_file:
@@ -429,11 +493,14 @@ def pdf_merger(request):
 
             # Restituisci il PDF come file da scaricare
             with open(output_path, 'rb') as output_file:
-                response = JsonResponse({"message": "Success"})
-                response["Content-Type"] = "application/pdf"
-                response["Content-Disposition"] = f"attachment; filename=merged_pdf.pdf"
-                response.write(output_file.read())
-                return response
+                pdf_data = output_file.read()
+            try:
+                os.unlink(output_path)
+            except Exception:
+                pass
+            response = HttpResponse(pdf_data, content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="merged_pdf.pdf"'
+            return response
 
         except Exception as e:
             return JsonResponse({"message": f"Error: {str(e)}"}, status=500)

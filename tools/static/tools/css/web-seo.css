@@ -25,8 +25,33 @@
     font-size: 1rem;
 }
 
+/* Small helper links under titles/descriptions */
+.tool-help {
+    text-align: center;
+    margin: 8px 0 20px;
+    font-size: 0.9rem;
+}
+
+.tool-help a {
+    color: #003f7f;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, opacity 0.2s, color 0.2s;
+}
+
+.tool-help a:hover {
+    color: #0056b3;
+    opacity: 0.9;
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
 .web-seo .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 0; /* distanza verticale gestita da result-area.error (12px sopra/sotto) */
 }
 
 .web-seo .form-group label {
@@ -38,7 +63,8 @@
 }
 
 .web-seo .form-group input,
-.web-seo .form-group textarea {
+.web-seo .form-group textarea,
+.web-seo .form-group select {
     width: 100%;
     max-width: 100%;
     padding: 12px 16px;
@@ -46,10 +72,23 @@
     border: 2px solid #ddd;
     border-radius: 12px;
     box-sizing: border-box;
+    background: white;
+    color: #333;
+    font-family: inherit;
+}
+
+.web-seo .form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
 }
 
 .web-seo .form-group input:focus,
-.web-seo .form-group textarea:focus {
+.web-seo .form-group textarea:focus,
+.web-seo .form-group select:focus {
     outline: none;
     border-color: #007BFF;
 }
@@ -58,7 +97,7 @@
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin: 20px 0;
+    margin: 12px 0 20px 0; /* 12px sopra (errore → bottoni), 20px sotto per respiro verso il resto */
 }
 
 .web-seo .button-group button {
@@ -71,11 +110,18 @@
     color: white;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
+    min-height: 44px;
 }
 
 .web-seo .button-group button:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
+}
+
+.web-seo #btn-extract {
+    min-width: 140px;
+    padding-left: 28px;
+    padding-right: 28px;
 }
 
 .web-seo .button-group button.copied {
@@ -86,8 +132,39 @@
     background: #e74c3c;
 }
 
+.video-downloader .form-group {
+    margin-bottom: 12px; /* 12px tra input e messaggio */
+}
+
+/* Video Downloader: 12px sopra e sotto l'errore */
+.video-downloader .result-area {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.video-downloader .result-area.error {
+    margin-top: 12px;    /* 12px sopra l'errore */
+    margin-bottom: 12px; /* 12px sotto l'errore */
+}
+.video-downloader .button-group {
+    margin-top: 0;       /* nessun extra oltre ai 12px dell'errore */
+}
+
 .robots-txt-gen .button-group {
     justify-content: space-between;
+}
+
+/* Bottoni Check (Meta Tag, Site Speed, ecc.) – larghezza leggermente maggiore */
+.meta-tag-checker .button-group button,
+.site-speed-check .button-group button {
+    min-width: 160px;
+    padding-left: 28px;
+    padding-right: 28px;
+}
+
+.robots-txt-gen .button-group button {
+    min-width: 160px;
+    width: 160px;
+    box-sizing: border-box;
 }
 
 /* Video Downloader - multicolor loading bar */
@@ -128,7 +205,8 @@
 }
 
 .web-seo .result-area {
-    margin-top: 24px;
+    margin-top: 0;
+    margin-bottom: 0;
     padding: 20px;
     background: #f8fcff;
     border: 2px dashed #b8d4f0;
@@ -142,6 +220,22 @@
 .web-seo .result-area:empty,
 .web-seo .result-area.placeholder {
     color: #999;
+}
+
+/* Stesso layout del messaggio errore in Percentage (.calc-result.error) */
+.web-seo .result-area.error {
+    margin-top: 12px;      /* 12px sopra l'errore */
+    margin-bottom: 12px;   /* 12px sotto l'errore */
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
 }
 
 .web-seo .meta-tag-item {
@@ -216,15 +310,54 @@
         flex: 1;
         min-width: 140px;
     }
+    /* Robots.txt generator: bottoni affiancati sulla stessa riga in mobile */
     .robots-txt-gen .button-group {
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
     }
     .robots-txt-gen .button-group button {
-        width: 100%;
+        width: 50%;
+        min-width: 0;
+    }
+    /* Color Converter: bottoni Copy stessa dimensione di prima su mobile */
+    .color-converter .color-copy-group button {
+        flex: 0 0 auto;
+        min-width: 140px;
+        min-height: 48px;
+        padding: 12px 24px;
+        font-size: 1rem;
     }
     .web-seo .result-area {
         padding: 16px;
         font-size: 0.85rem;
+    }
+    /* Errore: stesso layout degli altri (Meta Tag, Sitemap, Percentage) anche su mobile */
+    .web-seo .result-area.error {
+        margin-top: 12px;
+        padding: 10px 16px;
+        min-height: 44px;
+        border-radius: 12px;
+        border: 2px solid #fcc;
+        background: #fff5f5;
+        font-family: Arial, sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #c00;
+        text-align: center;
+    }
+
+    /* Video Downloader: 12px sopra e sotto l'errore, senza raddoppiare gli spazi */
+    .video-downloader .form-group {
+        margin-bottom: 12px; /* 12px tra input e messaggio */
+    }
+    .video-downloader .result-area {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .video-downloader .result-area.error {
+        margin-top: 12px;    /* 12px sopra l'errore */
+        margin-bottom: 12px; /* 12px sotto l'errore */
     }
 }
 
@@ -234,3 +367,4 @@
         padding: 20px 14px;
     }
 }
+

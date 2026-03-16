@@ -4,12 +4,40 @@
 {% block body_class %}text-tool username-gen{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.username-gen .form-hint { display: block; font-size: 0.85rem; color: #7f8c8d; margin-top: 4px; }
+.username-gen .button-group button { min-width: 140px; }
+/* Solo desktop: input fino in fondo al container, Copy tutto a destra */
+@media (min-width: 769px) {
+    .username-gen .form-group input,
+    .username-gen .form-group .text-tool-select,
+    .username-gen .form-group .text-tool-select .text-tool-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .username-gen .text-tool-select { max-width: 100%; }
+    .username-gen .button-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .username-gen .button-group #btn-copy { margin-left: auto; }
+}
+@media (max-width: 768px) {
+    .username-gen .button-group { justify-content: space-between; }
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">
     <h1>Username Generator</h1>
     <p class="tool-desc">Generate random usernames for social media, games, or profiles.</p>
     <div class="text-tool-row">
+        <div class="form-group">
+            <label>Name (optional)</label>
+            <input type="text" id="username-base-name" name="base_name" placeholder="e.g. Marco" maxlength="30" autocomplete="off" value="" />
+            <span class="form-hint">If you add a name, usernames will be based on it.</span>
+        </div>
         <div class="form-group">
             <label>Style</label>
             <div class="text-tool-select" id="username-style-wrap" data-value="word_number">
@@ -41,5 +69,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/username_generator.js' %}"></script>
+<script src="{% static 'tools/js/username_generator.js' %}?v=2"></script>
 {% endblock %}

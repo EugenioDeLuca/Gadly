@@ -7,9 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var url = urlInput.value.trim();
         resultArea.classList.remove("hidden");
         if (!url) {
-            resultArea.innerHTML = "<span style='color:#c82333'>Please enter a sitemap URL.</span>";
+            resultArea.classList.add("error");
+            resultArea.textContent = "Please enter a sitemap URL";
             return;
         }
+        resultArea.classList.remove("error");
         resultArea.innerHTML = "Loading...";
         fetch("/api/sitemap-extract/", {
             method: "POST",
@@ -19,9 +21,11 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (data.error) {
-                resultArea.innerHTML = "<span style='color:#c82333'>" + data.error + "</span>";
+                resultArea.classList.add("error");
+                resultArea.textContent = data.error;
                 return;
             }
+            resultArea.classList.remove("error");
             if (!data.urls || data.urls.length === 0) {
                 resultArea.innerHTML = "<em>No URLs found in sitemap.</em>";
                 return;
@@ -31,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }).join("") + "</ul>";
         })
         .catch(function() {
-            resultArea.innerHTML = "<span style='color:#c82333'>Request failed.</span>";
+            resultArea.classList.add("error");
+            resultArea.textContent = "Request failed";
         });
     });
 });

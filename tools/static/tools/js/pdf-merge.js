@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("pdf-merger-form");
-    const errorMessage = document.getElementById("error-message");
+    const resultArea = document.getElementById("pdf-result-area");
     const fileInputsWrapper = document.getElementById("file-inputs-wrapper");
     const fileList = document.getElementById("file-list");
     const filePreview = document.getElementById("file-preview");
@@ -120,10 +120,13 @@ document.addEventListener("DOMContentLoaded", function() {
         collectFiles();
 
         if (orderedFiles.length < 2) {
-            errorMessage.style.display = "block";
+            resultArea.textContent = "Please select at least two PDF files";
+            resultArea.classList.add("error");
+            resultArea.classList.remove("hidden");
             return;
         }
-        errorMessage.style.display = "none";
+        resultArea.classList.remove("error");
+        resultArea.classList.add("hidden");
 
         const formData = new FormData();
         orderedFiles.forEach(function(file) {
@@ -146,15 +149,14 @@ document.addEventListener("DOMContentLoaded", function() {
             link.href = url;
             link.download = "merged_pdf.pdf";
             link.click();
-            errorMessage.style.display = "none";
-            const pdfResult = document.getElementById("pdf-result");
-            const resultMessage = document.getElementById("result-message");
-            resultMessage.textContent = "PDF merged successfully!";
-            pdfResult.style.display = "block";
-            resultMessage.style.display = "block";
+            resultArea.textContent = "PDF merged successfully!";
+            resultArea.classList.remove("error");
+            resultArea.classList.remove("hidden");
         })
-        .catch(error => {
-            document.getElementById("error-message").style.display = "block";
+        .catch(function(error) {
+            resultArea.textContent = (error.message && error.message !== "Error while processing the PDFs") ? error.message.replace(/\.$/, "") : "Error while processing the PDFs";
+            resultArea.classList.add("error");
+            resultArea.classList.remove("hidden");
             console.error(error);
         });
     });

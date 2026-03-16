@@ -31,7 +31,7 @@
         <!-- Percentage Calculator -->
         <div id="panel-percent" class="calc-panel {% if not single_calc %}active{% elif active_panel == 'percent' %}active{% endif %}">
             <h2>Percentage calculator</h2>
-            <div class="calc-row">
+            <div class="calc-row calc-row-percent">
                 <div class="calc-group">
                     <label>Percentage (%)</label>
                     <input type="number" id="pct-value" placeholder="e.g. 20" min="0" step="0.01" />
@@ -40,8 +40,11 @@
                     <label>of (value)</label>
                     <input type="number" id="pct-of" placeholder="e.g. 150" min="0" step="0.01" />
                 </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-pct-mobile" class="calc-result calc-result-mobile"></div>
                 <button type="button" class="calc-btn" id="btn-pct">Calculate</button>
             </div>
+            <!-- Desktop / default: risultato sotto alla riga come prima -->
             <div id="result-pct" class="calc-result"></div>
         </div>
 
@@ -66,34 +69,41 @@
                 <label>Amount (&euro;)</label>
                 <input type="number" id="iva-amount" placeholder="e.g. 100" min="0" step="0.01" />
             </div>
-            <p style="margin: 12px 0; font-size: 0.9rem; color: #555;">Calculate:</p>
-            <div class="calc-row">
-                <button type="button" class="calc-btn" id="btn-iva-net">Net &rarr; Gross</button>
-                <button type="button" class="calc-btn" id="btn-iva-gross">Gross &rarr; Net</button>
-            </div>
             <div id="result-iva" class="calc-result"></div>
+            <div class="calc-row">
+                <button type="button" class="calc-btn" id="btn-iva-net">
+                    Net <span class="vat-arrow">→</span> Gross
+                </button>
+                <button type="button" class="calc-btn" id="btn-iva-gross">
+                    Gross <span class="vat-arrow">→</span> Net
+                </button>
+            </div>
         </div>
 
         <!-- Net Salary Calculator -->
         <div id="panel-salary" class="calc-panel {% if active_panel == 'salary' %}active{% endif %}">
             <h2>Net salary calculator</h2>
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Indicative estimate. Enter gross annual salary.</p>
-            <div class="calc-group">
-                <label>Gross annual salary (&euro;)</label>
-                <input type="number" id="salary-ral" placeholder="e.g. 30000" min="0" step="100" />
-            </div>
-            <div class="calc-group">
-                <label>Payments per year</label>
-                <div class="calc-custom-select" id="salary-months-wrap" data-value="12">
-                    <button type="button" class="calc-select-trigger">12</button>
-                    <ul class="calc-select-menu">
-                        <li data-value="12" class="selected">12</li>
-                        <li data-value="13">13</li>
-                        <li data-value="14">14</li>
-                    </ul>
+            <div class="calc-row">
+                <div class="calc-group">
+                    <label>Gross annual salary (&euro;)</label>
+                    <input type="number" id="salary-ral" placeholder="e.g. 30000" min="0" step="100" />
                 </div>
+                <div class="calc-group">
+                    <label>Payments per year</label>
+                    <div class="calc-custom-select" id="salary-months-wrap" data-value="12">
+                        <button type="button" class="calc-select-trigger">12</button>
+                        <ul class="calc-select-menu">
+                            <li data-value="12" class="selected">12</li>
+                            <li data-value="13">13</li>
+                            <li data-value="14">14</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-salary-mobile" class="calc-result calc-result-mobile"></div>
+                <button type="button" class="calc-btn" id="btn-salary">Calculate net</button>
             </div>
-            <button type="button" class="calc-btn" id="btn-salary">Calculate net</button>
             <div id="result-salary" class="calc-result"></div>
         </div>
 
@@ -125,8 +135,8 @@
                     </ul>
                 </div>
             </div>
-            <button type="button" class="calc-btn" id="btn-interest">Calculate</button>
             <div id="result-interest" class="calc-result"></div>
+            <button type="button" class="calc-btn" id="btn-interest">Calculate</button>
         </div>
 
         <!-- Currency Conversion -->
@@ -134,38 +144,40 @@
             <h2>Currency conversion</h2>
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Rates are fetched automatically from the European Central Bank.</p>
             <div class="calc-currency-wrap">
-            <div class="calc-row calc-currency-row">
-                <div class="calc-group">
-                    <label>Amount</label>
-                    <div class="calc-currency-input-wrap">
-                        <input type="number" id="curr-amount" placeholder="e.g. 100" min="0" step="0.01" autocomplete="off" />
-                        <div class="calc-custom-select" id="curr-from-wrap" data-value="EUR">
-                            <button type="button" class="calc-select-trigger">EUR</button>
+                <div class="calc-row calc-currency-row">
+                    <div class="calc-group">
+                        <label>Amount</label>
+                        <div class="calc-currency-input-wrap">
+                            <input type="number" id="curr-amount" placeholder="e.g. 100" min="0" step="0.01" autocomplete="off" />
+                            <div class="calc-custom-select" id="curr-from-wrap" data-value="EUR">
+                                <button type="button" class="calc-select-trigger">EUR</button>
+                                <ul class="calc-select-menu">
+                                    <li data-value="EUR" class="selected">EUR</li>
+                                    <li data-value="USD">USD</li>
+                                    <li data-value="GBP">GBP</li>
+                                    <li data-value="CHF">CHF</li>
+                                    <li data-value="JPY">JPY</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calc-group calc-group-curr-to">
+                        <label>Convert to</label>
+                        <div class="calc-custom-select" id="curr-to-wrap" data-value="USD">
+                            <button type="button" class="calc-select-trigger">USD</button>
                             <ul class="calc-select-menu">
-                                <li data-value="EUR" class="selected">EUR</li>
-                                <li data-value="USD">USD</li>
+                                <li data-value="EUR">EUR</li>
+                                <li data-value="USD" class="selected">USD</li>
                                 <li data-value="GBP">GBP</li>
                                 <li data-value="CHF">CHF</li>
                                 <li data-value="JPY">JPY</li>
                             </ul>
                         </div>
                     </div>
+                    <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                    <div id="result-currency-mobile" class="calc-result calc-result-mobile"></div>
+                    <button type="button" class="calc-btn" id="btn-currency">Convert</button>
                 </div>
-                <div class="calc-group calc-group-curr-to">
-                    <label>Convert to</label>
-                    <div class="calc-custom-select" id="curr-to-wrap" data-value="USD">
-                        <button type="button" class="calc-select-trigger">USD</button>
-                        <ul class="calc-select-menu">
-                            <li data-value="EUR">EUR</li>
-                            <li data-value="USD" class="selected">USD</li>
-                            <li data-value="GBP">GBP</li>
-                            <li data-value="CHF">CHF</li>
-                            <li data-value="JPY">JPY</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="calc-btn" id="btn-currency">Convert</button>
             </div>
             <div id="result-currency" class="calc-result"></div>
         </div>
@@ -187,6 +199,8 @@
                     <label>Years</label>
                     <input type="number" id="loan-years" placeholder="e.g. 25" min="1" max="50" step="1" />
                 </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-loan-mobile" class="calc-result calc-result-mobile"></div>
                 <button type="button" class="calc-btn" id="btn-loan">Calculate</button>
             </div>
             <div id="result-loan" class="calc-result"></div>
@@ -205,6 +219,8 @@
                     <label>Discount (%)</label>
                     <input type="number" id="disc-pct" placeholder="e.g. 20" min="0" max="100" step="0.01" />
                 </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-discount-mobile" class="calc-result calc-result-mobile"></div>
                 <button type="button" class="calc-btn" id="btn-discount">Calculate</button>
             </div>
             <div id="result-discount" class="calc-result"></div>
@@ -223,6 +239,8 @@
                     <label>Margin (%)</label>
                     <input type="number" id="margin-pct" placeholder="e.g. 25" min="0" max="100" step="0.01" />
                 </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-margin-mobile" class="calc-result calc-result-mobile"></div>
                 <button type="button" class="calc-btn" id="btn-margin">Calculate</button>
             </div>
             <div id="result-margin" class="calc-result"></div>
@@ -245,6 +263,8 @@
                     <label>Tip (%)</label>
                     <input type="number" id="split-tip" placeholder="e.g. 10" min="0" step="1" value="0" />
                 </div>
+                <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
+                <div id="result-split-mobile" class="calc-result calc-result-mobile"></div>
                 <button type="button" class="calc-btn" id="btn-split">Split</button>
             </div>
             <div id="result-split" class="calc-result"></div>

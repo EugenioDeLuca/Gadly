@@ -18,6 +18,31 @@
     font-size: 2em;
 }
 
+/* Small helper links under titles/descriptions */
+.tool-help {
+    text-align: center;
+    margin: 8px 0 20px;
+    font-size: 0.9rem;
+}
+
+.tool-help a {
+    color: #003f7f;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, opacity 0.2s, color 0.2s;
+}
+
+.tool-help a:hover {
+    color: #0056b3;
+    opacity: 0.9;
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
 /* textarea */
 .word-counter textarea {
     width: 100%;
@@ -50,7 +75,9 @@
     border-radius: 12px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border: 1px solid #e2e8f0;
-    min-height: 80px;
+    /* Altezza base compatta ma sufficiente per i due valori,
+       così prima e dopo il click la dimensione resta uguale */
+    min-height: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,12 +114,12 @@
     display: flex;
     gap: 16px;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .word-counter .container button,
 .word-counter .button-group button {
-    padding: 14px 28px;
+    padding: 10px 24px;
     font-size: 1rem;
     font-weight: 600;
     border-radius: 12px;
@@ -101,12 +128,22 @@
     color: white;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
+    height: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
+    /* Desktop/tablet: larghezza minima comoda, ma senza forzare 260px rigidi */
+    min-width: 160px;
+}
+
+/* Desktop/tablet: allarga solo il primo bottone (Count Words) per avvicinarlo alla larghezza di Count Characters */
+.word-counter .button-group button:first-child {
+    min-width: 200px;
 }
 
 .word-counter .container button:hover,
 .word-counter .button-group button:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 @media (max-width: 768px) {
@@ -128,11 +165,15 @@
         min-height: 160px;
         font-size: 16px;
     }
+    /* Mobile: bottoni affiancati sulla stessa riga */
     .word-counter .button-group {
-        flex-direction: column;
+        flex-direction: row;
+        gap: 8px;
+        justify-content: center;
     }
     .word-counter .button-group button {
-        width: 100%;
+        width: 50%;
+        min-width: 0;
         min-height: 48px;
     }
 }

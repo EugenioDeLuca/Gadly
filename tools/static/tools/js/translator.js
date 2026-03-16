@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const languageSelect = document.getElementById("language");
     const inputLanguageSelect = document.getElementById("input-language");
     const outputText = document.getElementById("output-text");
+    const resultBox = document.getElementById("translator-result");
     const swapBtn = document.getElementById("swap-btn");
 
     function initCustomSelect(selectEl) {
@@ -57,6 +58,19 @@ document.addEventListener("DOMContentLoaded", () => {
         translateText();
     });
 
+    function showResult(message, isError) {
+        if (!resultBox) return;
+        resultBox.classList.remove("hidden", "error");
+        if (isError) {
+            resultBox.textContent = (message || "").replace(/\.$/, "");
+            resultBox.classList.add("error");
+            resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+            resultBox.classList.remove("error");
+            resultBox.textContent = message || "";
+        }
+    }
+
     // Funzione per tradurre il testo
     const translateText = async () => {
         const text = inputText.value.trim();
@@ -64,7 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const inputLang = inputLanguageSelect.value;  // Lingua di input
 
         if (!text) {
-            alert("Please enter text to translate!");
+            showResult("Please enter text to translate", true);
+            outputText.textContent = "";
             return;
         }
 
@@ -82,14 +97,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (data.translatedText) {
+                showResult("", false);
+                resultBox.classList.add("hidden");
                 outputText.textContent = data.translatedText;
             } else if (data.error) {
-                outputText.textContent = data.error;
+                outputText.textContent = "";
+                showResult(data.error, true);
+            } else {
+                outputText.textContent = "";
+                showResult("An unknown error occurred while translating", true);
             }
 
         } catch (error) {
             console.error("Error during translation:", error);
-            outputText.textContent = "An error occurred while translating.";
+            outputText.textContent = "";
+            showResult("An error occurred while translating", true);
         }
     };
 

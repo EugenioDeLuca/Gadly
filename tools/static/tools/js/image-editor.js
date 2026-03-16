@@ -64,23 +64,45 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!workCanvas) return;
         const dpr = window.devicePixelRatio || 1;
         const wrapper = document.getElementById("canvas-wrapper");
-        const availW = wrapper && wrapper.clientWidth > 0 ? wrapper.clientWidth : 1100;
-        const maxW = Math.max(900, availW);
-        const maxH = 2400;
+        const editorArea = document.querySelector(".editor-area");
+        var availW = (wrapper && wrapper.clientWidth > 0) ? wrapper.clientWidth : 1100;
+        if (availW <= 0 && editorArea) availW = editorArea.clientWidth;
+        if (availW <= 0) availW = 1100;
+        var headerH = 74;
+        if (window.innerWidth <= 480) headerH = 66;
+        else if (window.innerWidth <= 600) headerH = 70;
+        var maxW, maxH;
+        if (window.innerWidth <= 768) {
+            maxW = Math.min(availW, window.innerWidth - 32);
+            maxH = window.innerHeight - headerH - 160;
+        } else {
+            maxW = availW;
+            maxH = Math.min(window.innerHeight - headerH - 120, 2400);
+        }
+        maxW = Math.max(200, maxW);
+        maxH = Math.max(200, maxH);
         let dispW = workCanvas.width;
         let dispH = workCanvas.height;
-        var baseRatio = Math.min(maxW / dispW, maxH / dispH, 2);
-        baseRatio = Math.max(1, baseRatio);
+        var baseRatio = Math.min(maxW / dispW, maxH / dispH);
+        if (window.innerWidth > 768) baseRatio = Math.min(baseRatio, 4);
+        else baseRatio = Math.min(baseRatio, 2);
         var ratio = baseRatio * (zoomLevel / 100);
-        ratio = Math.max(0.25, Math.min(4, ratio));
+        var maxRatio = window.innerWidth > 768 ? 16 : 4;
+        ratio = Math.max(0.25, Math.min(maxRatio, ratio));
         dispW = Math.round(dispW * ratio);
         dispH = Math.round(dispH * ratio);
+        if (zoomLevel <= 100 && (dispW > maxW || dispH > maxH)) {
+            var scale = Math.min(maxW / dispW, maxH / dispH);
+            dispW = Math.round(dispW * scale);
+            dispH = Math.round(dispH * scale);
+        }
         canvas.width = Math.round(dispW * dpr);
         canvas.height = Math.round(dispH * dpr);
         canvas.style.width = dispW + "px";
         canvas.style.height = dispH + "px";
         var container = document.getElementById("canvas-container");
         if (container) container.style.transform = "translate(" + panX + "px, " + panY + "px)";
+        updateTallImageClass(dispH);
         ctx.save();
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.imageSmoothingEnabled = true;
@@ -89,6 +111,78 @@ document.addEventListener("DOMContentLoaded", function() {
         ctx.drawImage(workCanvas, 0, 0, workCanvas.width, workCanvas.height, 0, 0, dispW, dispH);
         ctx.filter = "none";
         ctx.restore();
+    }
+
+    var toolbarUserMoved = false;
+    function syncToolbarPosition() {
+        if (toolbarUserMoved || document.body.classList.contains("toolbar-floated")) return;
+        if (!document.body.classList.contains("editor-tall-image")) return;
+        var toolbar = document.querySelector(".editor-area .toolbar");
+        var wrap = document.getElementById("toolbar-wrap");
+        if (toolbar && wrap) {
+            var rect = wrap.getBoundingClientRect();
+            toolbar.style.top = rect.top + "px";
+            toolbar.style.left = rect.left + "px";
+            toolbar.style.width = rect.width + "px";
+            wrap.style.minHeight = rect.height + "px";
+        }
+    }
+    function updateTallImageClass(canvasHeight) {
+        var headerH = 74;
+        if (window.innerWidth <= 480) headerH = 66;
+        else if (window.innerWidth <= 600) headerH = 70;
+        var availH = window.innerWidth <= 768 ? window.innerHeight - headerH - 120 : window.innerHeight - headerH - 140;
+        if (canvasHeight > availH) {
+            var alreadyHad = document.body.classList.contains("editor-tall-image");
+            var toolbar = document.querySelector(".editor-area .toolbar");
+            var wrap = document.getElementById("toolbar-wrap");
+            document.body.classList.add("editor-tall-image");
+            if (!toolbarUserMoved) {
+                var rect = (toolbar && wrap) ? wrap.getBoundingClientRect() : null;
+                if (rect && toolbar) {
+                    toolbar.style.top = rect.top + "px";
+                    toolbar.style.left = rect.left + "px";
+                    toolbar.style.width = rect.width + "px";
+                    wrap.style.minHeight = rect.height + "px";
+                }
+            }
+        } else {
+            var wrap = document.getElementById("toolbar-wrap");
+            var toolbar = document.querySelector(".editor-area .toolbar");
+            var resBtn = document.getElementById("toolbar-reset-pos");
+            var hadExplicitToolbarStyle = toolbar && (toolbar.style.width || toolbar.style.top || toolbar.style.left);
+            var savedToolbarWidth = toolbar ? (parseInt(toolbar.style.width, 10) || toolbar.offsetWidth) : 0;
+            var savedToolbarLeft = toolbar ? (parseInt(toolbar.style.left, 10) || toolbar.getBoundingClientRect().left) : 0;
+            var savedToolbarTop = toolbar ? (parseInt(toolbar.style.top, 10) || toolbar.getBoundingClientRect().top) : 0;
+            var savedWrapMinHeight = wrap && wrap.style.minHeight ? wrap.style.minHeight : "";
+            if (toolbarUserMoved || hadExplicitToolbarStyle) {
+                document.body.classList.add("toolbar-floated");
+                if (toolbar && savedToolbarWidth > 0) {
+                    toolbar.style.width = savedToolbarWidth + "px";
+                    toolbar.style.minWidth = savedToolbarWidth + "px";
+                }
+                if (toolbar && (savedToolbarLeft !== 0 || savedToolbarTop !== 0)) {
+                    toolbar.style.left = savedToolbarLeft + "px";
+                    toolbar.style.top = savedToolbarTop + "px";
+                }
+                if (wrap && savedWrapMinHeight) wrap.style.minHeight = savedWrapMinHeight;
+                if (hadExplicitToolbarStyle && !toolbarUserMoved) {
+                    toolbarUserMoved = true;
+                }
+            }
+            document.body.classList.remove("editor-tall-image");
+            if (!toolbarUserMoved && !hadExplicitToolbarStyle) {
+                document.body.classList.remove("toolbar-floated");
+                if (wrap) wrap.style.minHeight = "";
+                if (toolbar) {
+                    toolbar.style.top = "";
+                    toolbar.style.left = "";
+                    toolbar.style.width = "";
+                    toolbar.style.minWidth = "";
+                }
+                if (resBtn) resBtn.classList.remove("visible");
+            }
+        }
     }
 
     function applyFilters(imageData) {
@@ -108,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var editorLoading = document.getElementById("editor-loading");
     var editorToast = document.getElementById("editor-toast");
     var editorError = document.getElementById("editor-error");
-    var IMAGE_MAX_MP = 12;
+    var IMAGE_MAX_MP = 50;
 
     function showError(msg) {
         if (editorError) {
@@ -163,12 +257,27 @@ document.addEventListener("DOMContentLoaded", function() {
         panX = 0;
         panY = 0;
         document.querySelector(".upload-area").style.display = "none";
+        var titleEl = document.querySelector(".image-editor-title");
+        if (titleEl) titleEl.style.display = "none";
         editorArea.style.display = "flex";
         document.body.classList.add("editor-active");
+        document.body.classList.remove("toolbar-floated");
+        toolbarUserMoved = false;
+        var tb = document.querySelector(".editor-area .toolbar");
+        var wr = document.getElementById("toolbar-wrap");
+        var resBtn = document.getElementById("toolbar-reset-pos");
+        if (tb) { tb.style.top = ""; tb.style.left = ""; tb.style.width = ""; tb.style.minWidth = ""; }
+        if (wr) wr.style.minHeight = "";
+        if (resBtn) resBtn.classList.remove("visible");
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll(".toolbar-accordion").forEach(function(el) { el.removeAttribute("open"); });
+        }
         requestAnimationFrame(function() {
-            drawToDisplay();
-            updateResizeInputs();
-            updateResetButton();
+            requestAnimationFrame(function() {
+                drawToDisplay();
+                updateResizeInputs();
+                updateResetButton();
+            });
         });
     }
 
@@ -349,6 +458,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("btn-watermark-apply").style.display = "none";
         document.getElementById("btn-watermark-cancel").style.display = "none";
         document.getElementById("btn-draw-mode").classList.remove("active");
+        document.getElementById("btn-blur-start").classList.remove("active");
         canvas.style.cursor = "default";
         cropMode = true;
         isSelecting = false;
@@ -375,6 +485,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("btn-watermark-apply").style.display = "none";
         document.getElementById("btn-watermark-cancel").style.display = "none";
         document.getElementById("btn-draw-mode").classList.remove("active");
+        this.classList.add("active");
         cropCanvas.style.display = "none";
         blurMode = true;
         isSelecting = false;
@@ -396,17 +507,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("btn-blur-cancel").addEventListener("click", function() {
         blurMode = false;
+        document.getElementById("btn-blur-start").classList.remove("active");
         document.getElementById("blur-cursor").style.display = "none";
         document.getElementById("btn-blur-cancel").style.display = "none";
         canvas.style.cursor = "default";
     });
 
     function updateBlurCursorSize() {
-        var brushSize = parseInt(document.getElementById("brush-size").value, 10) || 10;
-        var radiusPx = Math.max(8, brushSize * 2);
+        var blurSize = parseInt(document.getElementById("blur-size").value, 10) || 30;
+        var sizePx = Math.max(20, blurSize * 2);
         var el = document.getElementById("blur-cursor");
-        el.style.width = (radiusPx * 2) + "px";
-        el.style.height = (radiusPx * 2) + "px";
+        el.style.width = sizePx + "px";
+        el.style.height = sizePx + "px";
     }
 
     document.getElementById("btn-crop-apply").addEventListener("click", function() {
@@ -528,54 +640,73 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    var blurThrottle = null;
+    var blurPending = null;
+    var blurTemp1 = null;
+    var blurTemp2 = null;
     function applyBlurAt(cxWork, cyWork, scaleX) {
-        var brushSize = parseInt(document.getElementById("brush-size").value, 10) || 10;
-        var rWork = Math.max(5, (brushSize * 2) * (scaleX || 1));
-        var rad = 1;
-        var imgData = workCtx.getImageData(0, 0, workCanvas.width, workCanvas.height);
-        var data = imgData.data;
-        var ww = workCanvas.width;
-        var hh = workCanvas.height;
-        var out = new Uint8ClampedArray(data);
-        for (var py = Math.max(0, Math.floor(cyWork - rWork)); py < Math.min(hh, Math.ceil(cyWork + rWork)); py++) {
-            for (var px = Math.max(0, Math.floor(cxWork - rWork)); px < Math.min(ww, Math.ceil(cxWork + rWork)); px++) {
-                var dist = Math.pow(px - cxWork, 2) + Math.pow(py - cyWork, 2);
-                if (dist > rWork * rWork) continue;
-                var sr = 0, sg = 0, sb = 0, sa = 0, n = 0;
-                for (var dy = -rad; dy <= rad; dy++) {
-                    for (var dx = -rad; dx <= rad; dx++) {
-                        var nx = px + dx;
-                        var ny = py + dy;
-                        if (nx >= 0 && nx < ww && ny >= 0 && ny < hh) {
-                            var i = (ny * ww + nx) * 4;
-                            sr += data[i]; sg += data[i + 1]; sb += data[i + 2]; sa += data[i + 3];
-                            n++;
-                        }
-                    }
-                }
-                if (n > 0) {
-                    var idx = (py * ww + px) * 4;
-                    out[idx] = sr / n;
-                    out[idx + 1] = sg / n;
-                    out[idx + 2] = sb / n;
-                    out[idx + 3] = sa / n;
-                }
-            }
+        var blurSize = parseInt(document.getElementById("blur-size").value, 10) || 30;
+        var blurRad = parseInt(document.getElementById("blur-radius").value, 10) || 6;
+        var rWork = Math.max(4, blurSize * (scaleX || 1));
+        var blurPx = Math.max(1, Math.min(10, Math.round(blurRad * 0.4) || 1));
+        var pad = blurPx * 3;
+        var x0 = Math.max(0, Math.floor(cxWork - rWork - pad));
+        var y0 = Math.max(0, Math.floor(cyWork - rWork - pad));
+        var x1 = Math.min(workCanvas.width, Math.ceil(cxWork + rWork + pad));
+        var y1 = Math.min(workCanvas.height, Math.ceil(cyWork + rWork + pad));
+        var regW = x1 - x0;
+        var regH = y1 - y0;
+        if (regW < 4 || regH < 4) return;
+        var needSize = Math.max(regW, regH, 64);
+        if (!blurTemp1 || blurTemp1.width < needSize) {
+            blurTemp1 = document.createElement("canvas");
+            blurTemp1.width = blurTemp1.height = Math.max(needSize, 256);
+            blurTemp2 = document.createElement("canvas");
+            blurTemp2.width = blurTemp2.height = blurTemp1.width;
         }
-        workCtx.putImageData(new ImageData(out, ww, hh), 0, 0);
+        var ctx1 = blurTemp1.getContext("2d");
+        var ctx2 = blurTemp2.getContext("2d");
+        ctx1.drawImage(workCanvas, x0, y0, regW, regH, 0, 0, regW, regH);
+        ctx2.filter = "blur(" + blurPx + "px)";
+        ctx2.drawImage(blurTemp1, 0, 0, regW, regH, 0, 0, regW, regH);
+        ctx2.filter = "none";
+        workCtx.save();
+        workCtx.beginPath();
+        workCtx.arc(cxWork, cyWork, rWork, 0, Math.PI * 2);
+        workCtx.clip();
+        workCtx.drawImage(blurTemp2, 0, 0, regW, regH, x0, y0, regW, regH);
+        workCtx.restore();
+    }
+    function scheduleBlurApply(cxWork, cyWork, scaleX) {
+        blurPending = { cxWork: cxWork, cyWork: cyWork, scaleX: scaleX };
+        if (blurThrottle) return;
+        blurThrottle = requestAnimationFrame(function() {
+            blurThrottle = null;
+            if (blurPending) {
+                var p = blurPending;
+                blurPending = null;
+                applyBlurAt(p.cxWork, p.cyWork, p.scaleX);
+                drawToDisplay();
+            }
+        });
     }
 
     var wrapperEl = document.getElementById("canvas-wrapper");
-    wrapperEl.addEventListener("mousemove", function(e) {
+    function updateBlurCursorPos(clientX, clientY) {
         if (!blurMode) return;
         var rect = wrapperEl.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var y = e.clientY - rect.top;
         var cur = document.getElementById("blur-cursor");
-        cur.style.left = x + "px";
-        cur.style.top = y + "px";
+        cur.style.left = (clientX - rect.left) + "px";
+        cur.style.top = (clientY - rect.top) + "px";
+    }
+    wrapperEl.addEventListener("mousemove", function(e) {
+        updateBlurCursorPos(e.clientX, e.clientY);
     });
-
+    wrapperEl.addEventListener("touchmove", function(e) {
+        if (blurMode && e.touches.length > 0) {
+            updateBlurCursorPos(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, { passive: true });
     wrapperEl.addEventListener("mouseleave", function() {
         if (blurMode) document.getElementById("blur-cursor").style.visibility = "hidden";
     });
@@ -694,7 +825,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var text = document.getElementById("text-box-input").value.trim();
         if (!text) return;
         if (!skipSave) saveState();
-        var textColor = document.getElementById("text-color").value || "#ffffff";
+        var textColor = document.getElementById("text-color").value || "#000000";
         workCtx.save();
         var overlay = document.getElementById("text-box-overlay");
         var canvasRect = canvas.getBoundingClientRect();
@@ -1101,8 +1232,12 @@ document.addEventListener("DOMContentLoaded", function() {
         finalizeTextOverlay(false);
         clearLastTextObject();
         drawMode = !drawMode;
+        blurMode = false;
         cropMode = false;
         watermarkMode = false;
+        document.getElementById("btn-blur-start").classList.remove("active");
+        document.getElementById("blur-cursor").style.display = "none";
+        document.getElementById("btn-blur-cancel").style.display = "none";
         document.getElementById("btn-watermark-apply").style.display = "none";
         document.getElementById("btn-watermark-cancel").style.display = "none";
         cropCanvas.style.display = "none";
@@ -1112,6 +1247,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("brush-size").addEventListener("input", function() {
         document.getElementById("brush-size-val").textContent = this.value;
+    });
+    document.getElementById("blur-size").addEventListener("input", function() {
+        document.getElementById("blur-size-val").textContent = this.value;
         if (blurMode) updateBlurCursorSize();
     });
     document.getElementById("blur-radius").addEventListener("input", function() {
@@ -1198,8 +1336,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var scaleY = workCanvas.height / rect.height;
             var x = (e.clientX - rect.left) * scaleX;
             var y = (e.clientY - rect.top) * scaleY;
-            applyBlurAt(x, y, scaleX);
-            drawToDisplay();
+            scheduleBlurApply(x, y, scaleX);
             return;
         }
         if (!drawMode || !isDrawing || cropMode) return;
@@ -1219,6 +1356,12 @@ document.addEventListener("DOMContentLoaded", function() {
             isPanning = false;
             canvas.style.cursor = zoomLevel > 100 ? "grab" : "default";
         }
+        if (blurMode && blurPending) {
+            applyBlurAt(blurPending.cxWork, blurPending.cyWork, blurPending.scaleX);
+            blurPending = null;
+            if (blurThrottle) { cancelAnimationFrame(blurThrottle); blurThrottle = null; }
+            drawToDisplay();
+        }
         if (isDrawing) updateResetButton();
         isDrawing = false;
         isDraggingWatermark = false;
@@ -1231,6 +1374,57 @@ document.addEventListener("DOMContentLoaded", function() {
         if (isDrawing) updateResetButton();
         isDrawing = false;
         isDraggingWatermark = false;
+    });
+
+    function getCanvasCoords(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top, rect: rect };
+    }
+    function handleBlurPointerDown(x, y, rect) {
+        if (!blurMode) return;
+        if (!isDrawing) saveState();
+        isDrawing = true;
+        var scaleX = workCanvas.width / rect.width;
+        var scaleY = workCanvas.height / rect.height;
+        var wx = x * scaleX;
+        var wy = y * scaleY;
+        applyBlurAt(wx, wy, scaleX);
+        drawToDisplay();
+    }
+    function handleBlurPointerMove(x, y, rect) {
+        if (!blurMode || !isDrawing) return;
+        var scaleX = workCanvas.width / rect.width;
+        var wx = x * scaleX;
+        var wy = y * scaleY;
+        scheduleBlurApply(wx, wy, scaleX);
+    }
+    canvas.addEventListener("touchstart", function(e) {
+        if (!blurMode || !workCanvas) return;
+        var c = getCanvasCoords(e);
+        if (c.x >= 0 && c.x <= c.rect.width && c.y >= 0 && c.y <= c.rect.height) {
+            handleBlurPointerDown(c.x, c.y, c.rect);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    canvas.addEventListener("touchmove", function(e) {
+        if (!blurMode || !isDrawing || !workCanvas) return;
+        var c = getCanvasCoords(e);
+        handleBlurPointerMove(c.x, c.y, c.rect);
+        e.preventDefault();
+    }, { passive: false });
+    canvas.addEventListener("touchend", function(e) {
+        if (e.touches.length === 0) {
+            if (blurMode && blurPending) {
+                applyBlurAt(blurPending.cxWork, blurPending.cyWork, blurPending.scaleX);
+                blurPending = null;
+                if (blurThrottle) { cancelAnimationFrame(blurThrottle); blurThrottle = null; }
+                drawToDisplay();
+            }
+            if (isDrawing) updateResetButton();
+            isDrawing = false;
+        }
     });
 
     function initCustomSelect(wrap) {
@@ -1351,8 +1545,13 @@ document.addEventListener("DOMContentLoaded", function() {
     var resetConfirmNo = document.getElementById("reset-confirm-no");
     var resetConfirmBackdrop = resetModal && resetModal.querySelector(".reset-confirm-backdrop");
 
+    var toolbarSizeBeforeReset = null;
+
     function doReset() {
         if (!originalImage) return;
+        zoomLevel = 100;
+        panX = 0;
+        panY = 0;
         createWorkCanvas(originalImage.width, originalImage.height);
         workCtx.drawImage(originalImage, 0, 0);
         history.length = 0;
@@ -1361,6 +1560,24 @@ document.addEventListener("DOMContentLoaded", function() {
         resetFilters();
         updateResizeInputs();
         drawToDisplay();
+        var zoomValEl = document.getElementById("zoom-val");
+        if (zoomValEl) zoomValEl.textContent = "100%";
+        if (toolbarSizeBeforeReset) {
+            var t = document.querySelector(".editor-area .toolbar");
+            var w = document.getElementById("toolbar-wrap");
+            if (t) {
+                document.body.classList.add("toolbar-floated");
+                t.style.width = toolbarSizeBeforeReset.width + "px";
+                t.style.minWidth = toolbarSizeBeforeReset.width + "px";
+                t.style.left = toolbarSizeBeforeReset.left + "px";
+                t.style.top = toolbarSizeBeforeReset.top + "px";
+                var resBtn = document.getElementById("toolbar-reset-pos");
+                if (resBtn) resBtn.classList.add("visible");
+            }
+            if (w && toolbarSizeBeforeReset.wrapMinHeight) w.style.minHeight = toolbarSizeBeforeReset.wrapMinHeight;
+            toolbarUserMoved = true;
+            toolbarSizeBeforeReset = null;
+        }
         updateResetButton();
     }
 
@@ -1374,6 +1591,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (resetConfirmYes) resetConfirmYes.addEventListener("click", function() {
+        var t = document.querySelector(".editor-area .toolbar");
+        var wrap = document.getElementById("toolbar-wrap");
+        var isFixed = document.body.classList.contains("editor-tall-image") || document.body.classList.contains("toolbar-floated");
+        if (t && isFixed) {
+            var rect = t.getBoundingClientRect();
+            toolbarSizeBeforeReset = {
+                width: Math.round(rect.width),
+                left: Math.round(rect.left),
+                top: Math.round(rect.top),
+                wrapMinHeight: wrap && wrap.style.minHeight ? wrap.style.minHeight : ""
+            };
+        } else {
+            toolbarSizeBeforeReset = null;
+        }
         closeResetModal();
         doReset();
     });
@@ -1401,6 +1632,124 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                 }
             });
+        });
+    }
+
+    var resizeTimeout = null;
+    window.addEventListener("resize", function() {
+        if (!workCanvas) return;
+        if (resizeTimeout) clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            resizeTimeout = null;
+            drawToDisplay();
+            syncToolbarPosition();
+        }, 150);
+    });
+    var toolbarEl = document.querySelector(".editor-area .toolbar");
+    var dragHandle = document.getElementById("toolbar-drag-handle");
+    if (dragHandle && toolbarEl) {
+        var dragX = 0, dragY = 0, startLeft = 0, startTop = 0;
+        function isDesktop() { return window.innerWidth >= 769; }
+        function isToolbarFixed() { return document.body.classList.contains("editor-tall-image") || document.body.classList.contains("toolbar-floated"); }
+        function clampToolbarPosition() {
+            if (!isToolbarFixed()) return;
+            var t = toolbarEl;
+            var tw = t.offsetWidth, th = t.offsetHeight;
+            var left = parseInt(t.style.left, 10) || 0;
+            var top = parseInt(t.style.top, 10) || 0;
+            left = Math.max(0, Math.min(window.innerWidth - tw, left));
+            top = Math.max(0, Math.min(window.innerHeight - th, top));
+            t.style.left = left + "px";
+            t.style.top = top + "px";
+        }
+        function onDragStart(e) {
+            if (!isDesktop()) return;
+            e.preventDefault();
+            document.querySelectorAll(".toolbar .custom-select-wrap.open").forEach(function(w) {
+                w.classList.remove("open");
+                var d = w.querySelector(".custom-select-dropdown");
+                if (d) d.style.cssText = "";
+            });
+            if (!isToolbarFixed()) {
+                document.body.classList.add("toolbar-floated");
+                var wrap = document.getElementById("toolbar-wrap");
+                var rect = wrap ? wrap.getBoundingClientRect() : toolbarEl.getBoundingClientRect();
+                toolbarEl.style.top = rect.top + "px";
+                toolbarEl.style.left = rect.left + "px";
+                toolbarEl.style.width = rect.width + "px";
+                if (wrap) wrap.style.minHeight = rect.height + "px";
+            }
+            toolbarUserMoved = true;
+            startLeft = parseInt(toolbarEl.style.left, 10) || toolbarEl.getBoundingClientRect().left;
+            startTop = parseInt(toolbarEl.style.top, 10) || toolbarEl.getBoundingClientRect().top;
+            dragX = (e.touches ? e.touches[0].clientX : e.clientX) - startLeft;
+            dragY = (e.touches ? e.touches[0].clientY : e.clientY) - startTop;
+            document.addEventListener("mousemove", onDragMove);
+            document.addEventListener("mouseup", onDragEnd);
+            document.addEventListener("touchmove", onDragMove, { passive: false });
+            document.addEventListener("touchend", onDragEnd);
+        }
+        function onDragMove(e) {
+            e.preventDefault();
+            var cx = e.touches ? e.touches[0].clientX : e.clientX;
+            var cy = e.touches ? e.touches[0].clientY : e.clientY;
+            var left = cx - dragX;
+            var top = cy - dragY;
+            var tw = toolbarEl.offsetWidth, th = toolbarEl.offsetHeight;
+            left = Math.max(0, Math.min(window.innerWidth - tw, left));
+            top = Math.max(0, Math.min(window.innerHeight - th, top));
+            toolbarEl.style.left = left + "px";
+            toolbarEl.style.top = top + "px";
+        }
+        function onDragEnd() {
+            document.removeEventListener("mousemove", onDragMove);
+            document.removeEventListener("mouseup", onDragEnd);
+            document.removeEventListener("touchmove", onDragMove);
+            document.removeEventListener("touchend", onDragEnd);
+            var resetBtn = document.getElementById("toolbar-reset-pos");
+            if (resetBtn) resetBtn.classList.add("visible");
+        }
+        function resetToolbarToDefault() {
+            if (!isDesktop()) return;
+            toolbarUserMoved = false;
+            var resetBtn = document.getElementById("toolbar-reset-pos");
+            if (resetBtn) resetBtn.classList.remove("visible");
+            if (document.body.classList.contains("toolbar-floated")) {
+                var savedW = toolbarEl.offsetWidth;
+                document.body.classList.remove("toolbar-floated");
+                var wr = document.getElementById("toolbar-wrap");
+                if (wr) wr.style.minHeight = "";
+                toolbarEl.style.top = "";
+                toolbarEl.style.left = "";
+                toolbarEl.style.width = "";
+                toolbarEl.style.minWidth = "";
+                if (savedW > 0) {
+                    toolbarEl.style.width = savedW + "px";
+                    toolbarEl.style.minWidth = savedW + "px";
+                }
+            } else if (document.body.classList.contains("editor-tall-image")) {
+                var savedW = toolbarEl.offsetWidth;
+                syncToolbarPosition();
+                if (savedW > 0) {
+                    toolbarEl.style.width = savedW + "px";
+                    toolbarEl.style.minWidth = savedW + "px";
+                }
+            }
+        }
+        var resetBtn = document.getElementById("toolbar-reset-pos");
+        if (resetBtn) {
+            resetBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                resetToolbarToDefault();
+            });
+        }
+        dragHandle.addEventListener("mousedown", onDragStart);
+        dragHandle.addEventListener("touchstart", onDragStart, { passive: false });
+        window.addEventListener("resize", function() {
+            if (toolbarUserMoved && isToolbarFixed()) {
+                clampToolbarPosition();
+            }
         });
     }
 });

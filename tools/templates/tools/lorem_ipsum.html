@@ -1,0 +1,63 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Lorem Ipsum Generator{% endblock %}
+{% block body_class %}web-seo lorem-ipsum{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+<style>
+.lorem-ipsum .form-group input { width: 100%; max-width: 100%; min-height: 44px; box-sizing: border-box; }
+.lorem-ipsum .form-group .text-tool-select { width: 100%; max-width: 100%; }
+/* Menu Type = stesso layout Username Generator (text-tool-select) */
+.lorem-ipsum .text-tool-select { position: relative; width: 100%; max-width: 100%; }
+.lorem-ipsum .text-tool-select-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; font-size: 1rem; border: 2px solid #ddd; border-radius: 12px; background: white; cursor: pointer; transition: border-color 0.2s, background 0.2s; text-align: left; }
+.lorem-ipsum .text-tool-select-trigger:hover { border-color: #007BFF; background: #f8fcff; }
+.lorem-ipsum .text-tool-select-trigger::after { content: ""; width: 0; height: 0; margin-left: 8px; flex-shrink: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #555; }
+.lorem-ipsum .text-tool-select-menu { position: absolute; top: 100%; left: 0; margin: 4px 0 0 0; padding: 6px 0; width: 100%; list-style: none; background: white; border: 2px solid #ddd; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 63, 127, 0.15); z-index: 100; display: none; }
+.lorem-ipsum .text-tool-select.open .text-tool-select-menu { display: block; }
+.lorem-ipsum .text-tool-select-menu li { padding: 10px 14px; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; }
+.lorem-ipsum .text-tool-select-menu li:first-child { border-radius: 10px 10px 0 0; }
+.lorem-ipsum .text-tool-select-menu li:last-child { border-radius: 0 0 10px 10px; }
+.lorem-ipsum .text-tool-select-menu li:hover { background: #e8f4fd; }
+.lorem-ipsum .text-tool-select-menu li.selected { background: #d0e8f9; font-weight: 600; }
+.lorem-ipsum .text-tool-select.open .text-tool-select-menu li.selected { display: none; }
+.lorem-ipsum .form-group input[type="number"] { -moz-appearance: textfield; }
+.lorem-ipsum .form-group input[type="number"]::-webkit-outer-spin-button,
+.lorem-ipsum .form-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.lorem-ipsum .result-area { white-space: pre-wrap; }
+.lorem-ipsum .button-group { width: 100%; justify-content: space-between; gap: 12px; }
+.lorem-ipsum .button-group button { min-width: 140px; }
+@media (max-width: 768px) { .lorem-ipsum .form-group input, .lorem-ipsum .form-group .text-tool-select { max-width: 100%; } .lorem-ipsum .text-tool-select-trigger { max-width: 100%; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Lorem Ipsum Generator</h1>
+    <p class="tool-desc">Generate placeholder text for mockups and drafts.</p>
+    <div class="form-group">
+        <label>Type</label>
+        <div class="text-tool-select" id="lorem-type-wrap" data-value="paragraphs">
+            <button type="button" class="text-tool-select-trigger">Paragraphs</button>
+            <ul class="text-tool-select-menu">
+                <li data-value="paragraphs" class="selected">Paragraphs</li>
+                <li data-value="sentences">Sentences</li>
+                <li data-value="words">Words</li>
+            </ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="lorem-count">Count</label>
+        <input type="number" id="lorem-count" value="3" min="1" max="1000000" placeholder="e.g. 1000" />
+    </div>
+    <div class="button-group">
+        <button type="button" id="btn-generate">Generate</button>
+        <button type="button" id="btn-copy">Copy</button>
+    </div>
+    <div id="result-area" class="result-area hidden"></div>
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="{% static 'tools/js/lorem_ipsum.js' %}"></script>
+{% endblock %}

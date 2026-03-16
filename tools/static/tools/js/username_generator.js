@@ -25,8 +25,27 @@ document.addEventListener("DOMContentLoaded", function() {
         return pick(words1) + randNum(10, 99);
     }
 
+    function normalizeName(str) {
+        if (str == null || typeof str !== "string") return "";
+        var s = str.trim().toLowerCase();
+        s = s.replace(/\s+/g, "").replace(/[\u200B-\u200D\uFEFF]/g, "").replace(/[^a-z0-9_]/g, "");
+        return s.length > 20 ? s.slice(0, 20) : s;
+    }
+
+    function genOneWithName(style, base) {
+        if (style === "word_number") return base + randNum(10, 999);
+        if (style === "word_number_at") return atChar + base + randNum(10, 999);
+        if (style === "word_at_number") return base + atChar + randNum(10, 999);
+        if (style === "word_at_word") return base + atChar + pick(words2);
+        if (style === "word_word") return base + "_" + pick(words2);
+        if (style === "adjective_noun") return base + "_" + pick(nouns);
+        if (style === "random_chars") return base + randStr(randNum(3, 6));
+        return base + randNum(10, 99);
+    }
+
     var styleWrap = document.getElementById("username-style-wrap");
     var countInput = document.getElementById("username-count");
+    var baseNameInput = document.getElementById("username-base-name");
     var resultArea = document.getElementById("result-area");
     var btnGen = document.getElementById("btn-generate");
     var btnCopy = document.getElementById("btn-copy");
@@ -59,8 +78,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var n = parseInt(countInput.value, 10) || 5;
         n = Math.min(5000, Math.max(1, n));
         var style = styleWrap ? styleWrap.dataset.value : "word_number";
+        var nameEl = document.getElementById("username-base-name");
+        var base = nameEl ? normalizeName(nameEl.value) : "";
         var list = [];
-        for (var i = 0; i < n; i++) list.push(genOne(style));
+        var seen = {};
+        for (var i = 0; i < n; i++) {
+            var u = base ? genOneWithName(style, base) : genOne(style);
+            if (seen[u]) { i--; continue; }
+            seen[u] = true;
+            list.push(u);
+        }
         resultArea.textContent = list.join("\n");
         resultArea.classList.remove("hidden");
     });

@@ -12,6 +12,9 @@
 <div class="container">
 
     <h1>Word & Character Counter</h1>
+    <p class="tool-help">
+        <a href="{% url 'help_text_tools' %}">Tips for preparing text for publishing or SEO</a>
+    </p>
 
     <form method="post">
         {% csrf_token %}
@@ -35,6 +38,10 @@
                 <p class="result-placeholder">Click a button below to count.</p>
             {% endif %}
         </div>
+
+        <p class="tool-desc" style="margin-top: 4px; text-align: center; font-size: 0.9rem; color: #64748b;">
+            Spaces are counted as separators between words.
+        </p>
 
         <div class="button-group">
             <button type="submit" name="count_words_btn">Count Words</button>

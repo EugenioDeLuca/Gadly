@@ -1,0 +1,39 @@
+{% extends "tools/base.html" %}
+{% load static %}
+
+{% block title %}JSON guide{% endblock %}
+{% block body_class %}text-tool help-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>JSON basics</h1>
+    <p class="tool-desc">How to write valid JSON and fix typical errors.</p>
+
+    <div class="help-section">
+        <h2>Valid JSON structure</h2>
+        <pre><code>{
+  "name": "John",
+  "age": 30,
+  "active": true
+}</code></pre>
+        <ul>
+            <li>Keys must be in double quotes.</li>
+            <li>No trailing commas after the last item.</li>
+            <li>Only these value types: string, number, boolean, null, object, array.</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>Typical errors</h2>
+        <p>Most errors come from missing quotes, commas, or using single quotes instead of double quotes.</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'json_formatter' %}" class="home-link">Back to JSON Formatter</a>
+    </div>
+</div>
+{% endblock %}
+

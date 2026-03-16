@@ -35,12 +35,15 @@
                 <label class="analysis-option"><input type="checkbox" name="opt" value="char_count" checked><span class="check-box"></span>Characters</label>
                 </div>
             </div>
-            <button type="submit" id="submit-file">Analyze</button>
         </form>
 
-        <div id="file-results"></div>
+        <div id="file-results" class="hidden" aria-live="polite"></div>
 
-        <div style="margin-top: 25px; text-align: center;">
+        <div class="button-group">
+            <button type="submit" id="submit-file" form="file-analyzer-form">Analyze</button>
+        </div>
+
+        <div class="home-link-wrap">
             <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>

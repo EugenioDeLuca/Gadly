@@ -88,7 +88,7 @@ body.dark-mode .login-input:focus {
     color: #c41e3a;
     padding: 12px 16px;
     border-radius: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 body.dark-mode .login-error {
@@ -100,7 +100,7 @@ body.dark-mode .login-error {
     display: block;
     font-size: 0.85rem;
     color: #dc3545;
-    margin-top: 6px;
+    margin-top: 12px;
 }
 
 .username-input-wrap {

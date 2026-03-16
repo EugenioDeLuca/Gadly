@@ -12,13 +12,15 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         const file = fileInput.files[0];
         if (!file) {
-            resultsContainer.innerHTML = '<p style="text-align:center;font-weight:bold;color:#dc3545;margin:0;padding:16px;width:100%;display:block;">Please select a file to analyze.</p>';
-            resultsContainer.classList.add("show");
+            resultsContainer.textContent = "Please select a file to analyze";
+            resultsContainer.classList.add("error");
+            resultsContainer.classList.remove("hidden");
             return;
         }
 
+        resultsContainer.classList.remove("error");
         resultsContainer.innerHTML = '<p class="loading-msg">Analyzing...</p>';
-        resultsContainer.classList.add("show");
+        resultsContainer.classList.remove("hidden");
 
         const formData = new FormData();
         formData.append("file", file);
@@ -30,7 +32,9 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                resultsContainer.innerHTML = '<p style="text-align:center;font-weight:bold;color:#dc3545;margin:0;padding:16px;width:100%;display:block;">' + data.error + '</p>';
+                resultsContainer.textContent = data.error.replace(/\.$/, "");
+                resultsContainer.classList.add("error");
+                resultsContainer.classList.remove("hidden");
                 return;
             }
             const checks = {};
@@ -59,11 +63,15 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!html.includes('result-card')) {
                 html = '<p class="loading-msg">Select at least one option to show in results.</p>';
             }
+            resultsContainer.classList.remove("error");
             resultsContainer.innerHTML = html;
+            resultsContainer.classList.remove("hidden");
         })
         .catch(function(error) {
             console.error("Error:", error);
-            resultsContainer.innerHTML = '<p style="text-align:center;font-weight:bold;color:#dc3545;margin:0;padding:16px;width:100%;display:block;">An error occurred while analyzing the file.</p>';
+            resultsContainer.textContent = "An error occurred while analyzing the file";
+            resultsContainer.classList.add("error");
+            resultsContainer.classList.remove("hidden");
         });
     });
 });

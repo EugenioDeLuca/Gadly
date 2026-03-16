@@ -4,8 +4,24 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnGenerate = document.getElementById("btn-generate");
     const canvas = document.getElementById("chart-canvas");
     const chartContainer = document.querySelector(".chart-container");
+    const resultArea = document.getElementById("data-viz-result");
 
     let chart = null;
+
+    // Auto-resize textarea based on content (desktop + mobile), with max height (~40 righe)
+    if (dataInput) {
+        const MAX_HEIGHT = 750; // px, circa 40 righe a seconda del device
+        const autoResize = function() {
+            dataInput.style.height = "auto";
+            const newHeight = Math.min(dataInput.scrollHeight, MAX_HEIGHT);
+            dataInput.style.height = newHeight + "px";
+            // Se superiamo il max, abilitiamo lo scroll verticale, altrimenti lo nascondiamo
+            dataInput.style.overflowY = (dataInput.scrollHeight > MAX_HEIGHT) ? "auto" : "hidden";
+        };
+        dataInput.addEventListener("input", autoResize);
+        // Inizializza l'altezza in base al placeholder/contenuto attuale
+        autoResize();
+    }
 
     function initChartTypeSelect() {
         const wrap = chartTypeSelect.closest(".chart-select-wrap");
@@ -76,8 +92,17 @@ document.addEventListener("DOMContentLoaded", function() {
     function generateChart() {
         const data = parseData(dataInput.value);
         if (data.labels.length === 0 || data.values.length === 0) {
-            alert("Please enter valid data (format: label,value per line)");
+            if (resultArea) {
+                resultArea.textContent = "Please enter valid data (format: label,value per line)";
+                resultArea.classList.add("error");
+                resultArea.classList.remove("hidden");
+                resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
             return;
+        }
+        if (resultArea) {
+            resultArea.classList.remove("error");
+            resultArea.classList.add("hidden");
         }
 
         if (chart) chart.destroy();
@@ -123,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         chart = new Chart(canvas, config);
         if (chartContainer) chartContainer.classList.remove("hidden");
+        if (resultArea) resultArea.classList.add("hidden");
     }
 
     function downloadChart() {

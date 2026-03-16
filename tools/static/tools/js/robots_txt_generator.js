@@ -7,8 +7,26 @@ document.addEventListener("DOMContentLoaded", function() {
     var btnCopy = document.getElementById("btn-copy");
     var resultArea = document.getElementById("result-area");
 
+    function showError(msg) {
+        resultArea.classList.remove("hidden");
+        resultArea.classList.add("error");
+        resultArea.textContent = msg;
+    }
+
+    function showResult(text) {
+        resultArea.classList.remove("hidden");
+        resultArea.classList.remove("error");
+        resultArea.textContent = text;
+    }
+
     btnGenerate.addEventListener("click", function() {
-        var ua = (userAgent.value || "*").trim();
+        var uaRaw = (userAgent.value || "").trim();
+        var ua = uaRaw;
+        // Consider empty or default "*" as "not provided" – user must explicitly set it
+        if (!ua || ua === "*") {
+            showError("Please enter a User-agent before generating robots.txt");
+            return;
+        }
         var dis = (disallow.value || "").trim().split(/\r?\n/).filter(Boolean).map(function(s) { return s.trim(); });
         var al = (allow.value || "").trim().split(/\r?\n/).filter(Boolean).map(function(s) { return s.trim(); });
         var sm = (sitemap.value || "").trim();
@@ -21,20 +39,36 @@ document.addEventListener("DOMContentLoaded", function() {
             if (p) lines.push("Allow: " + p);
         });
         if (sm) lines.push("Sitemap: " + sm);
-        resultArea.textContent = lines.join("\n");
-        resultArea.classList.remove("hidden");
+        showResult(lines.join("\n"));
     });
 
     btnCopy.addEventListener("click", function() {
         var text = resultArea.textContent;
-        if (!text) return;
-        navigator.clipboard.writeText(text).then(function() {
-            btnCopy.textContent = "Copied!";
-            btnCopy.classList.add("copied");
-            setTimeout(function() {
-                btnCopy.textContent = "Copy";
-                btnCopy.classList.remove("copied");
-            }, 1500);
-        });
+        if (!text || resultArea.classList.contains("hidden") || resultArea.classList.contains("error")) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                btnCopy.textContent = "Copied!";
+                btnCopy.classList.add("copied");
+                setTimeout(function() {
+                    btnCopy.textContent = "Copy";
+                    btnCopy.classList.remove("copied");
+                }, 2000);
+            }).catch(function() {});
+        } else {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+                btnCopy.textContent = "Copied!";
+                btnCopy.classList.add("copied");
+                setTimeout(function() {
+                    btnCopy.textContent = "Copy";
+                    btnCopy.classList.remove("copied");
+                }, 2000);
+            } catch (e) {}
+            document.body.removeChild(ta);
+        }
     });
 });

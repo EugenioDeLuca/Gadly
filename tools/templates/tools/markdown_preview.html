@@ -1,0 +1,84 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% block title %}Markdown Preview{% endblock %}
+{% block body_class %}text-tool markdown-preview{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.text-tool.markdown-preview .container { max-width: 900px; }
+.text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
+.text-tool.markdown-preview .preview-panel { flex: 1; min-width: 280px; }
+.text-tool.markdown-preview .preview-panel label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
+.text-tool.markdown-preview .preview-panel textarea { min-height: 280px; height: auto; resize: none; overflow-y: auto; }
+.text-tool.markdown-preview .preview-output { min-height: 280px; padding: 16px 20px; border-radius: 12px; border: 2px solid #ddd; background: #f8fcff; overflow: auto; font-size: 1rem; line-height: 1.6; box-sizing: border-box; }
+.text-tool.markdown-preview .preview-output h1, .text-tool.markdown-preview .preview-output h2, .text-tool.markdown-preview .preview-output h3 { margin-top: 1em; margin-bottom: 0.5em; color: #003f7f; }
+.text-tool.markdown-preview .preview-output pre { background: #ecf0f1; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0.5em 0; }
+.text-tool.markdown-preview .preview-output code { background: #ecf0f1; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+.text-tool.markdown-preview .preview-output ul, .text-tool.markdown-preview .preview-output ol { margin: 0.5em 0; padding-left: 1.5em; }
+.text-tool.markdown-preview .preview-output p { margin: 0.5em 0; }
+.text-tool.markdown-preview .preview-output .placeholder { color: #999; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Markdown Preview</h1>
+    <p class="tool-desc">Write Markdown on the left and see the rendered result on the right.</p>
+    <div class="text-tool-row preview-layout">
+        <div class="preview-panel">
+            <label for="md-input">Markdown</label>
+            <textarea id="md-input" placeholder="Type **bold**, *italic*, # headings, - lists, [links](url)..." rows="16"># Hello
+
+Write **bold** or *italic* text.
+
+- List item
+- Another item
+
+[Link](https://example.com)</textarea>
+        </div>
+        <div class="preview-panel">
+            <label>Preview</label>
+            <div id="md-preview" class="preview-output placeholder">Preview will appear here.</div>
+        </div>
+    </div>
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+    var input = document.getElementById('md-input');
+    var preview = document.getElementById('md-preview');
+    var MIN_H = 280;
+
+    function resizeTextarea() {
+        input.style.height = 'auto';
+        var h = Math.max(MIN_H, input.scrollHeight);
+        input.style.height = h + 'px';
+        preview.style.minHeight = h + 'px';
+    }
+
+    function update() {
+        var raw = input.value || '';
+        resizeTextarea();
+        if (!raw) {
+            preview.textContent = 'Preview will appear here.';
+            preview.classList.add('placeholder');
+            return;
+        }
+        preview.classList.remove('placeholder');
+        try {
+            preview.innerHTML = (typeof marked !== 'undefined' && marked.parse) ? marked.parse(raw) : raw.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        } catch (e) {
+            preview.textContent = 'Error rendering preview.';
+        }
+    }
+
+    input.addEventListener('input', update);
+    input.addEventListener('change', update);
+    update();
+})();
+</script>
+{% endblock %}

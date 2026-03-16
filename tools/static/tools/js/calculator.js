@@ -14,17 +14,31 @@ document.addEventListener("DOMContentLoaded", function() {
     var pctValue = document.getElementById("pct-value");
     var pctOf = document.getElementById("pct-of");
     var resultPct = document.getElementById("result-pct");
+    var resultPctMobile = document.getElementById("result-pct-mobile");
+
+    function setPctResult(text, isError) {
+        [resultPct, resultPctMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
 
     document.getElementById("btn-pct").addEventListener("click", function() {
         var perc = parseFloat(pctValue.value);
         var of = parseFloat(pctOf.value);
         if (isNaN(perc) || isNaN(of)) {
-            resultPct.textContent = "Please enter valid values.";
+            setPctResult("Please enter valid values", true);
         } else {
             var res = (perc / 100) * of;
-            resultPct.innerHTML = perc + "% of " + of + " = <strong>" + res.toFixed(2) + "</strong>";
+            setPctResult(perc + "% of " + of + " = <strong>" + res.toFixed(2) + "</strong>", false);
         }
-        resultPct.classList.add("show");
     });
 
     // Custom select init (all calc-custom-select)
@@ -194,9 +208,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var rateVal = ivaRateWrap ? ivaRateWrap.dataset.value : "22";
         var rate = parseFloat(rateVal) / 100;
         var amt = parseFloat(ivaAmount.value);
-        if (isNaN(amt)) {
-            resultIva.textContent = "Please enter a valid amount.";
+        if (isNaN(amt) || amt < 0) {
+            resultIva.textContent = "Please enter a valid amount";
+            resultIva.classList.add("error");
         } else {
+            resultIva.classList.remove("error");
             var vat = amt * rate;
             var gross = amt + vat;
             resultIva.innerHTML = "Net amount: " + amt.toFixed(2) + " €<br>" +
@@ -210,9 +226,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var rateVal = ivaRateWrap ? ivaRateWrap.dataset.value : "22";
         var rate = parseFloat(rateVal) / 100;
         var amt = parseFloat(ivaAmount.value);
-        if (isNaN(amt)) {
-            resultIva.textContent = "Please enter a valid amount.";
+        if (isNaN(amt) || amt < 0) {
+            resultIva.textContent = "Please enter a valid amount";
+            resultIva.classList.add("error");
         } else {
+            resultIva.classList.remove("error");
             var net = amt / (1 + rate);
             var vat = amt - net;
             resultIva.innerHTML = "Gross amount: " + amt.toFixed(2) + " €<br>" +
@@ -226,6 +244,21 @@ document.addEventListener("DOMContentLoaded", function() {
     var salaryRal = document.getElementById("salary-ral");
     var salaryMonthsWrap = document.getElementById("salary-months-wrap");
     var resultSalary = document.getElementById("result-salary");
+    var resultSalaryMobile = document.getElementById("result-salary-mobile");
+
+    function setSalaryResult(text, isError) {
+        [resultSalary, resultSalaryMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
 
     function calcNetSalary(ral) {
         var imponibile = ral;
@@ -247,19 +280,19 @@ document.addEventListener("DOMContentLoaded", function() {
         var ral = parseFloat(salaryRal.value);
         var months = parseInt(salaryMonthsWrap ? salaryMonthsWrap.dataset.value : "12", 10);
         if (isNaN(ral) || ral <= 0) {
-            resultSalary.textContent = "Please enter a valid gross salary.";
+            setSalaryResult("Please enter a valid gross salary", true);
         } else {
             var res = calcNetSalary(ral);
             var netMonthly = res.netto / months;
-            resultSalary.innerHTML =
+            var html =
                 "Gross annual: " + ral.toFixed(0) + " €<br>" +
                 "Social security (approx.): " + res.inps.toFixed(0) + " €<br>" +
                 "Income tax (estimate): " + res.irpef.toFixed(0) + " €<br>" +
                 "<strong>Net annual: " + res.netto.toFixed(0) + " €</strong><br>" +
-                "<strong>Net monthly (" + months + " payments): " + netMonthly.toFixed(2) + " €</strong>";
-            resultSalary.innerHTML += '<div class="calc-result-note">Indicative estimate for Italy. Does not include deductions, regional/municipal taxes, or other charges.</div>';
+                "<strong>Net monthly (" + months + " payments): " + netMonthly.toFixed(2) + " €</strong>" +
+                '<div class="calc-result-note">Indicative estimate for Italy. Does not include deductions, regional/municipal taxes, or other charges.</div>';
+            setSalaryResult(html, false);
         }
-        resultSalary.classList.add("show");
     });
 
     // === Interest (simple / compound) ===
@@ -272,8 +305,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var res = document.getElementById("result-interest");
 
         if (isNaN(p) || isNaN(r) || isNaN(t) || p <= 0) {
-            res.textContent = "Please enter valid values.";
+            res.textContent = "Please enter valid values";
+            res.classList.add("error");
         } else {
+            res.classList.remove("error");
             var interest, total;
             if (type === "simple") {
                 interest = p * r * t;
@@ -292,27 +327,46 @@ document.addEventListener("DOMContentLoaded", function() {
     // === Currency (Frankfurter API - ECB rates, no API key) ===
     var currFromWrap = document.getElementById("curr-from-wrap");
     var currToWrap = document.getElementById("curr-to-wrap");
+    var resultCurrency = document.getElementById("result-currency");
+    var resultCurrencyMobile = document.getElementById("result-currency-mobile");
+
+    function setCurrencyResult(text, isError) {
+        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
     document.getElementById("btn-currency").addEventListener("click", function() {
         var amt = parseFloat(document.getElementById("curr-amount").value);
         var fromCurr = currFromWrap ? currFromWrap.dataset.value : "EUR";
         var toCurr = currToWrap ? currToWrap.dataset.value : "USD";
-        var res = document.getElementById("result-currency");
+        var res = resultCurrency;
         var btn = document.getElementById("btn-currency");
 
         if (isNaN(amt) || amt < 0) {
-            res.textContent = "Please enter a valid amount.";
-            res.classList.add("show");
+            setCurrencyResult("Please enter a valid amount", true);
             return;
         }
         if (fromCurr === toCurr) {
-            res.textContent = "Select two different currencies.";
-            res.classList.add("show");
+            setCurrencyResult("Select two different currencies.", true);
             return;
         }
 
         btn.disabled = true;
         btn.textContent = "Loading…";
-        res.classList.remove("show");
+        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.remove("show");
+            el.classList.remove("error");
+        });
 
         var url = "https://api.frankfurter.app/latest?amount=" + amt + "&from=" + fromCurr + "&to=" + toCurr;
         fetch(url)
@@ -321,16 +375,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 var converted = data.rates && data.rates[toCurr] != null ? data.rates[toCurr] : null;
                 var date = data.date || "";
                 if (converted !== null) {
-                    res.innerHTML = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
-                    if (date) res.innerHTML += '<div class="calc-result-note">Rate of ' + date + ' (ECB).</div>';
+                    var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
+                    if (date) html += '<div class="calc-result-note">Rate of ' + date + ' (ECB).</div>';
+                    setCurrencyResult(html, false);
                 } else {
-                    res.textContent = "Could not get exchange rate.";
+                    setCurrencyResult("Could not get exchange rate.", true);
                 }
-                res.classList.add("show");
             })
             .catch(function() {
-                res.textContent = "Error fetching rates. Check your connection.";
-                res.classList.add("show");
+                setCurrencyResult("Error fetching rates. Check your connection.", true);
             })
             .finally(function() {
                 btn.disabled = false;
@@ -339,14 +392,29 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // === Loan / Mortgage ===
+    var resultLoan = document.getElementById("result-loan");
+    var resultLoanMobile = document.getElementById("result-loan-mobile");
+
+    function setLoanResult(text, isError) {
+        [resultLoan, resultLoanMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
     document.getElementById("btn-loan").addEventListener("click", function() {
         var P = parseFloat(document.getElementById("loan-principal").value);
         var r = parseFloat(document.getElementById("loan-rate").value) / 100 / 12;
         var n = parseInt(document.getElementById("loan-years").value, 10) * 12;
-        var res = document.getElementById("result-loan");
-
         if (isNaN(P) || isNaN(r) || isNaN(n) || P <= 0 || n <= 0) {
-            res.textContent = "Please enter valid values.";
+            setLoanResult("Please enter valid values", true);
         } else {
             var M;
             if (r === 0) {
@@ -356,66 +424,114 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             var totalPaid = M * n;
             var totalInterest = totalPaid - P;
-            res.innerHTML = "<strong>Monthly payment: " + M.toFixed(2) + " €</strong><br>" +
+            var html = "<strong>Monthly payment: " + M.toFixed(2) + " €</strong><br>" +
                 "Total paid: " + totalPaid.toFixed(2) + " €<br>" +
                 "Total interest: " + totalInterest.toFixed(2) + " €";
+            setLoanResult(html, false);
         }
-        res.classList.add("show");
     });
 
     // === Discount ===
+    var resultDiscount = document.getElementById("result-discount");
+    var resultDiscountMobile = document.getElementById("result-discount-mobile");
+
+    function setDiscountResult(text, isError) {
+        [resultDiscount, resultDiscountMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
     document.getElementById("btn-discount").addEventListener("click", function() {
         var price = parseFloat(document.getElementById("disc-price").value);
         var pct = parseFloat(document.getElementById("disc-pct").value) / 100;
-        var res = document.getElementById("result-discount");
 
         if (isNaN(price) || isNaN(pct) || price < 0 || pct < 0 || pct > 1) {
-            res.textContent = "Please enter valid values.";
+            setDiscountResult("Please enter valid values", true);
         } else {
             var discount = price * pct;
             var finalPrice = price - discount;
-            res.innerHTML = "Original: " + price.toFixed(2) + " €<br>" +
+            var html = "Original: " + price.toFixed(2) + " €<br>" +
                 "Discount (" + (pct * 100) + "%): -" + discount.toFixed(2) + " €<br>" +
                 "<strong>Final price: " + finalPrice.toFixed(2) + " €</strong>";
+            setDiscountResult(html, false);
         }
-        res.classList.add("show");
     });
 
     // === Margin / Markup ===
+    var resultMargin = document.getElementById("result-margin");
+    var resultMarginMobile = document.getElementById("result-margin-mobile");
+
+    function setMarginResult(text, isError) {
+        [resultMargin, resultMarginMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
     document.getElementById("btn-margin").addEventListener("click", function() {
         var cost = parseFloat(document.getElementById("margin-cost").value);
         var pct = parseFloat(document.getElementById("margin-pct").value) / 100;
-        var res = document.getElementById("result-margin");
 
         if (isNaN(cost) || isNaN(pct) || cost < 0 || pct < 0 || pct >= 1) {
-            res.textContent = "Please enter valid values. Margin must be < 100%.";
+            setMarginResult("Please enter valid values. Margin must be < 100%", true);
         } else {
             var sellingPrice = cost / (1 - pct);
             var marginAmount = sellingPrice - cost;
-            res.innerHTML = "Cost: " + cost.toFixed(2) + " €<br>" +
+            var html = "Cost: " + cost.toFixed(2) + " €<br>" +
                 "Margin (" + (pct * 100) + "%): +" + marginAmount.toFixed(2) + " €<br>" +
                 "<strong>Selling price: " + sellingPrice.toFixed(2) + " €</strong>";
+            setMarginResult(html, false);
         }
-        res.classList.add("show");
     });
 
     // === Split bill ===
+    var resultSplit = document.getElementById("result-split");
+    var resultSplitMobile = document.getElementById("result-split-mobile");
+
+    function setSplitResult(text, isError) {
+        [resultSplit, resultSplitMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
     document.getElementById("btn-split").addEventListener("click", function() {
         var total = parseFloat(document.getElementById("split-total").value);
         var people = parseInt(document.getElementById("split-people").value, 10);
         var tipPct = parseFloat(document.getElementById("split-tip").value) || 0;
-        var res = document.getElementById("result-split");
 
         if (isNaN(total) || isNaN(people) || total < 0 || people < 1) {
-            res.textContent = "Please enter valid values.";
+            setSplitResult("Please enter valid values", true);
         } else {
             var withTip = total * (1 + tipPct / 100);
             var perPerson = withTip / people;
-            res.innerHTML = "Total: " + total.toFixed(2) + " €<br>" +
+            var html = "Total: " + total.toFixed(2) + " €<br>" +
                 (tipPct > 0 ? "With " + tipPct + "% tip: " + withTip.toFixed(2) + " €<br>" : "") +
                 "<strong>Per person (" + people + "): " + perPerson.toFixed(2) + " €</strong>";
+            setSplitResult(html, false);
         }
-        res.classList.add("show");
     });
 
 });

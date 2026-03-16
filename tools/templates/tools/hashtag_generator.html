@@ -4,6 +4,25 @@
 {% block body_class %}text-tool hashtag-gen{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.hashtag-gen .button-group button { min-width: 140px; }
+/* Solo desktop: input fino in fondo al container, Copy tutto a destra */
+@media (min-width: 769px) {
+    .hashtag-gen .form-group input {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .hashtag-gen .button-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .hashtag-gen .button-group #btn-copy { margin-left: auto; }
+}
+@media (max-width: 768px) {
+    .hashtag-gen .button-group { justify-content: space-between; }
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">

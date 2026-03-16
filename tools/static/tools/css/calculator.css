@@ -170,6 +170,22 @@ body.single-calc .calc-panel h2 {
     overflow-y: auto;
 }
 
+/* Interest Type: nel menu mostra solo l’opzione non selezionata (Simple/Compound) */
+#int-type-wrap.open .calc-select-menu li.selected {
+    display: none;
+}
+#int-type-wrap.open .calc-select-menu li:not(.selected) {
+    border-radius: 10px;
+}
+
+/* Payments per year (Net Salary): nel menu non mostrare il valore gia selezionato */
+#salary-months-wrap.open .calc-select-menu li.selected {
+    display: none;
+}
+#salary-months-wrap.open .calc-select-menu li:not(.selected) {
+    border-radius: 10px;
+}
+
 .calc-select-menu li {
     padding: 10px 14px;
     font-size: 0.95rem;
@@ -253,7 +269,8 @@ body.single-calc .calc-panel h2 {
 #panel-loan .calc-row,
 #panel-discount .calc-row,
 #panel-margin .calc-row,
-#panel-split .calc-row {
+#panel-split .calc-row,
+#panel-salary .calc-row {
     align-items: flex-end;
 }
 
@@ -262,10 +279,107 @@ body.single-calc .calc-panel h2 {
 }
 
 @media (min-width: 769px) {
+    /* Desktop: stesse modifiche degli input come in mobile (altezza 44px, allineamento al bottone) */
+    .calc-group input,
+    .calc-group select,
+    .calc-select-trigger {
+        min-height: 44px;
+        height: 44px;
+        box-sizing: border-box;
+    }
+    .calc-group select {
+        height: 44px;
+    }
+    /* Percentage: riga unica, bottone leggermente più corto per entrare */
+    #panel-percent .calc-row .calc-group {
+        width: 260px;
+        max-width: 260px;
+        flex: 0 0 260px;
+    }
+    #panel-percent .calc-row .calc-group input {
+        max-width: 100%;
+    }
+    #panel-percent .calc-row .calc-btn {
+        padding: 10px 14px;
+        flex: 1 1 160px;
+        min-width: 160px;
+        height: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+        border: 2px solid transparent;
+        line-height: 1.2;
+    }
+    /* Net Salary: desktop – tutti gli elementi su una riga, bottone allineato in altezza agli input */
+    #panel-salary .calc-row {
+        align-items: flex-start;
+    }
+    #panel-salary .calc-row .calc-group {
+        width: 260px;
+        max-width: 260px;
+        flex: 0 0 260px;
+    }
+    #panel-salary .calc-row .calc-group input,
+    #panel-salary .calc-row .calc-group .calc-custom-select,
+    #panel-salary .calc-row .calc-group .calc-select-trigger {
+        max-width: 100%;
+    }
+    /* Allineamento: label è .9rem + 6px, così il bottone parte alla stessa altezza dell’input */
+    #panel-salary .calc-row .calc-btn {
+        padding: 10px 14px;
+        flex: 1 1 160px;
+        min-width: 160px;
+        height: 44px;
+        min-height: 44px;
+        margin-top: calc(0.85em + 6px);
+        box-sizing: border-box;
+        border: 2px solid transparent;
+        line-height: 1.2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    /* Interest: desktop – input a tutta larghezza container, bottone Calculate al centro */
+    #panel-interest .calc-group input,
+    #panel-interest .calc-custom-select,
+    #panel-interest .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-interest .calc-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    #panel-interest .calc-row .calc-group {
+        width: 100%;
+        max-width: 100%;
+    }
+    #panel-interest .calc-btn {
+        display: block;
+        width: auto;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* Currency desktop: riga unica con bottone allineato agli input sulla stessa riga */
+    #panel-currency .calc-currency-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    #panel-currency .calc-currency-wrap .calc-currency-row {
+        margin-bottom: 0;
+        flex: 1 1 auto; /* occupa tutto lo spazio disponibile a sinistra */
+    }
     #panel-currency .calc-currency-wrap .calc-btn {
         width: 160px;
         max-width: 160px;
         min-width: 160px;
+        margin-left: auto;
+        margin-top: calc(1.2em + 6px); /* stessa altezza di partenza degli input */
         box-sizing: border-box;
     }
     #panel-split .calc-row {
@@ -287,6 +401,90 @@ body.single-calc .calc-panel h2 {
         max-width: 160px;
         box-sizing: border-box;
     }
+    /* Loan desktop: bottone Calculate in fondo al contenitore, allineato agli input */
+    #panel-loan .calc-row .calc-btn {
+        margin-left: auto;
+        min-width: 140px;
+    }
+    /* Discount desktop: Original price, Discount %, Calculate stessa larghezza sulla stessa riga */
+    #panel-discount .calc-row {
+        flex-wrap: nowrap;
+    }
+    #panel-discount .calc-row .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    #panel-discount .calc-row .calc-group input {
+        max-width: 100%;
+    }
+    #panel-discount .calc-row .calc-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    /* Margin desktop: Cost, Margin %, Calculate stessa larghezza sulla stessa riga */
+    #panel-margin .calc-row {
+        flex-wrap: nowrap;
+    }
+    #panel-margin .calc-row .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    #panel-margin .calc-row .calc-group input {
+        max-width: 100%;
+    }
+    #panel-margin .calc-row .calc-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    /* Split bill desktop: Total, People, Tip %, Split stessa larghezza sulla stessa riga */
+    #panel-split .calc-row {
+        flex-wrap: nowrap;
+    }
+    #panel-split .calc-row .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    #panel-split .calc-row .calc-group input {
+        max-width: 100%;
+    }
+    #panel-split .calc-row .calc-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    /* IVA (VAT): input a tutta larghezza container, bottoni Net/Gross allineati a destra */
+    #panel-iva .calc-group input,
+    #panel-iva .calc-custom-select,
+    #panel-iva .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-iva .calc-row {
+        justify-content: space-between;
+    }
+}
+
+/* IVA: distanza uniforme tra risultato e bottoni in tutte le viste */
+#panel-iva #result-iva + .calc-row {
+    margin-top: 12px;
+}
+
+/* Net Salary: niente margine extra sotto la riga (desktop+mobile) */
+#panel-salary .calc-row {
+    margin-bottom: 0;
+}
+/* Net Salary: i gruppi input non aggiungono spazio sotto, ci pensa il gap / error box */
+#panel-salary .calc-row .calc-group {
+    margin-bottom: 0;
 }
 
 #panel-percent .calc-row .calc-group,
@@ -311,7 +509,7 @@ body.single-calc .calc-panel h2 {
 
 .calc-btn {
     padding: 10px 24px;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
     background: #003f7f;
     color: white;
@@ -321,27 +519,162 @@ body.single-calc .calc-panel h2 {
     transition: transform 0.2s, background 0.2s;
     min-height: 44px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Fine tuning freccia VAT solo nei bottoni IVA */
+#panel-iva .vat-arrow {
+    display: inline-block;
+    transform: translateY(-1px);
 }
 
 .calc-btn:hover {
     background: #0056b3;
-    transform: scale(1.05);
+    transform: scale(1.03);
+}
+
+#panel-salary .calc-btn,
+#panel-interest .calc-btn {
+    width: 100%;
+    max-width: 280px;
+    padding: 10px 14px;
+    box-sizing: border-box;
 }
 
 .calc-result {
-    margin-top: 16px;
-    padding: 16px 20px;
+    margin-top: 12px;
+    padding: 10px 16px;
     background: white;
     border-radius: 12px;
     border: 2px solid #d0e8f9;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #003f7f;
     display: none;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+
+/* Percentage / Net Salary / Currency / Loan / Discount / Margin / Split: versione mobile sopra al bottone */
+.calc-result-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #result-pct,
+    #result-salary,
+    #result-currency,
+    #result-loan,
+    #result-discount,
+    #result-margin,
+    #result-split {
+        display: none;
+    }
+    /* I contenitori mobile restano nascosti finché non ricevono .show */
+    /* Ordine esplicito in Percentage: input -> risultato -> bottone */
+    #panel-percent .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-percent .calc-row #result-pct-mobile {
+        order: 1;
+    }
+    #panel-percent .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Net Salary: input -> risultato -> bottone */
+    #panel-salary .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-salary .calc-row #result-salary-mobile {
+        order: 1;
+    }
+    #panel-salary .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Currency: input -> risultato -> bottone */
+    #panel-currency .calc-currency-row .calc-group {
+        order: 0;
+    }
+    #panel-currency .calc-currency-row #result-currency-mobile {
+        order: 1;
+    }
+    #panel-currency .calc-currency-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Loan: input -> risultato -> bottone */
+    #panel-loan .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-loan .calc-row #result-loan-mobile {
+        order: 1;
+    }
+    #panel-loan .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Discount: input -> risultato -> bottone */
+    #panel-discount .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-discount .calc-row #result-discount-mobile {
+        order: 1;
+    }
+    #panel-discount .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Margin: input -> risultato -> bottone */
+    #panel-margin .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-margin .calc-row #result-margin-mobile {
+        order: 1;
+    }
+    #panel-margin .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Ordine esplicito in Split bill: input -> risultato -> bottone */
+    #panel-split .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-split .calc-row #result-split-mobile {
+        order: 1;
+    }
+    #panel-split .calc-row .calc-btn {
+        order: 2;
+    }
+    /* Net Salary mobile: distanza 12px fra Payments per year, errore e bottone */
+    #panel-salary .calc-row .calc-group:not(:last-of-type) {
+        margin-bottom: 12px;
+    }
+    #panel-salary #result-salary-mobile {
+        margin-top: 0;        /* distanza sopra gestita dal margin-bottom dell'ultimo input (12px) */
+        margin-bottom: 12px;  /* 12px tra errore e bottone */
+    }
+}
+
+/* Desktop: nascondi sempre il box mobile anche quando ha .show */
+@media (min-width: 769px) {
+    #result-salary-mobile,
+    #result-pct-mobile,
+    #result-currency-mobile,
+    #result-loan-mobile,
+    #result-discount-mobile,
+    #result-margin-mobile,
+    #result-split-mobile {
+        display: none !important;
+    }
 }
 
 .calc-result.show {
     display: block;
+}
+
+.calc-result.error {
+    color: #c00;
+    text-align: center;
+    border-color: #fcc;
+    background: #fff5f5;
 }
 
 .calc-result-note {
@@ -349,6 +682,11 @@ body.single-calc .calc-panel h2 {
     font-weight: normal;
     color: #666;
     margin-top: 8px;
+}
+
+/* Distanza uniforme tra risultato e bottone nel pannello Interest */
+#panel-interest #btn-interest {
+    margin-top: 12px;
 }
 
 .calc-home {
@@ -369,31 +707,92 @@ body.single-calc .calc-panel h2 {
     .calc-group select {
         max-width: 100%;
     }
-    #panel-currency .calc-currency-wrap {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
-    #panel-currency .calc-currency-wrap .calc-btn {
+    /* VAT: mobile – input/select come Amount, bottoni uno a sinistra uno a destra */
+    #panel-iva .calc-group input,
+    #panel-iva .calc-custom-select,
+    #panel-iva .calc-select-trigger {
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
-    #panel-currency .calc-currency-row {
+    #panel-iva .calc-row {
+        justify-content: space-between;
+    }
+    /* Net Salary: mobile – input/select e bottone stessa larghezza (100%) */
+    #panel-salary .calc-group input,
+    #panel-salary .calc-custom-select,
+    #panel-salary .calc-select-trigger {
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-salary .calc-btn {
+        width: 100%;
+        max-width: 100%;
+    }
+    /* Interest: mobile – input/select e bottone stessa larghezza (100%), row in colonna */
+    #panel-interest .calc-row {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
+    #panel-interest .calc-group input,
+    #panel-interest .calc-custom-select,
+    #panel-interest .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-interest .calc-btn {
+        width: 100%;
+        max-width: 100%;
+    }
+    /* Currency: mobile – stesso layout degli altri, input EUR dentro il container */
+    #panel-currency .calc-currency-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        min-width: 0;
+    }
+    #panel-currency .calc-currency-wrap .calc-btn {
+        width: 100%;
+        max-width: 100%;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    #panel-currency .calc-currency-row {
+        width: 100%;
+        min-width: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    #panel-currency .calc-currency-row .calc-group {
+        min-width: 0;
+    }
     #panel-currency .calc-currency-input-wrap {
+        flex-direction: column;
         max-width: 100%;
         width: 100%;
-    }
-    #panel-currency .calc-currency-input-wrap input,
-    #panel-currency .calc-currency-input-wrap .calc-custom-select {
-        max-width: 100%;
+        min-width: 0;
+        gap: 12px;
+        box-sizing: border-box;
     }
     #panel-currency .calc-currency-input-wrap input {
-        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+    #panel-currency .calc-currency-input-wrap .calc-custom-select,
+    #panel-currency .calc-currency-input-wrap .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+    }
+    #panel-currency .calc-currency-input-wrap .calc-select-trigger {
+        min-height: 44px;
+        box-sizing: border-box;
     }
     #panel-currency #curr-to-wrap {
         margin-left: 0;
@@ -403,31 +802,43 @@ body.single-calc .calc-panel h2 {
     }
     #panel-currency .calc-group-curr-to .calc-custom-select,
     #panel-currency .calc-group-curr-to .calc-select-trigger {
-        max-width: 100%;
         width: 100%;
+        max-width: 100%;
+        min-height: 44px;
+        box-sizing: border-box;
     }
     #panel-currency .calc-group-curr-to label {
         text-align: left;
     }
-    #panel-percent .calc-row {
-        display: grid;
-        grid-template-columns: 280px 280px;
-        gap: 16px;
-        align-items: end;
-    }
-    #panel-percent .calc-row .calc-btn {
-        grid-column: 1;
+    #panel-percent .calc-row,
+    #panel-salary .calc-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0; /* nessun gap automatico: gli spazi sono gestiti solo via margin */
     }
     #panel-percent .calc-row .calc-group input {
         height: 44px;
         min-height: 44px;
         width: 100%;
-        max-width: 280px;
+        max-width: 100%;
         box-sizing: border-box;
     }
     #panel-percent .calc-row .calc-btn {
         height: 44px;
         width: 100%;
+        max-width: 100%;
+    }
+    #panel-salary .calc-row .calc-group input,
+    #panel-salary .calc-row .calc-group .calc-custom-select,
+    #panel-salary .calc-row .calc-group .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-salary .calc-row .calc-btn {
+        height: 44px;
+        width: 100%;
+        max-width: 100%;
     }
     #panel-loan .calc-row {
         flex-direction: column;
@@ -489,33 +900,17 @@ body.single-calc .calc-panel h2 {
         margin: 12px 10px;
         padding: 20px 16px;
     }
-    #panel-currency .calc-currency-input-wrap {
-        flex-direction: column;
-        max-width: 100%;
-        width: 100%;
-    }
     #panel-currency .calc-currency-input-wrap input {
-        min-width: 0;
-        width: 100%;
         font-size: 16px;
         min-height: 48px;
     }
     #panel-currency .calc-currency-input-wrap .calc-custom-select,
     #panel-currency .calc-currency-input-wrap .calc-select-trigger {
-        width: 100%;
-        max-width: 100%;
+        min-height: 48px;
     }
     #panel-currency .calc-group-curr-to .calc-custom-select,
     #panel-currency .calc-group-curr-to .calc-select-trigger {
-        width: 100%;
-        max-width: 100%;
         min-height: 48px;
-    }
-    #panel-currency .calc-currency-row {
-        flex-direction: column;
-    }
-    #panel-currency #curr-to-wrap {
-        margin-left: 0;
     }
     .calculators h1 {
         font-size: 1.4em;
@@ -538,14 +933,21 @@ body.single-calc .calc-panel h2 {
         flex-direction: column;
         align-items: stretch;
     }
-    #panel-percent .calc-row {
-        grid-template-columns: 1fr;
-    }
-    #panel-currency .calc-currency-row {
-        grid-template-columns: 1fr;
-    }
     #panel-percent .calc-row .calc-group input {
         max-width: 100%;
+        min-height: 48px;
+        font-size: 16px;
+    }
+    #panel-salary .calc-group input,
+    #panel-salary .calc-select-trigger {
+        min-height: 48px;
+        font-size: 16px;
+    }
+    #panel-interest .calc-group input,
+    #panel-interest .calc-row .calc-group input,
+    #panel-interest .calc-select-trigger {
+        min-height: 48px;
+        font-size: 16px;
     }
     #panel-discount .calc-row .calc-group input {
         width: 100%;
@@ -595,6 +997,183 @@ body.single-calc .calc-panel h2 {
     .calc-btn {
         min-height: 48px;
         width: 100%;
+    }
+    #panel-iva .calc-row .calc-btn {
+        width: auto;
+        min-width: 140px;
+    }
+
+    /* Net Salary mobile: annulla gap/margini globali e imposta 12px solo dove serve */
+    #panel-salary .calc-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-salary .calc-row .calc-group {
+        margin-bottom: 0;
+        padding: 0; /* rimuove qualsiasi padding verticale extra, come in Percentage */
+    }
+    /* 12px SOLO tra Gross annual salary e Payments per year */
+    #panel-salary .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* Payments per year: nessun margine sotto (assicurato esplicitamente) */
+    #panel-salary .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0;
+    }
+    /* 12px tra Payments per year e l'errore (sopra), spazio sotto gestito dal bottone */
+    #panel-salary #result-salary-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    /* Net Salary mobile: distanzia il bottone dall'errore/input sopra */
+    #panel-salary .calc-row .calc-btn {
+        margin-top: 12px;
+    }
+
+    /* Currency mobile: stessa logica di spazi di Net Salary */
+    #panel-currency .calc-currency-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-currency .calc-currency-row .calc-group {
+        margin-bottom: 0;
+        padding: 0;
+    }
+    /* 12px tra Amount e Convert to */
+    #panel-currency .calc-currency-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Convert to e errore, e 12px tra errore e bottone */
+    #panel-currency #result-currency-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    #panel-currency .calc-currency-row .calc-btn {
+        margin-top: 12px;
+    }
+
+    /* Loan mobile: stessa logica di spazi puliti */
+    #panel-loan .calc-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-loan .calc-row .calc-group {
+        margin-bottom: 0;
+        padding: 0;
+    }
+    /* 12px tra Principal e Annual rate */
+    #panel-loan .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Annual rate e Years */
+    #panel-loan .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Years e errore, e 12px tra errore e bottone */
+    #panel-loan #result-loan-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    #panel-loan .calc-row .calc-btn {
+        margin-top: 12px;
+    }
+
+    /* Discount mobile: stessa logica di spazi puliti */
+    #panel-discount .calc-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-discount .calc-row .calc-group {
+        margin-bottom: 0;
+        padding: 0;
+    }
+    /* 12px tra Original price e Discount (%) */
+    #panel-discount .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Discount (%) e errore, e 12px tra errore e bottone */
+    #panel-discount #result-discount-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    #panel-discount .calc-row .calc-btn {
+        margin-top: 12px;
+    }
+
+    /* Margin mobile: stessa logica di spazi puliti */
+    #panel-margin .calc-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-margin .calc-row .calc-group {
+        margin-bottom: 0;
+        padding: 0;
+    }
+    /* 12px tra Cost e Margin (%) */
+    #panel-margin .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Margin (%) e errore, e 12px tra errore e bottone */
+    #panel-margin #result-margin-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    #panel-margin .calc-row .calc-btn {
+        margin-top: 12px;
+    }
+
+    /* Split bill mobile: stessa logica di spazi puliti */
+    #panel-split .calc-row {
+        margin-bottom: 0;
+        gap: 0;
+    }
+    #panel-split .calc-row .calc-group {
+        margin-bottom: 0;
+        padding: 0;
+    }
+    /* 12px tra Total amount e Number of people */
+    #panel-split .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Number of people e Tip (%) */
+    #panel-split .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 12px;
+    }
+    /* 12px tra Tip (%) e errore, e 12px tra errore e bottone */
+    #panel-split #result-split-mobile {
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+    #panel-split .calc-row .calc-btn {
+        margin-top: 12px;
+    }
+    /* Percentage mobile: spazio extra solo tra Percentage (%) e of (value) */
+    #panel-percent .calc-row.calc-row-percent .calc-group:first-of-type {
+        margin-bottom: 18px; /* un po' più distanti rispetto al default (14px) */
+    }
+    /* Percentage mobile: distanzia il bottone dall'input / errore sopra */
+    #panel-percent .calc-row.calc-row-percent .calc-btn {
+        margin-top: 12px;
+    }
+}
+
+/* Tablet-only (601px–768px): Percentage inputs a tutta larghezza, stessa dimensione */
+@media (max-width: 768px) and (min-width: 601px) {
+    #panel-percent .calc-row.calc-row-percent {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px; /* spazio uniforme tra Percentage, of (value), risultato mobile e bottone */
+    }
+    #panel-percent .calc-row.calc-row-percent .calc-group,
+    #panel-percent .calc-row.calc-row-percent .calc-btn {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* Forza gli input a usare tutta la larghezza disponibile in tablet */
+    #panel-percent .calc-row.calc-row-percent .calc-group input {
+        width: 100%;
+        max-width: 100%;
     }
 }
 

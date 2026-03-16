@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const resultDiv = document.getElementById("qr-result");
     const downloadBtn = document.getElementById("download-qr");
     const fileInput = document.getElementById("file-upload");
+    const resultArea = document.getElementById("qr-result-area");
     const colorDark = document.getElementById("color-dark");
     const colorLight = document.getElementById("color-light");
     const qrSizeWrap = document.getElementById("qr-size-wrap");
@@ -79,6 +80,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("reset-qr").addEventListener("click", resetParams);
 
+    function showError(msg) {
+        if (!resultArea) return;
+        resultArea.textContent = (msg || "").replace(/\.$/, "");
+        resultArea.classList.remove("hidden");
+        resultArea.classList.add("error");
+        resultArea.style.display = "block";
+        resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    function hideError() {
+        if (!resultArea) return;
+        resultArea.textContent = "";
+        resultArea.classList.remove("error");
+        resultArea.classList.add("hidden");
+        resultArea.style.display = "";
+    }
+
     if (typeof pdfjsLib !== "undefined") {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
@@ -86,14 +103,14 @@ document.addEventListener("DOMContentLoaded", function() {
     btn.addEventListener("click", function() {
         var text = input.value.trim();
         if (!text) {
-            alert("Please enter some text or a URL, or load a file.");
+            showError("Please enter some text or a URL, or load a file");
             return;
         }
-
+        hideError();
         output.innerHTML = "";
         try {
             if (typeof QRCode === "undefined") {
-                alert("QR library not loaded. Please refresh the page.");
+                showError("QR library not loaded. Please refresh the page");
                 return;
             }
             var size = getQrSize();
@@ -107,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             resultDiv.classList.add("show");
         } catch (e) {
-            alert("Error generating QR code: " + (e.message || e));
+            showError("Error generating QR code: " + (e.message || e));
             resultDiv.classList.remove("show");
         }
     });
@@ -126,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function() {
             link.href = img.src;
             link.click();
         } else {
-            alert("Generate a QR code first.");
+            showError("Generate a QR code first");
         }
     });
 
@@ -137,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var ext = file.name.split(".").pop().toLowerCase();
 
         if (ext === "txt") {
+            hideError();
             var reader = new FileReader();
             reader.onload = function(e) {
                 input.value = e.target.result;
@@ -144,7 +162,8 @@ document.addEventListener("DOMContentLoaded", function() {
             reader.readAsText(file);
         } else if (ext === "pdf") {
             if (typeof pdfjsLib === "undefined") {
-                alert("PDF library not loaded. Please refresh the page.");
+                showError("PDF library not loaded. Please refresh the page");
+                this.value = "";
                 return;
             }
             var reader = new FileReader();
@@ -160,11 +179,13 @@ document.addEventListener("DOMContentLoaded", function() {
                             }));
                         })(i);
                     }
-                    Promise.all(promises).then(function(texts) {
+                    return Promise.all(promises).then(function(texts) {
                         input.value = texts.join("\n\n");
-                    }).catch(function() { alert("Error reading PDF."); });
-                }).catch(function() { alert("Error loading PDF."); });
+                        hideError();
+                    }).catch(function() { showError("Error reading PDF"); });
+                }).catch(function() { showError("Error loading PDF"); });
             };
+            reader.onerror = function() { showError("Error reading file"); };
             reader.readAsArrayBuffer(file);
         }
         this.value = "";
