@@ -165,16 +165,23 @@
         min-height: 160px;
         font-size: 16px;
     }
-    /* Mobile: bottoni affiancati sulla stessa riga */
+    /* Mobile: two buttons on one row, same width, no wrapping */
     .word-counter .button-group {
         flex-direction: row;
         gap: 8px;
         justify-content: center;
     }
     .word-counter .button-group button {
-        width: 50%;
+        flex: 1 1 0;
         min-width: 0;
+        width: auto;
         min-height: 48px;
+        white-space: nowrap; /* avoid "Count Characters" wrapping */
+        text-align: center;
+    }
+    /* Remove desktop min-width override on first button in mobile */
+    .word-counter .button-group button:first-child {
+        min-width: 0;
     }
 }
 
