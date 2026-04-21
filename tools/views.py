@@ -7,7 +7,6 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.urls import reverse
 from django.template.loader import render_to_string
-from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -15,9 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 import asyncio
 import secrets
-import logging
-from email.utils import parseaddr
-import httpx
 
 from .forms import UserRegistrationForm, ProfileUpdateForm, AvatarUploadForm
 from .interview_banks import get_interview_simulator_payload
@@ -36,43 +32,6 @@ from urllib.error import URLError, HTTPError
 import socket
 import json
 
-logger = logging.getLogger(__name__)
-
-
-def _send_via_sendgrid_api(from_email, to_email, subject, plain_message, html_message):
-    api_key = (os.environ.get("SENDGRID_API_KEY") or "").strip()
-    if not api_key:
-        return False
-    name, email_addr = parseaddr(from_email or "")
-    sender_email = (email_addr or "").strip() or "contact@gadly.it"
-    sender_name = (name or "").strip() or "Gadly Support"
-    payload = {
-        "personalizations": [{"to": [{"email": to_email}]}],
-        "from": {"email": sender_email, "name": sender_name},
-        "subject": subject,
-        "content": [
-            {"type": "text/plain", "value": plain_message},
-            {"type": "text/html", "value": html_message},
-        ],
-    }
-    try:
-        timeout_seconds = int((os.environ.get("EMAIL_TIMEOUT") or "20").strip() or "20")
-    except Exception:
-        timeout_seconds = 20
-    try:
-        resp = httpx.post(
-            "https://api.sendgrid.com/v3/mail/send",
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json=payload,
-            timeout=timeout_seconds,
-        )
-        if 200 <= resp.status_code < 300:
-            return True
-        logger.error("SendGrid API send failed status=%s body=%s", resp.status_code, resp.text[:500])
-    except Exception:
-        logger.exception("SendGrid API send failed unexpectedly")
-    return False
-
 
 def _send_verification_email(request, user, token):
     verify_url = request.build_absolute_uri(
@@ -88,11 +47,7 @@ def _send_verification_email(request, user, token):
     ) % {'username': user.username, 'url': verify_url}
     html_message = render_to_string(
         "tools/emails/verify_email.html",
-        {
-            "username": user.username,
-            "verify_url": verify_url,
-            "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
-        },
+        {"username": user.username, "verify_url": verify_url},
         request=request,
     )
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
@@ -100,12 +55,9 @@ def _send_verification_email(request, user, token):
     msg.attach_alternative(html_message, "text/html")
     try:
         msg.send(fail_silently=False)
-        return verify_url
     except Exception:
-        logger.exception("Failed to send verification email to user_id=%s email=%s", user.id, user.email)
-    if _send_via_sendgrid_api(from_email, user.email, subject, plain_message, html_message):
-        return verify_url
-    return None
+        return None
+    return verify_url
 
 # -------------------------
 # Normal page views
@@ -223,11 +175,9 @@ def register(request):
             verify_url = _send_verification_email(request, user, token)
             request.session['pending_verify_user_id'] = user.id
             # In dev (DEBUG): store link in session so user can click it directly from the page
-            if settings.DEBUG and verify_url:
+            if settings.DEBUG:
                 request.session['pending_verify_url'] = verify_url
-            if verify_url:
-                return redirect('verify_email_sent')
-            return redirect(reverse('verify_email_sent') + '?resent=0')
+            return redirect('verify_email_sent')
     else:
         form = UserRegistrationForm()
     return render(request, 'tools/register.html', {'form': form})
@@ -258,12 +208,10 @@ def verify_email_sent(request):
     verify_url = request.session.pop('pending_verify_url', None)
     resent = request.GET.get('resent') == '1'
     resend_failed = request.GET.get('resent') == '0'
-    already_verified = request.GET.get('already_verified') == '1'
     return render(request, 'tools/verify_email_sent.html', {
         'verify_url': verify_url,
         'resent': resent,
         'resend_failed': resend_failed,
-        'already_verified': already_verified,
     })
 
 
@@ -276,17 +224,18 @@ def resend_verification_email(request):
             target_user = User.objects.filter(pk=pending_user_id).first()
     if target_user is None:
         return redirect('login')
-    UserProfile.objects.get_or_create(user=target_user)
+    profile, _ = UserProfile.objects.get_or_create(user=target_user)
+    if profile.email_verified:
+        return redirect('home')
+    EmailVerificationToken.objects.filter(user=target_user).delete()
     token = secrets.token_hex(24)
-    new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
+    EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
     request.session['pending_verify_user_id'] = target_user.id
     if settings.DEBUG and verify_url:
         request.session['pending_verify_url'] = verify_url
     if verify_url:
-        EmailVerificationToken.objects.filter(user=target_user).exclude(pk=new_evt.pk).delete()
         return redirect(reverse('verify_email_sent') + '?resent=1')
-    new_evt.delete()
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
@@ -296,18 +245,18 @@ def resend_verification_email_public(request):
     if email:
         user = User.objects.filter(email__iexact=email).first()
         if user:
-            UserProfile.objects.get_or_create(user=user)
-            token = secrets.token_hex(24)
-            new_evt = EmailVerificationToken.objects.create(user=user, token=token)
-            verify_url = _send_verification_email(request, user, token)
-            if settings.DEBUG and verify_url:
-                request.session['pending_verify_url'] = verify_url
-            if verify_url:
-                EmailVerificationToken.objects.filter(user=user).exclude(pk=new_evt.pk).delete()
-                return redirect(reverse('verify_email_sent') + '?resent=1')
-            new_evt.delete()
-            return redirect(reverse('verify_email_sent') + '?resent=0')
-    return redirect(reverse('verify_email_sent') + '?resent=0')
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            if not profile.email_verified:
+                EmailVerificationToken.objects.filter(user=user).delete()
+                token = secrets.token_hex(24)
+                EmailVerificationToken.objects.create(user=user, token=token)
+                verify_url = _send_verification_email(request, user, token)
+                if settings.DEBUG and verify_url:
+                    request.session['pending_verify_url'] = verify_url
+                if verify_url:
+                    return redirect(reverse('verify_email_sent') + '?resent=1')
+                return redirect(reverse('verify_email_sent') + '?resent=0')
+    return redirect(reverse('verify_email_sent') + '?resent=1')
 
 
 @require_GET
