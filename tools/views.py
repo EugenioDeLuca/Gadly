@@ -14,6 +14,9 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 import asyncio
 import secrets
+import logging
+from email.utils import parseaddr
+import httpx
 
 from .forms import UserRegistrationForm, ProfileUpdateForm, AvatarUploadForm
 from .interview_banks import get_interview_simulator_payload
@@ -31,6 +34,43 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 import socket
 import json
+
+logger = logging.getLogger(__name__)
+
+
+def _send_via_sendgrid_api(from_email, to_email, subject, plain_message, html_message):
+    api_key = (os.environ.get("SENDGRID_API_KEY") or "").strip()
+    if not api_key:
+        return False
+    name, email_addr = parseaddr(from_email or "")
+    sender_email = (email_addr or "").strip() or "contact@gadly.it"
+    sender_name = (name or "").strip() or "Gadly Support"
+    payload = {
+        "personalizations": [{"to": [{"email": to_email}]}],
+        "from": {"email": sender_email, "name": sender_name},
+        "subject": subject,
+        "content": [
+            {"type": "text/plain", "value": plain_message},
+            {"type": "text/html", "value": html_message},
+        ],
+    }
+    try:
+        timeout_seconds = int((os.environ.get("EMAIL_TIMEOUT") or "20").strip() or "20")
+    except Exception:
+        timeout_seconds = 20
+    try:
+        resp = httpx.post(
+            "https://api.sendgrid.com/v3/mail/send",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json=payload,
+            timeout=timeout_seconds,
+        )
+        if 200 <= resp.status_code < 300:
+            return True
+        logger.error("SendGrid API send failed status=%s body=%s", resp.status_code, resp.text[:500])
+    except Exception:
+        logger.exception("SendGrid API send failed unexpectedly")
+    return False
 
 
 def _send_verification_email(request, user, token):
@@ -55,9 +95,12 @@ def _send_verification_email(request, user, token):
     msg.attach_alternative(html_message, "text/html")
     try:
         msg.send(fail_silently=False)
+        return verify_url
     except Exception:
-        return None
-    return verify_url
+        logger.exception("SMTP send failed for verification email user=%s", user.email)
+    if _send_via_sendgrid_api(from_email, user.email, subject, plain_message, html_message):
+        return verify_url
+    return None
 
 # -------------------------
 # Normal page views

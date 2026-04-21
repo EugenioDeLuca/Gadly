@@ -14,12 +14,7 @@
     <p style="margin: 24px 0; color: #555; line-height: 1.6;">
         {% trans "This verification link is invalid or has already been used." %}
     </p>
-    <p style="margin: 16px 0; color: #555; line-height: 1.6;">
-        {% trans "If you still need to verify your account, you can" %}
-        <a href="{% url 'request_verification_email_page' %}" class="verify-invalid-link">
-            {% trans "request a new verification email" %}
-        </a>.
-    </p>
+    <p style="margin: 16px 0; color: #555; line-height: 1.6;">{% trans "If you still need to verify your account, you can" %}<a href="{% url 'request_verification_email_page' %}" class="verify-invalid-link">{% trans "request a new verification email" %}</a>.</p>
 
     <p class="login-hint" style="margin-top: 24px; font-size: 1rem;">
         <a href="{% url 'login' %}" style="font-size: 1rem; font-weight: 600;">{% trans "Sign in" %}</a>

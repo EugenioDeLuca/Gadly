@@ -74,7 +74,7 @@ body.dark-mode .login-input:focus {
 
 .login-btn:hover {
     background: #0056b3;
-    transform: none;
+    transform: scale(1.01);
 }
 
 .login-btn--white-text,
@@ -83,7 +83,11 @@ body.dark-mode .login-input:focus {
 }
 
 .login-btn--accounts-like:hover {
-    transform: none;
+    transform: scale(1.01);
+}
+
+.static-container a.login-btn--accounts-like:hover {
+    transform: scale(1.01) !important;
 }
 
 .login-error {
@@ -177,7 +181,7 @@ body.dark-mode .login-error {
 .login-hint a:hover {
     color: #0056b3;
     opacity: 0.9;
-    transform: none;
+    transform: scale(1.01);
 }
 
 body.dark-mode .login-hint {
@@ -196,7 +200,7 @@ body.dark-mode .login-hint a:hover {
     color: #003f7f !important;
     font-weight: 600 !important;
     font-size: 1rem !important;
-    margin-left: 4px;
+    margin-left: 2px;
     display: inline-block;
     vertical-align: baseline;
     transform-origin: left center;
@@ -205,5 +209,5 @@ body.dark-mode .login-hint a:hover {
 
 .verify-invalid-link:hover {
     color: #0056b3 !important;
-    transform: scale(1.005);
+    transform: scale(1.01);
 }

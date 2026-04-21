@@ -176,18 +176,31 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 
 # Email (for password reset and verification)
-# Development: console backend (emails printed to terminal)
-# Production: set EMAIL_HOST + EMAIL_HOST_USER + EMAIL_HOST_PASSWORD in Render
-if os.environ.get('EMAIL_HOST'):
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() == 'true'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-else:
+_email_host_raw = (os.environ.get('EMAIL_HOST') or '').strip()
+_email_port_raw = (os.environ.get('EMAIL_PORT') or '587').strip()
+_email_tls_raw = (os.environ.get('EMAIL_USE_TLS') or 'true').strip().lower()
+_email_user_raw = (os.environ.get('EMAIL_HOST_USER') or '').strip()
+_email_pass_raw = (os.environ.get('EMAIL_HOST_PASSWORD') or '').strip()
+_sendgrid_key_raw = (os.environ.get('SENDGRID_API_KEY') or '').strip()
+if DEBUG and not _email_host_raw:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@gadly.it')
+    EMAIL_HOST = ''
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = _email_host_raw or 'smtp.sendgrid.net'
+    try:
+        EMAIL_PORT = int(_email_port_raw)
+    except Exception:
+        EMAIL_PORT = 587
+    EMAIL_USE_TLS = _email_tls_raw in ('1', 'true', 'yes', 'on')
+    EMAIL_HOST_USER = _email_user_raw or 'apikey'
+    EMAIL_HOST_PASSWORD = _email_pass_raw or _sendgrid_key_raw
+    EMAIL_TIMEOUT = int((os.environ.get('EMAIL_TIMEOUT') or '20').strip() or '20')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Gadly Support <contact@gadly.it>')
 
 # Require verified email before login for regular users.
 # In local dev (DEBUG=True) default is disabled to avoid lockout during testing.
