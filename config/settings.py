@@ -177,20 +177,32 @@ LOGIN_URL = '/accounts/login/'
 
 # Email (password reset + verification)
 # Dev: console backend by default. Production: force SMTP backend (SendGrid).
-if DEBUG and not os.environ.get('EMAIL_HOST'):
+_email_host_raw = (os.environ.get('EMAIL_HOST') or '').strip()
+_email_port_raw = (os.environ.get('EMAIL_PORT') or '587').strip()
+_email_tls_raw = (os.environ.get('EMAIL_USE_TLS') or 'true').strip().lower()
+_email_ssl_raw = (os.environ.get('EMAIL_USE_SSL') or 'false').strip().lower()
+_email_user_raw = (os.environ.get('EMAIL_HOST_USER') or '').strip()
+_email_pass_raw = (os.environ.get('EMAIL_HOST_PASSWORD') or '').strip()
+
+if DEBUG and not _email_host_raw:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST = ''
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
     EMAIL_HOST_USER = ''
     EMAIL_HOST_PASSWORD = ''
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.sendgrid.net')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() == 'true'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'apikey')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_HOST = _email_host_raw or 'smtp.sendgrid.net'
+    try:
+        EMAIL_PORT = int(_email_port_raw or '587')
+    except Exception:
+        EMAIL_PORT = 587
+    EMAIL_USE_TLS = _email_tls_raw in ('1', 'true', 'yes', 'on')
+    EMAIL_USE_SSL = _email_ssl_raw in ('1', 'true', 'yes', 'on')
+    EMAIL_HOST_USER = _email_user_raw or 'apikey'
+    EMAIL_HOST_PASSWORD = _email_pass_raw
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Gadly Support <contact@gadly.it>')
 
 # Require verified email before login for regular users.
