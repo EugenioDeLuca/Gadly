@@ -29,22 +29,22 @@ function generatePassword(showAlert) {
     hideError();
     const raw = parseInt(lengthInput.value, 10);
     if (lengthInput.value.trim() === "" || isNaN(raw)) {
-        if (showAlert) showError("Please enter a number of characters.");
+        if (showAlert) showError(gettext("Please enter a number of characters."));
         return "";
     }
     const length = raw;
 
     if (length < 14) {
-        if (showAlert) showError("Password must be at least 14 characters.");
+        if (showAlert) showError(gettext("Password must be at least 14 characters."));
         return "";
     }
     if (length > 128) {
-        if (showAlert) showError("Password cannot exceed 128 characters.");
+        if (showAlert) showError(gettext("Password cannot exceed 128 characters."));
         return "";
     }
 
     if (!includeLower.checked || !includeUpper.checked || !includeNumbers.checked || !includeSymbols.checked) {
-        if (showAlert) showError("You must select all options to generate a password!");
+        if (showAlert) showError(gettext("You must select all options to generate a password!"));
         return "";
     }
 
@@ -71,12 +71,11 @@ lengthInput.addEventListener('change', function() { hideError(); updatePassword(
 
 copyBtn.addEventListener('click', () => {
     if (!passwordInput.value) return;
-    passwordInput.select();
     navigator.clipboard.writeText(passwordInput.value).then(() => {
-        copyBtn.textContent = 'Copied!';
+        copyBtn.textContent = gettext('Copied!');
         copyBtn.classList.add('copied');
         setTimeout(() => {
-            copyBtn.textContent = 'Copy';
+            copyBtn.textContent = gettext('Copy');
             copyBtn.classList.remove('copied');
         }, 2000);
     });

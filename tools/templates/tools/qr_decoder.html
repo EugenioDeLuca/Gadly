@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}QR Decoder{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "QR Decoder" %}{% endblock %}
 {% block body_class %}qr-generator{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}">
@@ -44,55 +45,76 @@
 @media (max-width: 480px) {
   .qr-decoder .container { margin: 8px 8px; padding: 20px 14px; width: auto; }
 }
-body.dark-mode .qr-decoder .container { background: var(--bg-card); }
+/* Container: come theme (bianco in dark, come Image Editor / altri tool file) — non forzare bg-card */
 body.dark-mode .qr-decoder h1 { color: #003f7f !important; }
-body.dark-mode .qr-decoder .upload-area { background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(90, 159, 212, 0.12) 50%, rgba(255,255,255,0.04) 100%); border-color: var(--border-color); }
-body.dark-mode .qr-decoder .upload-area:hover { border-color: #003f7f; }
+body.dark-mode .qr-decoder .tool-desc { color: #555; }
+/* Upload: stesso bordo tratteggiato chiaro dell’Image Editor (non --border-color scuro) */
+body.dark-mode .qr-decoder .upload-area {
+    border: 2px dashed #b8d4f0;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #f8fcff 0%, #e8f4fd 50%, #f0f7fc 100%);
+    box-shadow: inset 0 2px 8px rgba(0, 123, 255, 0.04);
+}
+body.dark-mode .qr-decoder .upload-area:hover {
+    border-color: #7eb8f0;
+    box-shadow: inset 0 2px 12px rgba(0, 123, 255, 0.06);
+}
 body.dark-mode .qr-decoder .choose-file-btn { background: #003f7f; color: white; }
 body.dark-mode .qr-decoder .choose-file-btn:hover { background: #dc3545; }
-body.dark-mode .qr-decoder .upload-hint { color: var(--text-muted); }
-body.dark-mode .qr-decoder .result-wrap textarea { background: rgba(255,255,255,0.05); border-color: var(--border-color); color: var(--text-secondary); }
+body.dark-mode .qr-decoder .upload-hint { color: #666; }
+body.dark-mode .qr-decoder .preview-wrap img { border-color: #ddd; }
+/* Testo decodificato: contrasto forte su container bianco (evitare --text-secondary chiarissimo) */
+body.dark-mode .qr-decoder .result-wrap label { color: #333; font-weight: 600; }
+body.dark-mode .qr-decoder .result-wrap textarea {
+    background: #fff;
+    border: 2px solid #ddd;
+    color: #1a1a2e;
+    -webkit-text-fill-color: #1a1a2e;
+}
+body.dark-mode .qr-decoder .result-wrap textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+}
 body.dark-mode .qr-decoder .btn-copy { background: #003f7f; }
 body.dark-mode .qr-decoder .btn-copy:hover { background: #0056b3; }
 body.dark-mode .qr-decoder .btn-copy.copied { background: #dc3545; }
 body.dark-mode .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
-body.dark-mode .qr-decoder .msg.success { color: #2ecc71; text-align: center; font-weight: 600; }
-body.dark-mode .qr-decoder .result-wrap label { color: var(--text-secondary); }
-body.dark-mode .qr-decoder .msg { color: var(--text-muted); }
-body.dark-mode .qr-decoder .msg.error { color: #e88; text-align: center; font-weight: bold; }
+body.dark-mode .qr-decoder .msg.success { color: #1e7e34; text-align: center; font-weight: 600; }
+body.dark-mode .qr-decoder .msg { color: #555; }
+body.dark-mode .qr-decoder .msg.error { color: #c00; text-align: center; font-weight: bold; }
 </style>
 {% endblock %}
 {% block content %}
 <div class="qr-decoder">
     <div class="container">
-        <h1>QR Decoder</h1>
-        <p class="tool-desc">Upload an image containing a QR code to read the text or link.</p>
+        <h1>{% trans "QR Decoder" %}</h1>
+        <p class="tool-desc">{% trans "Upload an image containing a QR code to read the text or link." %}</p>
 
         <div class="upload-area">
             <div class="file-input-wrapper">
                 <input type="file" id="qr-image-input" class="qr-file-input" accept="image/*" />
-                <label for="qr-image-input" class="choose-file-btn"><span class="file-name-display">Choose file</span></label>
+                <label for="qr-image-input" class="choose-file-btn"><span class="file-name-display">{% trans "Choose file" %}</span></label>
             </div>
-            <p class="upload-hint">Choose an image containing a QR code (PNG, JPG, etc.)</p>
+            <p class="upload-hint">{% trans "Choose an image containing a QR code (PNG, JPG, etc.)" %}</p>
             <div class="preview-wrap" id="preview-wrap" style="display: none;">
-                <img id="preview-img" alt="Preview" />
+                <img id="preview-img" alt="{% trans 'Preview' %}" />
             </div>
         </div>
 
         <div id="qr-decoder-result" class="result-area hidden" aria-live="polite"></div>
 
         <div class="result-wrap" id="result-wrap" style="display: none;">
-            <label for="decoded-text">Decoded content</label>
+            <label for="decoded-text">{% trans "Decoded content" %}</label>
             <textarea id="decoded-text" readonly></textarea>
             <div class="btn-copy-wrap">
-                <button type="button" class="btn-copy" id="btn-copy">Copy</button>
+                <button type="button" class="btn-copy" id="btn-copy">{% trans "Copy" %}</button>
             </div>
         </div>
         <p class="msg" id="msg" aria-live="polite"></p>
 
         <div class="home-link-wrap">
-            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>
         </div>
     </div>

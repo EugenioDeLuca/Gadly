@@ -1,9 +1,10 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Regex Tester{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Regex Tester" %}{% endblock %}
 {% block body_class %}web-seo regex-tester{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=13">
 <style>
 .regex-tester .form-group input,
 .regex-tester .form-group textarea { font-family: monospace; }
@@ -17,23 +18,23 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Regex Tester</h1>
-    <p class="tool-desc">Test regular expressions and see matches highlighted.</p>
+    <h1>{% trans "Regex Tester" %}</h1>
+    <p class="tool-desc">{% trans "Test regular expressions and see matches highlighted." %}</p>
     <div class="form-group">
-        <label for="regex-pattern">Regular expression</label>
-        <input type="text" id="regex-pattern" placeholder="e.g. \d+ or [a-z]+" />
+        <label for="regex-pattern">{% trans "Regular expression" %}</label>
+        <input type="text" id="regex-pattern" placeholder='{% trans "e.g. \\d+ or [a-z]+" %}' />
     </div>
     <div class="form-group">
-        <label for="regex-text">Test string</label>
-        <textarea id="regex-text" rows="6" placeholder="Enter text to test against..."></textarea>
+        <label for="regex-text">{% trans "Test string" %}</label>
+        <textarea id="regex-text" rows="6" placeholder='{% trans "Enter text to test against..." %}'></textarea>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="button-group">
-        <button type="button" id="btn-test">Test</button>
+        <button type="button" id="btn-test">{% trans "Test" %}</button>
     </div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

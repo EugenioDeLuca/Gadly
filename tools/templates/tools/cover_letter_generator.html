@@ -1,0 +1,285 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera di presentazione{% else %}{% trans "Cover Letter Generator" %}{% endif %}{% endblock %}
+{% block body_class %}text-tool cover-letter-generator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.cover-letter-generator .text-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cover-letter-generator .text-tool-grid .form-group.full { grid-column: 1 / -1; }
+.cover-letter-generator .form-group textarea, .cover-letter-generator .form-group input, .cover-letter-generator .text-tool-select { width: 100%; max-width: 100%; box-sizing: border-box; }
+.cover-letter-generator .form-group { margin-bottom: 0px; }
+.cover-letter-generator .text-tool-select { max-width: 100%; }
+.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger { cursor: pointer; border-radius: 12px; padding-right: 36px; }
+.cover-letter-generator #cl-tone-wrap .text-tool-select-menu { border-radius: 12px; max-height: 260px; overflow-y: auto; z-index: 3000; }
+.cover-letter-generator #cl-tone-wrap.open .text-tool-select-menu,
+.cover-letter-generator #cl-tone-wrap:focus-within .text-tool-select-menu { display: block; }
+.cover-letter-generator #cl-tone-wrap { position: relative; }
+.cover-letter-generator #cl-tone-wrap .role-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  pointer-events: auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+.cover-letter-generator #cl-tone-wrap .role-arrow::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #003f7f;
+}
+.cover-letter-generator .panel-card {
+  border: 2px dashed #b8d4f0;
+  border-radius: 12px;
+  background: #f8fcff;
+  padding: 12px;
+}
+.cover-letter-generator .panel-title {
+  margin: 0 0 10px 0;
+  color: #003f7f;
+  font-weight: 700;
+}
+.cover-letter-generator .letter-setup-panel {
+  text-align: center;
+}
+.cover-letter-generator .letter-setup-panel .panel-title,
+.cover-letter-generator .letter-setup-panel .ats-note {
+  text-align: center;
+}
+.cover-letter-generator .letter-setup-panel .panel-actions {
+  justify-content: center;
+}
+.cover-letter-generator #cl-template-actions button,
+.cover-letter-generator #cl-hook-actions button {
+  width: 190px;
+  min-width: 190px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+}
+.cover-letter-generator .panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cover-letter-generator .panel-actions button {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  min-height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: #003f7f;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 400;
+  transition: transform 0.2s, background 0.2s;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  vertical-align: middle;
+}
+.cover-letter-generator .panel-actions button:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+.cover-letter-generator .panel-actions button.active {
+  background: #28a745 !important;
+}
+.cover-letter-generator .panel-actions button.active:hover {
+  background: #28a745 !important;
+}
+.cover-letter-generator #cl-template-actions[data-active-template="standard"] button[data-template="standard"],
+.cover-letter-generator #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"],
+.cover-letter-generator #cl-template-actions[data-active-template="ats"] button[data-template="ats"] {
+  background: #28a745 !important;
+}
+.cover-letter-generator .word-meter {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  color: #4b6178;
+}
+.cover-letter-generator .field-hint {
+  margin-top: 6px;
+  font-size: 0.86rem;
+  color: #4b6178;
+}
+.cover-letter-generator .keyword-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.cover-letter-generator .kw-chip {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.cover-letter-generator .kw-chip.good { background: #e9f8ee; color: #1f7a35; border: 1px solid #bfe8c9; }
+.cover-letter-generator .kw-chip.bad { background: #fff2f2; color: #b4232c; border: 1px solid #f4c7cb; }
+.cover-letter-generator .result-meta {
+  border: 1px solid #d8e6f5;
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.cover-letter-generator .ats-note {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #4b6178;
+}
+.cover-letter-generator .button-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  margin-top: 12px;
+}
+.cover-letter-generator .button-group #cl-generate,
+.cover-letter-generator .button-group #cl-copy,
+.cover-letter-generator .button-group .cl-export-btn {
+  width: 160px;
+  min-width: 160px;
+  height: 44px;
+  min-height: 44px;
+  margin-top: 0;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.cover-letter-generator .button-group #cl-copy {
+  order: 3;
+  margin-left: auto;
+}
+.cover-letter-generator .button-group.has-export #cl-copy {
+  margin-left: 8px;
+}
+.cover-letter-generator .export-controls {
+  display: inline-flex;
+  gap: 8px;
+  order: 2;
+  margin-left: auto;
+}
+.cover-letter-generator .export-controls.hidden { display: none; }
+.cover-letter-generator .button-group .cl-export-btn {
+  width: 76px;
+  min-width: 76px;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+.cover-letter-generator .result-area { white-space: pre-wrap; }
+.cover-letter-generator .result-area.error { margin-top: 12px; }
+@media (max-width: 768px) { .cover-letter-generator .text-tool-grid { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera di presentazione{% else %}{% trans "Cover Letter Generator" %}{% endif %}</h1>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera una lettera di presentazione personalizzata per la tua candidatura.{% else %}{% trans "Generate a tailored cover letter for your application." %}{% endif %}</p>
+  <p class="tool-help">
+    <a href="{% url 'help_cover_letter' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Lettera di presentazione{% else %}Quick Cover Letter guide{% endif %}</a>
+  </p>
+
+  <div class="text-tool-grid">
+    <div class="form-group">
+      <label for="cl-name">{% if LANGUAGE_CODE|slice:":2" == "it" %}Nome e cognome{% else %}{% trans "Your name" %}{% endif %}</label>
+      <input type="text" id="cl-name" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Marco Rossi{% else %}{% trans 'e.g. Marco Rossi' %}{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cl-role">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ruolo target{% else %}{% trans "Target role" %}{% endif %}</label>
+      <input type="text" id="cl-role" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Product Designer{% else %}{% trans 'e.g. Product Designer' %}{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cl-company">{% if LANGUAGE_CODE|slice:":2" == "it" %}Azienda{% else %}{% trans "Company" %}{% endif %}</label>
+      <input type="text" id="cl-company" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Example SRL{% else %}{% trans 'e.g. Example SRL' %}{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cl-tone">{% if LANGUAGE_CODE|slice:":2" == "it" %}Tono{% else %}{% trans "Tone" %}{% endif %}</label>
+      <div class="text-tool-select" id="cl-tone-wrap" data-value="">
+        <input type="text" id="cl-tone" class="text-tool-select-trigger" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Professionale{% else %}{% trans 'e.g. Professional' %}{% endif %}" autocomplete="off" readonly>
+        <button type="button" class="role-arrow" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Apri menu tono{% else %}{% trans 'Open tone menu' %}{% endif %}"></button>
+        <ul class="text-tool-select-menu">
+          <li data-tone-key="professional" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Professionale{% else %}Professional{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Professionale{% else %}Professional{% endif %}</li>
+          <li data-tone-key="direct" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Diretto{% else %}Direct{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Diretto{% else %}Direct{% endif %}</li>
+          <li data-tone-key="informal" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Informale{% else %}Informal{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Informale{% else %}Informal{% endif %}</li>
+          <li data-tone-key="formal" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Formale{% else %}Formal{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Formale{% else %}Formal{% endif %}</li>
+          <li data-tone-key="concise" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Sintetico{% else %}Concise{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Sintetico{% else %}Concise{% endif %}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group full">
+      <label for="cl-job-description">{% if LANGUAGE_CODE|slice:":2" == "it" %}Descrizione lavoro (opzionale){% else %}{% trans "Job description (optional)" %}{% endif %}</label>
+      <textarea id="cl-job-description" rows="5" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Incolla i requisiti del lavoro per confrontare le parole chiave.{% else %}{% trans 'Paste job requirements to compare keywords.' %}{% endif %}"></textarea>
+    </div>
+    <div class="form-group full">
+      <label for="cl-highlights">{% if LANGUAGE_CODE|slice:":2" == "it" %}Punti chiave{% else %}{% trans "Key highlights" %}{% endif %}</label>
+      <textarea id="cl-highlights" rows="5" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Scrivi risultati e punti di forza (uno per riga), es. +25% conversioni{% else %}Write achievements and strengths (one per line), e.g. +25% conversion rate{% endif %}"></textarea>
+      <p class="field-hint">{% if LANGUAGE_CODE|slice:":2" == "it" %}Suggerimento: inserisci almeno 1 risultato misurabile con numeri o percentuali (es. +20%, 50 clienti, -30% tempi).{% else %}Tip: include at least 1 measurable result with numbers or percentages (e.g. +20%, 50 clients, -30% time).{% endif %}</p>
+      <div id="cl-word-meter" class="word-meter"></div>
+    </div>
+    <div class="form-group full panel-card letter-setup-panel">
+      <h3 class="panel-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Setup lettera{% else %}Letter setup{% endif %}</h3>
+      <div class="panel-actions" id="cl-template-actions">
+        <button type="button" class="active" data-template="standard">{% if LANGUAGE_CODE|slice:":2" == "it" %}Standard{% else %}Standard{% endif %}</button>
+        <button type="button" data-template="motivational">{% if LANGUAGE_CODE|slice:":2" == "it" %}Motivazionale{% else %}Motivational{% endif %}</button>
+        <button type="button" data-template="ats">{% if LANGUAGE_CODE|slice:":2" == "it" %}ATS breve{% else %}ATS short{% endif %}</button>
+      </div>
+      <div class="panel-actions" id="cl-hook-actions" style="margin-top:10px;">
+        <button type="button" data-hook="1">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apertura classica{% else %}Classic opening{% endif %}</button>
+        <button type="button" data-hook="2">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apertura su obiettivi{% else %}Goal-focused opening{% endif %}</button>
+        <button type="button" data-hook="3">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apertura personale{% else %}Personal opening{% endif %}</button>
+      </div>
+      <p class="ats-note">{% if LANGUAGE_CODE|slice:":2" == "it" %}ATS breve: genera una lettera piu sintetica e leggibile dai software di screening automatico.{% else %}ATS short: generates a more concise letter that is easier to parse by applicant tracking systems.{% endif %}</p>
+    </div>
+  </div>
+
+  <div id="cl-result" class="result-area hidden"></div>
+  <div class="button-group">
+    <button type="button" id="cl-generate">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera{% else %}{% trans "Generate" %}{% endif %}</button>
+    <button type="button" id="cl-copy">{% if LANGUAGE_CODE|slice:":2" == "it" %}Copia{% else %}{% trans "Copy" %}{% endif %}</button>
+    <div id="cl-export-controls" class="export-controls hidden">
+      <button type="button" id="cl-export-pdf" class="cl-export-btn">PDF</button>
+      <button type="button" id="cl-export-docx" class="cl-export-btn">DOCX</button>
+      <button type="button" id="cl-export-txt" class="cl-export-btn">TXT</button>
+    </div>
+  </div>
+
+  <div class="home-link-wrap">
+    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    </a>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.jspdf) {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" integrity="sha384-4xaIisuLEy2lo2HkB2C4rEf7v8jbTb2kuogX6TkuEt9feTWKBSFSOzsqNNbV+sKh" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.docx) {
+  document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="{% static 'tools/js/cover_letter_generator.js' %}?v=20260417i"></script>
+{% endblock %}

@@ -1,48 +1,74 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}{% if single_calc %}{{ calc_title }}{% else %}Finance Calculators{% endif %}{% endblock %}
+{% load i18n %}
+{% block title %}{% if single_calc %}{{ calc_title }}{% else %}{% trans "Finance Calculators" %}{% endif %}{% endblock %}
 {% block body_class %}calculators{% if single_calc %} single-calc{% endif %}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/calculator.css' %}">
 {% endblock %}
 {% block content %}
+{% get_current_language as CURRENT_LANGUAGE %}
 <div class="calculators">
     <div class="container">
-        <h1>{% if single_calc %}{{ calc_title }}{% else %}Finance Calculators{% endif %}</h1>
+        <h1>{% if single_calc %}{{ calc_title }}{% else %}{% trans "Finance Calculators" %}{% endif %}</h1>
+        <p class="calc-subdesc calc-main-subdesc">
+            {% if single_calc and active_panel == "percent" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola rapidamente percentuali su qualsiasi importo.{% else %}Quickly calculate percentages on any amount.{% endif %}
+            {% elif single_calc and active_panel == "iva" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola IVA da netto a lordo o da lordo a netto.{% else %}Calculate VAT from net to gross or gross to net.{% endif %}
+            {% elif single_calc and active_panel == "salary" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Stima il netto annuo e mensile a partire dal lordo.{% else %}Estimate annual and monthly net income from gross salary.{% endif %}
+            {% elif single_calc and active_panel == "interest" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Confronta interesse semplice e composto in pochi secondi.{% else %}Compare simple and compound interest in seconds.{% endif %}
+            {% elif single_calc and active_panel == "currency" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Converti valute con tassi aggiornati automaticamente.{% else %}Convert currencies with automatically updated rates.{% endif %}
+            {% elif single_calc and active_panel == "loan" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Stima rata, totale pagato e interessi del prestito.{% else %}Estimate monthly payment, total paid, and total interest.{% endif %}
+            {% elif single_calc and active_panel == "discount" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola sconto applicato e prezzo finale di vendita.{% else %}Calculate applied discount and final sale price.{% endif %}
+            {% elif single_calc and active_panel == "margin" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola il prezzo di vendita partendo da costo e margine.{% else %}Calculate selling price from cost and target margin.{% endif %}
+            {% elif single_calc and active_panel == "split" %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Dividi il conto tra persone con mancia opzionale.{% else %}Split a bill among people with optional tip.{% endif %}
+            {% else %}
+                {% if LANGUAGE_CODE|slice:":2" == "it" %}Calcoli finanziari rapidi con risultati immediati.{% else %}Quick finance calculations with instant results.{% endif %}
+            {% endif %}
+        </p>
 
         {% if not single_calc %}
         <div class="calc-tabs">
             <div class="calc-tabs-row">
-                <button type="button" class="calc-tab active" data-panel="percent">Percentage</button>
-                <button type="button" class="calc-tab" data-panel="iva">VAT</button>
-                <button type="button" class="calc-tab" data-panel="salary">Net salary</button>
-                <button type="button" class="calc-tab" data-panel="interest">Interest</button>
-                <button type="button" class="calc-tab" data-panel="currency">Currency</button>
+                <button type="button" class="calc-tab active" data-panel="percent">{% trans "Percentage" %}</button>
+                <button type="button" class="calc-tab" data-panel="iva">{% trans "VAT" %}</button>
+                <button type="button" class="calc-tab" data-panel="salary">{% trans "Net salary" %}</button>
+                <button type="button" class="calc-tab" data-panel="interest">{% trans "Interest" %}</button>
+                <button type="button" class="calc-tab" data-panel="currency">{% trans "Currency" %}</button>
             </div>
             <div class="calc-tabs-row">
-                <button type="button" class="calc-tab" data-panel="loan">Loan</button>
-                <button type="button" class="calc-tab" data-panel="discount">Discount</button>
-                <button type="button" class="calc-tab" data-panel="margin">Margin</button>
-                <button type="button" class="calc-tab" data-panel="split">Split bill</button>
+                <button type="button" class="calc-tab" data-panel="loan">{% trans "Loan" %}</button>
+                <button type="button" class="calc-tab" data-panel="discount">{% trans "Discount" %}</button>
+                <button type="button" class="calc-tab" data-panel="margin">{% trans "Margin" %}</button>
+                <button type="button" class="calc-tab" data-panel="split">{% trans "Split bill" %}</button>
             </div>
         </div>
         {% endif %}
 
         <!-- Percentage Calculator -->
         <div id="panel-percent" class="calc-panel {% if not single_calc %}active{% elif active_panel == 'percent' %}active{% endif %}">
-            <h2>Percentage calculator</h2>
+            <h2>{% trans "Percentage calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola velocemente una percentuale partendo da un valore totale.{% else %}Quickly calculate a percentage value from a total amount.{% endif %}</p>
             <div class="calc-row calc-row-percent">
                 <div class="calc-group">
-                    <label>Percentage (%)</label>
-                    <input type="number" id="pct-value" placeholder="e.g. 20" min="0" step="0.01" />
+                    <label>{% trans "Percentage (%)" %}</label>
+                    <input type="number" id="pct-value" placeholder='{% trans "e.g. 20" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>of (value)</label>
-                    <input type="number" id="pct-of" placeholder="e.g. 150" min="0" step="0.01" />
+                    <label>{% trans "of (value)" %}</label>
+                    <input type="number" id="pct-of" placeholder='{% trans "e.g. 150" %}' min="0" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-pct-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-pct">Calculate</button>
+                <button type="button" class="calc-btn" id="btn-pct">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola{% else %}{% trans "Calculate" %}{% endif %}</button>
             </div>
             <!-- Desktop / default: risultato sotto alla riga come prima -->
             <div id="result-pct" class="calc-result"></div>
@@ -50,47 +76,48 @@
 
         <!-- VAT Calculator -->
         <div id="panel-iva" class="calc-panel {% if active_panel == 'iva' %}active{% endif %}">
-            <h2>VAT calculator</h2>
+            <h2>{% trans "VAT calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola l'IVA da netto a lordo, oppure da lordo a netto.{% else %}Calculate VAT from net to gross amount, or from gross to net.{% endif %}</p>
             <div class="calc-group">
-                <label>Country</label>
+                <label>{% trans "Country" %}</label>
                 <div class="calc-custom-select" id="iva-country-wrap" data-value="IT">
-                    <button type="button" class="calc-select-trigger">Italy (IT)</button>
+                    <button type="button" class="calc-select-trigger">{% trans "Italy (IT)" %}</button>
                     <ul class="calc-select-menu" id="iva-country-menu"></ul>
                 </div>
             </div>
             <div class="calc-group">
-                <label>VAT rate (%)</label>
+                <label>{% trans "VAT rate (%)" %}</label>
                 <div class="calc-custom-select" id="iva-rate-wrap" data-value="22">
-                    <button type="button" class="calc-select-trigger">22% (standard)</button>
+                    <button type="button" class="calc-select-trigger">{% trans "22% (standard)" %}</button>
                     <ul class="calc-select-menu" id="iva-rate-menu"></ul>
                 </div>
             </div>
             <div class="calc-group">
-                <label>Amount (&euro;)</label>
-                <input type="number" id="iva-amount" placeholder="e.g. 100" min="0" step="0.01" />
+                <label>{% trans "Amount (€)" %}</label>
+                <input type="number" id="iva-amount" placeholder='{% trans "e.g. 100" %}' min="0" step="0.01" />
             </div>
             <div id="result-iva" class="calc-result"></div>
             <div class="calc-row">
                 <button type="button" class="calc-btn" id="btn-iva-net">
-                    Net <span class="vat-arrow">→</span> Gross
+                    {% trans "Net" %} <span class="vat-arrow">→</span> {% trans "Gross" %}
                 </button>
                 <button type="button" class="calc-btn" id="btn-iva-gross">
-                    Gross <span class="vat-arrow">→</span> Net
+                    {% trans "Gross" %} <span class="vat-arrow">→</span> {% trans "Net" %}
                 </button>
             </div>
         </div>
 
         <!-- Net Salary Calculator -->
         <div id="panel-salary" class="calc-panel {% if active_panel == 'salary' %}active{% endif %}">
-            <h2>Net salary calculator</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Indicative estimate. Enter gross annual salary.</p>
+            <h2>{% trans "Net salary calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima indicativa: inserisci la retribuzione annua lorda.{% else %}Indicative estimate. Enter gross annual salary.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Gross annual salary (&euro;)</label>
-                    <input type="number" id="salary-ral" placeholder="e.g. 30000" min="0" step="100" />
+                    <label>{% trans "Gross annual salary (€)" %}</label>
+                    <input type="number" id="salary-ral" placeholder='{% trans "e.g. 30000" %}' min="0" step="100" />
                 </div>
                 <div class="calc-group">
-                    <label>Payments per year</label>
+                    <label>{% trans "Payments per year" %}</label>
                     <div class="calc-custom-select" id="salary-months-wrap" data-value="12">
                         <button type="button" class="calc-select-trigger">12</button>
                         <ul class="calc-select-menu">
@@ -102,81 +129,81 @@
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-salary-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-salary">Calculate net</button>
+                <button type="button" class="calc-btn" id="btn-salary">{% trans "Calculate net" %}</button>
             </div>
             <div id="result-salary" class="calc-result"></div>
         </div>
 
         <!-- Interest Calculator -->
         <div id="panel-interest" class="calc-panel {% if active_panel == 'interest' %}active{% endif %}">
-            <h2>Interest calculator</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Simple or compound interest.</p>
-            <div class="calc-group">
-                <label>Principal (&euro;)</label>
-                <input type="number" id="int-principal" placeholder="e.g. 10000" min="0" step="0.01" />
-            </div>
+            <h2>{% trans "Interest calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Confronta interessi semplici e composti nel tempo.{% else %}Compare simple and compound interest over time.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Annual rate (%)</label>
-                    <input type="number" id="int-rate" placeholder="e.g. 5" min="0" step="0.01" />
+                    <label>{% trans "Principal (€)" %}</label>
+                    <input type="number" id="int-principal" placeholder='{% trans "e.g. 10000" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>Time (years)</label>
-                    <input type="number" id="int-years" placeholder="e.g. 3" min="0" step="0.01" />
+                    <label>{% trans "Annual rate (%)" %}</label>
+                    <input type="number" id="int-rate" placeholder='{% trans "e.g. 5" %}' min="0" step="0.01" />
                 </div>
-            </div>
-            <div class="calc-group">
-                <label>Type</label>
-                <div class="calc-custom-select" id="int-type-wrap" data-value="simple">
-                    <button type="button" class="calc-select-trigger">Simple</button>
-                    <ul class="calc-select-menu">
-                        <li data-value="simple" class="selected">Simple</li>
-                        <li data-value="compound">Compound</li>
-                    </ul>
+                <div class="calc-group">
+                    <label>{% trans "Time (years)" %}</label>
+                    <input type="number" id="int-years" placeholder='{% trans "e.g. 3" %}' min="0" step="0.01" />
                 </div>
+                <div class="calc-group">
+                    <label>{% trans "Type" %}</label>
+                    <div class="calc-custom-select" id="int-type-wrap" data-value="simple">
+                        <button type="button" class="calc-select-trigger">{% trans "Simple" %}</button>
+                        <ul class="calc-select-menu">
+                            <li data-value="simple" class="selected">{% trans "Simple" %}</li>
+                            <li data-value="compound">{% trans "Compound" %}</li>
+                        </ul>
+                    </div>
+                </div>
+                <button type="button" class="calc-btn" id="btn-interest">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola{% else %}{% trans "Calculate" %}{% endif %}</button>
             </div>
             <div id="result-interest" class="calc-result"></div>
-            <button type="button" class="calc-btn" id="btn-interest">Calculate</button>
         </div>
 
         <!-- Currency Conversion -->
         <div id="panel-currency" class="calc-panel {% if active_panel == 'currency' %}active{% endif %}">
-            <h2>Currency conversion</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Rates are fetched automatically from the European Central Bank.</p>
+            <h2>{% trans "Currency conversion" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}I tassi di cambio vengono aggiornati automaticamente dalla BCE.{% else %}Rates are fetched automatically from the European Central Bank.{% endif %}</p>
             <div class="calc-currency-wrap">
                 <div class="calc-row calc-currency-row">
                     <div class="calc-group">
-                        <label>Amount</label>
+                        <label>{% trans "Amount" %}</label>
                         <div class="calc-currency-input-wrap">
-                            <input type="number" id="curr-amount" placeholder="e.g. 100" min="0" step="0.01" autocomplete="off" />
+                            <input type="number" id="curr-amount" placeholder='{% trans "e.g. 100" %}' min="0" step="0.01" autocomplete="off" />
                             <div class="calc-custom-select" id="curr-from-wrap" data-value="EUR">
-                                <button type="button" class="calc-select-trigger">EUR</button>
+                                <button type="button" class="calc-select-trigger">{% trans "EUR" %}</button>
                                 <ul class="calc-select-menu">
-                                    <li data-value="EUR" class="selected">EUR</li>
-                                    <li data-value="USD">USD</li>
-                                    <li data-value="GBP">GBP</li>
-                                    <li data-value="CHF">CHF</li>
-                                    <li data-value="JPY">JPY</li>
+                                    <li data-value="EUR" class="selected">{% trans "EUR" %}</li>
+                                    <li data-value="USD">{% trans "USD" %}</li>
+                                    <li data-value="GBP">{% trans "GBP" %}</li>
+                                    <li data-value="CHF">{% trans "CHF" %}</li>
+                                    <li data-value="JPY">{% trans "JPY" %}</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="calc-group calc-group-curr-to">
-                        <label>Convert to</label>
+                        <label>{% trans "Convert to" %}</label>
                         <div class="calc-custom-select" id="curr-to-wrap" data-value="USD">
-                            <button type="button" class="calc-select-trigger">USD</button>
+                            <button type="button" class="calc-select-trigger">{% trans "USD" %}</button>
                             <ul class="calc-select-menu">
-                                <li data-value="EUR">EUR</li>
-                                <li data-value="USD" class="selected">USD</li>
-                                <li data-value="GBP">GBP</li>
-                                <li data-value="CHF">CHF</li>
-                                <li data-value="JPY">JPY</li>
+                                <li data-value="EUR">{% trans "EUR" %}</li>
+                                <li data-value="USD" class="selected">{% trans "USD" %}</li>
+                                <li data-value="GBP">{% trans "GBP" %}</li>
+                                <li data-value="CHF">{% trans "CHF" %}</li>
+                                <li data-value="JPY">{% trans "JPY" %}</li>
                             </ul>
                         </div>
                     </div>
                     <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                     <div id="result-currency-mobile" class="calc-result calc-result-mobile"></div>
-                    <button type="button" class="calc-btn" id="btn-currency">Convert</button>
+                    <button type="button" class="calc-btn" id="btn-currency">{% trans "Convert" %}</button>
                 </div>
             </div>
             <div id="result-currency" class="calc-result"></div>
@@ -184,95 +211,95 @@
 
         <!-- Loan / Mortgage -->
         <div id="panel-loan" class="calc-panel {% if active_panel == 'loan' %}active{% endif %}">
-            <h2>Loan / mortgage calculator</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Monthly payment and amortization schedule.</p>
+            <h2>{% trans "Loan / mortgage calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima rata mensile e costo complessivo del finanziamento.{% else %}Estimate monthly payment and total loan cost.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Principal (&euro;)</label>
-                    <input type="number" id="loan-principal" placeholder="e.g. 200000" min="0" step="100" />
+                    <label>{% trans "Principal (€)" %}</label>
+                    <input type="number" id="loan-principal" placeholder='{% trans "e.g. 200000" %}' min="0" step="100" />
                 </div>
                 <div class="calc-group">
-                    <label>Annual rate (%)</label>
-                    <input type="number" id="loan-rate" placeholder="e.g. 3.5" min="0" step="0.01" />
+                    <label>{% trans "Annual rate (%)" %}</label>
+                    <input type="number" id="loan-rate" placeholder='{% trans "e.g. 3.5" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>Years</label>
-                    <input type="number" id="loan-years" placeholder="e.g. 25" min="1" max="50" step="1" />
+                    <label>{% trans "Years" %}</label>
+                    <input type="number" id="loan-years" placeholder="{% if CURRENT_LANGUAGE|slice:':2' == 'it' %}es. 2{% else %}e.g. 25{% endif %}" min="1" max="50" step="1" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-loan-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-loan">Calculate</button>
+                <button type="button" class="calc-btn" id="btn-loan">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola{% else %}{% trans "Calculate" %}{% endif %}</button>
             </div>
             <div id="result-loan" class="calc-result"></div>
         </div>
 
         <!-- Discount / Sale -->
         <div id="panel-discount" class="calc-panel {% if active_panel == 'discount' %}active{% endif %}">
-            <h2>Discount / sale calculator</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Original price and discount percentage → final price.</p>
+            <h2>{% trans "Discount / sale calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola valore dello sconto e prezzo finale di vendita.{% else %}Calculate discount value and final sale price.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Original price (&euro;)</label>
-                    <input type="number" id="disc-price" placeholder="e.g. 50" min="0" step="0.01" />
+                    <label>{% trans "Original price (€)" %}</label>
+                    <input type="number" id="disc-price" placeholder='{% trans "e.g. 50" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>Discount (%)</label>
-                    <input type="number" id="disc-pct" placeholder="e.g. 20" min="0" max="100" step="0.01" />
+                    <label>{% trans "Discount (%)" %}</label>
+                    <input type="number" id="disc-pct" placeholder='{% trans "e.g. 20" %}' min="0" max="100" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-discount-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-discount">Calculate</button>
+                <button type="button" class="calc-btn" id="btn-discount">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola{% else %}{% trans "Calculate" %}{% endif %}</button>
             </div>
             <div id="result-discount" class="calc-result"></div>
         </div>
 
         <!-- Margin / Markup -->
         <div id="panel-margin" class="calc-panel {% if active_panel == 'margin' %}active{% endif %}">
-            <h2>Margin / markup calculator</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Cost + desired margin → selling price.</p>
+            <h2>{% trans "Margin / markup calculator" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima il prezzo di vendita partendo da costo e margine obiettivo.{% else %}Estimate selling price from cost and target margin.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Cost (&euro;)</label>
-                    <input type="number" id="margin-cost" placeholder="e.g. 80" min="0" step="0.01" />
+                    <label>{% trans "Cost (€)" %}</label>
+                    <input type="number" id="margin-cost" placeholder='{% trans "e.g. 80" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>Margin (%)</label>
-                    <input type="number" id="margin-pct" placeholder="e.g. 25" min="0" max="100" step="0.01" />
+                    <label>{% trans "Margin (%)" %}</label>
+                    <input type="number" id="margin-pct" placeholder='{% trans "e.g. 25" %}' min="0" max="100" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-margin-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-margin">Calculate</button>
+                <button type="button" class="calc-btn" id="btn-margin">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola{% else %}{% trans "Calculate" %}{% endif %}</button>
             </div>
             <div id="result-margin" class="calc-result"></div>
         </div>
 
         <!-- Split bill -->
         <div id="panel-split" class="calc-panel {% if active_panel == 'split' %}active{% endif %}">
-            <h2>Split bill</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 16px;">Divide the bill among people, with optional tip.</p>
+            <h2>{% trans "Split bill" %}</h2>
+            <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Dividi il conto tra piu persone con mancia opzionale.{% else %}Split a bill among people with optional tip.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label>Total amount (&euro;)</label>
-                    <input type="number" id="split-total" placeholder="e.g. 120" min="0" step="0.01" />
+                    <label>{% trans "Total amount (€)" %}</label>
+                    <input type="number" id="split-total" placeholder='{% trans "e.g. 120" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label>Number of people</label>
-                    <input type="number" id="split-people" placeholder="e.g. 4" min="1" step="1" />
+                    <label>{% trans "Number of people" %}</label>
+                    <input type="number" id="split-people" placeholder='{% trans "e.g. 4" %}' min="1" step="1" />
                 </div>
                 <div class="calc-group">
-                    <label>Tip (%)</label>
-                    <input type="number" id="split-tip" placeholder="e.g. 10" min="0" step="1" value="0" />
+                    <label>{% trans "Tip (%)" %}</label>
+                    <input type="number" id="split-tip" placeholder='{% trans "e.g. 10" %}' min="0" step="1" value="0" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
                 <div id="result-split-mobile" class="calc-result calc-result-mobile"></div>
-                <button type="button" class="calc-btn" id="btn-split">Split</button>
+                <button type="button" class="calc-btn" id="btn-split">{% trans "Split" %}</button>
             </div>
             <div id="result-split" class="calc-result"></div>
         </div>
 
         <div class="calc-home">
-            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>
         </div>
     </div>

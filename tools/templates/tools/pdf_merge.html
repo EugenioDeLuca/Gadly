@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}PDF Merger Tool{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "PDF Merger Tool" %}{% endblock %}
 {% block body_class %}pdf-merger{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/pdf-merge.css' %}">
@@ -8,36 +9,43 @@
 {% block content %}
 <div class="pdf-merger">
     <div class="container">
-        <h1>PDF Merger Tool</h1>
+        <h1>{% trans "PDF Merger Tool" %}</h1>
+        <p class="tool-desc">
+            {% if LANGUAGE_CODE|slice:":2" == "it" %}
+                Unisci piu file PDF in un unico documento nell'ordine che preferisci.
+            {% else %}
+                Combine multiple PDF files into a single document in the order you choose.
+            {% endif %}
+        </p>
         <!-- Form con selezione multipla - supporta file da cartelle diverse -->
         <form id="pdf-merger-form" enctype="multipart/form-data">
             <div id="file-inputs-wrapper">
                 <div class="upload-area">
                     <div class="file-input-wrapper">
                         <input type="file" id="pdf-file-1" class="pdf-file-input" name="files" accept=".pdf" multiple />
-                        <label for="pdf-file-1" class="choose-file-btn"><span class="file-name-display">Choose file</span></label>
+                        <label for="pdf-file-1" class="choose-file-btn"><span class="file-name-display">{% trans "Choose file" %}</span></label>
                     </div>
-                    <p class="upload-hint">Choose PDF files to merge</p>
+                    <p class="upload-hint">{% trans "Choose PDF files to merge" %}</p>
                 </div>
             </div>
 
             <!-- Messaggio di errore/risultato posizionato tra scelta file e bottone Add files -->
             <div id="pdf-result-area" class="result-area hidden" aria-live="polite"></div>
 
-            <button type="button" id="add-more-files">Add files from another folder</button>
+            <button type="button" id="add-more-files">{% trans "Add files from another folder" %}</button>
             <div id="file-preview" class="file-preview">
-                <p class="file-preview-title">Preview – File order (use ↑ ↓ to reorder):</p>
+                <p class="file-preview-title">{% trans "Preview – File order (use ↑ ↓ to reorder):" %}</p>
                 <ul id="file-list"></ul>
             </div>
         </form>
 
         <div class="button-group">
-            <button type="submit" id="submit-files" form="pdf-merger-form">Merge PDFs</button>
+            <button type="submit" id="submit-files" form="pdf-merger-form">{% trans "Merge PDFs" %}</button>
         </div>
 
         <div class="home-link-wrap">
-            <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+            <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
             </a>
         </div>
     </div>

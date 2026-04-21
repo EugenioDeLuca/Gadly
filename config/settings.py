@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,14 +28,29 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(jg5rx3#6a!lw*wpbvmq*
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # In produzione: imposta DJANGO_DEBUG=0 (o DEBUG=0)
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+_render_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '').strip()
+_is_render = bool(_render_hostname or os.environ.get('RENDER'))
+_debug_raw = os.environ.get('DJANGO_DEBUG', os.environ.get('DEBUG'))
+if _debug_raw is None:
+    # Safe default: local dev stays in debug, Render defaults to production mode.
+    DEBUG = not _is_render
+else:
+    DEBUG = _debug_raw.strip().lower() in ('1', 'true', 'yes', 'on')
 
 # In produzione: imposta ALLOWED_HOSTS (es. ALLOWED_HOSTS=gadly.it,www.gadly.it)
 _allowed = os.environ.get('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()] if _allowed else []
 # Render: aggiunge automaticamente l'hostname del servizio
-if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
-    ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
+if _render_hostname and _render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_render_hostname)
+
+# CSRF trusted origins (comma-separated), with Render hostname auto-added.
+_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()] if _csrf_trusted else []
+if _render_hostname:
+    _render_origin = f"https://{_render_hostname}"
+    if _render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_render_origin)
 
 
 # Application definition
@@ -52,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -69,6 +87,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'tools.context_processors.user_profile',
@@ -114,7 +133,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('it', _('Italian')),
+]
+
+# Single source of truth for project strings (never use BASE_DIR / "locale" here:
+# a stray root catalog overrides these and breaks the site).
+LOCALE_PATHS = [BASE_DIR / "tools" / "locale"]
 
 TIME_ZONE = 'UTC'
 
@@ -161,8 +189,19 @@ else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@gadly.it')
 
+# Local AI for Interview Simulator (no external APIs).
+INTERVIEW_AI_ENABLED = os.environ.get('INTERVIEW_AI_ENABLED', '0').strip().lower() in ('1', 'true', 'yes', 'on')
+INTERVIEW_AI_ENDPOINT = os.environ.get('INTERVIEW_AI_ENDPOINT', 'http://127.0.0.1:11434/api/generate').strip()
+INTERVIEW_AI_MODEL = os.environ.get('INTERVIEW_AI_MODEL', 'llama3.1:8b').strip()
+try:
+    INTERVIEW_AI_TIMEOUT_SECONDS = max(2, min(180, int(os.environ.get('INTERVIEW_AI_TIMEOUT_SECONDS', '8'))))
+except Exception:
+    INTERVIEW_AI_TIMEOUT_SECONDS = 8
+
 # Impostazioni di sicurezza per produzione (quando DEBUG=False)
 if not DEBUG:
+    # Render/Proxy support: trust forwarded https header.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'

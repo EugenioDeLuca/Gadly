@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Color Converter{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Color Converter" %}{% endblock %}
 {% block body_class %}web-seo color-converter{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
@@ -8,7 +9,7 @@
 .color-converter .color-preview { width: 100%; max-width: 280px; height: 80px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 16px; }
 .color-converter .form-group input[type="text"] { font-family: monospace; }
 .color-converter .form-group label { margin-top: 12px; }
-.color-converter .color-copy-group { display: flex; flex-wrap: nowrap; gap: 12px; margin-top: 20px; }
+.color-converter .color-copy-group { display: flex; flex-wrap: nowrap; gap: 12px; margin-top: 12px; margin-bottom: 0; }
 .color-converter .color-copy-group button { min-width: 140px; }
 /* Desktop: Copy HEX a sinistra, Copy RGB al CENTRO del container, Copy HSL a DESTRA del container */
 @media (min-width: 769px) {
@@ -17,7 +18,7 @@
         width: 100%;
         min-height: 52px;
         display: block;
-        margin-top: 20px;
+        margin-top: 12px;
     }
     .color-converter .color-copy-group #btn-copy-hex {
         position: relative;
@@ -52,36 +53,36 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Color Converter</h1>
-    <p class="tool-desc">Convert between HEX, RGB, and HSL. Pick a color or enter a HEX code.</p>
+    <h1>{% trans "Color Converter" %}</h1>
+    <p class="tool-desc">{% trans "Convert between HEX, RGB, and HSL. Pick a color or enter a HEX code." %}</p>
     <div class="form-group">
-        <label>Preview</label>
+        <label>{% trans "Preview" %}</label>
         <div id="color-preview" class="color-preview" style="background: #003f7f;"></div>
     </div>
     <div class="form-group">
-        <label for="color-picker">Pick color</label>
+        <label for="color-picker">{% trans "Pick color" %}</label>
         <input type="color" id="color-picker" value="#003f7f" style="width: 60px; height: 40px; padding: 2px; cursor: pointer; border-radius: 8px; border: 2px solid #ddd;" />
     </div>
     <div class="form-group">
-        <label for="hex-input">HEX</label>
+        <label for="hex-input">{% trans "HEX" %}</label>
         <input type="text" id="hex-input" value="#003f7f" placeholder="#003f7f" maxlength="9" />
     </div>
     <div class="form-group">
-        <label for="rgb-input">RGB</label>
+        <label for="rgb-input">{% trans "RGB" %}</label>
         <input type="text" id="rgb-input" value="rgb(0, 63, 127)" placeholder="rgb(0, 63, 127) or 0, 63, 127" />
     </div>
     <div class="form-group">
-        <label for="hsl-input">HSL</label>
+        <label for="hsl-input">{% trans "HSL" %}</label>
         <input type="text" id="hsl-input" value="hsl(210, 100%, 25%)" placeholder="hsl(210, 100%, 25%) or 210, 100%, 25%" />
     </div>
     <div class="button-group color-copy-group" id="color-copy-group">
-        <button type="button" id="btn-copy-hex">Copy HEX</button>
-        <button type="button" id="btn-copy-rgb">Copy RGB</button>
-        <button type="button" id="btn-copy-hsl">Copy HSL</button>
+        <button type="button" id="btn-copy-hex">{% trans "Copy HEX" %}</button>
+        <button type="button" id="btn-copy-rgb">{% trans "Copy RGB" %}</button>
+        <button type="button" id="btn-copy-hsl">{% trans "Copy HSL" %}</button>
     </div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

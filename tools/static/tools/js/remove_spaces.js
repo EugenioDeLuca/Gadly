@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     var input = document.getElementById("text-input");
+    function tr(msgid, fallbackIt) {
+        var out = (typeof gettext === 'function') ? gettext(msgid) : msgid;
+        var isIt = document.documentElement.lang && document.documentElement.lang.toLowerCase().indexOf('it') === 0;
+        if (isIt && out === msgid && fallbackIt) return fallbackIt;
+        return out;
+    }
     var resultArea = document.getElementById("result-area");
     var errorBox = document.getElementById("remove-spaces-error");
     var btnTransform = document.getElementById("btn-transform");
@@ -25,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!text || !text.trim()) {
             resultArea.textContent = "";
             resultArea.classList.add("hidden");
-            showError("Empty");
+            showError(tr("Please enter text to process", "Inserisci del testo"));
             return;
         }
 
@@ -45,10 +51,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var text = resultArea.textContent;
         if (!text || text === "(empty)") return;
         navigator.clipboard.writeText(text).then(function() {
-            btnCopy.textContent = "Copied!";
+            btnCopy.textContent = gettext('Copied!');
             btnCopy.classList.add("copied");
             setTimeout(function() {
-                btnCopy.textContent = "Copy result";
+                btnCopy.textContent = gettext('Copy');
                 btnCopy.classList.remove("copied");
             }, 1500);
         });

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
     const dataInput = document.getElementById("data-input");
     const chartTypeSelect = document.getElementById("chart-type");
     const btnGenerate = document.getElementById("btn-generate");
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 labels.push(parts[0]);
                 values.push(parseFloat(parts[1]) || 0);
             } else if (parts.length === 1 && !isNaN(parseFloat(parts[0]))) {
-                labels.push("Item " + (i + 1));
+                labels.push(t("Item") + " " + (i + 1));
                 values.push(parseFloat(parts[0]));
             }
         }
@@ -89,11 +91,25 @@ document.addEventListener("DOMContentLoaded", function() {
         return colors;
     }
 
+    function hexToRgba(hex, alpha) {
+        if (!hex) return "rgba(0,0,0," + alpha + ")";
+        var c = hex.replace("#", "");
+        if (c.length === 3) {
+            c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+        }
+        var r = parseInt(c.substring(0, 2), 16);
+        var g = parseInt(c.substring(2, 4), 16);
+        var b = parseInt(c.substring(4, 6), 16);
+        return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+    }
+
     function generateChart() {
         const data = parseData(dataInput.value);
         if (data.labels.length === 0 || data.values.length === 0) {
             if (resultArea) {
-                resultArea.textContent = "Please enter valid data (format: label,value per line)";
+                resultArea.textContent = isItalian
+                    ? "Inserisci dati validi (formato: etichetta,valore per riga)"
+                    : t("Please enter valid data (format: label,value per line)");
                 resultArea.classList.add("error");
                 resultArea.classList.remove("hidden");
                 resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -109,15 +125,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const type = chartTypeSelect.value;
         const colors = getColors(data.labels.length);
+        const polarFillColors = colors.map(function(c) { return hexToRgba(c, 0.45); });
 
         const config = {
             type: type,
             data: {
                 labels: data.labels,
                 datasets: [{
-                    label: "Value",
+                    label: t("Value"),
                     data: data.values,
-                    backgroundColor: type === "line" ? "rgba(0, 123, 255, 0.2)" : colors,
+                    backgroundColor: type === "line" ? "rgba(0, 123, 255, 0.2)" : (type === "polarArea" ? polarFillColors : colors),
                     borderColor: type === "line" ? "#007BFF" : colors,
                     borderWidth: 2,
                     fill: type === "line"
@@ -131,11 +148,35 @@ document.addEventListener("DOMContentLoaded", function() {
                         display: type !== "bar" && type !== "line"
                     }
                 },
-                scales: type === "bar" || type === "line" ? {
+                scales: (type === "bar" || type === "line") ? {
                     y: {
                         beginAtZero: true
                     }
-                } : {}
+                } : (type === "polarArea" ? {
+                    // Ensure radial vectors and numeric ticks are always visible.
+                    r: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            circular: true,
+                            color: "rgba(0, 63, 127, 0.28)"
+                        },
+                        angleLines: {
+                            display: true,
+                            color: "rgba(0, 63, 127, 0.40)"
+                        },
+                        ticks: {
+                            display: true,
+                            backdropColor: "rgba(255,255,255,0.85)",
+                            color: "#003f7f"
+                        },
+                        pointLabels: {
+                            // Keep chart size close to previous behavior while
+                            // preserving visible radial lines and numbers.
+                            display: false
+                        }
+                    }
+                } : {})
             }
         };
 

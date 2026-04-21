@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Markdown Preview{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Markdown Preview" %}{% endblock %}
 {% block body_class %}text-tool markdown-preview{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -9,9 +10,35 @@
 .text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
 .text-tool.markdown-preview .preview-panel { flex: 1; min-width: 280px; }
 .text-tool.markdown-preview .preview-panel label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
-.text-tool.markdown-preview .preview-panel textarea { min-height: 280px; height: auto; resize: none; overflow-y: auto; }
-.text-tool.markdown-preview .preview-output { min-height: 280px; padding: 16px 20px; border-radius: 12px; border: 2px solid #ddd; background: #f8fcff; overflow: auto; font-size: 1rem; line-height: 1.6; box-sizing: border-box; }
-.text-tool.markdown-preview .preview-output h1, .text-tool.markdown-preview .preview-output h2, .text-tool.markdown-preview .preview-output h3 { margin-top: 1em; margin-bottom: 0.5em; color: #003f7f; }
+.text-tool.markdown-preview .preview-panel textarea { min-height: 280px; height: auto; resize: none; overflow-y: auto; color: #1a1a2e; }
+.text-tool.markdown-preview .preview-actions { margin-top: 10px; }
+.text-tool.markdown-preview .preview-actions .button-group { justify-content: flex-end; }
+.text-tool.markdown-preview .preview-actions #btn-copy { min-width: 132px; }
+.text-tool.markdown-preview .preview-actions #btn-copy.copied,
+.text-tool.markdown-preview .preview-actions #btn-copy.copied:hover,
+.text-tool.markdown-preview .preview-actions #btn-copy:active {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+body.dark-mode.text-tool.markdown-preview .preview-actions #btn-copy.copied,
+body.dark-mode.text-tool.markdown-preview .preview-actions #btn-copy.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+@media (max-width: 480px) {
+.text-tool.markdown-preview .preview-panel textarea { color: #1a1a2e !important; }
+}
+body.dark-mode.markdown-preview #md-input { color: #1a1a2e !important; }
+@media (max-width: 480px) {
+body.dark-mode.markdown-preview #md-input,
+body.dark-mode.markdown-preview .preview-panel textarea { color: #1a1a2e !important; }
+}
+.text-tool.markdown-preview .preview-output { min-height: 280px; padding: 16px 20px; border-radius: 12px; border: 2px solid #ddd; background: #f8fcff; overflow: auto; font-size: 1rem; line-height: 1.6; box-sizing: border-box; color: #1a1a2e; }
+.text-tool.markdown-preview .preview-output a { color: #002d5c; }
+.text-tool.markdown-preview .preview-output a:hover { color: #003f7f; }
+.text-tool.markdown-preview .preview-output h1, .text-tool.markdown-preview .preview-output h2, .text-tool.markdown-preview .preview-output h3 { margin-top: 1em; margin-bottom: 0.5em; color: #1a1a2e; }
 .text-tool.markdown-preview .preview-output pre { background: #ecf0f1; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0.5em 0; }
 .text-tool.markdown-preview .preview-output code { background: #ecf0f1; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
 .text-tool.markdown-preview .preview-output ul, .text-tool.markdown-preview .preview-output ol { margin: 0.5em 0; padding-left: 1.5em; }
@@ -20,64 +47,152 @@
 </style>
 {% endblock %}
 {% block content %}
+{% trans "Preview will appear here." as md_preview_empty %}
+{% trans "Error rendering preview." as md_preview_error %}
+{% if LANGUAGE_CODE|slice:":2" == "it" %}
+{% trans "Copiato!" as md_copied %}
+{% trans "Copia" as md_copy %}
+{% else %}
+{% trans "Copied!" as md_copied %}
+{% trans "Copy" as md_copy %}
+{% endif %}
 <div class="container">
-    <h1>Markdown Preview</h1>
-    <p class="tool-desc">Write Markdown on the left and see the rendered result on the right.</p>
+    <h1>{% trans "Markdown Preview" %}</h1>
+    <p class="tool-desc">{% trans "Write Markdown on the left and see the rendered result on the right." %}</p>
     <div class="text-tool-row preview-layout">
         <div class="preview-panel">
-            <label for="md-input">Markdown</label>
-            <textarea id="md-input" placeholder="Type **bold**, *italic*, # headings, - lists, [links](url)..." rows="16"># Hello
+            <label for="md-input">{% trans "Markdown" %}</label>
+            <textarea id="md-input" placeholder='{% trans "Type **bold**, *italic*, # headings, - lists, [links](url)..." %}' rows="16">{% blocktrans %}# Hello
 
 Write **bold** or *italic* text.
 
 - List item
 - Another item
 
-[Link](https://example.com)</textarea>
+[Link](https://example.com){% endblocktrans %}</textarea>
         </div>
         <div class="preview-panel">
-            <label>Preview</label>
-            <div id="md-preview" class="preview-output placeholder">Preview will appear here.</div>
+            <label>{% trans "Preview" %}</label>
+            <div id="md-preview" class="preview-output placeholder">{{ md_preview_empty }}</div>
+            <div class="preview-actions">
+                <div class="button-group">
+                    <button type="button" id="btn-copy">{{ md_copy }}</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 (function() {
+    var MD_PREVIEW_EMPTY = "{{ md_preview_empty|escapejs }}";
+    var MD_PREVIEW_ERROR = "{{ md_preview_error|escapejs }}";
+    var MD_COPIED = "{{ md_copied|escapejs }}";
+    var MD_COPY = "{{ md_copy|escapejs }}";
     var input = document.getElementById('md-input');
     var preview = document.getElementById('md-preview');
-    var MIN_H = 280;
+    var copyBtn = document.getElementById('btn-copy');
+    function getMinH() { return window.innerWidth <= 480 ? 250 : 280; }
+    function isMobile() { return window.innerWidth <= 480; }
 
     function resizeTextarea() {
-        input.style.height = 'auto';
-        var h = Math.max(MIN_H, input.scrollHeight);
-        input.style.height = h + 'px';
-        preview.style.minHeight = h + 'px';
+        if (isMobile()) {
+            var h = 250;
+            input.style.height = h + 'px';
+            preview.style.minHeight = h + 'px';
+            preview.style.height = h + 'px';
+        } else {
+            input.style.height = 'auto';
+            var h = Math.max(getMinH(), input.scrollHeight);
+            input.style.height = h + 'px';
+            preview.style.minHeight = h + 'px';
+            preview.style.height = h + 'px';
+        }
+    }
+
+    function syncScroll() {
+        var ratio = input.scrollHeight > input.clientHeight
+            ? input.scrollTop / (input.scrollHeight - input.clientHeight)
+            : 0;
+        preview.scrollTop = ratio * (preview.scrollHeight - preview.clientHeight);
     }
 
     function update() {
         var raw = input.value || '';
         resizeTextarea();
         if (!raw) {
-            preview.textContent = 'Preview will appear here.';
+            preview.textContent = MD_PREVIEW_EMPTY;
             preview.classList.add('placeholder');
             return;
         }
         preview.classList.remove('placeholder');
         try {
-            preview.innerHTML = (typeof marked !== 'undefined' && marked.parse) ? marked.parse(raw) : raw.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            if (typeof marked !== 'undefined' && marked.parse) {
+                preview.innerHTML = marked.parse(raw, { breaks: true });
+            } else {
+                preview.innerHTML = raw.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+            }
         } catch (e) {
-            preview.textContent = 'Error rendering preview.';
+            preview.textContent = MD_PREVIEW_ERROR;
         }
+        requestAnimationFrame(syncScroll);
     }
 
+    function fallbackCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+    }
+
+    function setTextareaColor() {
+        if (document.body.classList.contains('dark-mode') && window.innerWidth <= 480) {
+            input.style.setProperty('color', '#1a1a2e', 'important');
+            input.style.setProperty('-webkit-text-fill-color', '#1a1a2e', 'important');
+        } else {
+            input.style.removeProperty('color');
+            input.style.removeProperty('-webkit-text-fill-color');
+        }
+    }
+    setTextareaColor();
+    var obs = new MutationObserver(setTextareaColor);
+    obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', setTextareaColor);
     input.addEventListener('input', update);
     input.addEventListener('change', update);
+    input.addEventListener('scroll', syncScroll);
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+            var text = (preview && preview.textContent ? preview.textContent : '').trim();
+            if (!text || text === MD_PREVIEW_EMPTY || text === MD_PREVIEW_ERROR) return;
+            function onCopied() {
+                copyBtn.textContent = MD_COPIED;
+                copyBtn.classList.add('copied');
+                setTimeout(function() { copyBtn.textContent = MD_COPY; }, 1500);
+                setTimeout(function() { copyBtn.classList.remove('copied'); }, 1500);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(onCopied).catch(function() {
+                    fallbackCopy(text);
+                    onCopied();
+                });
+            } else {
+                fallbackCopy(text);
+                onCopied();
+            }
+        });
+    }
     update();
 })();
 </script>

@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         trigger.textContent = selectEl.options[selectEl.selectedIndex].text;
         const dropdown = document.createElement("div");
         dropdown.className = "custom-select-dropdown";
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "custom-select-options-wrap";
         for (let i = 0; i < selectEl.options.length; i++) {
             const opt = selectEl.options[i];
             const div = document.createElement("div");
@@ -28,8 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 div.classList.add("selected");
                 wrap.classList.remove("open");
             });
-            dropdown.appendChild(div);
+            optionsWrap.appendChild(div);
         }
+        dropdown.appendChild(optionsWrap);
         trigger.addEventListener("click", (e) => {
             e.stopPropagation();
             document.querySelectorAll(".custom-select-wrap.open").forEach(w => w.classList.remove("open"));
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const inputLang = inputLanguageSelect.value;  // Lingua di input
 
         if (!text) {
-            showResult("Please enter text to translate", true);
+            showResult(gettext("Please enter text to translate"), true);
             outputText.textContent = "";
             return;
         }
@@ -105,13 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 showResult(data.error, true);
             } else {
                 outputText.textContent = "";
-                showResult("An unknown error occurred while translating", true);
+                showResult(gettext("An unknown error occurred while translating"), true);
             }
 
         } catch (error) {
             console.error("Error during translation:", error);
             outputText.textContent = "";
-            showResult("An error occurred while translating", true);
+            showResult(gettext("An error occurred while translating"), true);
         }
     };
 

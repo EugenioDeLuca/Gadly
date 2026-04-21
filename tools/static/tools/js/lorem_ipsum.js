@@ -78,9 +78,9 @@
         if (!text || resultEl.classList.contains('hidden')) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
-                btnCopy.textContent = 'Copied!';
+                btnCopy.textContent = gettext('Copied!');
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
             }).catch(function () {});
         } else {
             var ta = document.createElement('textarea');
@@ -89,9 +89,9 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                btnCopy.textContent = 'Copied!';
+                btnCopy.textContent = gettext('Copied!');
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
             } catch (e) {}
             document.body.removeChild(ta);
         }

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 from .models import UserProfile
 
@@ -9,7 +10,7 @@ class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
         max_length=254,
-        help_text="Required. We'll send a verification link so you can reset your password anytime.",
+        help_text=_("Required. We'll send a verification link so you can reset your password anytime."),
     )
 
     class Meta:
@@ -19,7 +20,7 @@ class UserRegistrationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError("This email is already registered.")
+            raise forms.ValidationError(_("This email is already registered."))
         return email
 
 
@@ -41,25 +42,25 @@ class ProfileUpdateForm(forms.Form):
     def clean_username(self):
         username = (self.cleaned_data.get('username') or '').strip()
         if not username:
-            raise forms.ValidationError("Username is required.")
+            raise forms.ValidationError(_("Username is required."))
         if len(username) < 3:
-            raise forms.ValidationError("Username must be at least 3 characters.")
+            raise forms.ValidationError(_("Username must be at least 3 characters."))
         qs = User.objects.filter(username__iexact=username)
         if self.user:
             qs = qs.exclude(pk=self.user.pk)
         if qs.exists():
-            raise forms.ValidationError("This username is already taken.")
+            raise forms.ValidationError(_("This username is already taken."))
         return username
 
     def clean_email(self):
         email = (self.cleaned_data.get('email') or '').strip()
         if not email:
-            raise forms.ValidationError("Email is required.")
+            raise forms.ValidationError(_("Email is required."))
         qs = User.objects.filter(email__iexact=email)
         if self.user:
             qs = qs.exclude(pk=self.user.pk)
         if qs.exists():
-            raise forms.ValidationError("This email is already registered.")
+            raise forms.ValidationError(_("This email is already registered."))
         return email
 
 

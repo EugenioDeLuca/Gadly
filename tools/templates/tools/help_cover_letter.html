@@ -1,0 +1,30 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Lettera di presentazione{% else %}Cover Letter Help{% endif %}{% endblock %}
+{% block body_class %}text-tool help-page help-cover-letter{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Lettera di presentazione{% else %}Cover Letter help{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Suggerimenti per generare una lettera chiara, coerente e personalizzata.{% else %}Tips for generating a clear, tailored cover letter.{% endif %}</p>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Campi principali{% else %}Core fields{% endif %}</h2>
+        <ul>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Nome, ruolo target e azienda sono obbligatori.{% else %}Name, target role, and company are required.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Inserisci almeno 2 punti chiave nei risultati.{% else %}Add at least 2 highlight points.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Usa tono e template in base al tipo di candidatura.{% else %}Choose tone and template based on application style.{% endif %}</li>
+        </ul>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'cover_letter_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Lettera di presentazione"{% else %}Back to "Cover Letter Generator"{% endif %}</a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,5 +1,6 @@
 {% extends "tools/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}FAQ{% endblock %}
 {% block body_class %}faq-page{% endblock %}
 {% block extra_css %}
@@ -7,80 +8,77 @@
 {% endblock %}
 {% block content %}
 <div class="faq-container">
-    <h1>FAQ</h1>
-    <p class="faq-intro">Find answers to common questions.</p>
+    <h1 class="faq-main-title">FAQ</h1>
+    <p class="faq-intro">{% trans "Find answers to common questions." %}</p>
 
     <section class="faq-section">
-        <h2>General</h2>
+        <h2>{% trans "General" %}</h2>
         <div class="faq-item">
-            <h3>What is Gadly?</h3>
-            <p>Gadly is a collection of free online utilities for text editing, social media, finance, web/SEO, file management, and more. All tools run in your browser—no installation required.</p>
+            <h3>{% trans "What is Gadly?" %}</h3>
+            <p>{% blocktrans %}Gadly is a collection of free online utilities for text editing, social media, finance, web/SEO, file management, and more. All tools run in your browser—no installation required.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Is my data safe?</h3>
-            <p>Most tools process data locally in your browser or send it only for the specific operation (e.g., translation, meta tag check). We do not store or log your personal data. For sensitive content, always check the privacy policy.</p>
+            <h3>{% trans "Is my data safe?" %}</h3>
+            <p>{% blocktrans %}Most tools process data locally in your browser or send it only for the specific operation (e.g., translation, meta tag check). We do not store or log your personal data. For sensitive content, always check the privacy policy.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Does it work on mobile?</h3>
-            <p>Yes! The site is responsive and optimized for smartphones and tablets. You can use all tools from your mobile device.</p>
+            <h3>{% trans "Does it work on mobile?" %}</h3>
+            <p>{% blocktrans %}Yes! The site is responsive and optimized for smartphones and tablets. You can use all tools from your mobile device.{% endblocktrans %}</p>
         </div>
     </section>
 
     <section class="faq-section">
-        <h2>Text Tools</h2>
+        <h2>{% trans "Account and Access" %}</h2>
         <div class="faq-item">
-            <h3>Word Counter</h3>
-            <p>Paste your text and click "Count Words" or "Count Characters" to get instant counts. Useful for essays, blog posts, and character-limited platforms.</p>
+            <h3>{% trans "Do I need an account to use Gadly?" %}</h3>
+            <p>{% blocktrans %}No. Most tools are available immediately without registration. If a tool or feature requires login, you will see a clear message before continuing.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Remove Spaces</h3>
-            <p>Choose a mode: remove all spaces or collapse multiple spaces into one. Great for cleaning pasted text.</p>
+            <h3>{% trans "I forgot my password. What can I do?" %}</h3>
+            <p>{% blocktrans %}Use the password reset option on the login page. If your email is verified, you can reset your password and access your account again.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Username / Bio / Hashtag / Caption Generator</h3>
-            <p>Select options (style, platform, niche) and click Generate. Use the Copy button to copy the result to your clipboard.</p>
-        </div>
-    </section>
-
-    <section class="faq-section">
-        <h2>Social Media & Video</h2>
-        <div class="faq-item">
-            <h3>Video Downloader</h3>
-            <p>Paste a video URL from a supported site, click Download, and wait for the file. Large videos may take a few moments.</p>
+            <h3>{% trans "Can I change my username or profile image?" %}</h3>
+            <p>{% blocktrans %}Yes. Open your account profile from the header menu and update your username, email, and avatar from there.{% endblocktrans %}</p>
         </div>
     </section>
 
     <section class="faq-section">
-        <h2>Finance Calculators</h2>
+        <h2>{% trans "Usage and Results" %}</h2>
         <div class="faq-item">
-            <h3>How to use the calculators?</h3>
-            <p>Select the tab (Percentage, VAT, Currency, Loan, etc.), enter the values in the fields, and click the calculate button. Results appear below.</p>
+            <h3>{% trans "Why is a result different from another website?" %}</h3>
+            <p>{% blocktrans %}Some tools use different rules, formulas, or rounding methods depending on implementation. If you need strict precision (for legal or accounting use), always verify with your official reference.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Currency conversion</h3>
-            <p>Enter the amount and the exchange rate (e.g., 1 EUR = 1.08 USD). The result shows the converted amount.</p>
+            <h3>{% trans "Why does a tool return an error with a URL?" %}</h3>
+            <p>{% blocktrans %}The URL may be blocked, invalid, or unavailable from the server side. Check that it starts with http/https, that the page is public, and that the domain is reachable.{% endblocktrans %}</p>
+        </div>
+        <div class="faq-item">
+            <h3>{% trans "Can I use these tools for work or clients?" %}</h3>
+            <p>{% blocktrans %}Yes, but always review the output before publishing or delivering it. Gadly helps speed up work, but final validation is your responsibility.{% endblocktrans %}</p>
         </div>
     </section>
 
     <section class="faq-section">
-        <h2>Web / SEO</h2>
+        <h2>{% trans "Files and Privacy" %}</h2>
         <div class="faq-item">
-            <h3>Meta Tag Checker</h3>
-            <p>Enter a URL to see the meta tags (title, description, Open Graph, Twitter cards) of that page.</p>
+            <h3>{% trans "Are uploaded files saved permanently?" %}</h3>
+            <p>{% blocktrans %}No, files are processed only for the requested operation and are not meant to be stored permanently. Avoid uploading confidential files unless necessary.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Sitemap Extractor</h3>
-            <p>Paste the URL of a sitemap.xml file to extract all listed URLs. Useful for SEO audits.</p>
+            <h3>{% trans "Which file formats are supported?" %}</h3>
+            <p>{% blocktrans %}Supported formats depend on the specific tool (for example PDF tools, image tools, or text tools). If a file is not accepted, convert it to a common format and try again.{% endblocktrans %}</p>
         </div>
         <div class="faq-item">
-            <h3>Robots.txt Generator</h3>
-            <p>Configure User-agent, Disallow/Allow paths, and Sitemap URL to generate a robots.txt file. Copy the result and paste it into your site's root.</p>
+            <h3>{% trans "Do you track my content?" %}</h3>
+            {% url 'privacy' as privacy_url %}
+            <p>{% blocktrans with privacy_url=privacy_url %}We do not use your content for marketing or profiling. For complete details, check the <a href="{{ privacy_url }}">Privacy Policy</a>.{% endblocktrans %}</p>
         </div>
     </section>
 
     <div class="faq-footer home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

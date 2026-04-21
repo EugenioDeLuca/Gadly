@@ -1,0 +1,30 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Email candidatura{% else %}Application Email Help{% endif %}{% endblock %}
+{% block body_class %}text-tool help-page help-application-email{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Email candidatura{% else %}Application Email help{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Come scrivere un'email breve e professionale per candidarti.{% else %}How to write a short, professional application email.{% endif %}</p>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Struttura consigliata{% else %}Suggested structure{% endif %}</h2>
+        <ul>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Apertura chiara con ruolo e azienda.{% else %}Clear opening with role and company.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}2-4 punti di forza concreti.{% else %}2-4 concrete strengths.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Chiusura educata con disponibilità a colloquio.{% else %}Polite closing with interview availability.{% endif %}</li>
+        </ul>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'application_email_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Email candidatura"{% else %}Back to "Application Email Generator"{% endif %}</a>
+    </div>
+</div>
+{% endblock %}
+

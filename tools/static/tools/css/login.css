@@ -152,10 +152,14 @@ body.dark-mode .login-error {
     color: #003f7f;
     font-weight: 600;
     text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s, opacity 0.2s, color 0.2s;
 }
 
 .login-hint a:hover {
     color: #0056b3;
+    opacity: 0.9;
+    transform: scale(1.05);
 }
 
 body.dark-mode .login-hint {

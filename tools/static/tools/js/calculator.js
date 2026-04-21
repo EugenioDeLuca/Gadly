@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var htmlLang = (document.documentElement.lang || "").toLowerCase();
+    var isItalian = htmlLang.indexOf("it") === 0;
+
     // Tabs
     document.querySelectorAll(".calc-tab").forEach(function(tab) {
         tab.addEventListener("click", function() {
@@ -34,10 +37,13 @@ document.addEventListener("DOMContentLoaded", function() {
         var perc = parseFloat(pctValue.value);
         var of = parseFloat(pctOf.value);
         if (isNaN(perc) || isNaN(of)) {
-            setPctResult("Please enter valid values", true);
+            setPctResult(gettext("Please enter valid values."), true);
         } else {
             var res = (perc / 100) * of;
-            setPctResult(perc + "% of " + of + " = <strong>" + res.toFixed(2) + "</strong>", false);
+            setPctResult(
+                gettext("Result:") + " " + String(perc) + "% " + gettext("of") + " " + String(of) + " " + gettext("is") + " " + "<strong>" + res.toFixed(2) + "</strong>",
+                false
+            );
         }
     });
 
@@ -92,9 +98,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var menu = document.getElementById("iva-rate-menu");
         if (!menu || !r) return;
         menu.innerHTML = "";
-        var items = [{ value: r.standard_rate, label: r.standard_rate + "% (standard)" }];
+        var std = gettext("(standard)");
+        var red = gettext("(reduced)");
+        var items = [{ value: r.standard_rate, label: r.standard_rate + "% " + std }];
         (r.reduced_rates || []).forEach(function(v) {
-            items.push({ value: v, label: v + "% (reduced)" });
+            items.push({ value: v, label: v + "% " + red });
         });
         items.sort(function(a, b) { return b.value - a.value; });
         items.forEach(function(item, i) {
@@ -132,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 buildIvaCountryMenu(rates);
                 buildIvaRateMenu(rates, "IT");
                 var trigger = ivaCountryWrap ? ivaCountryWrap.querySelector(".calc-select-trigger") : null;
-                if (trigger) trigger.textContent = "Italy (IT)";
+                if (trigger) trigger.textContent = gettext("Italy (IT)");
             })
             .catch(function(err) {
                 clearTimeout(timeoutId);
@@ -169,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 buildIvaRateMenu(vatRatesCache, "IT");
                 if (ivaCountryWrap) {
                     var t = ivaCountryWrap.querySelector(".calc-select-trigger");
-                    if (t) t.textContent = "Italy (IT)";
+                    if (t) t.textContent = gettext("Italy (IT)");
                 }
             });
     }
@@ -209,15 +217,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var rate = parseFloat(rateVal) / 100;
         var amt = parseFloat(ivaAmount.value);
         if (isNaN(amt) || amt < 0) {
-            resultIva.textContent = "Please enter a valid amount";
+            resultIva.textContent = gettext("Please enter a valid amount.");
             resultIva.classList.add("error");
         } else {
             resultIva.classList.remove("error");
             var vat = amt * rate;
             var gross = amt + vat;
-            resultIva.innerHTML = "Net amount: " + amt.toFixed(2) + " €<br>" +
-                "VAT (" + rateVal + "%): " + vat.toFixed(2) + " €<br>" +
-                "<strong>Gross amount: " + gross.toFixed(2) + " €</strong>";
+            resultIva.innerHTML =
+                gettext("Net amount:") + " " + amt.toFixed(2) + " €<br>" +
+                gettext("VAT") + " (" + rateVal + "%): " + vat.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Gross amount:") + " " + gross.toFixed(2) + " €</strong>";
         }
         resultIva.classList.add("show");
     });
@@ -227,15 +236,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var rate = parseFloat(rateVal) / 100;
         var amt = parseFloat(ivaAmount.value);
         if (isNaN(amt) || amt < 0) {
-            resultIva.textContent = "Please enter a valid amount";
+            resultIva.textContent = gettext("Please enter a valid amount.");
             resultIva.classList.add("error");
         } else {
             resultIva.classList.remove("error");
             var net = amt / (1 + rate);
             var vat = amt - net;
-            resultIva.innerHTML = "Gross amount: " + amt.toFixed(2) + " €<br>" +
-                "VAT (" + rateVal + "%): " + vat.toFixed(2) + " €<br>" +
-                "<strong>Net amount: " + net.toFixed(2) + " €</strong>";
+            resultIva.innerHTML =
+                gettext("Gross amount:") + " " + amt.toFixed(2) + " €<br>" +
+                gettext("VAT") + " (" + rateVal + "%): " + vat.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Net amount:") + " " + net.toFixed(2) + " €</strong>";
         }
         resultIva.classList.add("show");
     });
@@ -280,17 +290,17 @@ document.addEventListener("DOMContentLoaded", function() {
         var ral = parseFloat(salaryRal.value);
         var months = parseInt(salaryMonthsWrap ? salaryMonthsWrap.dataset.value : "12", 10);
         if (isNaN(ral) || ral <= 0) {
-            setSalaryResult("Please enter a valid gross salary", true);
+            setSalaryResult(gettext("Please enter a valid gross salary."), true);
         } else {
             var res = calcNetSalary(ral);
             var netMonthly = res.netto / months;
             var html =
-                "Gross annual: " + ral.toFixed(0) + " €<br>" +
-                "Social security (approx.): " + res.inps.toFixed(0) + " €<br>" +
-                "Income tax (estimate): " + res.irpef.toFixed(0) + " €<br>" +
-                "<strong>Net annual: " + res.netto.toFixed(0) + " €</strong><br>" +
-                "<strong>Net monthly (" + months + " payments): " + netMonthly.toFixed(2) + " €</strong>" +
-                '<div class="calc-result-note">Indicative estimate for Italy. Does not include deductions, regional/municipal taxes, or other charges.</div>';
+                gettext("Gross annual:") + " " + ral.toFixed(0) + " €<br>" +
+                gettext("Social security (approx.):") + " " + res.inps.toFixed(0) + " €<br>" +
+                gettext("Income tax (estimate):") + " " + res.irpef.toFixed(0) + " €<br>" +
+                "<strong>" + gettext("Net annual:") + " " + res.netto.toFixed(0) + " €</strong><br>" +
+                "<strong>" + interpolate(gettext("Net monthly (%(months)s payments):"), { months: String(months) }, true) + " " + netMonthly.toFixed(2) + " €</strong>" +
+                '<div class="calc-result-note">' + gettext("Indicative estimate for Italy. Does not include deductions, regional or municipal taxes, or other charges.") + "</div>";
             setSalaryResult(html, false);
         }
     });
@@ -305,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var res = document.getElementById("result-interest");
 
         if (isNaN(p) || isNaN(r) || isNaN(t) || p <= 0) {
-            res.textContent = "Please enter valid values";
+            res.textContent = gettext("Please enter valid values.");
             res.classList.add("error");
         } else {
             res.classList.remove("error");
@@ -317,9 +327,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 total = p * Math.pow(1 + r, t);
                 interest = total - p;
             }
-            res.innerHTML = "Principal: " + p.toFixed(2) + " €<br>" +
-                "Interest: " + interest.toFixed(2) + " €<br>" +
-                "<strong>Total: " + total.toFixed(2) + " €</strong>";
+            res.innerHTML =
+                gettext("Principal:") + " " + p.toFixed(2) + " €<br>" +
+                gettext("Interest:") + " " + interest.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Total:") + " " + total.toFixed(2) + " €</strong>";
         }
         res.classList.add("show");
     });
@@ -348,20 +359,20 @@ document.addEventListener("DOMContentLoaded", function() {
         var amt = parseFloat(document.getElementById("curr-amount").value);
         var fromCurr = currFromWrap ? currFromWrap.dataset.value : "EUR";
         var toCurr = currToWrap ? currToWrap.dataset.value : "USD";
-        var res = resultCurrency;
         var btn = document.getElementById("btn-currency");
+        var btnLabelConvert = btn ? btn.textContent.trim() : gettext("Convert");
 
         if (isNaN(amt) || amt < 0) {
-            setCurrencyResult("Please enter a valid amount", true);
+            setCurrencyResult(gettext("Please enter a valid amount."), true);
             return;
         }
         if (fromCurr === toCurr) {
-            setCurrencyResult("Select two different currencies.", true);
+            setCurrencyResult(gettext("Select two different currencies."), true);
             return;
         }
 
         btn.disabled = true;
-        btn.textContent = "Loading…";
+        btn.textContent = gettext("Loading…");
         [resultCurrency, resultCurrencyMobile].forEach(function(el) {
             if (!el) return;
             el.classList.remove("show");
@@ -369,25 +380,40 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         var url = "https://api.frankfurter.app/latest?amount=" + amt + "&from=" + fromCurr + "&to=" + toCurr;
+        var fallbackUrl = "https://open.er-api.com/v6/latest/" + fromCurr;
+
         fetch(url)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var converted = data.rates && data.rates[toCurr] != null ? data.rates[toCurr] : null;
                 var date = data.date || "";
-                if (converted !== null) {
-                    var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
-                    if (date) html += '<div class="calc-result-note">Rate of ' + date + ' (ECB).</div>';
-                    setCurrencyResult(html, false);
-                } else {
-                    setCurrencyResult("Could not get exchange rate.", true);
+                if (converted === null) throw new Error("no_rate");
+                var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
+                if (date) {
+                    html += '<div class="calc-result-note">' +
+                        interpolate(gettext("Exchange rate as of %(date)s (ECB)."), { date: date }, true) +
+                        "</div>";
                 }
+                setCurrencyResult(html, false);
             })
             .catch(function() {
-                setCurrencyResult("Error fetching rates. Check your connection.", true);
+                // Fallback source when primary exchange API is unavailable.
+                return fetch(fallbackUrl)
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        var rate = data && data.rates ? data.rates[toCurr] : null;
+                        if (rate == null) throw new Error("no_rate");
+                        var converted = amt * Number(rate);
+                        var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
+                        setCurrencyResult(html, false);
+                    });
+            })
+            .catch(function() {
+                setCurrencyResult(gettext("Error fetching rates. Check your connection."), true);
             })
             .finally(function() {
                 btn.disabled = false;
-                btn.textContent = "Convert";
+                btn.textContent = btnLabelConvert;
             });
     });
 
@@ -414,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var r = parseFloat(document.getElementById("loan-rate").value) / 100 / 12;
         var n = parseInt(document.getElementById("loan-years").value, 10) * 12;
         if (isNaN(P) || isNaN(r) || isNaN(n) || P <= 0 || n <= 0) {
-            setLoanResult("Please enter valid values", true);
+            setLoanResult(gettext("Please enter valid values."), true);
         } else {
             var M;
             if (r === 0) {
@@ -424,9 +450,9 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             var totalPaid = M * n;
             var totalInterest = totalPaid - P;
-            var html = "<strong>Monthly payment: " + M.toFixed(2) + " €</strong><br>" +
-                "Total paid: " + totalPaid.toFixed(2) + " €<br>" +
-                "Total interest: " + totalInterest.toFixed(2) + " €";
+            var html = "<strong>" + gettext("Monthly payment:") + " " + M.toFixed(2) + " €</strong><br>" +
+                gettext("Total paid:") + " " + totalPaid.toFixed(2) + " €<br>" +
+                gettext("Total interest:") + " " + totalInterest.toFixed(2) + " €";
             setLoanResult(html, false);
         }
     });
@@ -454,13 +480,14 @@ document.addEventListener("DOMContentLoaded", function() {
         var pct = parseFloat(document.getElementById("disc-pct").value) / 100;
 
         if (isNaN(price) || isNaN(pct) || price < 0 || pct < 0 || pct > 1) {
-            setDiscountResult("Please enter valid values", true);
+            setDiscountResult(gettext("Please enter valid values."), true);
         } else {
             var discount = price * pct;
             var finalPrice = price - discount;
-            var html = "Original: " + price.toFixed(2) + " €<br>" +
-                "Discount (" + (pct * 100) + "%): -" + discount.toFixed(2) + " €<br>" +
-                "<strong>Final price: " + finalPrice.toFixed(2) + " €</strong>";
+            var discountLabel = isItalian ? "Sconto" : gettext("Discount");
+            var html = gettext("Original price:") + " " + price.toFixed(2) + " €<br>" +
+                discountLabel + " (" + String((pct * 100).toFixed(0)) + "%): -" + discount.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Final price:") + " " + finalPrice.toFixed(2) + " €</strong>";
             setDiscountResult(html, false);
         }
     });
@@ -488,13 +515,13 @@ document.addEventListener("DOMContentLoaded", function() {
         var pct = parseFloat(document.getElementById("margin-pct").value) / 100;
 
         if (isNaN(cost) || isNaN(pct) || cost < 0 || pct < 0 || pct >= 1) {
-            setMarginResult("Please enter valid values. Margin must be < 100%", true);
+            setMarginResult(gettext("Please enter valid values. The margin must be below 100%."), true);
         } else {
             var sellingPrice = cost / (1 - pct);
             var marginAmount = sellingPrice - cost;
-            var html = "Cost: " + cost.toFixed(2) + " €<br>" +
-                "Margin (" + (pct * 100) + "%): +" + marginAmount.toFixed(2) + " €<br>" +
-                "<strong>Selling price: " + sellingPrice.toFixed(2) + " €</strong>";
+            var html = gettext("Cost:") + " " + cost.toFixed(2) + " €<br>" +
+                interpolate(gettext("Margin (%(pct)s%%):"), { pct: String((pct * 100).toFixed(0)) }, true) + " +" + marginAmount.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Selling price:") + " " + sellingPrice.toFixed(2) + " €</strong>";
             setMarginResult(html, false);
         }
     });
@@ -523,13 +550,13 @@ document.addEventListener("DOMContentLoaded", function() {
         var tipPct = parseFloat(document.getElementById("split-tip").value) || 0;
 
         if (isNaN(total) || isNaN(people) || total < 0 || people < 1) {
-            setSplitResult("Please enter valid values", true);
+            setSplitResult(gettext("Please enter valid values."), true);
         } else {
             var withTip = total * (1 + tipPct / 100);
             var perPerson = withTip / people;
-            var html = "Total: " + total.toFixed(2) + " €<br>" +
-                (tipPct > 0 ? "With " + tipPct + "% tip: " + withTip.toFixed(2) + " €<br>" : "") +
-                "<strong>Per person (" + people + "): " + perPerson.toFixed(2) + " €</strong>";
+            var html = gettext("Total:") + " " + total.toFixed(2) + " €<br>" +
+                (tipPct > 0 ? interpolate(gettext("With %(tip)s%% tip:"), { tip: String(tipPct) }, true) + " " + withTip.toFixed(2) + " €<br>" : "") +
+                "<strong>" + interpolate(gettext("Per person (%(n)s):"), { n: String(people) }, true) + " " + perPerson.toFixed(2) + " €</strong>";
             setSplitResult(html, false);
         }
     });

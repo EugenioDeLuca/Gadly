@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     const form = document.getElementById("pdf-merger-form");
     const resultArea = document.getElementById("pdf-result-area");
     const fileInputsWrapper = document.getElementById("file-inputs-wrapper");
@@ -13,11 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!displaySpan) return;
         const count = input.files.length;
         if (count === 0) {
-            displaySpan.textContent = "Choose file";
+            displaySpan.textContent = t("Choose file");
         } else if (count === 1) {
             displaySpan.textContent = input.files[0].name;
         } else {
-            displaySpan.textContent = count + " files selected";
+            displaySpan.textContent = count + " " + t("files selected");
         }
     }
 
@@ -55,14 +56,14 @@ document.addEventListener("DOMContentLoaded", function() {
             upBtn.type = "button";
             upBtn.className = "btn-reorder btn-up";
             upBtn.innerHTML = "↑";
-            upBtn.title = "Move up";
+            upBtn.title = t("Move up");
             upBtn.disabled = index === 0;
 
             const downBtn = document.createElement("button");
             downBtn.type = "button";
             downBtn.className = "btn-reorder btn-down";
             downBtn.innerHTML = "↓";
-            downBtn.title = "Move down";
+            downBtn.title = t("Move down");
             downBtn.disabled = index === orderedFiles.length - 1;
 
             upBtn.addEventListener("click", function() {
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const id = "pdf-file-" + addFileCounter++;
         const div = document.createElement("div");
         div.className = "upload-area";
-        div.innerHTML = '<div class="file-input-wrapper"><input type="file" id="' + id + '" class="pdf-file-input" name="files" accept=".pdf" multiple /><label for="' + id + '" class="choose-file-btn"><span class="file-name-display">Choose file</span></label></div><p class="upload-hint">Choose PDF files to merge</p>';
+        div.innerHTML = '<div class="file-input-wrapper"><input type="file" id="' + id + '" class="pdf-file-input" name="files" accept=".pdf" multiple /><label for="' + id + '" class="choose-file-btn"><span class="file-name-display">' + t("Choose file") + '</span></label></div><p class="upload-hint">' + t("Choose PDF files to merge") + '</p>';
         fileInputsWrapper.appendChild(div);
     });
 
@@ -120,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
         collectFiles();
 
         if (orderedFiles.length < 2) {
-            resultArea.textContent = "Please select at least two PDF files";
+            resultArea.textContent = t("Please select at least two PDF files");
             resultArea.classList.add("error");
             resultArea.classList.remove("hidden");
             return;
@@ -139,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Error while processing the PDFs");
+                throw new Error(t("Error while processing the PDFs"));
             }
             return response.blob();
         })
@@ -149,12 +150,13 @@ document.addEventListener("DOMContentLoaded", function() {
             link.href = url;
             link.download = "merged_pdf.pdf";
             link.click();
-            resultArea.textContent = "PDF merged successfully!";
+            resultArea.textContent = t("PDF merged successfully!");
             resultArea.classList.remove("error");
             resultArea.classList.remove("hidden");
         })
         .catch(function(error) {
-            resultArea.textContent = (error.message && error.message !== "Error while processing the PDFs") ? error.message.replace(/\.$/, "") : "Error while processing the PDFs";
+            var generic = t("Error while processing the PDFs");
+            resultArea.textContent = (error.message && error.message !== generic) ? error.message.replace(/\.$/, "") : generic;
             resultArea.classList.add("error");
             resultArea.classList.remove("hidden");
             console.error(error);

@@ -9,10 +9,13 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext
 import asyncio
 import secrets
 
 from .forms import UserRegistrationForm, ProfileUpdateForm, AvatarUploadForm
+from .interview_banks import get_interview_simulator_payload
 from .models import UserProfile, EmailVerificationToken
 from PyPDF2 import PdfReader, PdfWriter
 from googletrans import Translator  # Importa googletrans per la traduzione
@@ -25,6 +28,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+import socket
 import json
 
 # -------------------------
@@ -76,7 +80,7 @@ def account_profile(request):
                 request.user.username = profile_form.cleaned_data['username']
                 request.user.email = profile_form.cleaned_data['email']
                 request.user.save()
-                msg = 'Profile updated.'
+                msg = gettext('Profile updated.')
                 profile_form = ProfileUpdateForm(user=request.user)
         elif 'update_avatar' in request.POST:
             avatar_form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
@@ -110,7 +114,7 @@ def account_delete_confirm(request):
             logout(request)
             user.delete()
             return redirect('home')
-        err = 'Incorrect password.'
+        err = gettext('Incorrect password.')
     return render(request, 'tools/account_delete_confirm.html', {'err': err})
 
 
@@ -143,14 +147,14 @@ def register(request):
             verify_url = request.build_absolute_uri(
                 reverse("verify_email", kwargs={"token": token})
             )
-            subject = "Verify your email - Gadly"
-            message = (
-                f"Hi {user.username},\n\n"
-                f"Please verify your email by clicking this link:\n\n{verify_url}\n\n"
-                f"This allows you to reset your password if you forget it.\n\n"
-                f"If you didn't create an account, ignore this email.\n\n"
-                f"— Gadly"
-            )
+            subject = gettext("Verify your email - Gadly")
+            message = gettext(
+                "Hi %(username)s,\n\n"
+                "Please verify your email by clicking this link:\n\n%(url)s\n\n"
+                "This allows you to reset your password if you forget it.\n\n"
+                "If you didn't create an account, ignore this email.\n\n"
+                "— Gadly"
+            ) % {'username': user.username, 'url': verify_url}
             send_mail(
                 subject,
                 message,
@@ -189,6 +193,7 @@ def verify_email_sent(request):
     return render(request, 'tools/verify_email_sent.html', {'verify_url': verify_url})
 
 
+@login_required
 def resend_verification_email(request):
     """Resend verification email (for logged-in users who haven't verified)."""
     if not request.user.is_authenticated:
@@ -202,12 +207,12 @@ def resend_verification_email(request):
     verify_url = request.build_absolute_uri(
         reverse("verify_email", kwargs={"token": token})
     )
-    subject = "Verify your email - Gadly"
-    message = (
-        f"Hi {request.user.username},\n\n"
-        f"Please verify your email by clicking this link:\n\n{verify_url}\n\n"
-        f"— Gadly"
-    )
+    subject = gettext("Verify your email - Gadly")
+    message = gettext(
+        "Hi %(username)s,\n\n"
+        "Please verify your email by clicking this link:\n\n%(url)s\n\n"
+        "— Gadly"
+    ) % {'username': request.user.username, 'url': verify_url}
     send_mail(
         subject,
         message,
@@ -225,15 +230,15 @@ def calculator(request):
 # Single finance calculator (one panel per page)
 CALC_PANELS = ('percent', 'iva', 'salary', 'interest', 'currency', 'loan', 'discount', 'margin', 'split')
 CALC_TITLES = {
-    'percent': 'Percentage',
-    'iva': 'VAT',
-    'salary': 'Net Salary',
-    'interest': 'Interest',
-    'currency': 'Currency',
-    'loan': 'Loan',
-    'discount': 'Discount',
-    'margin': 'Margin',
-    'split': 'Split Bill',
+    'percent': _('Percentage'),
+    'iva': _('VAT'),
+    'salary': _('Net Salary'),
+    'interest': _('Interest'),
+    'currency': _('Currency'),
+    'loan': _('Loan'),
+    'discount': _('Discount'),
+    'margin': _('Margin'),
+    'split': _('Split Bill'),
 }
 
 def calculator_single(request, panel):
@@ -243,7 +248,7 @@ def calculator_single(request, panel):
     return render(request, 'tools/calculator.html', {
         'active_panel': panel,
         'single_calc': True,
-        'calc_title': CALC_TITLES.get(panel, 'Finance calculator'),
+        'calc_title': CALC_TITLES.get(panel, _('Finance calculator')),
     })
 
 def translator(request):
@@ -341,8 +346,55 @@ def hashtag_generator(request):
 def caption_generator(request):
     return render(request, 'tools/caption_generator.html')
 
-def video_downloader(request):
-    return render(request, 'tools/video_downloader.html')
+def cv_generator(request):
+    return render(request, 'tools/cv_generator.html')
+
+def cv_optimizer(request):
+    return render(request, 'tools/cv_optimizer.html')
+
+def cover_letter_generator(request):
+    return render(request, 'tools/cover_letter_generator.html')
+
+def application_email_generator(request):
+    return render(request, 'tools/application_email_generator.html')
+
+def interview_simulator(request):
+    return render(
+        request,
+        "tools/interview_simulator.html",
+        {
+            "interview_payload": get_interview_simulator_payload(),
+            "interview_ai_config": {
+                "enabled": bool(getattr(settings, "INTERVIEW_AI_ENABLED", False)),
+                "endpoint": reverse("interview_simulator_ai_reply"),
+                "timeoutMs": 7000,
+            },
+        },
+    )
+
+def text_tools_page(request):
+    return render(request, 'tools/text_tools_page.html')
+
+def social_media_page(request):
+    return render(request, 'tools/social_media_page.html')
+
+def career_cv_page(request):
+    return render(request, 'tools/career_cv_page.html')
+
+def file_image_page(request):
+    return render(request, 'tools/file_image_page.html')
+
+def finance_page(request):
+    return render(request, 'tools/finance_page.html')
+
+def web_seo_page(request):
+    return render(request, 'tools/web_seo_page.html')
+
+def security_misc_page(request):
+    return render(request, 'tools/security_misc_page.html')
+
+def top_tools_page(request):
+    return render(request, 'tools/top_tools_page.html')
 
 
 # -------------------------
@@ -362,6 +414,105 @@ def help_diff_checker(request):
 
 def help_text_tools(request):
     return render(request, 'tools/help_text_tools.html')
+
+
+def help_cv_generator(request):
+    return render(request, 'tools/help_cv_generator.html')
+
+
+def help_cv_optimizer(request):
+    return render(request, 'tools/help_cv_optimizer.html')
+
+
+def help_cover_letter(request):
+    return render(request, 'tools/help_cover_letter.html')
+
+
+def help_application_email(request):
+    return render(request, 'tools/help_application_email.html')
+
+
+def help_interview_simulator(request):
+    return render(request, 'tools/help_interview_simulator.html')
+
+
+@require_http_methods(["POST"])
+def interview_simulator_ai_reply(request):
+    if not getattr(settings, "INTERVIEW_AI_ENABLED", False):
+        return JsonResponse({"error": "disabled"}, status=503)
+
+    try:
+        data = json.loads(request.body or "{}")
+    except Exception:
+        return JsonResponse({"error": "invalid_json"}, status=400)
+
+    intent = str(data.get("intent") or "").strip().lower()
+    question = str(data.get("question") or "").strip()
+    answer = str(data.get("answer") or "").strip()
+    lang = str(data.get("lang") or "en").strip().lower()
+    recruiter_gender = str(data.get("recruiter_gender") or "male").strip().lower()
+    transcript_tail = data.get("transcript_tail") or []
+
+    if intent not in {"feedback", "reply_candidate_question", "encouragement", "clarify"}:
+        return JsonResponse({"error": "invalid_intent"}, status=400)
+
+    tail_text = ""
+    if isinstance(transcript_tail, list):
+        tail_text = "\n".join(str(x) for x in transcript_tail[-6:])
+
+    is_it = lang.startswith("it")
+    sys_prompt = (
+        "You are a professional job interviewer. "
+        "Write concise recruiter messages (max 2 short sentences), practical and natural. "
+        "Do not use markdown. Do not mention being an AI."
+    )
+    if is_it:
+        sys_prompt += " Rispondi in italiano naturale."
+    else:
+        sys_prompt += " Reply in natural English."
+
+    user_prompt = (
+        f"Intent: {intent}\n"
+        f"Recruiter gender: {recruiter_gender}\n"
+        f"Current question: {question}\n"
+        f"Candidate answer/message: {answer}\n"
+        f"Recent transcript:\n{tail_text}\n"
+        "Output only the recruiter message text."
+    )
+
+    endpoint = getattr(settings, "INTERVIEW_AI_ENDPOINT", "").strip()
+    model = getattr(settings, "INTERVIEW_AI_MODEL", "").strip() or "llama3.1:8b"
+    timeout_seconds = int(getattr(settings, "INTERVIEW_AI_TIMEOUT_SECONDS", 8))
+    if not endpoint:
+        return JsonResponse({"error": "endpoint_missing"}, status=500)
+
+    payload = {
+        "model": model,
+        "prompt": sys_prompt + "\n\n" + user_prompt,
+        "stream": False,
+        "options": {"temperature": 0.5, "num_predict": 120},
+    }
+
+    req = Request(
+        endpoint,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlopen(req, timeout=timeout_seconds) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+        parsed = json.loads(raw or "{}")
+        text = str(parsed.get("response") or "").strip()
+        if not text:
+            return JsonResponse({"error": "empty_reply"}, status=502)
+        if len(text) > 280:
+            text = text[:280].rstrip()
+        return JsonResponse({"reply": text, "source": "local_ai"})
+    except (HTTPError, URLError, socket.timeout):
+        return JsonResponse({"error": "upstream_unavailable"}, status=502)
+    except Exception:
+        return JsonResponse({"error": "upstream_error"}, status=502)
 
 # -------------------------
 # Word Counter view
@@ -390,7 +541,7 @@ def word_counter(request):
 @csrf_exempt
 def translate_text(request):
     if request.method != "POST":
-        return JsonResponse({"error": "Invalid request method"}, status=405)
+        return JsonResponse({"error": gettext("Invalid request method")}, status=405)
 
     try:
         data = json.loads(request.body)
@@ -398,7 +549,7 @@ def translate_text(request):
         target_lang = data.get("target", "en")  # Lingua di destinazione, di default 'en'
 
         if not text:
-            return JsonResponse({"error": "No text provided"}, status=400)
+            return JsonResponse({"error": gettext("No text provided")}, status=400)
 
         # googletrans 4.x usa translate() async: va eseguita con asyncio.run()
         async def _translate():
@@ -432,12 +583,26 @@ def analyze_file(request):
         file_extension = os.path.splitext(file_name)[1] or "-"
         file_size_human = _human_size(file_size)
 
-        # MD5 hash
+        # Hashes
         file.seek(0)
-        hasher = hashlib.md5()
+        md5_hasher = hashlib.md5()
+        sha256_hasher = hashlib.sha256()
         for chunk in file.chunks():
-            hasher.update(chunk)
-        md5_hash = hasher.hexdigest()
+            md5_hasher.update(chunk)
+            sha256_hasher.update(chunk)
+        md5_hash = md5_hasher.hexdigest()
+        sha256_hash = sha256_hasher.hexdigest()
+
+        # Last modified (optional, provided by browser file metadata).
+        last_modified_raw = (request.POST.get("last_modified") or "").strip()
+        if last_modified_raw.isdigit():
+            try:
+                ts = int(last_modified_raw) / 1000.0
+                last_modified = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts))
+            except Exception:
+                last_modified = "-"
+        else:
+            last_modified = "-"
 
         result = {
             "file_name": file_name,
@@ -446,6 +611,8 @@ def analyze_file(request):
             "file_type": file_type,
             "file_extension": file_extension,
             "md5_hash": md5_hash,
+            "sha256_hash": sha256_hash,
+            "last_modified": last_modified,
         }
 
         # Prova sempre a leggere come testo; se riesce, aggiungi linee/parole/caratteri
@@ -457,12 +624,14 @@ def analyze_file(request):
             result["line_count"] = len(lines)
             result["word_count"] = len(words)
             result["char_count"] = len(content)
+            result["char_count_no_spaces"] = len(re.sub(r"\s+", "", content))
+            result["reading_time_min"] = max(1, int((len(words) + 199) / 200)) if words else 0
         except Exception:
             pass
 
         return JsonResponse(result)
 
-    return JsonResponse({"error": "No file uploaded"}, status=400)
+    return JsonResponse({"error": gettext("No file uploaded")}, status=400)
 
 # -----------------------------------------
 # PDF Merger view
@@ -503,7 +672,7 @@ def pdf_merger(request):
             return response
 
         except Exception as e:
-            return JsonResponse({"message": f"Error: {str(e)}"}, status=500)
+            return JsonResponse({"message": gettext("Error: %(err)s") % {'err': str(e)}}, status=500)
 
     return render(request, 'tools/pdf_merge.html')
 
@@ -526,7 +695,7 @@ def pdf_split(request):
             reader = PdfReader(pdf_file)
             num_pages = len(reader.pages)
             if num_pages == 0:
-                return JsonResponse({"error": "PDF has no pages"}, status=400)
+                return JsonResponse({"error": gettext("PDF has no pages")}, status=400)
             base_name = os.path.splitext(pdf_file.name)[0]
             fd, zip_path = tempfile.mkstemp(suffix='.zip')
             os.close(fd)
@@ -583,10 +752,10 @@ def _get_rembg():
 def image_remove_bg_api(request):
     """Remove background from image. Requires: pip install "rembg[cpu]" """
     if request.method != 'POST' or not request.FILES.get('image'):
-        return JsonResponse({"error": "POST with image file required"}, status=400)
+        return JsonResponse({"error": gettext("POST with image file required")}, status=400)
     rembg_remove = _get_rembg()
     if rembg_remove is None:
-        return JsonResponse({"error": "Background removal requires: pip install \"rembg[cpu]\""}, status=501)
+        return JsonResponse({"error": gettext('Background removal requires: pip install "rembg[cpu]"')}, status=501)
     try:
         from PIL import Image as PILImage
         request.FILES['image'].seek(0)
@@ -611,9 +780,9 @@ def image_remove_bg_api(request):
     except Exception as e:
         err_msg = str(e)
         if 'onnxruntime' in err_msg.lower() or 'session' in err_msg.lower():
-            err_msg = "rembg/onnxruntime error. Run: pip install \"rembg[cpu]\""
+            err_msg = gettext('rembg/onnxruntime error. Run: pip install "rembg[cpu]"')
         elif not err_msg or len(err_msg) > 200:
-            err_msg = err_msg[:200] if err_msg else "Unknown error"
+            err_msg = err_msg[:200] if err_msg else gettext("Unknown error")
         return JsonResponse({"error": err_msg}, status=500)
 
 
@@ -621,7 +790,7 @@ def image_remove_bg_api(request):
 def image_upscale_api(request):
     """Upscale image 2x using high-quality resampling."""
     if request.method != 'POST' or not request.FILES.get('image'):
-        return JsonResponse({"error": "POST with image file required"}, status=400)
+        return JsonResponse({"error": gettext("POST with image file required")}, status=400)
     try:
         from PIL import Image as PILImage
         f = request.FILES['image']
@@ -636,7 +805,7 @@ def image_upscale_api(request):
         w, h = img.size
         new_w, new_h = w * scale, h * scale
         if new_w > 4096 or new_h > 4096:
-            return JsonResponse({"error": "Result would exceed 4096px. Use smaller image or scale."}, status=400)
+            return JsonResponse({"error": gettext("Result would exceed 4096px. Use smaller image or scale.")}, status=400)
         try:
             resample = PILImage.Resampling.LANCZOS
         except AttributeError:
@@ -662,12 +831,12 @@ def _fetch_url(url, timeout=15):
 @csrf_exempt
 def meta_tag_check_api(request):
     if request.method != 'POST':
-        return JsonResponse({"error": "Invalid method"}, status=405)
+        return JsonResponse({"error": gettext("Invalid method")}, status=405)
     try:
         data = json.loads(request.body)
         url = data.get('url', '').strip()
         if not url:
-            return JsonResponse({"error": "URL required"}, status=400)
+            return JsonResponse({"error": gettext("URL required")}, status=400)
         resp = _fetch_url(url)
         html = resp.read().decode('utf-8', errors='ignore')
         meta_tags = []
@@ -689,21 +858,21 @@ def meta_tag_check_api(request):
             if content and (name or prop):
                 meta_tags.append({"name": name or prop, "content": content})
         return JsonResponse({"meta_tags": meta_tags})
-    except (URLError, HTTPError) as e:
-        return JsonResponse({"error": str(e)}, status=400)
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    except (URLError, HTTPError):
+        return JsonResponse({"error": gettext("The URL could not be reached. Check the address and try again.")}, status=400)
+    except Exception:
+        return JsonResponse({"error": gettext("An error occurred while checking meta tags.")}, status=500)
 
 
 @csrf_exempt
 def sitemap_extract_api(request):
     if request.method != 'POST':
-        return JsonResponse({"error": "Invalid method"}, status=405)
+        return JsonResponse({"error": gettext("Invalid method")}, status=405)
     try:
         data = json.loads(request.body)
         url = data.get('url', '').strip()
         if not url:
-            return JsonResponse({"error": "URL required"}, status=400)
+            return JsonResponse({"error": gettext("URL required")}, status=400)
         resp = _fetch_url(url)
         content = resp.read()
         # Check if we got HTML instead of XML
@@ -713,7 +882,9 @@ def sitemap_extract_api(request):
             peek = ''
         if peek.startswith('<!') or '<html' in peek[:50]:
             return JsonResponse({
-                "error": "This URL returns a web page (HTML), not a sitemap. Please enter the direct link to your sitemap file (e.g. https://example.com/sitemap.xml)."
+                "error": gettext(
+                    "This URL returns a web page (HTML), not a sitemap. Please enter the direct link to your sitemap file (e.g. https://example.com/sitemap.xml)."
+                )
             }, status=400)
         root = ET.fromstring(content)
         ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
@@ -730,25 +901,35 @@ def sitemap_extract_api(request):
                 if loc.text:
                     urls.append(loc.text.strip())
         return JsonResponse({"urls": urls})
-    except (URLError, HTTPError) as e:
-        return JsonResponse({"error": str(e)}, status=400)
+    except (URLError, HTTPError):
+        return JsonResponse({
+            "error": gettext(
+                "The URL could not be reached. Check the address and try again."
+            )
+        }, status=400)
     except ET.ParseError as e:
         return JsonResponse({
-            "error": "This URL does not return valid sitemap XML. Please enter the direct link to your sitemap file (e.g. https://example.com/sitemap.xml)."
+            "error": gettext(
+                "This URL does not return valid sitemap XML. Please enter the direct link to your sitemap file (e.g. https://example.com/sitemap.xml)."
+            )
         }, status=400)
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    except Exception:
+        return JsonResponse({
+            "error": gettext(
+                "An error occurred while extracting sitemap URLs."
+            )
+        }, status=500)
 
 
 @csrf_exempt
 def site_speed_api(request):
     if request.method != 'POST':
-        return JsonResponse({"error": "Invalid method"}, status=405)
+        return JsonResponse({"error": gettext("Invalid method")}, status=405)
     try:
         data = json.loads(request.body)
         url = data.get('url', '').strip()
         if not url:
-            return JsonResponse({"error": "URL required"}, status=400)
+            return JsonResponse({"error": gettext("URL required")}, status=400)
         if not url.startswith(('http://', 'https://')):
             url = 'https://' + url
         req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; ToolsBot/1.0)'})
@@ -758,74 +939,181 @@ def site_speed_api(request):
         elapsed = round((time.time() - t0) * 1000)
         return JsonResponse({"time_ms": elapsed, "status": resp.status})
     except (URLError, HTTPError) as e:
+        if isinstance(e, URLError) and isinstance(getattr(e, "reason", None), socket.timeout):
+            return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
         return JsonResponse({"error": str(e)}, status=400)
+    except socket.timeout:
+        return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
     except Exception as e:
+        if "timed out" in str(e).lower():
+            return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
         return JsonResponse({"error": str(e)}, status=500)
 
 
-@csrf_exempt
-def video_download_api(request):
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid method"}, status=405)
-    try:
-        import yt_dlp
-    except ImportError:
-        return JsonResponse({
-            "error": "Video download requires yt-dlp. Install with: pip install yt-dlp"
-        }, status=503)
-    try:
-        data = json.loads(request.body)
-        url = data.get('url', '').strip()
-        if not url:
-            return JsonResponse({"error": "URL required"}, status=400)
-        out_tmpl = os.path.join(tempfile.gettempdir(), 'ydl_%(id)s.%(ext)s')
-        MIME_BY_EXT = {
-            'mp4': 'video/mp4', 'webm': 'video/webm', 'mkv': 'video/x-matroska',
-            '3gp': 'video/3gpp', 'avi': 'video/x-msvideo', 'mov': 'video/quicktime',
-        }
-        # Prefer merged video+audio to mp4 (needs ffmpeg). Fallback to single-file formats.
-        opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
-            'merge_output_format': 'mp4',
-            'quiet': True,
-            'outtmpl': out_tmpl,
-            'postprocessors': [{'key': 'FFmpegVideoConvertor', 'preferedformat': 'mp4'}],
-        }
-        fallback_opts = {
-            'format': 'best[ext=mp4]/22/18/best',
-            'quiet': True,
-            'outtmpl': out_tmpl,
-        }
-        info = None
-        for attempt_opts in (opts, fallback_opts):
-            try:
-                with yt_dlp.YoutubeDL(attempt_opts) as ydl:
-                    info = ydl.extract_info(url, download=True)
-                break
-            except Exception as e:
-                if attempt_opts is fallback_opts:
-                    raise
-                err = str(e).lower()
-                if 'ffmpeg' in err or 'merge' in err or 'requested format' in err:
-                    continue
-                raise
-        if not info:
-            return JsonResponse({"error": "Could not extract video info"}, status=400)
-        title = (info.get('title') or 'video')[:80]
-        path = (out_tmpl % {'id': info.get('id', 'x'), 'ext': info.get('ext', 'mp4')})
-        if os.path.exists(path):
-            ext = (info.get('ext') or os.path.splitext(path)[1].lstrip('.') or 'mp4').lower()
-            content_type = MIME_BY_EXT.get(ext, 'video/mp4')
-            safe_title = re.sub(r'[^\w\-.]', '_', title) + ('.' + ext if ext else '.mp4')
-            with open(path, 'rb') as f:
-                resp = HttpResponse(f.read(), content_type=content_type)
-                resp['Content-Disposition'] = 'attachment; filename="' + safe_title + '"'
-                resp['X-Suggested-Filename'] = safe_title
+def _extract_text_from_uploaded_cv(uploaded_file):
+    ext = os.path.splitext(uploaded_file.name or "")[1].lower()
+    uploaded_file.seek(0)
+
+    if ext == ".txt":
+        return uploaded_file.read().decode("utf-8", errors="ignore")
+
+    if ext == ".pdf":
+        reader = PdfReader(uploaded_file)
+        chunks = []
+        for page in reader.pages:
+            page_text = page.extract_text() or ""
+            if not page_text and "/Rotate" in page:
                 try:
-                    os.unlink(path)
+                    page_text = (page.extract_text() or "")
                 except Exception:
-                    pass
-                return resp
-        return JsonResponse({"error": "Download failed"}, status=400)
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+                    page_text = ""
+            chunks.append(page_text)
+        return "\n".join(chunks)
+
+    if ext == ".docx":
+        try:
+            from docx import Document
+        except Exception as exc:
+            raise RuntimeError(gettext("DOCX support is not available on the server.")) from exc
+        doc = Document(uploaded_file)
+        text_chunks = [p.text for p in doc.paragraphs if p.text]
+        try:
+            for tbl in doc.tables:
+                for row in tbl.rows:
+                    row_cells = [c.text.strip() for c in row.cells if c.text and c.text.strip()]
+                    if row_cells:
+                        text_chunks.append(" | ".join(row_cells))
+        except Exception:
+            pass
+        return "\n".join(text_chunks)
+
+    raise ValueError(gettext("Unsupported file type. Please upload PDF, DOCX, or TXT."))
+
+
+def _tokenize_keywords(text):
+    raw = re.findall(r"[a-zA-Z][a-zA-Z0-9\\-\\+]{2,}", (text or "").lower())
+    stop_words = {
+        "the", "and", "for", "with", "from", "that", "this", "your", "you",
+        "per", "con", "dei", "delle", "della", "dello", "sulla", "sono", "una", "uno",
+        "job", "role", "position", "about"
+    }
+    return [w for w in raw if w not in stop_words]
+
+
+def _sanitize_extracted_text(text):
+    cleaned = (text or "").replace("\x00", " ")
+    cleaned = re.sub(r"[\u2022\u25CF\u25A0\u25AA]", "- ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned, flags=re.UNICODE)
+    return cleaned.strip()
+
+
+def _extract_contact_fields(cv_text):
+    text = cv_text or ""
+    email_match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", text)
+    phone_match = re.search(r"(?:\+?\d[\d\s().-]{6,}\d)", text)
+    linkedin_match = re.search(r"(?:https?://)?(?:www\.)?linkedin\.com/[^\s,;]+", text, flags=re.IGNORECASE)
+    return {
+        "email": email_match.group(0).strip() if email_match else "",
+        "phone": phone_match.group(0).strip() if phone_match else "",
+        "linkedin": linkedin_match.group(0).strip() if linkedin_match else "",
+    }
+
+
+def cv_optimize_api(request):
+    if request.method != "POST":
+        return JsonResponse({"error": gettext("Invalid method")}, status=405)
+
+    try:
+        uploaded = request.FILES.get("cv_file")
+        if not uploaded:
+            return JsonResponse({"error": gettext("Please upload your CV file.")}, status=400)
+
+        if uploaded.size > 8 * 1024 * 1024:
+            return JsonResponse({"error": gettext("File too large. Maximum allowed size is 8 MB.")}, status=400)
+
+        job_title = (request.POST.get("job_title") or "").strip()
+        job_description = (request.POST.get("job_description") or "").strip()
+
+        cv_text = _sanitize_extracted_text(_extract_text_from_uploaded_cv(uploaded))
+        if not cv_text:
+            return JsonResponse({"error": gettext("Could not extract readable text from this file.")}, status=400)
+        extracted_contact = _extract_contact_fields(cv_text)
+
+        lower_text = cv_text.lower()
+        section_signals = {
+            "Summary": ["summary", "profile", "objective", "about me", "profilo", "obiettivo"],
+            "Experience": ["experience", "work", "employment", "esperienza", "lavoro"],
+            "Education": ["education", "degree", "university", "formazione", "istruzione", "laurea"],
+            "Skills": ["skills", "competencies", "competenze", "abilità", "abilita"],
+            "Contact": ["email", "phone", "telefono", "linkedin", "github"],
+        }
+        missing_sections = []
+        for section_name, signals in section_signals.items():
+            if not any(sig in lower_text for sig in signals):
+                missing_sections.append(section_name)
+
+        words = re.findall(r"\\w+", cv_text, flags=re.UNICODE)
+        word_count = len(words)
+        score = 100
+        suggestions = []
+
+        if word_count < 180:
+            score -= 20
+            suggestions.append(gettext("Your CV is very short. Add more detail about impact and achievements."))
+        elif word_count > 950:
+            score -= 12
+            suggestions.append(gettext("Your CV is quite long. Try to keep it concise and focused."))
+
+        if missing_sections:
+            score -= min(30, len(missing_sections) * 7)
+            suggestions.append(
+                gettext("Add or improve these sections: %(sections)s")
+                % {"sections": ", ".join(missing_sections)}
+            )
+
+        keyword_source = " ".join([job_title, job_description]).strip()
+        jd_keywords = _tokenize_keywords(keyword_source)
+        matched_keywords = []
+        missing_keywords = []
+        if jd_keywords:
+            seen = set()
+            for kw in jd_keywords:
+                if kw in seen:
+                    continue
+                seen.add(kw)
+                if kw in lower_text:
+                    matched_keywords.append(kw)
+                else:
+                    missing_keywords.append(kw)
+            match_ratio = (len(matched_keywords) / len(seen)) if seen else 0
+            if match_ratio < 0.35:
+                score -= 20
+                suggestions.append(gettext("Low keyword match with the target role. Tailor your CV to the job description."))
+            elif match_ratio < 0.60:
+                score -= 10
+                suggestions.append(gettext("Good start, but you can include more role-specific keywords."))
+        else:
+            match_ratio = None
+
+        score = max(1, min(100, score))
+        if not suggestions:
+            suggestions.append(gettext("Great baseline CV. Fine-tune wording and quantifiable results for stronger impact."))
+
+        return JsonResponse({
+            "score": score,
+            "word_count": word_count,
+            "missing_sections": missing_sections,
+            "matched_keywords": matched_keywords[:15],
+            "missing_keywords": missing_keywords[:15],
+            "suggestions": suggestions[:6],
+            "extracted_contact": extracted_contact,
+            "keyword_match_ratio": match_ratio,
+        })
+    except ValueError as exc:
+        return JsonResponse({"error": str(exc)}, status=400)
+    except RuntimeError as exc:
+        return JsonResponse({"error": str(exc)}, status=500)
+    except Exception:
+        return JsonResponse({"error": gettext("An error occurred while optimizing the CV.")}, status=500)
+
+

@@ -1,5 +1,31 @@
 (function () {
     'use strict';
+    var t = (typeof gettext === 'function') ? gettext : function (s) { return s; };
+    var hexInput = document.getElementById('hex-input');
+    var rgbInput = document.getElementById('rgb-input');
+    var hslInput = document.getElementById('hsl-input');
+    var preview = document.getElementById('color-preview');
+    var picker = document.getElementById('color-picker');
+
+    var errorEl = document.createElement('div');
+    errorEl.className = 'result-area error hidden';
+    errorEl.id = 'color-converter-error';
+    errorEl.setAttribute('aria-live', 'polite');
+    var copyGroup = document.getElementById('color-copy-group');
+    if (copyGroup && copyGroup.parentNode) {
+        copyGroup.parentNode.insertBefore(errorEl, copyGroup);
+    }
+
+    function showError(msg) {
+        if (!errorEl) return;
+        errorEl.textContent = msg;
+        errorEl.classList.remove('hidden');
+    }
+    function clearError() {
+        if (!errorEl) return;
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+    }
 
     function hex2rgb(hex) {
         hex = hex.replace(/^#/, '');
@@ -85,11 +111,12 @@
     function applyRgb(rgb) {
         var hex = rgb2hex(rgb.r, rgb.g, rgb.b);
         var hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
-        document.getElementById('color-preview').style.background = hex;
-        document.getElementById('color-picker').value = hex;
-        document.getElementById('hex-input').value = hex;
-        document.getElementById('rgb-input').value = 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')';
-        document.getElementById('hsl-input').value = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + hsl.l + '%)';
+        preview.style.background = hex;
+        picker.value = hex;
+        hexInput.value = hex;
+        rgbInput.value = 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')';
+        hslInput.value = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + hsl.l + '%)';
+        clearError();
     }
 
     function updateFromHex(hex) {
@@ -113,28 +140,42 @@
         applyRgb(rgb);
     }
 
-    document.getElementById('color-picker').addEventListener('input', function () {
+    picker.addEventListener('input', function () {
         updateFromHex(this.value);
     });
 
-    document.getElementById('hex-input').addEventListener('input', function () {
-        updateFromHex(this.value);
+    // Keep HEX input free while typing; validate on blur/Enter.
+    hexInput.addEventListener('input', function () {
+        clearError();
     });
-    document.getElementById('hex-input').addEventListener('blur', function () {
-        updateFromHex(this.value);
+    hexInput.addEventListener('blur', function () {
+        var raw = this.value.trim();
+        if (!raw) return;
+        var normalized = raw.charAt(0) === '#' ? raw : ('#' + raw);
+        var rgb = hex2rgb(normalized);
+        if (!rgb) {
+            showError(t('This is not a hexadecimal code'));
+            return;
+        }
+        applyRgb(rgb);
+    });
+    hexInput.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        this.blur();
     });
 
-    document.getElementById('rgb-input').addEventListener('input', function () {
+    rgbInput.addEventListener('input', function () {
         updateFromRgb(this.value);
     });
-    document.getElementById('rgb-input').addEventListener('blur', function () {
+    rgbInput.addEventListener('blur', function () {
         updateFromRgb(this.value);
     });
 
-    document.getElementById('hsl-input').addEventListener('input', function () {
+    hslInput.addEventListener('input', function () {
         updateFromHsl(this.value);
     });
-    document.getElementById('hsl-input').addEventListener('blur', function () {
+    hslInput.addEventListener('blur', function () {
         updateFromHsl(this.value);
     });
 
@@ -150,7 +191,7 @@
             document.body.removeChild(ta);
         }
         var orig = btn.textContent;
-        btn.textContent = 'Copied!';
+        btn.textContent = t('Copied!');
         btn.classList.add('copied');
         setTimeout(function () {
             btn.textContent = orig;
@@ -159,13 +200,13 @@
     }
 
     document.getElementById('btn-copy-hex').addEventListener('click', function () {
-        copyText(document.getElementById('hex-input').value, this);
+        copyText(hexInput.value, this);
     });
     document.getElementById('btn-copy-rgb').addEventListener('click', function () {
-        copyText(document.getElementById('rgb-input').value, this);
+        copyText(rgbInput.value, this);
     });
     document.getElementById('btn-copy-hsl').addEventListener('click', function () {
-        copyText(document.getElementById('hsl-input').value, this);
+        copyText(hslInput.value, this);
     });
 
 })();

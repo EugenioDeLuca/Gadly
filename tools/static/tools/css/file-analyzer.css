@@ -14,8 +14,15 @@
 .file-analyzer h1 {
     font-size: 2em;
     color: #003f7f;
-    margin: 0 0 28px 0;
+    margin: 0 0 8px 0;
     text-align: center;
+}
+
+.file-analyzer .tool-desc {
+    text-align: center;
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
 }
 
 #file-analyzer-form {
@@ -61,16 +68,32 @@
 .file-analyzer .choose-file-btn {
     display: inline-block;
     padding: 12px 24px;
-    font-size: 16px;
+    font-size: 16px !important;
     background: var(--btn-primary, #003f7f);
-    color: white;
+    color: #fff !important;
+    font-weight: 400 !important;
+    border: none;
     border-radius: 12px;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
+    min-height: 44px;
+    line-height: 1.2;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .file-analyzer .choose-file-btn:hover {
     background: #dc3545;
+    transform: scale(1.03);
+}
+
+.file-analyzer .choose-file-btn,
+.file-analyzer .choose-file-btn * {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
 }
 
 .file-analyzer .upload-hint {
@@ -102,10 +125,11 @@
 }
 
 .analysis-options-row {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(4, max-content);
     flex-basis: 100%;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
 }
 
 .analysis-options-row .analysis-option {
@@ -177,7 +201,12 @@
 #file-results {
     margin-top: 12px;       /* 12px tra il bordo delle opzioni e il bordo dell'errore/risultato */
     margin-bottom: 12px;    /* 12px sotto il risultato/errore verso il bottone */
-    min-height: 60px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #d0e8f9;
+    background: #fff;
+    box-sizing: border-box;
 }
 
 #file-results.hidden {
@@ -188,8 +217,8 @@
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin-top: 12px;       /* quando non c'è errore, 12px tra opzioni e bottone */
-    margin-bottom: 20px;
+    margin-top: 12px;
+    margin-bottom: 0;
 }
 
 .file-analyzer .button-group button {
@@ -211,46 +240,58 @@
 }
 
 .file-analyzer .home-link-wrap {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 
-.results-grid {
+.results-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 6px;
+}
+
+.result-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 170px) 1fr;
+    align-items: start;
     gap: 12px;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e2ebf7;
 }
 
-.result-card {
-    padding: 16px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.result-row-hash {
+    align-items: start;
 }
 
-.result-card-wide {
-    grid-column: 1 / -1;
+.result-row:last-child {
+    border-bottom: none;
 }
 
 .result-label {
-    font-size: 0.85em;
+    font-size: 0.9em;
     color: #64748b;
     font-weight: 600;
+    margin-top: 2px;
 }
 
 .result-value {
-    font-size: 1.1em;
+    display: block;
+    font-size: 1rem;
     font-weight: 600;
     color: #003f7f;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .result-hash {
-    font-family: monospace;
-    font-size: 0.9em;
-    word-break: break-all;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #003f7f;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .loading-msg {
@@ -288,8 +329,10 @@
     .analysis-option {
         flex-shrink: 0;
     }
-    .results-grid {
+    .result-row {
         grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 6px 0;
     }
 }
 
@@ -301,8 +344,9 @@
     .file-analyzer h1 {
         font-size: 1.5em;
     }
-    /* File Analyzer mobile: bottone Analyze a tutta larghezza del contenitore */
+    /* File Analyzer mobile: bottoni uno sotto l'altro a tutta larghezza */
     .file-analyzer .button-group {
+        flex-direction: column;
         justify-content: stretch;
     }
     .file-analyzer .button-group button {

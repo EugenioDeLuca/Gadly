@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Diff Checker{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Diff Checker" %}{% endblock %}
 {% block body_class %}text-tool diff-checker{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -20,7 +21,32 @@
     text-align: center;
 }
 .diff-checker .button-group {
-    justify-content: center;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0px;
+}
+.diff-checker .button-group #btn-compare {
+    flex: 0 0 auto;
+}
+.diff-checker .button-group #btn-copy {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+}
+.diff-checker .button-group button.copied {
+    background: #dc3545;
+}
+.diff-checker .button-group button.copied:hover {
+    background: #e74c3c;
+}
+body.dark-mode .diff-checker .button-group button.copied {
+    background: rgba(220, 80, 80, 0.6);
+}
+body.dark-mode .diff-checker .button-group button.copied:hover {
+    background: rgba(220, 80, 80, 0.8);
 }
 .diff-checker .diff-column textarea {
     width: 100%;
@@ -87,19 +113,100 @@
     white-space: normal;
     word-break: normal;
 }
+/* Desktop: stesse dimensioni textarea/result di Markdown Preview */
+@media (min-width: 769px) {
+    .diff-checker .diff-column textarea {
+        min-height: 340px;
+        max-height: 560px;
+        padding: 16px 20px;
+        resize: none;
+        overflow-y: hidden;
+    }
+    .diff-checker .diff-result {
+        min-height: auto;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        overflow-x: hidden;
+    }
+}
 @media (max-width: 768px) {
     .diff-checker .diff-columns {
         grid-template-columns: 1fr;
     }
+    /* Mobile: font scuro e sfondo come Word Counter (#f8f9fa), testo non cambia al blur */
+    .diff-checker .diff-column textarea,
+    .diff-checker .diff-column textarea:focus {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        background: #f8f9fa !important;
+        font-family: Arial, sans-serif;
+        font-size: 17px;
+    }
+    .diff-checker .diff-result {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd;
+        color: #1a1a2e !important;
+        margin-top: 12px;
+        margin-bottom: 20px;
+    }
+    .diff-checker .diff-result.error {
+        margin-top: 12px !important;
+        margin-bottom: 20px !important;
+        color: #c00 !important;
+    }
+    body.dark-mode .diff-checker .diff-column textarea,
+    body.dark-mode .diff-checker .diff-column textarea:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode .diff-checker .diff-result {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9);
+    }
+    /* Mobile: bottoni come Translator (no blu al tap, Copy rosso quando copiato) */
+    body.diff-checker .site-main .container .button-group button {
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        transform: scale(1) !important;
+    }
+    body.diff-checker .site-main .container .button-group button:focus {
+        transform: scale(1) !important;
+    }
+    body.diff-checker .site-main .container .button-group button:active {
+        transform: scale(1.03) !important;
+    }
+    body.diff-checker .site-main .container .button-group button.copied,
+    body.diff-checker .site-main .container .button-group button.copied:hover {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .button-group button {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .button-group button.copied,
+    body.dark-mode.diff-checker .site-main .container .button-group button.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+    }
 }
-body.dark-mode .diff-checker .diff-result {
-    background: rgba(255,255,255,0.05);
-    border-color: var(--border-color);
+@media (min-width: 769px) {
+    body.dark-mode .diff-checker .diff-result {
+        background: rgba(255,255,255,0.05);
+        border-color: var(--border-color);
+    }
+}
+.diff-checker .diff-result.error {
+    color: #c00 !important;
 }
 body.dark-mode .diff-checker .diff-result.error {
-    background: rgba(220,80,80,0.15);
-    border-color: #fcc;
-    color: #e88;
+    background: rgba(220,80,80,0.15) !important;
+    border-color: #fcc !important;
+    color: #e88 !important;
 }
 body.dark-mode .diff-checker .diff-result .diff-remove {
     background: rgba(220, 80, 80, 0.35);
@@ -113,35 +220,36 @@ body.dark-mode .diff-checker .diff-result .diff-add {
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Diff Checker</h1>
-    <p class="tool-desc">Compare two texts and see differences highlighted. Removed text in red, added text in green.</p>
+    <h1>{% trans "Diff Checker" %}</h1>
+    <p class="tool-desc">{% trans "Compare two texts and see differences highlighted. Removed text in red, added text in green." %}</p>
     <p class="tool-help">
-        <a href="{% url 'help_diff_checker' %}">How text diffing works and what the colors mean</a>
+        <a href="{% url 'help_diff_checker' %}">{% trans "How text diffing works and what the colors mean" %}</a>
     </p>
 
     <div class="diff-columns">
         <div class="diff-column">
-            <label for="text1">Text 1 (original)</label>
-            <textarea id="text1" placeholder="Paste the first text here..."></textarea>
+            <label for="text1">{% trans "Text 1 (original)" %}</label>
+            <textarea id="text1" placeholder='{% trans "Paste the first text here..." %}'></textarea>
         </div>
         <div class="diff-column">
-            <label for="text2">Text 2 (modified)</label>
-            <textarea id="text2" placeholder="Paste the second text here..."></textarea>
+            <label for="text2">{% trans "Text 2 (modified)" %}</label>
+            <textarea id="text2" placeholder='{% trans "Paste the second text here..." %}'></textarea>
         </div>
     </div>
 
     <div id="diff-result" class="diff-result hidden" aria-live="polite"></div>
 
     <div class="button-group">
-        <button type="button" id="btn-compare">Compare</button>
+        <button type="button" id="btn-compare">{% trans "Compare" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/diff/5.1.0/diff.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/diff@5.1.0/dist/diff.min.js"></script>
 <script src="{% static 'tools/js/diff_checker.js' %}"></script>
 {% endblock %}

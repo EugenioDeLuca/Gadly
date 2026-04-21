@@ -31,6 +31,224 @@ body {
     background: var(--bg-body) !important;
 }
 
+/* Mobile app-like: remove gradient background */
+@media (max-width: 768px) {
+    body {
+        background: var(--bg-card) !important;
+    }
+
+    /* Mobile palette: slightly softer, app-like surfaces */
+    :root {
+        --mobile-surface: #ffffff;
+        --mobile-surface-2: #f6f9ff;
+        --mobile-border: rgba(0, 63, 127, 0.14);
+        --mobile-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        --mobile-text: #0f2f55;
+        --mobile-text-muted: rgba(15, 47, 85, 0.70);
+        --mobile-accent: #0b6bff;
+    }
+
+    body.dark-mode {
+        --mobile-surface: rgba(255, 255, 255, 0.06);
+        --mobile-surface-2: rgba(255, 255, 255, 0.03);
+        --mobile-border: rgba(255, 255, 255, 0.14);
+        --mobile-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+        --mobile-text: var(--text-secondary);
+        --mobile-text-muted: rgba(176, 196, 222, 0.75);
+        --mobile-accent: var(--accent);
+    }
+}
+
+/* Mobile: stesso colore header e background (light + dark) */
+@media (max-width: 480px) {
+    body {
+        background: var(--bg-header) !important;
+    }
+    /* Light: sfondo solido bianco, header e menu identici */
+    body:not(.dark-mode) {
+        background: #fff !important;
+    }
+    body:not(.dark-mode) .site-header {
+        background: #fff !important;
+    }
+    body:not(.dark-mode) .header-nav,
+    body:not(.dark-mode) .header-nav.is-open {
+        background: #fff !important;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    /* Light: bottone hamburger senza shadow quando menu aperto */
+    body:not(.dark-mode).nav-open .header-menu-btn,
+    body:not(.dark-mode).nav-open .header-menu-btn:hover {
+        box-shadow: none !important;
+    }
+    /* Dark: header è rgba, body serve colore solido identico */
+    body.dark-mode {
+        background: #0f0f23 !important;
+    }
+    body.dark-mode .site-header {
+        background: #0f0f23 !important;
+    }
+    /* Dark: menu hamburger stesso sfondo e larghezza dell'header */
+    body.dark-mode .header-nav,
+    body.dark-mode .header-nav.is-open {
+        background: #0f0f23 !important;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    /* Dark: bottone hamburger senza shadow quando menu aperto */
+    body.dark-mode.nav-open .header-menu-btn,
+    body.dark-mode.nav-open .header-menu-btn:hover {
+        box-shadow: none !important;
+    }
+
+    /* Dark mode mobile: testi di TUTTI i tool stesso colore del logo Gadly (#b0c4de) */
+    body.dark-mode {
+        --text-primary: #b0c4de;
+        --text-secondary: #b0c4de;
+        --text-muted: #b0c4de;
+    }
+    body.dark-mode .site-main {
+        color: #b0c4de !important;
+    }
+    body.dark-mode .site-main .container h1,
+    body.dark-mode .site-main .container h2,
+    body.dark-mode .site-main .container h3,
+    body.dark-mode .site-main .container h4,
+    body.dark-mode .site-main .container p,
+    body.dark-mode .site-main .container label,
+    body.dark-mode .site-main .container input:not([type="submit"]):not([type="button"]),
+    body.dark-mode:not(.markdown-preview):not(.remove-spaces):not(.word-counter):not(.translator):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container textarea,
+    body.dark-mode .site-main .container select,
+    body.dark-mode .site-main .container .text-tool-select-trigger,
+    body.dark-mode .site-main .container .result-area,
+    body.dark-mode .site-main .container .translator-result-area,
+    body.dark-mode .site-main .container .form-group,
+    body.dark-mode .site-main .faq-container h1,
+    body.dark-mode .site-main .faq-container h2,
+    body.dark-mode .site-main .faq-container h3,
+    body.dark-mode .site-main .faq-container p,
+    body.dark-mode .site-main .static-container,
+    body.dark-mode .site-main .static-container h1,
+    body.dark-mode .site-main .static-container h2,
+    body.dark-mode .site-main .static-container p {
+        color: #b0c4de !important;
+    }
+    body.dark-mode .site-main a,
+    body.dark-mode .site-main .container a,
+    body.dark-mode .site-main .static-container a,
+    body.dark-mode .site-main .faq-container a {
+        color: #b0c4de !important;
+    }
+    body.dark-mode .site-main a:hover,
+    body.dark-mode .site-main .container a:hover,
+    body.dark-mode .site-main .static-container a:hover,
+    body.dark-mode .site-main .faq-container a:hover {
+        color: #7eb8f0 !important;
+    }
+
+    /* Dark mode mobile: textarea e result grigio chiarissimo, testo scuro per leggibilità */
+    body.dark-mode.word-counter .site-main .container textarea,
+    body.dark-mode.word-counter .site-main .container textarea:focus,
+    body.dark-mode.translator .site-main .container textarea,
+    body.dark-mode.translator .site-main .container textarea:focus,
+    body.dark-mode.translator .site-main .container .result,
+    body.dark-mode.diff-checker .site-main .container .diff-column textarea,
+    body.dark-mode.diff-checker .site-main .container .diff-column textarea:focus,
+    body.dark-mode.diff-checker .site-main .container .diff-result:not(.error),
+    body.dark-mode.json-formatter .site-main .container .form-group textarea,
+    body.dark-mode.json-formatter .site-main .container .form-group textarea:focus,
+    body.dark-mode.json-formatter .site-main .container .json-result:not(.error),
+    body.dark-mode.markdown-preview .site-main .container textarea,
+    body.dark-mode.markdown-preview .site-main .container .preview-output {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-output p,
+    body.dark-mode.markdown-preview .site-main .container .preview-output h1,
+    body.dark-mode.markdown-preview .site-main .container .preview-output h2,
+    body.dark-mode.markdown-preview .site-main .container .preview-output h3,
+    body.dark-mode.markdown-preview .site-main .container .preview-output li,
+    body.dark-mode.markdown-preview .site-main .container .preview-output span,
+    body.dark-mode.markdown-preview .site-main .container .preview-output em,
+    body.dark-mode.markdown-preview .site-main .container .preview-output strong {
+        color: #1a1a2e !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-output a {
+        color: #002d5c !important;
+    }
+    body.dark-mode.word-counter .site-main .container textarea::placeholder,
+    body.dark-mode.translator .site-main .container textarea::placeholder,
+    body.dark-mode.translator .site-main .container .result:empty::before,
+    body.dark-mode.json-formatter .site-main .container .form-group textarea::placeholder,
+    body.dark-mode.markdown-preview .site-main .container textarea::placeholder {
+        color: #555 !important;
+    }
+
+    /* Dark mode mobile: bottoni tool come homepage (stile category-btn) */
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container .button-group button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .faq-container button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container input[type="submit"],
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container input[type="button"],
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container .btn {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+    }
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container .button-group button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .faq-container button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container input[type="submit"]:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container input[type="button"]:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container .btn:hover {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
+        border-color: #003f7f !important;
+        color: #b0c4de !important;
+    }
+
+    /* Dark mode mobile: FAB Back to Home - sfondo azzurrino, casetta blu scuro, bordino bianco */
+    body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
+        background: #b0c4de !important;
+        color: #002d5c !important;
+        border: 2px solid rgba(255, 255, 255, 0.9) !important;
+    }
+    body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
+        fill: #002d5c !important;
+    }
+
+    /* Overlay menu: niente blur (iOS non lo applica ovunque), usa overlay solido */
+    body.nav-open::before {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(0, 0, 0, 0.35) !important;
+        z-index: 201 !important;
+        /* Copre tutta la viewport inclusa FAB e safe area iPhone */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+    /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
+    body.nav-open .site-header {
+        z-index: 250 !important;
+    }
+    body.nav-open .header-nav {
+        z-index: 249 !important;
+    }
+    body.nav-open .mobile-home-fab {
+        z-index: 200 !important;
+    }
+}
+
 .header-logo .header-logo-dark {
     display: none !important;
 }
@@ -55,6 +273,111 @@ body.dark-mode .header-logo:hover .header-logo-text {
     background: var(--bg-header) !important;
 }
 
+/* Warm tone: apply visible tint to header too */
+body.warm-tone .site-header {
+    background: rgba(255, 248, 236, 0.95) !important;
+    box-shadow: 0 1px 0 rgba(184, 106, 0, 0.1);
+}
+
+body.warm-tone {
+    --warm-nav-link-color: #003f7f;
+    --warm-nav-link-hover-color: #007BFF;
+}
+
+body.warm-tone .header-nav {
+    background: transparent !important;
+}
+
+body.warm-tone .header-nav.is-open {
+    background: rgba(255, 248, 236, 0.95) !important;
+}
+
+body.dark-mode.warm-tone .site-header {
+    background: rgba(38, 32, 28, 0.9) !important;
+    box-shadow: 0 1px 0 rgba(232, 160, 64, 0.14);
+}
+
+body.dark-mode.warm-tone {
+    --warm-nav-link-color: var(--text-secondary);
+    --warm-nav-link-hover-color: var(--accent);
+}
+
+body.dark-mode.warm-tone .header-nav {
+    background: transparent !important;
+}
+
+body.dark-mode.warm-tone .header-nav.is-open {
+    background: rgba(38, 32, 28, 0.9) !important;
+}
+
+/* Warm tone: footer should receive the same effect */
+body.warm-tone .site-footer {
+    background: rgba(255, 248, 236, 0.95) !important;
+    border-top: 1px solid rgba(184, 106, 0, 0.1) !important;
+}
+
+body.dark-mode.warm-tone .site-footer {
+    background: rgba(38, 32, 28, 0.9) !important;
+    border-top: 1px solid rgba(232, 160, 64, 0.14) !important;
+}
+
+/* Warm tone: remove nav item "boxed" emphasis */
+body.warm-tone .header-link,
+body.warm-tone .header-link:visited,
+body.warm-tone .header-link:focus,
+body.warm-tone .header-link:focus-visible,
+body.warm-tone .header-link:active,
+body.warm-tone .header-link.active,
+body.warm-tone .header-nav .header-link,
+body.warm-tone .header-nav .header-link.active {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--warm-nav-link-color) !important;
+}
+
+body.warm-tone .header-nav .header-link.active,
+body.warm-tone .header-nav .header-link.current,
+body.warm-tone .header-nav .header-link[aria-current="page"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body.warm-tone .header-link:hover,
+body.warm-tone .header-nav .header-link:hover {
+    background: #e8f4fd !important;
+    color: #007BFF !important;
+}
+
+body.dark-mode.warm-tone .header-link:hover,
+body.dark-mode.warm-tone .header-nav .header-link:hover {
+    background: rgba(232, 244, 253, 0.14) !important;
+    color: #5a9fd4 !important;
+}
+
+/* Language EN/IT: stessi colori testo dei link Home, FAQ, About */
+body.warm-tone .header-lang-btn {
+    color: var(--warm-nav-link-color) !important;
+    background: transparent !important;
+}
+
+body.warm-tone .header-lang-btn:hover {
+    background: #e8f4fd !important;
+    color: #007BFF !important;
+}
+
+body.dark-mode.warm-tone .header-lang-btn:hover {
+    background: rgba(232, 244, 253, 0.14) !important;
+    color: #5a9fd4 !important;
+}
+
+/* Warm tone: subtle tint on logo icon too */
+body.warm-tone .header-logo-icon {
+    filter: sepia(0.14) saturate(1.08) hue-rotate(-8deg);
+}
+
 /* Dark mode overrides for main containers */
 body.dark-mode .homepage .container,
 body.dark-mode .web-seo .container,
@@ -62,8 +385,7 @@ body.dark-mode .text-tool .container,
 body.dark-mode .faq-page .faq-container,
 body.dark-mode .password-gen .container,
 body.dark-mode .translator .container,
-body.dark-mode .word-counter .container,
-body.dark-mode .video-downloader .container {
+body.dark-mode .word-counter .container {
     background: var(--bg-card) !important;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
 }
@@ -95,7 +417,6 @@ body.dark-mode .image-editor h1,
 body.dark-mode .qr-generator h1,
 body.dark-mode .password-gen h1,
 body.dark-mode .translator h1,
-body.dark-mode .video-downloader h1,
 body.dark-mode .word-counter h1,
 body.dark-mode .static-container h1 {
     color: #003f7f !important;
@@ -104,10 +425,63 @@ body.dark-mode .static-container h1 {
 body.dark-mode .homepage .intro,
 body.dark-mode .header-link {
     color: var(--text-secondary) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
-body.dark-mode .header-link:hover {
-    color: var(--accent) !important;
+/* Dark mode: no default highlighted nav item */
+body.dark-mode .header-link.active {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .header-nav .header-link.active,
+body.dark-mode .header-nav .header-link.current,
+body.dark-mode .header-nav .header-link[aria-current="page"] {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body.dark-mode .header-nav .header-link,
+body.dark-mode .header-nav .header-link:visited,
+body.dark-mode .header-nav .header-link:focus,
+body.dark-mode .header-nav .header-link:focus-visible,
+body.dark-mode .header-nav .header-link:active {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .header-link:hover,
+body.dark-mode .header-nav .header-link:hover {
+    color: #4a8ec2 !important;
+    background: #e8f4fd !important;
+}
+
+body.dark-mode .header-lang-btn {
+    color: var(--text-secondary) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: transparent !important;
+}
+
+body.dark-mode .header-lang-btn:hover {
+    color: #4a8ec2 !important;
+    background: #e8f4fd !important;
+}
+
+body.dark-mode .header-lang-btn.is-active {
+    background: rgba(100, 180, 255, 0.2) !important;
+    border-color: rgba(100, 180, 255, 0.45) !important;
+    color: #4a8ec2 !important;
+}
+
+body.dark-mode.warm-tone .header-lang-btn {
+    color: var(--warm-nav-link-color) !important;
 }
 
 body.dark-mode .header-logout-form .header-link:hover,
@@ -230,5 +604,25 @@ body.dark-mode .warm-tone-toggle.is-active {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border-color: #2a3a5a !important;
     }
+}
+
+/* Markdown Preview: textarea testo scuro in dark mode (override #b0c4de) */
+@media (max-width: 480px) {
+    body.dark-mode.markdown-preview #md-input {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+}
+
+/* Dark: tasto Copia / stato Copiato sempre rosso (override gradienti !important sui bottoni, tutti i viewport). */
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied,
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied:hover,
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-wrapper button.copied,
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-wrapper button.copied:hover,
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.btn-copy.copied,
+body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.btn-copy.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
 }
 

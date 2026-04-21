@@ -35,6 +35,14 @@
     gap: 12px;
     justify-content: flex-end;
 }
+@media (max-width: 480px) {
+    .login-required-buttons {
+        flex-direction: column;
+    }
+    .login-required-buttons .login-required-btn {
+        width: 100%;
+    }
+}
 .login-required-btn {
     padding: 10px 20px;
     border-radius: 8px;
@@ -61,7 +69,7 @@ body.dark-mode .login-required-box {
     background: var(--bg-secondary, #1e2a3a);
 }
 body.dark-mode .login-required-text {
-    color: var(--text-primary, #e8f4fd);
+    color: #ffffff;
 }
 body.dark-mode .login-required-btn--close {
     background: #e84c4c;
@@ -262,6 +270,18 @@ body.dark-mode .login-required-btn--close:hover {
     color: #ff4d5a;
 }
 
+
+/* Label mobile: nascosta su desktop/tablet */
+.category-btn-label--mobile {
+    display: none;
+}
+
+/* Icone immagini: nascoste su desktop */
+.category-icon-img,
+.tool-icon-img {
+    display: none;
+}
+
 .tool-section {
     margin-bottom: 24px;
 }
@@ -421,7 +441,7 @@ body.dark-mode .login-required-btn--close:hover {
     .tool-section {
         margin-bottom: 22px;
     }
-    /* Category = full-width button */
+    /* Category = bottone full width */
     .category-btn {
         position: relative;
         width: 100%;
@@ -429,7 +449,7 @@ body.dark-mode .login-required-btn--close:hover {
         padding: 14px 44px 14px 20px;
         margin-bottom: 0;
         cursor: pointer;
-        border: 2px solid #b8d4f0;
+        border: 2px solid #003f7f;
         border-radius: 12px;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
         font-size: 1.05rem;
@@ -445,7 +465,7 @@ body.dark-mode .login-required-btn--close:hover {
     }
     .category-btn:hover {
         background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%);
-        border-color: #003f7f;
+        border-color: #002d5c;
     }
     .category-btn-chevron {
         display: inline-block;
@@ -455,26 +475,25 @@ body.dark-mode .login-required-btn--close:hover {
     .tool-section.is-open .category-btn-chevron {
         transform: rotate(180deg);
     }
-    /* Sezione aperta light: bottone e menu bordo blu scuro */
     .tool-section.is-open .category-btn {
         border-color: #003f7f;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
     }
-    /* Tool menu (lista) - leggermente più stretto del bottone, righe compatte */
+    /* Tool menu */
     .tool-section .tool-grid {
         display: none;
         flex-direction: column;
         padding: 0;
-        margin: 6px 10px 20px 10px;
-        width: calc(100% - 20px);
+        margin: 6px 0 20px 0;
+        width: 100%;
         gap: 0;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
         border-radius: 12px;
-        border: 2px solid #b8d4f0;
+        border: 2px solid #003f7f;
         overflow: hidden;
     }
     .tool-section.is-open .tool-grid {
         display: flex;
-        border: 2px solid #003f7f;
     }
     .homepage .tool-section .tool-grid .tool-btn-wrap {
         padding-left: 20px;
@@ -545,19 +564,42 @@ body.dark-mode .login-required-btn--close:hover {
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .homepage .container {
-        margin: 16px;
-        padding: 24px;
+        margin: 8px !important;
+        padding: 12px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
+        text-align: center;
+    }
+    .homepage .home-categories-wrap {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+        margin-top: 20px;
+    }
+    .homepage .tool-section,
+    .homepage .category-btn {
+        max-width: 100%;
+        box-sizing: border-box;
     }
     .homepage .intro {
         font-size: 1rem;
         margin-bottom: 0;
+        padding: 0;
+        line-height: 1.5;
     }
     .search-wrap {
         margin-bottom: 0;
-        padding-top: 72px;
-        padding-bottom: 72px;
+        padding: 16px 0 20px;
+    }
+    .homepage .tool-search-input {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
     }
     .homepage .container.has-shortcuts .search-wrap {
         padding-bottom: 40px;
@@ -565,23 +607,7 @@ body.dark-mode .login-required-btn--close:hover {
     .homepage .container.has-shortcuts .shortcuts-section {
         margin-top: 0;
     }
-    .category-btn {
-        min-height: 48px;
-        padding: 12px 16px;
-        font-size: 1rem;
-    }
-    .homepage .tool-section .tool-grid .tool-btn-wrap {
-        padding-left: 16px;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    .homepage .tool-section .tool-grid .tool-btn {
-        min-height: 18px !important;
-        padding: 1px 10px 2px 0 !important;
-        font-size: 0.95em;
-        align-items: center;
-        transform: translateY(-2px);
-    }
+
     .shortcuts-btn,
     body.dark-mode .shortcuts-btn,
     .homepage .shortcuts-grid .shortcuts-btn,
@@ -590,33 +616,14 @@ body.dark-mode .login-required-btn--close:hover {
         padding: 12px 16px !important;
         font-size: 1rem !important;
     }
-    .homepage .tool-btn {
-        padding: 12px 16px;
-        font-size: 0.95em;
-    }
 }
 
 @media (max-width: 480px) {
-    .homepage .container {
-        margin: 12px;
-        padding: 20px;
-    }
-    .homepage .intro {
-        margin-bottom: 0;
-    }
-    .search-wrap {
-        margin-bottom: 0;
-        padding-top: 64px;
-        padding-bottom: 64px;
-    }
-    .homepage .container.has-shortcuts .search-wrap {
-        padding-bottom: 40px;
-    }
-    .homepage .container.has-shortcuts .shortcuts-section {
-        margin-top: 0;
-    }
     .category-btn {
         font-size: 0.95rem;
+    }
+    .homepage .tool-section .tool-grid .tool-btn {
+        font-size: 0.95rem !important;
     }
     .shortcuts-btn,
     body.dark-mode .shortcuts-btn,
@@ -638,7 +645,7 @@ body.dark-mode .login-required-btn--close:hover {
 @media (max-width: 768px) {
     body.dark-mode .homepage .intro,
     body.dark-mode .homepage .intro a {
-        color: #003f7f;
+        color: var(--text-secondary);
     }
     body.dark-mode .shortcuts-section .shortcuts-title {
         color: #e84c4c;
@@ -661,9 +668,12 @@ body.dark-mode .login-required-btn--close:hover {
         border-color: #b01830;
     }
     body.dark-mode .category-btn {
-        color: #003f7f;
+        color: var(--text-secondary);
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-        border-color: var(--border-color, #2a3a5a);
+        border-color: var(--text-secondary);
+    }
+    body.dark-mode .category-btn .category-btn-chevron {
+        color: var(--text-secondary);
     }
     body.dark-mode .category-btn:hover {
         background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%);
@@ -671,33 +681,66 @@ body.dark-mode .login-required-btn--close:hover {
     }
     body.dark-mode .tool-section .tool-grid {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid #2a3a5a !important;
+        border: 2px solid var(--text-secondary) !important;
     }
-    /* Sezione aperta: bottone e menu stesso effetto azzurro */
+    /* Mobile/tablet (dark): when open, bordi come intro */
     body.dark-mode .tool-section.is-open .category-btn {
-        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
-        border-color: #003f7f !important;
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
     }
     body.dark-mode .tool-section.is-open .tool-grid {
-        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
-        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
     }
     body.dark-mode .homepage .tool-btn-wrap {
         border-bottom-color: rgba(255, 255, 255, 0.08);
     }
     body.dark-mode .homepage .tool-btn {
-        color: #003f7f;
+        color: var(--text-secondary);
+    }
+    body.dark-mode .homepage .tool-section .tool-grid {
+        color: var(--text-secondary);
     }
     body.dark-mode .homepage .tool-btn:hover {
         background: rgba(0, 63, 127, 0.2);
     }
     body.dark-mode .homepage .tool-btn-wrap .tool-fav {
-        color: #003f7f;
+        color: var(--text-secondary);
     }
     body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover {
         background: rgba(255, 255, 255, 0.1);
     }
     body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite {
         color: #dc3545;
+    }
+
+    /* Dark mode (mobile/tablet): force a single text color everywhere on Home */
+    body.dark-mode.homepage .intro,
+    body.dark-mode.homepage .intro a,
+    body.dark-mode.homepage .tool-search-input,
+    body.dark-mode.homepage .shortcuts-section .shortcuts-title,
+    body.dark-mode.homepage .shortcuts-btn,
+    body.dark-mode.homepage .category-btn,
+    body.dark-mode.homepage .category-btn .category-btn-label,
+    body.dark-mode.homepage .category-btn .category-btn-chevron,
+    body.dark-mode.homepage .tool-section .tool-grid,
+    body.dark-mode.homepage .tool-section .tool-grid * ,
+    body.dark-mode.homepage .tool-btn,
+    body.dark-mode.homepage .tool-fav {
+        color: var(--text-secondary) !important;
+    }
+}
+
+/* Dark mode mobile (480px): testi #b0c4de come logo - DEVE stare dopo il blocco 768px */
+@media (max-width: 480px) {
+    body.dark-mode.homepage .intro,
+    body.dark-mode.homepage .intro a,
+    body.dark-mode.homepage .tool-search-input,
+    body.dark-mode.homepage .category-btn,
+    body.dark-mode.homepage .category-btn .category-btn-label,
+    body.dark-mode.homepage .category-btn .category-btn-chevron,
+    body.dark-mode.homepage .tool-section .tool-grid .tool-btn,
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav {
+        color: #b0c4de !important;
     }
 }

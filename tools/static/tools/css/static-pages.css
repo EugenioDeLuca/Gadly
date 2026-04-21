@@ -52,15 +52,29 @@ body.dark-mode .static-container p {
 }
 
 .static-container a {
-    color: #007BFF;
+    color: #003f7f;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    display: inline-block;
+    transition: color 0.2s, transform 0.2s;
 }
 
 body.dark-mode .static-container a {
-    color: #7eb8f0;
+    color: #4a8ec2;
+}
+
+.static-container a:hover {
+    color: #0056b3;
+    transform: scale(1.04);
+}
+
+body.dark-mode .static-container a:hover {
+    color: #63a6db;
+    transform: scale(1.04);
 }
 
 .static-footer {
-    margin-top: 36px;
+    margin-top: 12px;
     text-align: center;
 }
 

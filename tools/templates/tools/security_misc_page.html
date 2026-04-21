@@ -1,0 +1,29 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Security & Misc Tools" %}{% endblock %}
+{% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=12">
+<style>
+.text-tools-page .container { max-width: 900px; }
+.text-tools-page-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-top:16px; }
+.text-tools-page .tool-btn-wrap { width:180px; display:flex; justify-content:center; }
+.text-tools-page .tool-btn { width:180px; height:56px; display:flex; align-items:center; justify-content:center; text-align:center; background:#003f7f; color:#fff; font-weight:600; font-size:1em; text-decoration:none; border-radius:12px; transition:transform .2s, background .2s; }
+.text-tools-page .tool-btn:hover { background:#0056b3; transform:scale(1.05); }
+@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% trans "Security & Misc Tools" %}</h1>
+  <p class="tool-desc">{% trans "Quick access to security and utility tools." %}</p>
+  <div class="text-tools-page-grid">
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'qr_generator' %}">{% trans "QR Generator" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'qr_decoder' %}">{% trans "QR Decoder" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'base64_encoder' %}">{% trans "Base64 Encoder" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'hash_generator' %}">{% trans "Hash Generator" %}</a></div>
+  </div>
+</div>
+{% endblock %}

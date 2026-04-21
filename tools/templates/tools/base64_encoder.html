@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Base64 Encoder / Decoder{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Base64 Encoder / Decoder" %}{% endblock %}
 {% block body_class %}text-tool base64-encoder{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -9,9 +10,9 @@
 .base64-encoder .form-group textarea { width: 100%; max-width: 100%; box-sizing: border-box; min-height: 200px; padding: 14px 18px; font-size: 0.95rem; line-height: 1.5; border: 2px solid #ddd; border-radius: 12px; resize: vertical; font-family: inherit; }
 .base64-encoder .form-group textarea:focus { outline: none; border-color: #007BFF; }
 .base64-encoder .button-group button { min-width: 140px; }
-.base64-encoder .button-group { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; max-width: 100%; margin-top: 16px; }
+.base64-encoder .button-group { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; max-width: 100%; margin-top: 12px; margin-bottom: 0; }
 .base64-encoder .button-group #btn-copy { margin-left: auto; }
-.base64-encoder .result-area { width: 100%; box-sizing: border-box; margin-top: 0; margin-bottom: 0; padding: 20px; min-height: 60px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; line-height: 1.5; }
+.base64-encoder .result-area { width: 100%; box-sizing: border-box; margin-top: 12px; margin-bottom: 0; padding: 20px; min-height: 60px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; line-height: 1.5; }
 .base64-encoder .result-area.hidden { display: none; }
 .base64-encoder .result-area.error { margin-top: 12px; margin-bottom: 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
 @media (max-width: 768px) {
@@ -25,27 +26,27 @@ body.dark-mode .base64-encoder .result-area.error { background: rgba(220,80,80,0
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Base64 Encoder / Decoder</h1>
-    <p class="tool-desc">Encode text to Base64 or decode Base64 to text.</p>
+    <h1>{% trans "Base64 Encoder / Decoder" %}</h1>
+    <p class="tool-desc">{% trans "Encode text to Base64 or decode Base64 to text." %}</p>
 
     <div class="form-group">
-        <label for="base64-input">Input</label>
-        <textarea id="base64-input" placeholder="Enter text to encode or Base64 string to decode..." rows="8"></textarea>
+        <label for="base64-input">{% trans "Input" %}</label>
+        <textarea id="base64-input" placeholder='{% trans "Enter text to encode or Base64 string to decode..." %}' rows="8"></textarea>
     </div>
 
     <div id="base64-result" class="result-area hidden" aria-live="polite"></div>
 
     <div class="button-group">
-        <button type="button" id="btn-encode">Encode</button>
-        <button type="button" id="btn-decode">Decode</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-encode">{% trans "Encode" %}</button>
+        <button type="button" id="btn-decode">{% trans "Decode" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/base64_encoder.js' %}"></script>
+<script src="{% static 'tools/js/base64_encoder.js' %}?v=20260422"></script>
 {% endblock %}

@@ -1,10 +1,30 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Caption Generator{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Caption Generator" %}{% endblock %}
 {% block body_class %}text-tool caption-gen{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260421b">
 <style>
+.caption-gen .result-area:not(.error) {
+    white-space: normal;
+}
+/* Stesso aspetto light/dark: area risultato resta su fondo chiaro; testo blu scuro (il tema dark imposta #b0c4de su .result-area). */
+body.dark-mode.caption-gen .site-main .container .result-area:not(.error) {
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+}
+.caption-gen .result-area .caption-copy-footnote {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin: 14px 0 0 0;
+    line-height: 1.45;
+    text-align: center;
+}
+body.dark-mode.caption-gen .site-main .container .result-area:not(.error) .caption-copy-footnote {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
 .caption-gen .button-group button { min-width: 140px; }
 /* Solo desktop: input/select fino in fondo al container, Copy tutto a destra */
 @media (min-width: 769px) {
@@ -19,43 +39,116 @@
     .caption-gen .button-group {
         width: 100%;
         justify-content: space-between;
+        margin-bottom: 0px;
     }
     .caption-gen .button-group #btn-copy { margin-left: auto; }
+    .caption-gen .result-area { margin-top: 12px; }
 }
 @media (max-width: 768px) {
     .caption-gen .button-group { justify-content: space-between; }
+}
+.caption-gen .result-area .caption-results-header {
+    margin-bottom: 12px;
+}
+.caption-gen .result-area .caption-results-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 6px 0;
+    color: #003f7f;
+}
+.caption-gen .result-area .caption-select-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    max-width: 100%;
+    align-items: stretch;
+}
+.caption-gen .result-area .caption-select-action-btn {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 15em;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 2px solid #003f7f;
+    background: transparent;
+    color: #003f7f;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.caption-gen .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08);
+    border-color: #0056b3;
+    color: #0056b3;
+}
+.caption-gen .result-area .caption-select-action-btn:active {
+    transform: scale(0.98);
+}
+.caption-gen .result-area .caption-results-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    line-height: 1.55;
+}
+.caption-gen .result-area .caption-results-list li.caption-result-row {
+    margin-bottom: 12px;
+}
+.caption-gen .result-area .caption-results-list li.caption-result-row:last-child {
+    margin-bottom: 0;
+}
+body.dark-mode.caption-gen .site-main .container .result-area:not(.error) .caption-results-title {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+/* Outline come light mode: stesso blu #003f7f (il tema sovrascrive i button con !important). */
+body.dark-mode.caption-gen .site-main .container .result-area .caption-select-action-btn {
+    border: 2px solid #003f7f !important;
+    background: transparent !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.caption-gen .site-main .container .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08) !important;
+    border-color: #0056b3 !important;
+    color: #0056b3 !important;
+    -webkit-text-fill-color: #0056b3 !important;
 }
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Caption Generator</h1>
-    <p class="tool-desc">Generate post captions for Instagram, TikTok, and more.</p>
+    <h1>{% trans "Caption Generator" %}</h1>
+    <p class="tool-desc">{% trans "Generate post captions for Instagram, TikTok, and more." %}</p>
     <div class="form-group">
-        <label>Platform</label>
+        <label>{% trans "Platform" %}</label>
         <div class="text-tool-select" id="caption-platform-wrap" data-value="instagram">
-            <button type="button" class="text-tool-select-trigger">Instagram</button>
+            <button type="button" class="text-tool-select-trigger">{% trans "Instagram" %}</button>
             <ul class="text-tool-select-menu">
-                <li data-value="instagram">Instagram</li>
-                <li data-value="tiktok">TikTok</li>
-                <li data-value="twitter">Twitter/X</li>
+                <li data-value="instagram">{% trans "Instagram" %}</li>
+                <li data-value="tiktok">{% trans "TikTok" %}</li>
+                <li data-value="twitter">{% trans "Twitter/X" %}</li>
             </ul>
         </div>
     </div>
     <div class="form-group">
-        <label for="caption-topic">Topic / mood (optional)</label>
-        <input type="text" id="caption-topic" placeholder="e.g. sunset, coffee, Monday" />
+        <label for="caption-topic">{% trans "Topic / mood (optional)" %}</label>
+        <input type="text" id="caption-topic" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. tramonto, caffè, viaggio, amici{% else %}{% trans 'e.g. sunset, coffee, Monday' %}{% endif %}" />
     </div>
     <div class="button-group">
-        <button type="button" id="btn-generate">Generate</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/caption_generator.js' %}"></script>
+<script src="{% static 'tools/js/caption_generator.js' %}?v=20260419e"></script>
 {% endblock %}

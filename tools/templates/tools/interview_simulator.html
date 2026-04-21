@@ -1,0 +1,635 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Simulatore colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}{% endblock %}
+{% block body_class %}text-tool interview-simulator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+/* Non toccare .tool-desc: colore da text-tools.css. Solo testi nel pannello recruiter. */
+/* Solo il paragrafo sotto l’H1 (non gli altri .tool-desc nel pannello) */
+.interview-simulator .container > h1 + p.tool-desc {
+    margin-bottom: 14px;
+}
+/* Colore = .text-tool .tool-desc (stesso grigio del paragrafo sotto al titolo); solo layout qui sotto */
+.interview-settings { margin-bottom: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #b8d4f0; background: #f8fcff; font-size: 1rem; }
+.interview-settings-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+.interview-settings-heading {
+    margin: 0 0 12px 0;
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.55;
+    letter-spacing: normal;
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+}
+.interview-settings-toggle .interview-settings-heading {
+    margin: 0;
+}
+.interview-settings-arrow {
+    font-size: 1rem;
+    line-height: 1;
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+    transition: transform 0.2s ease;
+    flex: 0 0 auto;
+}
+.interview-settings.is-open .interview-settings-arrow {
+    transform: rotate(180deg);
+}
+.interview-settings-content[hidden] {
+    display: none !important;
+}
+.interview-settings-content {
+    margin-top: 10px;
+}
+.interview-recruiter-panel {
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #b8d4f0;
+    background: #f8fcff;
+    /* Stessa scala del testo sotto il titolo (.text-tool .tool-desc: 1rem) */
+    font-size: 1rem;
+    line-height: 1.55;
+}
+body.dark-mode.interview-simulator .interview-recruiter-panel {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border-color);
+}
+/* Come .interview-settings-heading: blu + grassetto */
+.interview-recruiter-panel .interview-recruiter-panel-label {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.55;
+    letter-spacing: normal;
+    margin-bottom: 6px;
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+}
+.interview-recruiter-panel .interview-recruiter-panel-label:first-of-type {
+    margin-bottom: 8px;
+}
+.interview-settings .text-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.interview-settings .form-group.full { grid-column: 1 / -1; }
+.interview-settings label { font-size: 0.95rem; }
+.interview-settings input, .interview-settings textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; }
+.interview-settings textarea { min-height: 72px; resize: vertical; }
+.interview-recruiter-panel .interview-recruiter-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 14px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+/* Man / Woman: solo colore nero (nessun box extra) */
+.interview-recruiter-panel .interview-recruiter-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.55;
+    width: auto;
+    flex: 0 0 auto;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+}
+.interview-recruiter-panel .interview-recruiter-row input[type="radio"] {
+    width: auto;
+    margin: 0;
+}
+.interview-recruiter-panel .interview-tts-block {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(0, 63, 127, 0.25);
+}
+.interview-recruiter-panel .interview-tts-block label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+}
+.interview-recruiter-panel .interview-tts-block input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    flex-shrink: 0;
+}
+.interview-simulator p.tool-desc.interview-recruiter-start-hint {
+    text-align: left;
+    margin: 10px 0 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    font-weight: 400;
+}
+.interview-simulator .interview-recruiter-panel p.tool-desc.interview-tts-note {
+    text-align: left !important;
+    margin: 8px 0 0 0;
+    padding-left: 0;
+    font-size: 1rem;
+    line-height: 1.55;
+}
+/* Stesso colore di .text-tool h1 (#003f7f): theme.css usa #b0c4de su .container h1 in dark */
+body.dark-mode.text-tool.interview-simulator .site-main .container > h1 {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.text-tool.interview-simulator .interview-settings-heading,
+body.dark-mode.text-tool.interview-simulator .site-main .container .interview-recruiter-panel .interview-recruiter-panel-label {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.text-tool.interview-simulator .interview-settings-arrow {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+/* Batte theme.css (label #b0c4de in dark): Man/Woman + label TTS tutte nere */
+body.dark-mode.text-tool.interview-simulator .site-main .container .interview-recruiter-panel .interview-recruiter-row label,
+body.dark-mode.text-tool.interview-simulator .site-main .container .interview-recruiter-panel .interview-tts-block label {
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+}
+.interview-flow--locked {
+    display: none !important;
+}
+.interview-chat-shell {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 2px dashed #b8d4f0;
+    background: #fafcfe;
+    overflow: hidden;
+    min-height: 420px;
+    max-height: min(72vh, 640px);
+}
+body.dark-mode.interview-simulator .interview-chat-shell {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border-color);
+}
+.interview-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.interview-messages::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+.interview-msg-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    width: 100%;
+    box-sizing: border-box;
+}
+/* Recruiter + suggerimenti: avatar a sinistra, bolla a destra dell’avatar */
+.interview-msg-row--recruiter,
+.interview-msg-row--tip {
+    flex-direction: row;
+    justify-content: flex-start;
+}
+/* Tu: bolla a sinistra del gruppo, avatar a destra — tutto il blocco allineato a destra */
+.interview-msg-row--user {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.interview-avatar {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    line-height: 0;
+}
+.interview-avatar-svg {
+    display: block;
+    flex-shrink: 0;
+}
+.interview-avatar--recruiter-male {
+    background: linear-gradient(145deg, #003f7f, #1e5fa8);
+    color: #fff;
+    border: 2px solid #7eb8f0;
+}
+.interview-avatar--recruiter-female {
+    background: linear-gradient(145deg, #9d174d, #be185d);
+    color: #fff;
+    border: 2px solid #f9a8d4;
+}
+.interview-avatar--user {
+    background: linear-gradient(145deg, #2d6a4f, #40916c);
+    color: #fff;
+    border: 2px solid #95d5b2;
+}
+.interview-avatar--tip {
+    background: linear-gradient(145deg, #ca8a04, #eab308);
+    color: #1c1917;
+    border: 2px solid #fde047;
+}
+.interview-bubble {
+    max-width: min(100%, calc(100% - 60px));
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.interview-bubble--recruiter {
+    background: #ffffff;
+    border: 2px solid #94b8e0;
+    border-bottom-left-radius: 4px;
+    color: #0f172a !important;
+    box-shadow: 0 2px 8px rgba(0,63,127,0.08);
+}
+.interview-bubble--recruiter .interview-bubble-body,
+.interview-bubble--recruiter p {
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+}
+.interview-bubble--user {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    border-bottom-right-radius: 4px;
+    color: #0f172a !important;
+}
+.interview-bubble--user .interview-bubble-body,
+.interview-bubble--user p {
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+}
+.interview-bubble--tip {
+    background: #fffbeb;
+    border: 2px solid #eab308;
+    border-bottom-left-radius: 4px;
+    color: #422006 !important;
+}
+.interview-bubble--tip .interview-bubble-body,
+.interview-bubble--tip p {
+    color: #422006 !important;
+    -webkit-text-fill-color: #422006 !important;
+}
+.interview-msg-meta { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; opacity: 0.95; }
+.interview-msg-meta--recruiter { color: #003f7f !important; -webkit-text-fill-color: #003f7f !important; }
+.interview-msg-meta--user { color: #166534 !important; -webkit-text-fill-color: #166534 !important; }
+.interview-msg-meta--tip { color: #a16207 !important; -webkit-text-fill-color: #a16207 !important; }
+body.dark-mode.interview-simulator .interview-bubble--recruiter {
+    background: #1e293b !important;
+    border-color: #64748b !important;
+}
+body.dark-mode.interview-simulator .interview-bubble--recruiter .interview-bubble-body,
+body.dark-mode.interview-simulator .interview-bubble--recruiter p {
+    color: #f8fafc !important;
+    -webkit-text-fill-color: #f8fafc !important;
+}
+body.dark-mode.interview-simulator .interview-bubble--user {
+    background: #14532d !important;
+    border-color: #22c55e !important;
+}
+body.dark-mode.interview-simulator .interview-bubble--user .interview-bubble-body,
+body.dark-mode.interview-simulator .interview-bubble--user p {
+    color: #ecfdf5 !important;
+    -webkit-text-fill-color: #ecfdf5 !important;
+}
+body.dark-mode.interview-simulator .interview-bubble--tip {
+    background: #422006 !important;
+    border-color: #ca8a04 !important;
+}
+body.dark-mode.interview-simulator .interview-bubble--tip .interview-bubble-body,
+body.dark-mode.interview-simulator .interview-bubble--tip p {
+    color: #fef9c3 !important;
+    -webkit-text-fill-color: #fef9c3 !important;
+}
+body.dark-mode.interview-simulator .interview-msg-meta--recruiter { color: #93c5fd !important; -webkit-text-fill-color: #93c5fd !important; }
+body.dark-mode.interview-simulator .interview-msg-meta--user { color: #86efac !important; -webkit-text-fill-color: #86efac !important; }
+body.dark-mode.interview-simulator .interview-msg-meta--tip { color: #fcd34d !important; -webkit-text-fill-color: #fcd34d !important; }
+body.dark-mode.interview-simulator .site-main .container .interview-chat-shell p {
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+}
+.interview-input-panel {
+    border-top: 1px solid rgba(0, 63, 127, 0.2);
+    padding: 10px 0 4px;
+    background: transparent;
+    flex-shrink: 0;
+}
+body.dark-mode.interview-simulator .interview-input-panel {
+    background: transparent;
+    border-color: var(--border-color);
+}
+.interview-composer-head {
+    margin-bottom: 10px;
+    width: calc(100% - 24px);
+    margin-left: auto;
+    margin-right: auto;
+}
+.interview-composer-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    letter-spacing: 0.02em;
+    margin: 0 0 4px 0;
+}
+body.dark-mode.interview-simulator .interview-composer-label {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+.interview-composer-hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
+    line-height: 1.35;
+}
+body.dark-mode.interview-simulator .interview-composer-hint {
+    color: #94a3b8 !important;
+    -webkit-text-fill-color: #94a3b8 !important;
+}
+/* Stesso blocco errore degli altri tool (.text-tool-inline-error in text-tools.css) */
+.interview-simulator .interview-composer-area {
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: 0;
+    padding: 0;
+    white-space: normal;
+}
+.interview-simulator .interview-composer-area .text-tool-inline-error.hidden {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    min-height: 0 !important;
+    overflow: hidden;
+}
+.interview-input-wrap {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    width: calc(100% - 24px);
+    margin: 0 auto;
+}
+.interview-simulator .interview-composer-area textarea.interview-answer-input {
+    flex: 1;
+    min-height: 44px !important;
+    max-height: 260px !important;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    font-size: 1rem;
+    line-height: 1.35;
+    resize: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+    font-family: inherit;
+    background: #fff !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+}
+.interview-answer-input::placeholder {
+    color: #dc2626 !important;
+    opacity: 1;
+    -webkit-text-fill-color: #dc2626 !important;
+}
+.interview-answer-input::-webkit-input-placeholder {
+    color: #dc2626 !important;
+    -webkit-text-fill-color: #dc2626 !important;
+}
+.interview-answer-input:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+body.dark-mode.interview-simulator .site-main .container .interview-composer-area textarea.interview-answer-input,
+body.dark-mode.interview-simulator .site-main .container .interview-composer-area textarea.interview-answer-input:focus {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+}
+body.dark-mode.interview-simulator .site-main .container .interview-answer-input::placeholder,
+body.dark-mode.interview-simulator .site-main .container .interview-answer-input::-webkit-input-placeholder {
+    color: #ef4444 !important;
+    -webkit-text-fill-color: #ef4444 !important;
+    opacity: 1;
+}
+.interview-simulator .button-group {
+    margin-top: 14px;
+    margin-bottom: 0;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+body.dark-mode.interview-simulator .site-main .container .button-group button {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+}
+body.dark-mode.interview-simulator .site-main .container .button-group button:hover {
+    background: #0056b3 !important;
+    color: #fff !important;
+    transform: scale(1.03);
+}
+/* Copia conversazione: larghezza fissa così "Copiato!" non ridimensiona il bottone */
+.interview-simulator .button-group #interview-export {
+    min-width: 240px;
+    width: 240px;
+    max-width: 240px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    text-align: center;
+}
+.interview-simulator .button-group #interview-export.copied,
+.interview-simulator .button-group #interview-export.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    transform: none;
+}
+body.dark-mode.interview-simulator .site-main .container .button-group #interview-export.copied,
+body.dark-mode.interview-simulator .site-main .container .button-group #interview-export.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    transform: none;
+}
+/* base.css mobile: min-height 52px — stessi tool con .button-group */
+.interview-simulator .button-group button,
+.interview-simulator .interview-answer-input {
+    min-height: 44px !important;
+}
+@media (max-width: 768px) {
+    .interview-settings .text-tool-grid { grid-template-columns: 1fr; }
+    .interview-msg-row { align-items: flex-end; }
+    .interview-bubble { max-width: calc(100% - 60px); }
+}
+/* Sprite SVG: non display:none così <use> resta valido nei browser */
+.interview-sprite-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+}
+.interview-avatar-svg--cartoon {
+    width: 44px;
+    height: 44px;
+}
+.interview-avatar--recruiter-male,
+.interview-avatar--recruiter-female {
+    background: #fff;
+    border-width: 2px;
+}
+body.dark-mode.interview-simulator .interview-avatar--recruiter-male,
+body.dark-mode.interview-simulator .interview-avatar--recruiter-female {
+    background: rgba(255, 255, 255, 0.08);
+}
+.interview-avatar--recruiter-male {
+    border-color: #7eb8f0;
+}
+.interview-avatar--recruiter-female {
+    border-color: #f9a8d4;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <svg class="interview-sprite-defs" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false">
+    <symbol id="interview-cartoon-recruiter-male" viewBox="0 0 80 80">
+      <circle cx="40" cy="38" r="21" fill="#f2c29a" stroke="#d9a67a" stroke-width="1.5"/>
+      <path fill="#3d2b1f" d="M19 36 Q19 10 40 9 Q61 10 61 36 Q58 22 40 17 Q22 22 19 36z"/>
+      <ellipse cx="32" cy="37" rx="3" ry="3.8" fill="#1e293b"/>
+      <ellipse cx="48" cy="37" rx="3" ry="3.8" fill="#1e293b"/>
+      <path fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round" d="M33 47q7 6 14 0"/>
+      <path fill="#1e5fa8" d="M24 56h32l-4-10-8 4-8-4-4 10zm-2 4h36v18H22V60z"/>
+      <path fill="#003f7f" d="M26 60h28v14H26z"/>
+    </symbol>
+    <symbol id="interview-cartoon-recruiter-female" viewBox="0 0 80 80">
+      <path fill="#5b3a8f" d="M10 48 Q8 20 40 10 Q72 20 70 48 Q68 66 58 72 Q54 34 40 28 Q26 34 22 72 Q12 66 10 48z"/>
+      <circle cx="40" cy="40" r="19" fill="#f2c29a" stroke="#d9a67a" stroke-width="1.5"/>
+      <path fill="#4c1d95" d="M20 30 Q40 18 60 30 Q56 22 40 20 Q24 22 20 30z"/>
+      <ellipse cx="33" cy="40" rx="2.8" ry="3.5" fill="#1e293b"/>
+      <ellipse cx="47" cy="40" rx="2.8" ry="3.5" fill="#1e293b"/>
+      <circle cx="27" cy="44" r="4" fill="#fda4af" opacity="0.65"/>
+      <circle cx="53" cy="44" r="4" fill="#fda4af" opacity="0.65"/>
+      <path fill="none" stroke="#1e293b" stroke-width="2" stroke-linecap="round" d="M34 49q6 5 12 0"/>
+      <path fill="#be185d" d="M23 56h34l-3-8-11 5-11-5-3 8zm-1 4h36v18H22V60z"/>
+      <path fill="#9d174d" d="M24 62h32v14H24z"/>
+    </symbol>
+  </svg>
+  <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Simulatore colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</h1>
+  <p class="tool-desc">{% trans "Answer like in a real interview: the recruiter asks, you reply in text, then you get a suggestion to improve your answer. Each session includes 50 different questions." %}</p>
+  <p class="tool-help">
+    <a href="{% url 'help_interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Simulatore colloquio{% else %}Quick Interview Simulator guide{% endif %}</a>
+  </p>
+
+  <div class="interview-recruiter-panel">
+    <span class="interview-recruiter-panel-label">{% trans "Recruiter" %}</span>
+    <span class="interview-recruiter-panel-label">{% trans "Voice and appearance" %}</span>
+    <div class="interview-recruiter-row" role="radiogroup" aria-label="{% trans 'Recruiter' %}">
+      <label><input type="radio" name="interview-recruiter-gender" id="interview-recruiter-male" value="male"> {% trans "Man" %}</label>
+      <label><input type="radio" name="interview-recruiter-gender" id="interview-recruiter-female" value="female"> {% trans "Woman" %}</label>
+    </div>
+    <p class="tool-desc interview-recruiter-start-hint">{% trans "Choose man or woman to start. The chat appears after your choice." %}</p>
+    <div class="interview-tts-block">
+      <label for="interview-read-aloud">
+        <input type="checkbox" id="interview-read-aloud">
+        {% trans "Read recruiter questions aloud (browser text-to-speech)" %}
+      </label>
+      <p class="tool-desc interview-tts-note">{% trans "Uses the voices installed in your browser/OS. If you prefer only text, leave this off." %}</p>
+    </div>
+  </div>
+
+  <section class="interview-settings" aria-labelledby="interview-settings-heading">
+    <button
+      type="button"
+      id="interview-settings-toggle"
+      class="interview-settings-toggle"
+      aria-expanded="false"
+      aria-controls="interview-settings-content"
+    >
+      <h2 id="interview-settings-heading" class="interview-settings-heading">{% trans "Optional: role and level" %}</h2>
+      <span class="interview-settings-arrow" aria-hidden="true">▾</span>
+    </button>
+    <div id="interview-settings-content" class="interview-settings-content" hidden>
+    <div class="text-tool-grid">
+      <div class="form-group">
+        <label for="interview-role">{% trans "Role" %}</label>
+        <input type="text" id="interview-role" placeholder="{% trans 'e.g. Marketing Manager' %}" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="interview-level">{% trans "Level" %}</label>
+        <input type="text" id="interview-level" placeholder="{% trans 'e.g. Junior / Mid / Senior' %}" autocomplete="off">
+      </div>
+      <div class="form-group full">
+        <label for="interview-focus">{% trans "Focus areas (optional)" %}</label>
+        <textarea id="interview-focus" rows="2" placeholder="{% trans 'e.g. Leadership, SQL, client communication' %}"></textarea>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <div id="interview-flow" class="interview-flow interview-flow--locked" aria-hidden="true">
+  <div class="interview-chat-shell" id="interview-chat-shell">
+    <div id="interview-messages" class="interview-messages" aria-live="polite" aria-relevant="additions"></div>
+    <div class="interview-input-panel">
+      <div class="interview-composer-head">
+        <label for="interview-answer-input" class="interview-composer-label">{% trans "Your answer" %}</label>
+        <p class="interview-composer-hint">{% trans "Type your answer and press Enter to send. Use Shift+Enter for a new line." %}</p>
+      </div>
+      <div class="interview-composer-area">
+        <div id="interview-inline-error" class="text-tool-inline-error hidden" role="alert"></div>
+        <div class="interview-input-wrap">
+          <textarea id="interview-answer-input" class="interview-answer-input" rows="1" placeholder="{% trans 'Write your answer…' %}" autocomplete="off"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button type="button" id="interview-restart">{% trans "New interview" %}</button>
+    <button type="button" id="interview-export">{% trans "Copy conversation" %}</button>
+  </div>
+  </div>
+
+  <div class="home-link-wrap">
+    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    </a>
+  </div>
+</div>
+{{ interview_payload|json_script:"interview-banks-data" }}
+{{ interview_ai_config|json_script:"interview-ai-config" }}
+<script src="{% static 'tools/js/interview_simulator.js' %}?v=20260422ai"></script>
+{% endblock %}

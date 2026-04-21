@@ -1,0 +1,74 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Text Tools" %}{% endblock %}
+{% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=12">
+<style>
+.text-tools-page .container {
+    max-width: 900px;
+}
+.text-tools-page-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+.text-tools-page .tool-btn-wrap {
+    width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text-tools-page .tool-btn {
+    width: 180px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #003f7f;
+    color: white;
+    font-weight: 600;
+    font-size: 1em;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: transform 0.2s, background 0.2s;
+}
+.text-tools-page .tool-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+@media (max-width: 768px) {
+    .text-tools-page-grid {
+        justify-content: center;
+    }
+    .text-tools-page .tool-btn-wrap,
+    .text-tools-page .tool-btn {
+        width: 100%;
+    }
+    .text-tools-page .tool-btn {
+        min-height: 52px;
+    }
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>{% trans "Text Tools" %}</h1>
+    <p class="tool-desc">{% trans "Quick access to all text-related tools." %}</p>
+    <div class="text-tools-page-grid">
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'translator' %}">{% trans "Translator" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'markdown_preview' %}">{% trans "Markdown Preview" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'remove_spaces' %}">{% trans "Remove Spaces" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'username_generator' %}">{% trans "Username Generator" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'diff_checker' %}">{% trans "Diff Checker" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'json_formatter' %}">{% trans "JSON Formatter" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'case_converter' %}">{% trans "Case Converter" %}</a></div>
+        <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'uuid_generator' %}">{% trans "UUID Generator" %}</a></div>
+    </div>
+</div>
+{% endblock %}

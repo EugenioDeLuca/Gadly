@@ -1,5 +1,6 @@
 (function () {
     'use strict';
+    var t = (typeof gettext === 'function') ? gettext : function (s) { return s; };
 
     var input = document.getElementById('case-input');
     var resultEl = document.getElementById('case-result');
@@ -28,7 +29,7 @@
 
     function doUpper() {
         if (!input.value.trim()) {
-            showError('Please enter some text to convert');
+            showError(t('Please enter some text to convert'));
             return;
         }
         showResult(input.value.toUpperCase());
@@ -36,7 +37,7 @@
 
     function doLower() {
         if (!input.value.trim()) {
-            showError('Please enter some text to convert');
+            showError(t('Please enter some text to convert'));
             return;
         }
         showResult(input.value.toLowerCase());
@@ -44,7 +45,7 @@
 
     function doTitle() {
         if (!input.value.trim()) {
-            showError('Please enter some text to convert');
+            showError(t('Please enter some text to convert'));
             return;
         }
         showResult(toTitleCase(input.value));
@@ -59,9 +60,9 @@
         if (!text || resultEl.classList.contains('hidden')) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
-                btnCopy.textContent = 'Copied!';
+                btnCopy.textContent = t('Copied!');
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = t('Copy'); btnCopy.classList.remove('copied'); }, 2000);
             }).catch(function () {});
         } else {
             var ta = document.createElement('textarea');
@@ -70,9 +71,9 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                btnCopy.textContent = 'Copied!';
+                btnCopy.textContent = t('Copied!');
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = t('Copy'); btnCopy.classList.remove('copied'); }, 2000);
             } catch (e) {}
             document.body.removeChild(ta);
         }

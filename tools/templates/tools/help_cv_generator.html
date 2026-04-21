@@ -1,0 +1,35 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Generatore CV{% else %}CV Generator Help{% endif %}{% endblock %}
+{% block body_class %}text-tool help-page help-cv-generator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Generatore CV{% else %}CV Generator help{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Come compilare un CV chiaro e pronto all'esportazione.{% else %}How to fill in a clear CV and export it.{% endif %}</p>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Cosa inserire{% else %}What to include{% endif %}</h2>
+        <ul>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Compila nome, cognome, contatti e ruolo target.{% else %}Fill in name, contacts, and target role.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Aggiungi esperienze con risultati misurabili.{% else %}Add experience entries with measurable outcomes.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Usa competenze e lingue in modo coerente col ruolo.{% else %}Keep skills and languages aligned with your role.{% endif %}</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Suggerimento{% else %}Tip{% endif %}</h2>
+        <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Prima dell'export, controlla l'anteprima live e verifica che date, titoli e risultati siano leggibili in una pagina ordinata.{% else %}Before export, check the live preview and ensure dates, titles, and outcomes are easy to scan.{% endif %}</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'cv_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Generatore CV"{% else %}Back to "CV Generator"{% endif %}</a>
+    </div>
+</div>
+{% endblock %}
+

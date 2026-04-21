@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+    function t(it, en) { return isItalian ? it : en; }
 
     var input = document.getElementById('qr-image-input');
     var fileNameDisplay = document.querySelector('.qr-decoder .file-name-display');
@@ -52,11 +54,11 @@
         showResult('');
         resultWrap.style.display = 'none';
         previewWrap.style.display = 'none';
-        if (fileNameDisplay) fileNameDisplay.textContent = file && file.name ? file.name : 'Choose file';
+        if (fileNameDisplay) fileNameDisplay.textContent = file && file.name ? file.name : t('Scegli file', 'Choose file');
 
         if (!file || !file.type.match(/^image\//)) {
-            showMessage('Please select a valid image.', true);
-            if (fileNameDisplay) fileNameDisplay.textContent = 'Choose file';
+            showMessage(t('Seleziona un\'immagine valida.', 'Please select a valid image.'), true);
+            if (fileNameDisplay) fileNameDisplay.textContent = t('Scegli file', 'Choose file');
             return;
         }
 
@@ -73,20 +75,20 @@
             var imageData = ctx.getImageData(0, 0, w, h);
 
             if (typeof jsQR === 'undefined') {
-                showMessage('Decoding library not loaded', true);
+                showMessage(t('Libreria di decodifica non caricata', 'Decoding library not loaded'), true);
                 return;
             }
             var code = jsQR(imageData.data, w, h);
             if (code && code.data) {
                 showResult(code.data);
                 resultWrap.style.display = 'block';
-                showMessage('QR code read successfully.', false, true);
+                showMessage(t('QR code letto con successo.', 'QR code read successfully.'), false, true);
             } else {
-                showMessage('No QR code found in this image', true);
+                showMessage(t('Nessun QR code trovato in questa immagine', 'No QR code found in this image'), true);
             }
         };
         img.onerror = function () {
-            showMessage('Unable to load image', true);
+            showMessage(t('Impossibile caricare l\'immagine', 'Unable to load image'), true);
         };
         img.src = URL.createObjectURL(file);
     });
@@ -97,10 +99,10 @@
         btnCopy.classList.remove('copied');
         function onCopyDone() {
             btnCopy.classList.add('copied');
-            btnCopy.textContent = 'Copied!';
+            btnCopy.textContent = gettext('Copied!');
             setTimeout(function () {
                 btnCopy.classList.remove('copied');
-                btnCopy.textContent = 'Copy';
+                btnCopy.textContent = gettext('Copy');
             }, 2000);
         }
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -119,13 +121,13 @@
         try {
             document.execCommand('copy');
             btnCopy.classList.add('copied');
-            btnCopy.textContent = 'Copied!';
+            btnCopy.textContent = gettext('Copied!');
             setTimeout(function () {
                 btnCopy.classList.remove('copied');
-                btnCopy.textContent = 'Copy';
+                btnCopy.textContent = gettext('Copy');
             }, 2000);
         } catch (e) {
-            showMessage('Copy not supported', true);
+            showMessage(gettext('Copy not supported'), true);
         }
         decodedText.setSelectionRange(0, 0);
     }

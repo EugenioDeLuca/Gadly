@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     var form = document.getElementById("pdf-split-form");
     var fileInput = document.getElementById("pdf-file");
     var filePreview = document.getElementById("file-preview");
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
             li.appendChild(nameSpan);
             fileList.appendChild(li);
         } else {
-            displaySpan.textContent = "Choose file";
+            displaySpan.textContent = t("Choose file");
             filePreview.style.display = "none";
             fileList.innerHTML = "";
         }
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
         submitBtn.addEventListener("click", function(e) {
             if (!fileInput.files || fileInput.files.length === 0) {
                 e.preventDefault();
-                resultArea.textContent = "Please select a PDF file";
+                resultArea.textContent = t("Please select a PDF file");
                 resultArea.classList.add("error");
                 resultArea.classList.remove("hidden");
                 resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         if (!fileInput.files || fileInput.files.length === 0) {
-            resultArea.textContent = "Please select a PDF file";
+            resultArea.textContent = t("Please select a PDF file");
             resultArea.classList.add("error");
             resultArea.classList.remove("hidden");
             resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -78,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(function(response) {
             if (!response.ok) {
                 return response.json().then(function(data) {
-                    throw new Error(data.error || "Error processing PDF");
+                    throw new Error(data.error || t("Error processing PDF"));
                 });
             }
             return response.blob();
@@ -91,12 +92,12 @@ document.addEventListener("DOMContentLoaded", function() {
             link.download = base + "_split.zip";
             link.click();
             URL.revokeObjectURL(url);
-            resultArea.textContent = "PDF split successfully!";
+            resultArea.textContent = t("PDF split successfully!");
             resultArea.classList.remove("error");
             resultArea.classList.remove("hidden");
         })
         .catch(function(err) {
-            resultArea.textContent = (err.message || "Error processing PDF").replace(/\.$/, "");
+            resultArea.textContent = (err.message || t("Error processing PDF")).replace(/\.$/, "");
             resultArea.classList.add("error");
             resultArea.classList.remove("hidden");
         });

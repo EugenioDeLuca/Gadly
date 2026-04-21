@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     var urlInput = document.getElementById("url-input");
     var btnCheck = document.getElementById("btn-check");
     var resultArea = document.getElementById("result-area");
@@ -8,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
         resultArea.classList.remove("hidden");
         if (!url) {
             resultArea.classList.add("error");
-            resultArea.textContent = "Please enter a URL";
+            resultArea.textContent = t("Please enter a URL");
             return;
         }
         resultArea.classList.remove("error");
-        resultArea.innerHTML = "Checking...";
+        resultArea.innerHTML = t("Checking...");
         fetch("/api/site-speed/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -28,11 +29,11 @@ document.addEventListener("DOMContentLoaded", function() {
             resultArea.classList.remove("error");
             var ms = data.time_ms;
             var cls = ms < 500 ? "#28a745" : (ms < 2000 ? "#ffc107" : "#dc3545");
-            resultArea.innerHTML = "Response time: <strong style='color:" + cls + "'>" + ms + " ms</strong>";
+            resultArea.innerHTML = t("Response time:") + " <strong style='color:" + cls + "'>" + ms + " ms</strong>";
         })
         .catch(function() {
             resultArea.classList.add("error");
-            resultArea.textContent = "Request failed";
+            resultArea.textContent = t("Request failed");
         });
     });
 });

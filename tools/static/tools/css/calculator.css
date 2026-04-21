@@ -14,7 +14,7 @@
 .calculators h1 {
     font-size: 2em;
     color: #003f7f;
-    margin: 0 0 28px 0;
+    margin: 0 0 8px 0;
     text-align: center;
 }
 
@@ -77,6 +77,20 @@ body.single-calc .calc-panel h2 {
     font-size: 1.2em;
     color: #003f7f;
     margin: 0 0 16px 0;
+}
+
+.calc-subdesc {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 0 16px 0;
+}
+
+.calc-main-subdesc {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 24px auto;
 }
 
 .calc-group {
@@ -270,7 +284,8 @@ body.single-calc .calc-panel h2 {
 #panel-discount .calc-row,
 #panel-margin .calc-row,
 #panel-split .calc-row,
-#panel-salary .calc-row {
+#panel-salary .calc-row,
+#panel-interest .calc-row {
     align-items: flex-end;
 }
 
@@ -338,29 +353,32 @@ body.single-calc .calc-panel h2 {
         align-items: center;
         justify-content: center;
     }
-    /* Interest: desktop – input a tutta larghezza container, bottone Calculate al centro */
-    #panel-interest .calc-group input,
-    #panel-interest .calc-custom-select,
-    #panel-interest .calc-select-trigger {
+    /* Interest desktop: tutti gli elementi su una riga */
+    #panel-interest .calc-row {
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    #panel-interest .calc-row .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+        margin-bottom: 0;
+    }
+    #panel-interest .calc-row .calc-group input,
+    #panel-interest .calc-row .calc-group .calc-custom-select,
+    #panel-interest .calc-row .calc-group .calc-select-trigger {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
     }
-    #panel-interest .calc-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-    }
-    #panel-interest .calc-row .calc-group {
-        width: 100%;
-        max-width: 100%;
-    }
-    #panel-interest .calc-btn {
-        display: block;
-        width: auto;
-        max-width: 280px;
-        margin-left: auto;
-        margin-right: auto;
+    #panel-interest .calc-row .calc-btn {
+        flex: 0 0 150px;
+        width: 150px;
+        min-width: 150px;
+        height: 44px;
+        min-height: 44px;
+        margin-top: calc(0.85em + 6px);
+        box-sizing: border-box;
     }
     /* Currency desktop: riga unica con bottone allineato agli input sulla stessa riga */
     #panel-currency .calc-currency-wrap {
@@ -501,7 +519,8 @@ body.single-calc .calc-panel h2 {
 #panel-loan .calc-row .calc-btn,
 #panel-discount .calc-row .calc-btn,
 #panel-margin .calc-row .calc-btn,
-#panel-split .calc-row .calc-btn {
+#panel-split .calc-row .calc-btn,
+#panel-interest .calc-row .calc-btn {
     flex-shrink: 0;
     min-height: 44px;
     box-sizing: border-box;
@@ -535,8 +554,7 @@ body.single-calc .calc-panel h2 {
     transform: scale(1.03);
 }
 
-#panel-salary .calc-btn,
-#panel-interest .calc-btn {
+#panel-salary .calc-btn {
     width: 100%;
     max-width: 280px;
     padding: 10px 14px;
@@ -684,13 +702,8 @@ body.single-calc .calc-panel h2 {
     margin-top: 8px;
 }
 
-/* Distanza uniforme tra risultato e bottone nel pannello Interest */
-#panel-interest #btn-interest {
-    margin-top: 12px;
-}
-
 .calc-home {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 
@@ -730,22 +743,18 @@ body.single-calc .calc-panel h2 {
         width: 100%;
         max-width: 100%;
     }
-    /* Interest: mobile – input/select e bottone stessa larghezza (100%), row in colonna */
     #panel-interest .calc-row {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
-    #panel-interest .calc-group input,
-    #panel-interest .calc-custom-select,
-    #panel-interest .calc-select-trigger {
+    #panel-interest .calc-row .calc-group input,
+    #panel-interest .calc-row .calc-group .calc-custom-select,
+    #panel-interest .calc-row .calc-group .calc-select-trigger,
+    #panel-interest .calc-row .calc-btn {
         width: 100%;
         max-width: 100%;
-        box-sizing: border-box;
-    }
-    #panel-interest .calc-btn {
-        width: 100%;
-        max-width: 100%;
+        min-width: 0;
     }
     /* Currency: mobile – stesso layout degli altri, input EUR dentro il container */
     #panel-currency .calc-currency-wrap {

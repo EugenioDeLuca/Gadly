@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+    function t(it, en) { return isItalian ? it : en; }
 
     var patternInput = document.getElementById('regex-pattern');
     var textInput = document.getElementById('regex-text');
@@ -19,7 +21,7 @@
         resultEl.classList.remove('hidden');
 
         if (!pattern.trim()) {
-            resultEl.textContent = 'Enter a regular expression';
+            resultEl.textContent = t('Inserisci un\'espressione regolare', 'Enter a regular expression');
             resultEl.classList.add('error');
             return;
         }
@@ -28,13 +30,13 @@
         try {
             re = new RegExp(pattern, 'g');
         } catch (e) {
-            resultEl.textContent = 'Invalid regex: ' + e.message;
+            resultEl.textContent = t('Regex non valida', 'Invalid regex') + ': ' + e.message;
             resultEl.classList.add('error');
             return;
         }
 
         if (text === '') {
-            resultEl.textContent = 'Enter a test string';
+            resultEl.textContent = t('Inserisci una stringa di test', 'Enter a test string');
             resultEl.classList.add('error');
             return;
         }
@@ -51,7 +53,7 @@
         }
 
         if (matches.length === 0) {
-            resultEl.textContent = 'No matches found.';
+            resultEl.textContent = t('Nessuna corrispondenza trovata.', 'No matches found.');
             return;
         }
 

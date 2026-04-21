@@ -1,32 +1,33 @@
 {% extends "tools/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Diff Checker help{% endblock %}
-{% block body_class %}text-tool help-page{% endblock %}
+{% block title %}{% trans "Diff Checker help" %}{% endblock %}
+{% block body_class %}text-tool diff-checker help-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>How the Diff Checker works</h1>
-    <p class="tool-desc">Understand the meaning of colors and how changes are detected.</p>
+    <h1>{% trans "How the Diff Checker works" %}</h1>
+    <p class="tool-desc">{% trans "Understand the meaning of colors and how changes are detected." %}</p>
 
     <div class="help-section">
-        <h2>Colors</h2>
+        <h2>{% trans "Colors" %}</h2>
         <ul>
-            <li><strong>Red with strikethrough</strong>: text that was removed.</li>
-            <li><strong>Green</strong>: text that was added.</li>
+            <li><strong>{% trans "Red with strikethrough" %}</strong>: {% trans "text that was removed." %}</li>
+            <li><strong>{% trans "Green" %}</strong>: {% trans "text that was added." %}</li>
         </ul>
     </div>
 
     <div class="help-section">
-        <h2>Best practices</h2>
-        <p>Paste the original text on the left and the modified text on the right. Small, focused changes are easier to read than very large blocks of text.</p>
+        <h2>{% trans "Best practices" %}</h2>
+        <p>{% trans "Paste the original text on the left and the modified text on the right. Small, focused changes are easier to read than very large blocks of text." %}</p>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'diff_checker' %}" class="home-link">Back to Diff Checker</a>
+        <a href="{% url 'diff_checker' %}" class="home-link">{% trans "Back to Diff Checker" %}</a>
     </div>
 </div>
 {% endblock %}

@@ -1,9 +1,9 @@
-# Django translations - Italiano
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Tools Site\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-11 12:00+0000\n"
+"POT-Creation-Date: 2026-04-19 17:28+0000\n"
 "PO-Revision-Date: 2025-03-11 12:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,50 +12,3398 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Tools Site"
-msgstr "Tools Site"
+msgid "English"
+msgstr "Inglese"
 
-msgid "Welcome! Choose a tool from the categories below."
-msgstr "Benvenuto! Scegli uno strumento dalle categorie sottostanti."
+msgid "Italian"
+msgstr "Italiano"
 
-msgid "Text Tools"
-msgstr "Strumenti di testo"
+msgid ""
+"Required. We'll send a verification link so you can reset your password "
+"anytime."
+msgstr ""
 
-msgid "Word Counter"
+msgid "This email is already registered."
+msgstr "Questa email è già registrata."
+
+msgid "Username is required."
+msgstr "Il nome utente è obbligatorio."
+
+msgid "Username must be at least 3 characters."
+msgstr "Il nome utente deve avere almeno 3 caratteri."
+
+msgid "This username is already taken."
+msgstr "Questo nome utente è già in uso."
+
+msgid "Email is required."
+msgstr "L'email è obbligatoria."
+
+msgid "Tell me about yourself and what draws you to this role."
+msgstr "Raccontami di te e cosa ti attrae in questo ruolo."
+
+msgid "What are your strongest skills for this position, with examples?"
+msgstr "Quali sono le tue abilità più forti per questa posizione, con esempi?"
+
+msgid "What is a real weakness you are working on, and how?"
+msgstr "Qual è il vero punto debole su cui stai lavorando, e come?"
+
+msgid "Describe a time you failed. What happened and what did you learn?"
+msgstr ""
+"Descrivi un momento in cui hai fallito. Cosa è successo e cosa hai imparato?"
+
+msgid "Describe a challenging project: goal, your role, and outcome."
+msgstr "Descrivi un progetto impegnativo: obiettivo, ruolo e risultato."
+
+msgid "How do you prioritize when several deadlines collide?"
+msgstr ""
+"Come si stabiliscono le priorità quando diverse scadenze si scontrano?"
+
+msgid "How do you respond to critical feedback you disagree with?"
+msgstr "Come rispondi al feedback critico con cui non sei d'accordo?"
+
+msgid "Describe a workplace conflict and how you resolved it."
+msgstr "Descrivi un conflitto sul posto di lavoro e come lo hai risolto."
+
+msgid "Why are you looking to move from your current or last role?"
+msgstr "Perché stai cercando di abbandonare il tuo ruolo attuale o ultimo?"
+
+msgid "Why this company or team specifically, beyond a generic interest?"
+msgstr ""
+"Perché proprio questa azienda o squadra, al di là di un interesse generico?"
+
+msgid "Where do you want your career to be in three years?"
+msgstr "Dove vuoi che sia la tua carriera tra tre anni?"
+
+msgid "How do you keep your professional skills current?"
+msgstr "Come mantieni aggiornate le tue competenze professionali?"
+
+msgid "What kind of manager helps you do your best work?"
+msgstr "Che tipo di manager ti aiuta a fare il tuo lavoro migliore?"
+
+msgid "How do you deliver quality when time is extremely tight?"
+msgstr ""
+"Come si fa a fornire qualità quando i tempi sono estremamente stretti?"
+
+msgid "Tell me about a time you influenced others without formal authority."
+msgstr ""
+"Raccontami di un'occasione in cui hai influenzato gli altri senza autorità "
+"formale."
+
+msgid "How do you choose what to learn or improve next?"
+msgstr "Come scegli cosa imparare o migliorare dopo?"
+
+msgid "What metrics or signals do you use to judge your own work?"
+msgstr "Quali parametri o segnali usi per giudicare il tuo lavoro?"
+
+msgid "Describe a time you changed someone's mind with data or argument."
+msgstr ""
+"Descrivi un momento in cui hai cambiato idea a qualcuno con dati o "
+"argomenti."
+
+msgid "How do you push back or say no to a stakeholder politely?"
+msgstr "Come respingere o dire no educatamente a uno stakeholder?"
+
+msgid "What would you focus on in your first 30 days here?"
+msgstr "Su cosa ti concentreresti nei tuoi primi 30 giorni qui?"
+
+msgid "What would your plan look like for the first 90 days?"
+msgstr "Come sarebbe il tuo piano per i primi 90 giorni?"
+
+msgid "How do you work when requirements are vague or shifting?"
+msgstr "Come lavori quando i requisiti sono vaghi o mutevoli?"
+
+msgid "Describe a process you improved. Before, after, and impact."
+msgstr "Descrivi un processo che hai migliorato. Prima, dopo e impatto."
+
+msgid "How do you collaborate with people in different time zones?"
+msgstr "Come collabori con persone in fusi orari diversi?"
+
+msgid "How would teammates describe your communication style?"
+msgstr ""
+"Come descriverebbero i tuoi compagni di squadra il tuo stile di "
+"comunicazione?"
+
+msgid "What do you do when a peer repeatedly misses commitments?"
+msgstr "Cosa fare quando un coetaneo manca ripetutamente agli impegni?"
+
+msgid "Describe a high-pressure situation and how you stayed effective."
+msgstr ""
+"Descrivi una situazione di alta pressione e come sei rimasto efficace."
+
+msgid "What genuinely motivates you in your work?"
+msgstr "Cosa ti motiva veramente nel tuo lavoro?"
+
+msgid "What working conditions help you perform at your best?"
+msgstr "Quali condizioni di lavoro ti aiutano a dare il meglio di te?"
+
+msgid "How do you balance competing priorities from different stakeholders?"
+msgstr "Come si bilanciano le priorità concorrenti dei diversi stakeholder?"
+
+msgid ""
+"Tell me about a serious disagreement with your manager and the outcome."
+msgstr "Parlami di un grave disaccordo con il tuo manager e del risultato."
+
+msgid "How do you confirm that your deliverables meet expectations?"
+msgstr "Come confermi che i tuoi risultati soddisfano le aspettative?"
+
+msgid "What is the hardest professional decision you have made?"
+msgstr "Qual è la decisione professionale più difficile che hai preso?"
+
+msgid "How do you approach learning a new tool, stack, or domain quickly?"
+msgstr ""
+"Come ti avvicini all'apprendimento rapido di un nuovo strumento, stack o "
+"dominio?"
+
+msgid "Describe a time you missed a deadline. What did you do next?"
+msgstr ""
+"Descrivi un'occasione in cui non hai rispettato una scadenza. Cosa hai fatto"
+" dopo?"
+
+msgid "How do you trade off speed versus quality in real projects?"
+msgstr "Come si bilancia la velocità con la qualità nei progetti reali?"
+
+msgid "What does accountability mean to you in a team setting?"
+msgstr "Cosa significa per te la responsabilità in un contesto di squadra?"
+
+msgid "How do you document decisions and handoffs for others?"
+msgstr "Come documentate le decisioni e i trasferimenti per gli altri?"
+
+msgid "Tell me about a time you went clearly above expectations."
+msgstr ""
+"Raccontami di un momento in cui sei andato chiaramente al di sopra delle "
+"aspettative."
+
+msgid "How do you stay engaged when work is repetitive or routine?"
+msgstr "Come rimani impegnato quando il lavoro è ripetitivo o di routine?"
+
+msgid "What would you like to ask us about the role or team?"
+msgstr "Cosa vorresti chiederci riguardo al ruolo o al team?"
+
+msgid "How do you manage context switching between tasks or projects?"
+msgstr "Come gestisci il passaggio di contesto tra attività o progetti?"
+
+msgid "Describe making a complex topic simple for a non-expert audience."
+msgstr ""
+"Descrivi come rendere semplice un argomento complesso per un pubblico non "
+"esperto."
+
+msgid "How do you keep stakeholders informed without overwhelming them?"
+msgstr "Come tenere informati gli stakeholder senza sopraffarli?"
+
+msgid "How do you use performance reviews or feedback cycles to grow?"
+msgstr ""
+"Come utilizzi le revisioni delle prestazioni o i cicli di feedback per "
+"crescere?"
+
+msgid "How do you give constructive feedback to a peer?"
+msgstr "Come dai un feedback costruttivo a un collega?"
+
+msgid "Describe mentoring or onboarding someone newer than you."
+msgstr "Descrivi il mentoring o l'onboarding di qualcuno più nuovo di te."
+
+msgid "How do you react when priorities change mid-project?"
+msgstr "Come reagisci quando le priorità cambiano a metà progetto?"
+
+msgid "What risks do you see in this role and how would you reduce them?"
+msgstr "Quali rischi vedi in questo ruolo e come li ridurresti?"
+
+msgid "Why should we choose you over other qualified candidates?"
+msgstr "Perché dovremmo scegliere te rispetto ad altri candidati qualificati?"
+
+msgid ""
+"Give a short arc: background, relevant wins, and motivation for this role."
+msgstr ""
+"Fornisci un breve arco narrativo: background, vittorie rilevanti e "
+"motivazione per questo ruolo."
+
+msgid "Name 2-3 skills with a one-line proof for each (project, outcome)."
+msgstr ""
+"Nomina 2-3 competenze con una dimostrazione su una riga per ciascuna "
+"(progetto, risultato)."
+
+msgid "Pick one weakness, show awareness, and a concrete improvement habit."
+msgstr ""
+"Scegli un punto debole, mostra consapevolezza e un'abitudine concreta al "
+"miglioramento."
+
+msgid "Use STAR; end with a lesson you still apply today."
+msgstr "Usa STELLA; concludi con una lezione che applichi ancora oggi."
+
+msgid "Clarify scope, constraints, your actions, and measurable results."
+msgstr "Chiarire l'ambito, i vincoli, le azioni e i risultati misurabili."
+
+msgid ""
+"Explain your method (e.g. impact/effort, dependencies) and one example."
+msgstr ""
+"Spiega il tuo metodo (ad esempio impatto/sforzo, dipendenze) e un esempio."
+
+msgid ""
+"Show you listen first; separate facts from interpretation; propose a next "
+"step."
+msgstr ""
+"Dimostra di ascoltare prima; separare i fatti dall'interpretazione; proporre"
+" un passo successivo."
+
+msgid ""
+"Focus on interests, not personalities; outcome and what you'd do "
+"differently."
+msgstr ""
+"Concentrarsi sugli interessi, non sulle personalità; risultato e cosa "
+"faresti diversamente."
+
+msgid "Stay factual and forward-looking; avoid blaming people by name."
+msgstr ""
+"Rimani concreto e lungimirante; evitare di incolpare le persone per nome."
+
+msgid "Cite something specific: product, mission, team, or recent news."
+msgstr ""
+"Cita qualcosa di specifico: prodotto, missione, team o notizie recenti."
+
+msgid ""
+"Tie ambition to growth inside realistic paths; show you've thought it "
+"through."
+msgstr ""
+"Legare l'ambizione alla crescita all'interno di percorsi realistici; "
+"dimostra che ci hai pensato bene."
+
+msgid ""
+"Mention courses, communities, side projects, or regular reading habits."
+msgstr ""
+"Menziona corsi, comunità, progetti collaterali o abitudini di lettura "
+"regolari."
+
+msgid "Describe support you need and how you communicate upward."
+msgstr ""
+"Descrivi il supporto di cui hai bisogno e come comunichi verso l'alto."
+
+msgid "Explain triage, trade-offs, and checks you use under pressure."
+msgstr ""
+"Spiega il triage, i compromessi e i controlli che utilizzi sotto pressione."
+
+msgid "Highlight influence: allies, data, and the result you achieved."
+msgstr "Evidenzia l'influenza: alleati, dati e il risultato che hai ottenuto."
+
+msgid "Connect learning goals to role needs and how you'll measure progress."
+msgstr ""
+"Collega gli obiettivi di apprendimento alle esigenze del ruolo e al modo in "
+"cui misurerai i progressi."
+
+msgid "Give examples: dashboards, user impact, quality, or delivery cadence."
+msgstr ""
+"Fornisci esempi: dashboard, impatto sugli utenti, qualità o cadenza di "
+"consegna."
+
+msgid "Outline context, your reasoning, resistance, and the decision reached."
+msgstr ""
+"Descrivi il contesto, il tuo ragionamento, la resistenza e la decisione "
+"raggiunta."
+
+msgid "Give a polite script: alternatives, risks, and a recommended path."
+msgstr ""
+"Fornisci uno script educato: alternative, rischi e un percorso consigliato."
+
+msgid "List listening, quick wins, and one measurable early deliverable."
+msgstr ""
+"Elenca l'ascolto, i successi rapidi e un risultato finale quantificabile."
+
+msgid "Split: learn, align stakeholders, ship small value, then scale."
+msgstr ""
+"Suddivisione: apprendere, allineare le parti interessate, fornire piccolo "
+"valore e quindi ridimensionare."
+
+msgid "Describe clarifying questions, assumptions, and how you validate."
+msgstr "Descrivi domande chiarificatrici, ipotesi e modalità di convalida."
+
+msgid "Quantify waste, time saved, or errors reduced if you can."
+msgstr ""
+"Se possibile, quantifica gli sprechi, il tempo risparmiato o la riduzione "
+"degli errori."
+
+msgid "Mention async rituals, documentation, and overlap windows."
+msgstr ""
+"Menziona rituali asincroni, documentazione e finestre di sovrapposizione."
+
+msgid "Be honest: direct vs diplomatic; when you adapt your style."
+msgstr "Sii onesto: diretto o diplomatico; quando adatti il ​​tuo stile."
+
+msgid "Balance empathy, clarity, and escalation when needed."
+msgstr "Bilanciare empatia, chiarezza ed escalation quando necessario."
+
+msgid "Show calm habits: scope control, communication, and recovery."
+msgstr ""
+"Mostra abitudini calme: controllo dell'ambito, comunicazione e recupero."
+
+msgid "Separate intrinsic drivers from perks; link to how you work."
+msgstr ""
+"Separare i driver intrinseci dai vantaggi; link al tuo modo di lavorare."
+
+msgid "Mention focus, autonomy, collaboration - whatever is true for you."
+msgstr ""
+"Menziona concentrazione, autonomia, collaborazione: tutto ciò che è vero per"
+" te."
+
+msgid "Show negotiation: stakeholders, criteria, and communication rhythm."
+msgstr "Mostra negoziazione: stakeholder, criteri e ritmo di comunicazione."
+
+msgid "Stay respectful; focus on facts, expectations, and resolution."
+msgstr "Rimani rispettoso; concentrarsi su fatti, aspettative e risoluzione."
+
+msgid "Describe reviews, demos, tests, or user validation you rely on."
+msgstr ""
+"Descrivi recensioni, demo, test o convalide degli utenti su cui fai "
+"affidamento."
+
+msgid "Explain trade-offs, who was affected, and what you'd do again."
+msgstr ""
+"Spiega i compromessi, chi è stato interessato e cosa faresti di nuovo."
+
+msgid "Outline steps: goals, practice, feedback, and first real use."
+msgstr ""
+"Descrivere i passaggi: obiettivi, pratica, feedback e primo utilizzo reale."
+
+msgid "Own the miss; explain communication, recovery, and prevention."
+msgstr ""
+"Possiedi la signorina; spiegare la comunicazione, il recupero e la "
+"prevenzione."
+
+msgid "Give a real example where you chose one side and why."
+msgstr "Fornisci un esempio reale in cui hai scelto una parte e perché."
+
+msgid "Link to commitments, transparency, and follow-through."
+msgstr "Collegamento agli impegni, alla trasparenza e al follow-through."
+
+msgid "Name format, where it lives, and who consumes it."
+msgstr "Formato del nome, dove vive e chi lo consuma."
+
+msgid ""
+"Use a concrete story: situation, extra effort, and recognition or impact."
+msgstr ""
+"Usa una storia concreta: situazione, sforzo extra e riconoscimento o "
+"impatto."
+
+msgid "Show how you gamify, automate, or batch dull work."
+msgstr ""
+"Mostra come ludicizzare, automatizzare o lavorare in batch in modo noioso."
+
+msgid "Ask about success, team, challenges - show genuine curiosity."
+msgstr ""
+"Chiedi informazioni sul successo, sulla squadra, sulle sfide: mostra genuina"
+" curiosità."
+
+msgid "Name your techniques: batching, notes, or protecting deep work."
+msgstr ""
+"Dai un nome alle tue tecniche: batching, note o protezione del lavoro "
+"profondo."
+
+msgid "Explain analogy, structure, and how you checked understanding."
+msgstr ""
+"Spiega l'analogia, la struttura e come hai verificato la comprensione."
+
+msgid "Balance cadence, channel, and audience-appropriate detail."
+msgstr "Bilancia cadenza, canale e dettagli adatti al pubblico."
+
+msgid "Show you set goals, act on input, and follow up."
+msgstr ""
+"Mostra che hai fissato obiettivi, agisci in base agli input e prosegui."
+
+msgid "Use situation-behavior-impact; focus on observable behavior."
+msgstr ""
+"Utilizzare situazione-comportamento-impatto; concentrarsi sul comportamento "
+"osservabile."
+
+msgid "Describe goals, check-ins, and how you measured their progress."
+msgstr "Descrivi obiettivi, check-in e come hai misurato i loro progressi."
+
+msgid "Explain re-planning, communication, and scope negotiation."
+msgstr ""
+"Spiegare la ripianificazione, la comunicazione e la negoziazione "
+"dell'ambito."
+
+msgid "Be specific to role; show mitigation, not fear."
+msgstr "Sii specifico per il ruolo; mostrare mitigazione, non paura."
+
+msgid ""
+"Summarize differentiators: impact, fit, and enthusiasm without arrogance."
+msgstr ""
+"Riassumi i differenziatori: impatto, idoneità ed entusiasmo senza arroganza."
+
+msgid "Male recruiter"
+msgstr "Reclutatore maschio"
+
+msgid "Female recruiter"
+msgstr "Reclutatore femminile"
+
+msgid "You"
+msgstr "Tu"
+
+msgid "Suggested improvement"
+msgstr "Miglioramento suggerito"
+
+msgid "Role"
+msgstr "Ruolo"
+
+msgid "Level"
+msgstr "Livello"
+
+msgid "Focus areas"
+msgstr "Aree di interesse"
+
+msgid "That was the last question. Thanks for practicing!"
+msgstr "Quella era l'ultima domanda. Grazie per aver praticato!"
+
+msgid "Please write an answer before sending."
+msgstr "Scrivi una risposta prima di inviare."
+
+msgid ""
+"That doesn't really address what I asked. Can you answer more directly?"
+msgstr ""
+"Questo non risponde esattamente a ciò che ho chiesto. Puoi rispondere più "
+"direttamente?"
+
+msgid ""
+"I'm not sure that connects to my question. Could you focus on what I asked?"
+msgstr ""
+"Non sono sicuro che questo si colleghi alla mia domanda. Potresti "
+"concentrarti su quello che ho chiesto?"
+
+msgid ""
+"This doesn't seem aligned with my question. Please try again with a clearer "
+"answer."
+msgstr ""
+"Questo non sembra in linea con la mia domanda. Per favore riprova con una "
+"risposta più chiara."
+
+msgid "Voice input is not supported in this browser."
+msgstr "L'input vocale non è supportato in questo browser."
+
+msgid "Listening… speak now"
+msgstr "Ascolto... parla adesso"
+
+msgid "Microphone access denied. Allow the microphone in the browser bar."
+msgstr ""
+"Accesso al microfono negato. Consenti il ​​microfono nella barra del "
+"browser."
+
+msgid "No speech detected. Try again."
+msgstr "Nessun parlato rilevato. Riprova."
+
+msgid "Could not use the microphone. Check permissions."
+msgstr "Impossibile utilizzare il microfono. Controlla i permessi."
+
+msgid "Voice input is not available."
+msgstr "L'input vocale non è disponibile."
+
+msgid "Could not start listening. Try again in a moment."
+msgstr "Impossibile iniziare l'ascolto. Riprova tra un attimo."
+
+msgid "Copied!"
+msgstr "Copiato!"
+
+msgid "Could not load interview questions. Please reload the page."
+msgstr "Impossibile caricare le domande del colloquio. Ricarica la pagina."
+"Impossibile caricare le domande dell'intervista. Per favore ricarica la "
+"pagina."
+
+msgid "Gadly Admin"
+msgstr "Admin Gadly"
+
+msgid "Login - Gadly"
+msgstr "Accedi - Gadly"
+
+msgid "Login"
+msgstr "Accedi"
+
+msgid "Username"
+msgstr "Nome utente"
+
+#| msgid "Password Gen"
+msgid "Password"
+msgstr "Password"
+
+msgid "Sign in"
+msgstr "Accedi"
+
+msgid "Forgot password?"
+msgstr "Password dimenticata?"
+
+msgid "Don't have an account?"
+msgstr "Non hai un account?"
+
+msgid "Sign up"
+msgstr "Registrati"
+
+msgid "Password changed - Gadly"
+msgstr "Password modificata - Gadly"
+
+#, fuzzy
+#| msgid "Password Gen"
+msgid "Password changed"
+msgstr "Generatore password"
+
+msgid "Your password has been updated successfully."
+msgstr "La tua password è stata aggiornata con successo."
+
+msgid "Back to Home"
+msgstr "Torna alla Home"
+
+msgid "Change password - Gadly"
+msgstr "Cambia password - Gadly"
+
+msgid "Change password"
+msgstr "Cambia password"
+
+msgid "Enter your current password, then choose a new one."
+msgstr "Inserisci la password attuale, poi scegli quella nuova."
+
+msgid "Current password"
+msgstr "Password attuale"
+
+msgid "New password (min 12 characters)"
+msgstr "Nuova password (min 12 caratteri)"
+
+msgid "Confirm new password"
+msgstr "Conferma nuova password"
+
+msgid "Password reset complete - Gadly"
+msgstr "Reset password completato - Gadly"
+
+msgid "Password reset complete"
+msgstr "Reset password completato"
+
+msgid ""
+"Your password has been set. You can now sign in with your new password."
+msgstr ""
+"La password e stata impostata. Ora puoi accedere con la nuova password."
+
+msgid "Set new password"
+msgstr "Imposta nuova password"
+
+msgid "Invalid link"
+msgstr "Link non valido"
+
+msgid "Enter your new password twice to verify."
+msgstr "Inserisci due volte la nuova password per conferma."
+
+msgid ""
+"This password reset link is invalid or has already been used. Please request"
+" a new one."
+msgstr ""
+
+msgid "Request new reset"
+msgstr "Richiedi nuovo reset"
+
+msgid "Check your email - Gadly"
+msgstr "Controlla la tua email - Gadly"
+
+msgid "Check your email"
+msgstr "Controlla la tua email"
+
+msgid ""
+"If an account exists with that email, we've sent password reset "
+"instructions. You should receive them shortly."
+msgstr ""
+"Se esiste un account associato a questa email, abbiamo inviato le istruzioni"
+" per il reset password. Dovresti riceverle a breve."
+
+msgid ""
+"If you don't receive an email, check the address you entered and your spam "
+"folder."
+msgstr ""
+"Se non ricevi l'email, controlla l'indirizzo inserito e la cartella spam."
+
+msgid "Back to sign in"
+msgstr "Torna al login"
+
+#, python-format
+msgid ""
+"You requested a password reset for your account at %(site_name)s.\n"
+"\n"
+"Please go to the following page and choose a new password:"
+msgstr ""
+
+msgid "Your username:"
+msgstr "Il tuo nome utente:"
+
+msgid ""
+"If you didn't request this, ignore this email.\n"
+"\n"
+"— Gadly"
+msgstr ""
+
+msgid "Reset password - Gadly"
+msgstr "Reset password - Gadly"
+
+msgid "Reset password"
+msgstr "Reset password"
+
+msgid ""
+"Enter your email address and we'll send instructions to set a new password."
+msgstr ""
+"Inserisci il tuo indirizzo email e ti invieremo le istruzioni per impostare "
+"una nuova password."
+
+msgid "Email address"
+msgstr "Indirizzo email"
+
+msgid "Send reset link"
+msgstr "Invia link di reset"
+
+msgid "Password reset - Gadly"
+msgstr "Reset password - Gadly"
+
+msgid "About - Gadly"
+msgstr "Chi siamo - Gadly"
+
+msgid "About Gadly"
+msgstr "Chi siamo"
+
+msgid ""
+"Gadly is a collection of free online tools for text editing, social media, "
+"finance, web/SEO, file management, and more. The goal is simple: give you "
+"fast, practical tools you can open and use in seconds, without complicated "
+"setup."
+msgstr ""
+"Gadly è una raccolta di strumenti online gratuiti per editing testo, social "
+"media, finanza, web/SEO, gestione file e altro. L'obiettivo è semplice: "
+"offrirti strumenti rapidi e pratici da aprire e usare in pochi secondi, "
+"senza configurazioni complicate."
+
+msgid ""
+"All tools run directly in your browser, so no installation is required. "
+"Whether you are working from desktop, tablet, or smartphone, Gadly is "
+"designed to stay simple, clean, and easy to use."
+msgstr ""
+"Tutti i tool funzionano direttamente nel browser, quindi non serve "
+"installare nulla. Che tu stia lavorando da desktop, tablet o smartphone, "
+"Gadly è pensato per restare semplice, pulito e facile da usare."
+
+msgid ""
+"We keep improving the platform with new tools, layout updates, and quality-"
+"of-life improvements based on real user feedback, so your daily tasks become"
+" quicker and more comfortable over time."
+msgstr ""
+"Continuiamo a migliorare la piattaforma con nuovi tool, aggiornamenti del "
+"layout e migliorie basate sui feedback reali degli utenti, così le attività "
+"quotidiane diventano sempre più veloci e comode."
+
+msgid "If you have questions or suggestions, feel free to"
+msgstr "Se hai domande o suggerimenti, sentiti libero di"
+
+msgid "contact us"
+msgstr "contattarci"
+
+msgid "Delete account - Gadly"
+msgstr "Elimina account - Gadly"
+
+msgid "Delete account"
+msgstr "Elimina account"
+
+msgid ""
+"This will permanently delete your account and all your data. This action "
+"cannot be undone."
+msgstr ""
+
+msgid "Enter your password to confirm:"
+msgstr "Inserisci la password per confermare:"
+
+msgid "Your password"
+msgstr "La tua password"
+
+msgid "Delete my account"
+msgstr "Elimina il mio account"
+
+msgid "Cancel - back to account"
+msgstr "Annulla - torna all'account"
+
+#, python-format
+msgid "Account - %(username)s - Gadly"
+msgstr "Account - %(username)s - Gadly"
+
+msgid "Choose image"
+msgstr "Scegli immagine"
+
+msgid "Save"
+msgstr "Salva"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Profile image"
+msgstr "Immagine profilo"
+
+msgid "Upload"
+msgstr "Carica"
+
+msgid "Profile"
+msgstr "Profilo"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Change your password to keep your account secure."
+msgstr "Cambia la password per mantenere il tuo account sicuro."
+
+msgid ""
+"Permanently delete your account and all associated data. This action cannot "
+"be undone."
+msgstr ""
+"Elimina definitivamente il tuo account e tutti i dati associati. Questa "
+"azione non può essere annullata."
+
+msgid "Application Email Generator"
+msgstr "Email candidatura"
+
+msgid "Generate a clear email for job applications."
+msgstr "Genera un'email chiara per candidature di lavoro."
+
+msgid "Your name"
+msgstr "Il tuo nome"
+
+msgid "e.g. Marco Rossi"
+msgstr "es. Marco Rossi"
+
+msgid "Target role"
+msgstr "Ruolo target"
+
+msgid "e.g. Data Analyst"
+msgstr "es. Data Analyst"
+
+msgid "Company"
+msgstr "Azienda"
+
+msgid "e.g. Example SRL"
+msgstr "es. Example SRL"
+
+msgid "Key points"
+msgstr "Punti chiave"
+
+msgid "Write your main strengths (one per line)."
+msgstr "Scrivi i tuoi principali punti di forza (uno per riga)."
+
+#| msgid "QR Generator"
+msgid "Generate"
+msgstr "Genera"
+
+msgid "Copy"
+msgstr "Copia"
+
+msgid "Back to Career & CV Tools"
+msgstr "Torna a Carriera & CV"
+
+msgid "Privacy"
+msgstr "Privacy"
+
+msgid "Contact"
+msgstr "Contatti"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "All rights reserved."
+msgstr "Tutti i diritti riservati."
+
+#, python-format
+msgid ""
+"We use cookies to improve your experience. By continuing you accept our <a "
+"href=\"%(privacy_url)s\">Privacy Policy</a>."
+msgstr ""
+"Usiamo i cookie per migliorare la tua esperienza. Continuando accetti la "
+"nostra <a href=\"%(privacy_url)s\">Privacy Policy</a>."
+
+msgid "Accept"
+msgstr "Accetta"
+
+msgid "Base64 Encoder / Decoder"
+msgstr "Codifica/decodifica Base64"
+
+msgid "Encode text to Base64 or decode Base64 to text."
+msgstr "Codifica testo in Base64 o decodifica Base64 in testo."
+
+msgid "Input"
+msgstr "Input"
+
+msgid "Enter text to encode or Base64 string to decode..."
+msgstr "Inserisci testo da codificare o stringa Base64 da decodificare..."
+
+msgid "Encode"
+msgstr "Codifica"
+
+msgid "Decode"
+msgstr "Decodifica"
+
+#| msgid "QR Generator"
+msgid "Bio Generator"
+msgstr "Bio"
+
+msgid "Generate short bios for social media or full biography paragraphs."
+msgstr "Genera bio brevi per i social media o biografie complete in più frasi."
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Short (Instagram/TikTok)"
+msgstr "Breve (Instagram/TikTok)"
+
+msgid "Full biography (2–3 sentences)"
+msgstr "Biografia completa (2-3 frasi)"
+
+msgid "Platform"
+msgstr "Piattaforma"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "TikTok"
+msgstr "TikTok"
+
+msgid "Niche / topic (optional)"
+msgstr "Argomento (opzionale)"
+
+msgid "e.g. travel, fitness, food"
+msgstr "es. viaggi, fitness, cibo"
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "Finance Calculators"
+msgstr "Calcolatrice"
+
+msgid "Percentage"
+msgstr "Percentuale"
+
+msgid "VAT"
+msgstr "IVA"
+
+msgid "Net salary"
+msgstr "Stipendio netto"
+
+msgid "Interest"
+msgstr "Interessi"
+
+msgid "Currency"
+msgstr "Valute"
+
+msgid "Loan"
+msgstr "Prestito"
+
+msgid "Discount"
+msgstr "Sconto"
+
+msgid "Margin"
+msgstr "Margine"
+
+msgid "Split bill"
+msgstr "Dividi conto"
+
+msgid "Percentage calculator"
+msgstr "Calcolatore percentuale"
+
+#, python-format
+msgid "Percentage (%%)"
+msgstr "Percentuale (%%)"
+
+msgid "e.g. 20"
+msgstr "es. 20"
+
+msgid "of (value)"
+msgstr "di (valore)"
+
+msgid "e.g. 150"
+msgstr "es. 150"
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "Calculate"
+msgstr "Calcolatrice"
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "VAT calculator"
+msgstr "Calcolatrice"
+
+#, fuzzy
+#| msgid "Word Counter"
+msgid "Country"
 msgstr "Contatore parole"
 
-msgid "Translator"
-msgstr "Traduttore"
+msgid "Italy (IT)"
+msgstr "Italia (IT)"
 
-msgid "File Tools"
-msgstr "Strumenti file"
+#, python-format
+msgid "VAT rate (%%)"
+msgstr "Aliquota IVA (%%)"
+
+#, python-format
+msgid "22%% (standard)"
+msgstr "22%% (standard)"
+
+msgid "Amount (€)"
+msgstr "Importo (€)"
+
+msgid "e.g. 100"
+msgstr "es. 100"
+
+msgid "Net"
+msgstr "Netto"
+
+msgid "Gross"
+msgstr "Lordo"
+
+msgid "Net salary calculator"
+msgstr "Calcolatore stipendio netto"
+
+msgid "Indicative estimate. Enter gross annual salary."
+msgstr "Stima indicativa. Inserisci lo stipendio annuo lordo."
+
+msgid "Gross annual salary (€)"
+msgstr "Stipendio annuo lordo (€)"
+
+msgid "e.g. 30000"
+msgstr "es. 30000"
+
+msgid "Payments per year"
+msgstr "Mensilità annue"
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "Calculate net"
+msgstr "Calcolatrice"
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "Interest calculator"
+msgstr "Calcolatrice"
+
+msgid "Simple or compound interest."
+msgstr "Interesse semplice o composto."
+
+msgid "Principal (€)"
+msgstr "Capitale (€)"
+
+msgid "e.g. 10000"
+msgstr "es. 10000"
+
+#, python-format
+msgid "Annual rate (%%)"
+msgstr "Tasso annuo (%%)"
+
+msgid "e.g. 5"
+msgstr "es. 5"
+
+msgid "Time (years)"
+msgstr "Tempo (anni)"
+
+msgid "e.g. 3"
+msgstr "es. 3"
+
+msgid "Simple"
+msgstr "Semplice"
+
+msgid "Compound"
+msgstr "Composto"
+
+msgid "Currency conversion"
+msgstr "Conversione valuta"
+
+msgid "Rates are fetched automatically from the European Central Bank."
+msgstr "I tassi vengono recuperati automaticamente dalla Banca Centrale Europea."
+
+msgid "Amount"
+msgstr "Importo"
+
+msgid "EUR"
+msgstr "EUR"
+
+msgid "USD"
+msgstr "USD"
+
+msgid "GBP"
+msgstr "GBP"
+
+msgid "CHF"
+msgstr "CHF"
+
+msgid "JPY"
+msgstr "JPY"
+
+msgid "Convert to"
+msgstr "Converti in"
+
+msgid "Convert"
+msgstr "Converti"
+
+msgid "Loan / mortgage calculator"
+msgstr "Calcolatore prestito / mutuo"
+
+msgid "Monthly payment and amortization schedule."
+msgstr "Rata mensile e piano di ammortamento."
+
+msgid "e.g. 200000"
+msgstr "es. 200000"
+
+msgid "e.g. 3.5"
+msgstr "es. 3.5"
+
+msgid "Years"
+msgstr "Anni"
+
+msgid "Discount / sale calculator"
+msgstr "Calcolatore sconto / saldo"
+
+msgid "Original price and discount percentage → final price."
+msgstr "Prezzo originale e percentuale di sconto → prezzo finale."
+
+msgid "Original price (€)"
+msgstr "Prezzo originale (€)"
+
+msgid "e.g. 50"
+msgstr "es. 50"
+
+#, python-format
+msgid "Discount (%%)"
+msgstr "Sconto (%%)"
+
+msgid "Margin / markup calculator"
+msgstr "Calcolatore margine / ricarico"
+
+msgid "Cost + desired margin → selling price."
+msgstr "Costo + margine desiderato → prezzo di vendita."
+
+msgid "Cost (€)"
+msgstr "Costo (€)"
+
+msgid "e.g. 80"
+msgstr "es. 80"
+
+#, python-format
+msgid "Margin (%%)"
+msgstr "Margine (%%)"
+
+msgid "e.g. 25"
+msgstr "es. 25"
+
+msgid "Divide the bill among people, with optional tip."
+msgstr "Dividi il conto tra più persone, con mancia opzionale."
+
+msgid "Total amount (€)"
+msgstr "Importo totale (€)"
+
+msgid "e.g. 120"
+msgstr "es. 120"
+
+msgid "Number of people"
+msgstr "Numero di persone"
+
+msgid "e.g. 4"
+msgstr "es. 4"
+
+#, python-format
+msgid "Tip (%%)"
+msgstr "Mancia (%%)"
+
+msgid "e.g. 10"
+msgstr "es. 10"
+
+msgid "Split"
+msgstr "Dividi"
+
+#| msgid "QR Generator"
+msgid "Caption Generator"
+msgstr "Didascalie"
+
+msgid "Generate post captions for Instagram, TikTok, and more."
+msgstr "Genera didascalie per post su Instagram, TikTok e altro."
+
+msgid "Twitter/X"
+msgstr "Twitter/X"
+
+msgid "Topic / mood (optional)"
+msgstr "Argomento / mood (opzionale)"
+
+msgid "e.g. sunset, coffee, Monday"
+msgstr "es. tramonto, caffè, lunedì"
+
+#| msgid "Image & Data Tools"
+msgid "Career & CV Tools"
+msgstr "Carriera & CV"
+
+msgid "Create and improve CVs and job application content quickly."
+msgstr "Crea e migliora CV e contenuti per candidature in modo rapido."
+
+#| msgid "QR Generator"
+msgid "CV Generator"
+msgstr "Generatore CV"
+
+msgid "CV Optimizer"
+msgstr "Ottimizza CV"
+
+msgid "Interview Simulator"
+msgstr "Colloquio"
+
+msgid "Answer like in a real interview: the recruiter asks, you reply in text, then you get a suggestion to improve your answer. Each session includes 50 different questions."
+msgstr "Rispondi come in un colloquio reale: il recruiter fa la domanda, tu rispondi per iscritto, poi ricevi un suggerimento per migliorare la risposta. Ogni sessione include 50 domande diverse."
+
+msgid "Case Converter"
+msgstr "Maiusc/minusc"
+
+msgid "Convert text to UPPERCASE, lowercase, or Title Case."
+msgstr "Converti il testo in MAIUSCOLO, minuscolo o formato Titolo."
+
+msgid "Text"
+msgstr "Testo"
+
+msgid "Enter text to convert..."
+msgstr "Inserisci il testo da convertire..."
+
+msgid "Uppercase"
+msgstr "Maiuscolo"
+
+msgid "Lowercase"
+msgstr "Minuscolo"
+
+msgid "Title Case"
+msgstr "Titolo"
+
+msgid "Color Converter"
+msgstr "Colori"
+
+msgid "Convert between HEX, RGB, and HSL. Pick a color or enter a HEX code."
+msgstr "Converti tra HEX, RGB e HSL. Scegli un colore o inserisci un codice HEX."
+
+msgid "Preview"
+msgstr "Anteprima"
+
+msgid "Pick color"
+msgstr "Scegli colore"
+
+msgid "HEX"
+msgstr "HEX"
+
+msgid "RGB"
+msgstr "RGB"
+
+msgid "HSL"
+msgstr "HSL"
+
+msgid "Copy HEX"
+msgstr "Copia HEX"
+
+msgid "Copy RGB"
+msgstr "Copia RGB"
+
+msgid "Copy HSL"
+msgstr "Copia HSL"
+
+msgid "Contact - Gadly"
+msgstr "Contatti - Gadly"
+
+msgid ""
+"For questions, feedback, collaborations, partnership proposals, or technical"
+" support requests, please write to us at the address below and include as "
+"many useful details as possible."
+msgstr ""
+"Per domande, feedback, collaborazioni, proposte di partnership o richieste "
+"di supporto tecnico, scrivici all'indirizzo qui sotto includendo il maggior "
+"numero possibile di dettagli utili."
+
+msgid ""
+"We usually reply within 1–2 business days, Monday to Friday. For bug "
+"reports, please include the tool name, your device/browser, and a short "
+"description of what happened so we can help you faster."
+msgstr ""
+"Di solito rispondiamo entro 1-2 giorni lavorativi, dal Lunedì al Venerdì. "
+"Per le segnalazioni bug, indica il nome del tool, il tuo dispositivo/browser"
+" e una breve descrizione di cosa è successo, così possiamo aiutarti più "
+"rapidamente."
+
+msgid "Cover Letter Generator"
+msgstr "Lettera di presentazione"
+
+msgid "Generate a tailored cover letter for your application."
+msgstr "Genera una lettera di presentazione personalizzata per la tua candidatura."
+
+msgid "e.g. Product Designer"
+msgstr "es. Product Designer"
+
+msgid "Tone"
+msgstr "Tono"
+
+msgid "e.g. Professional"
+msgstr "es. Professional"
+
+msgid "Open tone menu"
+msgstr "Apri menu tono"
+
+msgid "Job description (optional)"
+msgstr "Descrizione lavoro (opzionale)"
+
+msgid "Paste job requirements to compare keywords."
+msgstr "Incolla i requisiti del lavoro per confrontare le parole chiave."
+
+msgid "Key highlights"
+msgstr "Punti chiave"
+
+msgid "Cron Explainer"
+msgstr "Cron"
+
+msgid "Enter a cron expression to get a human-readable description."
+msgstr "Inserisci un'espressione cron per ottenere una descrizione leggibile."
+
+msgid "Cron expression (5 or 6 fields)"
+msgstr "Espressione cron (5 o 6 campi)"
+
+msgid "e.g. 0 9 * * 1-5 or 0 */2 * * *"
+msgstr "es. 0 9 * * 1-5 or 0 */2 * * *"
+
+msgid "Explain"
+msgstr "Spiega"
+
+msgid "Generate a clean CV draft from your details."
+msgstr "Genera una bozza CV pulita partendo dai tuoi dati."
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Last name"
+msgstr "Cognome"
+
+msgid "Date of birth"
+msgstr "Data di nascita"
+
+msgid "e.g. name@email.com"
+msgstr "es. name@email.com"
+
+msgid "Phone"
+msgstr "Telefono"
+
+msgid "e.g. +39 333 1234567"
+msgstr "es. +39 333 1234567"
+
+msgid "Citizenship"
+msgstr "Cittadinanza"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "City of residence"
+msgstr "Città di residenza"
+
+msgid "LinkedIn / Portfolio"
+msgstr "LinkedIn / Portfolio"
+
+msgid "e.g. linkedin.com/in/name"
+msgstr "es. linkedin.com/in/name"
+
+msgid "Profile photo (optional)"
+msgstr "Foto profilo (opzionale)"
+
+msgid "Choose file"
+msgstr "Scegli file"
+
+msgid "Professional summary"
+msgstr "Profilo professionale"
+
+msgid "Write 2-3 lines about your profile."
+msgstr "Scrivi 2-3 righe sul tuo profilo."
+
+msgid "Experience"
+msgstr "Esperienze"
+
+msgid "Education"
+msgstr "Formazione"
+
+msgid "Skills (comma separated)"
+msgstr "Competenze (separate da virgole)"
+
+msgid "Languages"
+msgstr "Lingue"
+
+msgid "Certifications (optional)"
+msgstr "Certificazioni (opzionale)"
+
+msgid "One per line: certification - issuer - year"
+msgstr "Una per riga: certificazione - ente - anno"
+
+msgid "Projects (optional)"
+msgstr "Progetti (opzionale)"
+
+msgid "One per line: project - tools - measurable result"
+msgstr "Uno per riga: progetto - strumenti - risultato misurabile"
+
+msgid "Achievements (optional)"
+msgstr "Risultati (opzionale)"
+
+msgid "One per line: achievement + metric"
+msgstr "Uno per riga: risultato + metrica"
+
+msgid "Upload your CV and get practical improvement tips."
+msgstr "Carica il tuo CV e ricevi consigli pratici per migliorarlo."
+
+msgid "Upload CV (PDF, DOCX, TXT)"
+msgstr "Carica CV (PDF, DOCX, TXT)"
+
+msgid "Target job title"
+msgstr "Ruolo target"
+
+msgid "e.g. Backend Developer"
+msgstr "es. Backend Developer"
+
+msgid "Analyze"
+msgstr "Analizza"
+
+msgid "Data Visualizer"
+msgstr "Grafici"
+
+msgid "Paste your data (CSV format: label,value per line)"
+msgstr "Incolla i tuoi dati (formato CSV: etichetta,valore per riga)"
+
+msgid "Bar"
+msgstr "Barre"
+
+msgid "Line"
+msgstr "Linee"
+
+msgid "Pie"
+msgstr "Torta"
+
+msgid "Doughnut"
+msgstr "Ciambella"
+
+msgid "Polar Area"
+msgstr "Area polare"
+
+#, fuzzy
+#| msgid "QR Generator"
+msgid "Generate Chart"
+msgstr "Genera grafico"
+
+msgid "Download chart as PNG"
+msgstr "Scarica grafico come PNG"
+
+msgid "Download PNG"
+msgstr "Scarica PNG"
+
+msgid "Diff Checker"
+msgstr "Confronta testi"
+
+msgid ""
+"Compare two texts and see differences highlighted. Removed text in red, "
+"added text in green."
+msgstr ""
+"Confronta due testi e visualizza le differenze evidenziate. Testo rimosso in"
+" rosso, testo aggiunto in verde."
+
+msgid "How text diffing works and what the colors mean"
+msgstr "Come funziona il confronto testi e cosa indicano i colori"
+
+msgid "Text 1 (original)"
+msgstr "Testo 1 (originale)"
+
+msgid "Paste the first text here..."
+msgstr "Incolla qui il primo testo..."
+
+msgid "Text 2 (modified)"
+msgstr "Testo 2 (modificato)"
+
+msgid "Paste the second text here..."
+msgstr "Incolla qui il secondo testo..."
+
+msgid "Compare"
+msgstr "Confronta"
+
+msgid "Find answers to common questions."
+msgstr "Trova risposte alle domande più comuni."
+
+#| msgid "QR Generator"
+msgid "General"
+msgstr "Generale"
+
+msgid "What is Gadly?"
+msgstr "Cos'è Gadly?"
+
+msgid ""
+"Gadly is a collection of free online utilities for text editing, social "
+"media, finance, web/SEO, file management, and more. All tools run in your "
+"browser—no installation required."
+msgstr ""
+"Gadly è una raccolta di utility online gratuite per editing testo, social "
+"media, finanza, web/SEO, gestione file e altro. Tutti i tool funzionano nel "
+"browser, senza installazione."
+
+msgid "Is my data safe?"
+msgstr "I miei dati sono al sicuro?"
+
+msgid ""
+"Most tools process data locally in your browser or send it only for the "
+"specific operation (e.g., translation, meta tag check). We do not store or "
+"log your personal data. For sensitive content, always check the privacy "
+"policy."
+msgstr ""
+"La maggior parte dei tool elabora i dati localmente nel browser o li invia "
+"solo per l'operazione richiesta (es. traduzione, controllo meta tag). Non "
+"memorizziamo ne registriamo i tuoi dati personali. Per contenuti sensibili, "
+"consulta sempre la privacy policy."
+
+msgid "Does it work on mobile?"
+msgstr "Funziona su mobile?"
+
+msgid ""
+"Yes! The site is responsive and optimized for smartphones and tablets. You "
+"can use all tools from your mobile device."
+msgstr ""
+"Sì. Il sito è responsive e ottimizzato per smartphone e tablet. Puoi usare "
+"tutti i tool anche da mobile."
+
+msgid "Account and Access"
+msgstr "Account e accesso"
+
+msgid "Do I need an account to use Gadly?"
+msgstr "Serve un account per usare Gadly?"
+
+msgid ""
+"No. Most tools are available immediately without registration. If a tool or "
+"feature requires login, you will see a clear message before continuing."
+msgstr ""
+"No. La maggior parte dei tool è disponibile subito senza registrazione. Se "
+"un tool o una funzione richiede accesso, vedrai un messaggio chiaro prima di"
+" continuare."
+
+msgid "I forgot my password. What can I do?"
+msgstr "Ho dimenticato la password. Cosa posso fare?"
+
+msgid ""
+"Use the password reset option on the login page. If your email is verified, "
+"you can reset your password and access your account again."
+msgstr ""
+"Usa l'opzione di reset password nella pagina di login. Se la tua email è "
+"verificata, puoi reimpostare la password e accedere di nuovo al tuo account."
+
+msgid "Can I change my username or profile image?"
+msgstr "Posso cambiare username o immagine profilo?"
+
+msgid ""
+"Yes. Open your account profile from the header menu and update your "
+"username, email, and avatar from there."
+msgstr ""
+"Sì. Apri il profilo account dal menu header e aggiorna da lì username, email"
+" e avatar."
+
+msgid "Usage and Results"
+msgstr "Utilizzo e risultati"
+
+msgid "Why is a result different from another website?"
+msgstr "Perché un risultato può essere diverso da un altro sito?"
+
+msgid ""
+"Some tools use different rules, formulas, or rounding methods depending on "
+"implementation. If you need strict precision (for legal or accounting use), "
+"always verify with your official reference."
+msgstr ""
+"Alcuni tool usano regole, formule o metodi di arrotondamento diversi in base"
+" all'implementazione. Se ti serve precisione rigorosa (uso legale o "
+"contabile), verifica sempre con il riferimento ufficiale."
+
+msgid "Why does a tool return an error with a URL?"
+msgstr "Perché un tool restituisce errore con un URL?"
+
+msgid ""
+"The URL may be blocked, invalid, or unavailable from the server side. Check "
+"that it starts with http/https, that the page is public, and that the domain"
+" is reachable."
+msgstr ""
+"L'URL può essere bloccato, non valido o non raggiungibile lato server. "
+"Controlla che inizi con http/https, che la pagina sia pubblica e che il "
+"dominio sia raggiungibile."
+
+msgid "Can I use these tools for work or clients?"
+msgstr "Posso usare questi tool per lavoro o clienti?"
+
+msgid ""
+"Yes, but always review the output before publishing or delivering it. Gadly "
+"helps speed up work, but final validation is your responsibility."
+msgstr ""
+"Sì, ma controlla sempre l'output prima di pubblicarlo o consegnarlo. Gadly "
+"accelera il lavoro, ma la validazione finale resta tua responsabilità."
+
+msgid "Files and Privacy"
+msgstr "File e privacy"
+
+msgid "Are uploaded files saved permanently?"
+msgstr "I file caricati vengono salvati in modo permanente?"
+
+msgid ""
+"No, files are processed only for the requested operation and are not meant "
+"to be stored permanently. Avoid uploading confidential files unless "
+"necessary."
+msgstr ""
+"No, i file vengono elaborati solo per l'operazione richiesta e non sono "
+"destinati alla conservazione permanente. Evita di caricare file riservati se"
+" non necessario."
+
+msgid "Which file formats are supported?"
+msgstr "Quali formati file sono supportati?"
+
+msgid ""
+"Supported formats depend on the specific tool (for example PDF tools, image "
+"tools, or text tools). If a file is not accepted, convert it to a common "
+"format and try again."
+msgstr ""
+"I formati supportati dipendono dal tool specifico (ad esempio PDF, immagini "
+"o testo). Se un file non viene accettato, convertilo in un formato comune e "
+"riprova."
+
+msgid "Do you track my content?"
+msgstr "Tracciate i miei contenuti?"
+
+#, python-format
+msgid ""
+"We do not use your content for marketing or profiling. For complete details,"
+" check the <a href=\"%(privacy_url)s\">Privacy Policy</a>."
+msgstr ""
+"Non usiamo i tuoi contenuti per marketing o profilazione. Per i dettagli "
+"completi, consulta la <a href=\"%(privacy_url)s\">Privacy Policy</a>."
+
+#, fuzzy
+#| msgid "File Analyzer"
+msgid "File Analyzer Tool"
+msgstr "Analizzatore file"
 
 msgid "File Analyzer"
-msgstr "Analizzatore file"
+msgstr "Analisi file"
+
+msgid "Choose a file to analyze"
+msgstr "Scegli un file da analizzare"
+
+msgid "Show in results"
+msgstr "Mostra nei risultati"
+
+#, fuzzy
+#| msgid "File Analyzer"
+msgid "File name"
+msgstr "Nome file"
+
+msgid "Size"
+msgstr "Dimensione"
+
+msgid "Extension"
+msgstr "Estensione"
+
+msgid "MD5"
+msgstr "MD5"
+
+msgid "SHA-256"
+msgstr "SHA-256"
+
+msgid "Last modified"
+msgstr "Ultima modifica"
+
+msgid "Lines"
+msgstr "Righe"
+
+msgid "Words"
+msgstr "Parole"
+
+msgid "Characters"
+msgstr "Caratteri"
+
+msgid "Characters (no spaces)"
+msgstr "Caratteri (senza spazi)"
+
+msgid "Reading time (min)"
+msgstr "Tempo di lettura (min)"
+
+#| msgid "File Tools"
+msgid "File & Image Tools"
+msgstr "File & immagini"
+
+msgid "Quick access to file and image tools."
+msgstr "Accesso rapido agli strumenti file e immagini."
 
 msgid "PDF Merge"
 msgstr "Unione PDF"
 
-msgid "Image & Data Tools"
-msgstr "Strumenti immagine e dati"
+msgid "PDF Split"
+msgstr "Dividi PDF"
 
 msgid "Image Editor"
-msgstr "Editor immagini"
+msgstr "Editor foto"
 
-msgid "Data Visualizer"
-msgstr "Visualizzatore dati"
+#| msgid "File Tools"
+msgid "Finance Tools"
+msgstr "Finanza"
+
+msgid "Quick access to finance calculators."
+msgstr "Accesso rapido ai calcolatori finanziari."
+
+msgid "Net Salary"
+msgstr "Netto"
+
+msgid "Split Bill"
+msgstr "Dividi conto"
+
+#| msgid "QR Generator"
+msgid "Hash Generator"
+msgstr "Hash"
+
+msgid "Generate MD5, SHA-1, SHA-256, or SHA-512 hash from text."
+msgstr "Genera hash MD5, SHA-1, SHA-256 o SHA-512 da testo."
+
+msgid "Algorithm"
+msgstr "Algoritmo"
+
+msgid "SHA-1"
+msgstr "SHA-1"
+
+msgid "SHA-512"
+msgstr "SHA-512"
+
+msgid "Enter text to hash..."
+msgstr "Inserisci testo da convertire in hash..."
+
+#| msgid "QR Generator"
+msgid "Hashtag Generator"
+msgstr "Hashtag"
+
+msgid "Generate hashtags for Instagram, TikTok, and other social media."
+msgstr "Genera hashtag per Instagram, TikTok e altri social media."
+
+msgid "Niche / topic"
+msgstr "Argomento"
+
+msgid "How many"
+msgstr "Quantità"
+
+msgid "Diff Checker help"
+msgstr "Guida Confronta testi"
+
+msgid "How the Diff Checker works"
+msgstr "Come funziona Confronta testi"
+
+msgid "Understand the meaning of colors and how changes are detected."
+msgstr ""
+"Capisci il significato dei colori e come vengono rilevate le modifiche."
+
+msgid "Colors"
+msgstr "Colori"
+
+msgid "Red with strikethrough"
+msgstr "Rosso barrato"
+
+msgid "text that was removed."
+msgstr "testo che e stato rimosso."
+
+msgid "Green"
+msgstr "Verde"
+
+msgid "text that was added."
+msgstr "testo che e stato aggiunto."
+
+msgid "Best practices"
+msgstr "Buone pratiche"
+
+msgid ""
+"Paste the original text on the left and the modified text on the right. "
+"Small, focused changes are easier to read than very large blocks of text."
+msgstr ""
+"Incolla il testo originale a sinistra e il testo modificato a destra. "
+"Modifiche piccole e mirate sono piu facili da leggere rispetto a blocchi "
+"molto grandi di testo."
+
+msgid "Back to Diff Checker"
+msgstr "Torna a \"Confronta testi\""
+
+msgid "JSON guide"
+msgstr "Guida JSON"
+
+msgid "JSON basics"
+msgstr "Nozioni base JSON"
+
+msgid "How to write valid JSON and fix typical errors."
+msgstr "Come scrivere JSON valido e correggere gli errori tipici."
+
+msgid "Valid JSON structure"
+msgstr "Struttura JSON valida"
+
+msgid "Keys must be in double quotes."
+msgstr "Le chiavi devono essere tra virgolette doppie."
+
+msgid "No trailing commas after the last item."
+msgstr "Nessuna virgola finale dopo l'ultimo elemento."
+
+msgid "Only these value types: string, number, boolean, null, object, array."
+msgstr ""
+"Sono consentiti solo questi tipi di valore: stringa, numero, booleano, null,"
+" oggetto, array."
+
+msgid "Typical errors"
+msgstr "Errori tipici"
+
+msgid ""
+"Most errors come from missing quotes, commas, or using single quotes instead"
+" of double quotes."
+msgstr ""
+"La maggior parte degli errori deriva da virgolette o virgole mancanti, "
+"oppure dall'uso di virgolette singole al posto delle doppie."
+
+msgid "Back to JSON Formatter"
+msgstr "Torna a \"JSON\""
+
+msgid "Robots.txt guide"
+msgstr "Guida Robots.txt"
+
+msgid "Basic tips on how search engines read your robots.txt file."
+msgstr "Consigli base su come i motori di ricerca leggono il file robots.txt."
+
+msgid "What is robots.txt?"
+msgstr "Cos'è Robots.txt?"
+
+msgid ""
+"It is a simple text file at the root of your site (for example "
+"<code>https://example.com/robots.txt</code>) that tells search engine "
+"crawlers which areas they can or cannot crawl."
+msgstr ""
+"È un semplice file di testo nella radice del tuo sito (ad esempio "
+"<code>https://example.com/robots.txt</code>) che indica ai crawler dei "
+"motori di ricerca quali aree possono o non possono scansionare."
+
+msgid "Common examples"
+msgstr "Esempi comuni"
+
+msgid ""
+"This allows all crawlers to access the whole site except the "
+"<code>/admin/</code> area."
+msgstr ""
+"Questo consente a tutti i crawler di accedere all'intero sito tranne "
+"all'area <code>/admin/</code>."
+
+msgid "Back to Robots.txt Generator"
+msgstr "Torna a Generatore Robots.txt"
+
+msgid "Text tools tips"
+msgstr "Guida strumenti testo"
+
+msgid "Tips for preparing your text"
+msgstr "Suggerimenti per preparare il testo"
+
+msgid ""
+"Quick suggestions for using the Word & Character Counter and other text "
+"tools."
+msgstr ""
+"Consigli rapidi per usare il Contatore parole e caratteri e gli altri "
+"strumenti di testo."
+
+msgid "Counting words correctly"
+msgstr "Come contare correttamente le parole"
+
+msgid ""
+"Word count is based on spaces: multiple spaces or line breaks are treated as"
+" separators between words."
+msgstr ""
+"Il conteggio parole si basa sugli spazi: spazi multipli o ritorni a capo "
+"sono trattati come separatori tra parole."
+
+msgid "Before publishing"
+msgstr "Prima di pubblicare"
+
+msgid ""
+"Check both word and character count when you have limits (for example, "
+"social posts)."
+msgstr ""
+"Controlla sia il numero di parole sia quello dei caratteri quando hai dei "
+"limiti (ad esempio nei post social)."
+
+msgid "Remove extra spaces or line breaks to avoid inflating the count."
+msgstr ""
+"Rimuovi spazi o righe vuote extra per evitare di gonfiare il conteggio."
+
+msgid "Back to Word Counter"
+msgstr "Torna al \"Conta parole e Caratteri\""
+
+msgid "You cannot use this feature. Please log in."
+msgstr "Per usare questa funzione devi aver effettuato l'accesso."
+
+msgid "Log in"
+msgstr "Accedi"
+
+msgid "Close"
+msgstr "Chiudi"
+
+msgid ""
+"Welcome to Gadly – free online tools for text, files, social media, web and "
+"more."
+msgstr ""
+"Benvenuto su Gadly: strumenti online gratuiti per testi, file, social media,"
+" web e altro."
+
+msgid "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access."
+msgstr "Benvenuto su Gadly - strumenti online gratuiti per testo, file, social media, web e molto altro. Usa la ricerca per trovare subito il tool che ti serve e, se hai effettuato l'accesso, salva i preferiti in Quick access."
+
+msgid "Search tools..."
+msgstr "Cerca strumenti…"
+
+msgid "Quick access"
+msgstr "Accesso rapido"
+
+msgid "Text Tools"
+msgstr "Testi"
+
+msgid "Word Counter"
+msgstr "Conta parole"
+
+msgid "Add to favorites"
+msgstr "Aggiungi ai preferiti"
+
+msgid "Favorite"
+msgstr "Preferito"
+
+msgid "Translator"
+msgstr "Traduttore"
+
+msgid "Markdown Preview"
+msgstr "Markdown"
+
+msgid "Remove Spaces"
+msgstr "Rimuovi spazi"
+
+#| msgid "QR Generator"
+msgid "Username Generator"
+msgstr "Username"
+
+msgid "JSON Formatter"
+msgstr "JSON"
+
+#| msgid "QR Generator"
+msgid "UUID Generator"
+msgstr "UUID"
+
+msgid "Social Media"
+msgstr "Social media"
+
+msgid "Social"
+msgstr "Social"
+
+msgid "Career & CV"
+msgstr "Carriera & CV"
+
+msgid "Career"
+msgstr "Carriera & CV"
+
+msgid "File Tools"
+msgstr "Strumenti file"
+
+msgid "File"
+msgstr "File"
+
+msgid "Image & Data Tools"
+msgstr "Immagini e dati"
+
+msgid "Image"
+msgstr "Immagine"
+
+msgid "Finance"
+msgstr "Finanza"
+
+msgid "Web / SEO"
+msgstr "Web / SEO"
+
+msgid "SEO"
+msgstr "SEO"
+
+msgid "Meta Tag Checker"
+msgstr "Meta tag"
+
+msgid "Sitemap Extractor"
+msgstr "Sitemap"
+
+#| msgid "QR Generator"
+msgid "Robots.txt Generator"
+msgstr "Robots.txt"
+
+msgid "Site Speed Check"
+msgstr "Velocità sito"
+
+msgid "Lorem Ipsum"
+msgstr "Lorem Ipsum"
+
+msgid "Regex Tester"
+msgstr "Test regex"
 
 msgid "Security & Misc"
-msgstr "Sicurezza e altro"
+msgstr "Sicurezza"
+
+#| msgid "Security & Misc"
+msgid "Security"
+msgstr "Sicurezza"
 
 msgid "Password Gen"
-msgstr "Generatore password"
+msgstr "Password"
 
 msgid "QR Generator"
 msgstr "Generatore QR"
 
-msgid "Calculator"
+msgid "QR Decoder"
+msgstr "Decodifica QR"
+
+msgid "Base64 Encoder"
+msgstr "Base64"
+
+msgid "Loading..."
+msgstr "Caricamento…"
+
+msgid "Image downloaded"
+msgstr "Immagine scaricata"
+
+msgid "Are you sure you want to reset all changes?"
+msgstr "Vuoi davvero annullare tutte le modifiche?"
+
+msgid "Yes"
+msgstr "Sì"
+
+msgid "No"
+msgstr "No"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "This tool is only available on desktop."
+msgstr "Questo strumento è disponibile solo su desktop."
+
+msgid "Please use a computer to edit images."
+msgstr "Per modificare le immagini usa un computer."
+
+msgid "Drop image here or click to choose"
+msgstr "Trascina un'immagine qui o clicca per scegliere"
+
+msgid "Load an image to get started"
+msgstr "Carica un'immagine per iniziare"
+
+msgid "Reset toolbar to default position"
+msgstr "Ripristina posizione barra strumenti"
+
+msgid "Reset toolbar position"
+msgstr "Ripristina posizione barra"
+
+msgid "Drag to move toolbar"
+msgstr "Trascina per spostare la barra strumenti"
+
+msgid "Transform"
+msgstr "Trasforma"
+
+msgid "Rotate left"
+msgstr "Ruota a sinistra"
+
+msgid "Rotate right"
+msgstr "Ruota a destra"
+
+msgid "Flip horizontal"
+msgstr "Rifletti orizzontalmente"
+
+msgid "Flip vertical"
+msgstr "Rifletti verticalmente"
+
+msgid "Resize"
+msgstr "Ridimensiona"
+
+msgid "Ratio"
+msgstr "Rapporto"
+
+msgid "W"
+msgstr "L"
+
+msgid "Width"
+msgstr "Larghezza"
+
+msgid "H"
+msgstr "A"
+
+msgid "Height"
+msgstr "Altezza"
+
+msgid "Apply resize"
+msgstr "Applica ridimensionamento"
+
+msgid "Apply"
+msgstr "Applica"
+
+#, python-format
+msgid "Resize to 50%%"
+msgstr "Ridimensiona al 50%%"
+
+#, python-format
+msgid "Resize to 25%%"
+msgstr "Ridimensiona al 25%%"
+
+#, python-format
+msgid "Resize to 200%%"
+msgstr "Ridimensiona al 200%%"
+
+msgid "Rotate"
+msgstr "Ruota"
+
+msgid "°"
+msgstr "°"
+
+msgid "Rotation angle"
+msgstr "Angolo di rotazione"
+
+msgid "Apply rotation"
+msgstr "Applica rotazione"
+
+msgid "Crop"
+msgstr "Ritaglia"
+
+msgid "Crop ratio"
+msgstr "Rapporto ritaglio"
+
+msgid "Free"
+msgstr "Libero"
+
+msgid "Select crop area"
+msgstr "Seleziona area di ritaglio"
+
+msgid "Select"
+msgstr "Seleziona"
+
+msgid "Apply crop"
+msgstr "Applica ritaglio"
+
+msgid "Cancel crop"
+msgstr "Annulla ritaglio"
+
+msgid "Cancel"
+msgstr "Annulla"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom out"
+msgstr "Riduci zoom"
+
+msgid "Zoom in"
+msgstr "Aumenta zoom"
+
+msgid "Fit to view"
+msgstr "Adatta alla vista"
+
+msgid "Fit"
+msgstr "Adatta"
+
+msgid "Filters, Export & Reset"
+msgstr "Filtri, esportazione e reset"
+
+msgid "Brightness"
+msgstr "Luminosità"
+
+msgid "Contrast"
+msgstr "Contrasto"
+
+msgid "Apply grayscale"
+msgstr "Applica scala di grigi"
+
+msgid "Grayscale"
+msgstr "Scala di grigi"
+
+msgid "Apply sepia"
+msgstr "Applica seppia"
+
+msgid "Sepia"
+msgstr "Seppia"
+
+msgid "Invert colors"
+msgstr "Inverti colori"
+
+msgid "Invert"
+msgstr "Inverti"
+
+msgid "Saturation"
+msgstr "Saturazione"
+
+msgid "Apply blur"
+msgstr "Applica sfocatura"
+
+msgid "Blur"
+msgstr "Sfocatura"
+
+msgid "Blur area size"
+msgstr "Dimensione area sfocatura"
+
+msgid "Blur strength"
+msgstr "Intensità sfocatura"
+
+msgid "Cancel blur"
+msgstr "Annulla sfocatura"
+
+msgid "Sharpen image"
+msgstr "Nitidisci immagine"
+
+msgid "Sharpen"
+msgstr "Nitidezza"
+
+msgid "Export format"
+msgstr "Formato esportazione"
+
+msgid "PNG"
+msgstr "PNG"
+
+msgid "JPEG"
+msgstr "JPEG"
+
+msgid "Download image"
+msgstr "Scarica immagine"
+
+msgid "Download"
+msgstr "Scarica"
+
+msgid "Load new image"
+msgstr "Carica nuova immagine"
+
+msgid "📁 New"
+msgstr "📁 Nuovo"
+
+msgid "Undo"
+msgstr "Annulla"
+
+msgid "↶ Undo"
+msgstr "↶ Annulla"
+
+msgid "Redo"
+msgstr "Ripristina"
+
+msgid "↷ Redo"
+msgstr "↷ Ripristina"
+
+msgid "Reset to original"
+msgstr "Ripristina originale"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Text & Draw"
+msgstr "Testo e disegno"
+
+#, fuzzy
+#| msgid "Text Tools"
+msgid "Text color"
+msgstr "Strumenti di testo"
+
+#, fuzzy
+#| msgid "Text Tools"
+msgid "Text size"
+msgstr "Strumenti di testo"
+
+msgid "Bold"
+msgstr "Grassetto"
+
+msgid "Italic"
+msgstr "Corsivo"
+
+msgid "Emoji"
+msgstr "Emoji"
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Watermark font"
+msgstr "Font watermark"
+
+msgid "Add text watermark"
+msgstr "Aggiungi watermark testuale"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "Apply watermark"
+msgstr "Applica watermark"
+
+msgid "Cancel watermark"
+msgstr "Annulla watermark"
+
+msgid "Border"
+msgstr "Bordo"
+
+msgid "px"
+msgstr "px"
+
+msgid "Border size"
+msgstr "Dimensione bordo"
+
+msgid "Border color"
+msgstr "Colore bordo"
+
+msgid "Add border"
+msgstr "Aggiungi bordo"
+
+msgid "Draw mode"
+msgstr "Modalità disegno"
+
+msgid "Draw"
+msgstr "Disegna"
+
+msgid "Brush color"
+msgstr "Colore pennello"
+
+msgid "Brush size"
+msgstr "Dimensione pennello"
+
+msgid "Drag to move"
+msgstr "Trascina per spostare"
+
+msgid "Type here..."
+msgstr "Scrivi qui..."
+
+msgid "Text input"
+msgstr "Input testo"
+
+msgid "Drag to resize"
+msgstr "Trascina per ridimensionare"
+
+msgid "Quick tool navigation"
+msgstr "Navigazione rapida strumenti"
+
+#, fuzzy
+#| msgid "File Tools"
+msgid "Quick Tools"
+msgstr "Strumenti file"
+
+msgid "Quick nav side controls"
+msgstr "Controlli laterali navigazione rapida"
+
+#, fuzzy
+#| msgid "Text Tools"
+msgid "Toggle Text Tools"
+msgstr "Strumenti di testo"
+
+msgid "Toggle Social Media"
+msgstr "Mostra/nascondi Social Media"
+
+msgid "Toggle Career and CV"
+msgstr "Mostra/nascondi Carriera e CV"
+
+msgid "File & Image"
+msgstr "File e immagini"
+
+msgid "Toggle File and Image"
+msgstr "Mostra/nascondi File e immagini"
+
+msgid "Toggle Finance"
+msgstr "Mostra/nascondi Finanza"
+
+msgid "Toggle Web SEO"
+msgstr "Mostra/nascondi Web SEO"
+
+msgid "Toggle Security"
+msgstr "Mostra/nascondi Sicurezza"
+
+msgid "Most used tools"
+msgstr "Strumenti più usati"
+
+#, fuzzy
+#| msgid "Text Tools"
+msgid "Top 15 Tools"
+msgstr "Top 15 strumenti"
+
+msgid "Most Used Tools"
+msgstr "Strumenti più usati"
+
+msgid "Toggle most used tools"
+msgstr "Mostra/nascondi strumenti più usati"
+
+msgid ""
+"Answer like in a real interview: the recruiter asks, you reply by text or "
+"voice, then you get a suggestion to improve your answer. Each session "
+"includes 50 different questions."
+msgstr ""
+"Rispondi come in un vero colloquio: il recruiter fa le domande, tu rispondi "
+"con testo o voce, poi ricevi un suggerimento per migliorare la risposta. "
+"Ogni sessione include 50 domande diverse."
+
+msgid "Recruiter"
+msgstr "Recruiter"
+
+msgid "Voice and appearance"
+msgstr "Voce e aspetto"
+
+msgid "Man"
+msgstr "Uomo"
+
+msgid "Woman"
+msgstr "Donna"
+
+msgid "Choose man or woman to start. The chat appears after your choice."
+msgstr "Scegli uomo o donna per iniziare. La chat appare dopo la tua scelta."
+
+msgid "Read recruiter questions aloud (browser text-to-speech)"
+msgstr "Leggi ad alta voce le domande del recruiter (text-to-speech del browser)"
+
+msgid ""
+"Uses the voices installed in your browser/OS. If you prefer only text, leave"
+" this off."
+msgstr ""
+"Usa le voci installate nel browser/sistema operativo. Se preferisci solo "
+"testo, lascia disattivato."
+
+msgid "Optional: role and level"
+msgstr "Opzionale: ruolo e livello"
+
+msgid "e.g. Marketing Manager"
+msgstr "es. Marketing Manager"
+
+msgid "e.g. Junior / Mid / Senior"
+msgstr "es. Junior / Mid / Senior"
+
+msgid "Focus areas (optional)"
+msgstr "Aree di interesse (opzionale)"
+
+msgid "e.g. Leadership, SQL, client communication"
+msgstr "es. leadership, SQL, comunicazione con clienti"
+
+msgid "Your answer"
+msgstr "La tua risposta"
+
+msgid "Type your answer and press Enter to send. Use Shift+Enter for a new line."
+msgstr "Scrivi la tua risposta e premi Invio per inviare. Usa Shift+Invio per andare a capo."
+
+msgid ""
+"Type your answer and press Enter to send. Use the sound control on the left "
+"to dictate."
+msgstr ""
+"Scrivi la tua risposta e premi Invio per inviare. Usa il controllo audio a "
+"sinistra per dettare."
+
+msgid "Speak your answer"
+msgstr "Detta la tua risposta"
+
+msgid "Write your answer…"
+msgstr "Scrivi la tua risposta…"
+
+msgid "New interview"
+msgstr "Nuovo colloquio"
+
+msgid "Copy conversation"
+msgstr "Copia conversazione"
+
+msgid "Format, minify, or validate JSON. Paste your JSON below."
+msgstr "Formatta, comprimi o valida JSON. Incolla qui sotto il tuo JSON."
+
+msgid "What is JSON and how to fix common errors"
+msgstr "Cosa è JSON e come correggere gli errori comuni"
+
+msgid "JSON input"
+msgstr "Input JSON"
+
+msgid "Format"
+msgstr "Formatta"
+
+msgid "Minify"
+msgstr "Minimale"
+
+#, fuzzy
+#| msgid "QR Generator"
+msgid "Lorem Ipsum Generator"
+msgstr "Generatore Lorem Ipsum"
+
+msgid "Generate placeholder text for mockups and drafts."
+msgstr "Genera testo segnaposto per mockup e bozze."
+
+msgid "Paragraphs"
+msgstr "Paragrafi"
+
+msgid "Sentences"
+msgstr "Frasi"
+
+msgid "Count"
+msgstr "Quantità"
+
+msgid "e.g. 1000"
+msgstr "es. 1000"
+
+msgid "Preview will appear here."
+msgstr "L'anteprima apparirà qui."
+
+msgid "Error rendering preview."
+msgstr "Errore durante il rendering dell'anteprima."
+
+#, fuzzy
+#| msgid "Copied!"
+msgid "Copiato!"
+msgstr "Copiato!"
+
+#, fuzzy
+#| msgid "Copied!"
+msgid "Copia"
+msgstr "Copiato!"
+
+msgid "Write Markdown on the left and see the rendered result on the right."
+msgstr ""
+"Scrivi Markdown a sinistra e visualizza il risultato renderizzato a destra."
+
+msgid "Markdown"
+msgstr "Testo Markdown"
+
+msgid "Type **bold**, *italic*, # headings, - lists, [links](url)..."
+msgstr "Scrivi **grassetto**, *corsivo*, # titoli, - elenchi, [link](url)..."
+
+msgid ""
+"# Hello\n"
+"\n"
+"Write **bold** or *italic* text.\n"
+"\n"
+"- List item\n"
+"- Another item\n"
+"\n"
+"[Link](https://example.com)"
+msgstr ""
+"# Ciao\n"
+"\n"
+"Scrivi testo in **grassetto** o *corsivo*.\n"
+"\n"
+"- Voce elenco\n"
+"- Altra voce\n"
+"\n"
+"[Link](https://example.com)"
+
+msgid ""
+"Enter a URL to extract meta tags (title, description, og:*, twitter:*, "
+"etc.)."
+msgstr ""
+"Inserisci un URL per estrarre i meta tag (title, description, og:*, "
+"twitter:*, ecc.)."
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Check"
+msgstr "Controlla"
+
+#, fuzzy
+#| msgid "Password Gen"
+msgid "Password Generator"
+msgstr "Generatore password"
+
+msgid "Generate secure passwords with custom length and character options."
+msgstr "Genera password sicure con lunghezza e opzioni caratteri personalizzate."
+
+#, fuzzy
+#| msgid "Password Gen"
+msgid "Password length"
+msgstr "Lunghezza password"
+
+msgid "Numbers"
+msgstr "Numeri"
+
+msgid "Symbols"
+msgstr "Simboli"
+
+msgid "Your secure password will appear here"
+msgstr "La tua password sicura apparirà qui"
+
+#, fuzzy
+#| msgid "PDF Merge"
+msgid "PDF Merger Tool"
+msgstr "Unione PDF"
+
+msgid "Choose PDF files to merge"
+msgstr "Scegli i file PDF da unire"
+
+msgid "Add files from another folder"
+msgstr "Aggiungi file da un'altra cartella"
+
+msgid "Preview – File order (use ↑ ↓ to reorder):"
+msgstr "Anteprima - Ordine file (usa ↑ ↓ per riordinare):"
+
+msgid "Merge PDFs"
+msgstr "Unisci PDF"
+
+msgid "Choose a PDF file to split"
+msgstr "Scegli un file PDF da dividere"
+
+msgid "Pages per file"
+msgstr "Pagine per file"
+
+msgid "Number of pages in each output PDF"
+msgstr "Numero di pagine in ogni PDF di output"
+
+msgid ""
+"Each output file will contain this many pages. You can also type a number "
+"manually."
+msgstr ""
+"Ogni file di output conterrà questo numero di pagine. Puoi anche inserire "
+"un numero manualmente."
+
+msgid "Preview – File to split:"
+msgstr "Anteprima - File da dividere:"
+
+msgid "Split PDF"
+msgstr "Dividi PDF"
+
+msgid "Privacy Policy - Gadly"
+msgstr "Privacy Policy - Gadly"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Last updated:"
+msgstr "Ultimo aggiornamento:"
+
+msgid "Data collection"
+msgstr "Raccolta dati"
+
+msgid ""
+"Gadly processes most data locally in your browser. Data sent to our servers "
+"(e.g. for translation or meta tag checks) is used only for the requested "
+"operation and is not stored or logged."
+msgstr ""
+"Gadly elabora la maggior parte dei dati localmente nel browser. I dati "
+"inviati ai nostri server (es. per traduzione o controllo meta tag) sono "
+"usati solo per l'operazione richiesta e non vengono salvati ne registrati."
+
+msgid "Cookies"
+msgstr "Cookie"
+
+msgid ""
+"We use minimal cookies to remember your preferences (e.g. theme, cookie "
+"consent). No third-party tracking cookies are used by default."
+msgstr ""
+"Usiamo cookie minimi per ricordare le tue preferenze (es. tema, consenso "
+"cookie). Per impostazione predefinita non usiamo cookie di tracciamento di "
+"terze parti."
+
+msgid "Third-party services"
+msgstr "Servizi di terze parti"
+
+msgid ""
+"Some tools may use external APIs (e.g. translation services). Their privacy "
+"policies apply to data processed by those services."
+msgstr ""
+"Alcuni tool possono usare API esterne (es. servizi di traduzione). A quei "
+"dati si applicano le privacy policy dei relativi servizi."
+
+msgid "Data retention"
+msgstr "Conservazione dei dati"
+
+msgid ""
+"By default, we do not keep personal data generated while using the tools. "
+"Temporary technical data may be processed only for service operation and is "
+"automatically removed after short periods."
+msgstr ""
+"Per impostazione predefinita non conserviamo i dati personali generati "
+"durante l'uso dei tool. Eventuali dati tecnici temporanei sono trattati solo"
+" per il funzionamento del servizio e rimossi automaticamente dopo brevi "
+"periodi."
+
+msgid "Your rights"
+msgstr "I tuoi diritti"
+
+msgid ""
+"You can request information about your data, ask for correction or deletion,"
+" and object to processing when applicable. We review privacy requests as "
+"quickly as possible."
+msgstr ""
+"Puoi richiedere informazioni sui tuoi dati, chiedere correzione o "
+"cancellazione e opporti al trattamento quando applicabile. Gestiamo le "
+"richieste privacy il piu rapidamente possibile."
+
+msgid ""
+"We apply reasonable technical and organizational safeguards to protect data "
+"in transit and reduce unauthorized access risks. No online system can "
+"guarantee absolute security, but we continuously improve protections."
+msgstr ""
+"Applichiamo misure tecniche e organizzative adeguate per proteggere i dati "
+"in transito e ridurre i rischi di accessi non autorizzati. Nessun sistema "
+"online puo garantire sicurezza assoluta, ma miglioriamo continuamente le "
+"protezioni."
+
+msgid "For privacy-related questions, please use our"
+msgstr "Per domande sulla privacy, usa la nostra"
+
+msgid "contact page"
+msgstr "pagina contatti"
+
+msgid "Upload an image containing a QR code to read the text or link."
+msgstr "Carica un'immagine contenente un codice QR per leggere il testo o il link."
+
+msgid "Choose an image containing a QR code (PNG, JPG, etc.)"
+msgstr "Scegli un'immagine contenente un codice QR (PNG, JPG, ecc.)"
+
+msgid "Decoded content"
+msgstr "Contenuto decodificato"
+
+msgid "Enter text or URL"
+msgstr "Inserisci testo o URL"
+
+msgid "Type or paste text, URL, etc."
+msgstr "Scrivi o incolla testo, URL, ecc."
+
+msgid "Load from file (.txt, .pdf)"
+msgstr "Carica da file (.txt, .pdf)"
+
+msgid "QR color"
+msgstr "Colore QR"
+
+msgid "Background"
+msgstr "Sfondo"
+
+msgid "Medium (256px)"
+msgstr "Medio (256px)"
+
+msgid "Small (128px)"
+msgstr "Piccolo (128px)"
+
+msgid "Large (384px)"
+msgstr "Grande (384px)"
+
+msgid "Error correction"
+msgstr "Correzione errori"
+
+#, python-format
+msgid "Low (7%%)"
+msgstr "Bassa (7%%)"
+
+#, python-format
+msgid "Medium (15%%)"
+msgstr "Media (15%%)"
+
+#, python-format
+msgid "Quartile (25%%)"
+msgstr "Quartile (25%%)"
+
+#, python-format
+msgid "High (30%%)"
+msgstr "Alta (30%%)"
+
+msgid "Presets:"
+msgstr "Preset:"
+
+msgid "Black"
+msgstr "Nero"
+
+msgid "Blue"
+msgstr "Blu"
+
+msgid "Red"
+msgstr "Rosso"
+
+msgid "Light bg"
+msgstr "Sfondo chiaro"
+
+msgid "Generate QR Code"
+msgstr "Genera codice QR"
+
+msgid "Download QR"
+msgstr "Scarica QR"
+
+msgid "Test regular expressions and see matches highlighted."
+msgstr "Testa le espressioni regolari e visualizza le corrispondenze evidenziate."
+
+msgid "Regular expression"
+msgstr "Espressione regolare"
+
+msgid "e.g. \\\\d+ or [a-z]+"
+msgstr "es. \\\\d+ or [a-z]+"
+
+msgid "Test string"
+msgstr "Testo di prova"
+
+msgid "Enter text to test against..."
+msgstr "Inserisci il testo su cui effettuare il test..."
+
+msgid "Test"
+msgstr "Testa"
+
+msgid "Register - Gadly"
+msgstr "Registrazione - Gadly"
+
+msgid "Username must be at least 3 characters"
+msgstr "Il nome utente deve avere almeno 3 caratteri"
+
+msgid "Checking..."
+msgstr "Controllo..."
+
+msgid "✗ Username already taken"
+msgstr "✗ Nome utente gia in uso"
+
+msgid "Register"
+msgstr "Registrati"
+
+msgid "Email (for password reset)"
+msgstr "Email (per recupero password)"
+
+msgid "Password (min 12 characters)"
+msgstr "Password (min 12 caratteri)"
+
+msgid "Confirm password"
+msgstr "Conferma password"
+
+msgid "Already have an account?"
+msgstr "Hai gia un account?"
+
+msgid "Remove or normalize spaces in your text."
+msgstr "Rimuovi o normalizza gli spazi nel tuo testo."
+
+msgid "Paste your text here..."
+msgstr "Incolla qui il tuo testo..."
+
+msgid "Remove all spaces"
+msgstr "Rimuovi tutti gli spazi"
+
+msgid "Collapse multiple spaces"
+msgstr "Riduci spazi multipli"
+
+msgid "Generate a robots.txt file with custom rules."
+msgstr "Genera un file robots.txt con regole personalizzate."
+
+msgid "Learn more about robots.txt and how search engines use it"
+msgstr "Scopri di più su \"Robots.txt\" e su come lo usano i motori di ricerca"
+
+msgid "e.g. Googlebot"
+msgstr "es. Googlebot"
+
+msgid "Disallow (one path per line)"
+msgstr "Disallow (un percorso per riga)"
+
+msgid "Allow (one path per line, optional)"
+msgstr "Allow (un percorso per riga, opzionale)"
+
+msgid "Sitemap URL"
+msgstr "URL sitemap"
+
+#| msgid "Security & Misc"
+msgid "Security & Misc Tools"
+msgstr "Sicurezza e altro"
+
+msgid "Quick access to security and utility tools."
+msgstr "Accesso rapido agli strumenti di sicurezza e altro."
+
+msgid "Check the response time of a URL (server response time)."
+msgstr "Controlla il tempo di risposta di un URL (tempo di risposta server)."
+
+msgid "Enter the URL of a sitemap.xml to extract all URLs."
+msgstr "Inserisci l'URL di una sitemap.xml per estrarre tutti gli URL."
+
+msgid "Extract"
+msgstr "Estrai"
+
+#| msgid "File Tools"
+msgid "Social Media Tools"
+msgstr "Social Media"
+
+msgid "Quick access to social media tools."
+msgstr "Accesso rapido agli strumenti social media."
+
+msgid "Quick access to all text-related tools."
+msgstr "Accesso rapido a tutti gli strumenti di testo."
+
+msgid "Quick access to the 15 most used tools."
+msgstr "Accesso rapido ai 15 strumenti più usati."
+
+#, fuzzy
+#| msgid "Translator"
+msgid "Translator Tool"
+msgstr "Strumento Traduttore"
+
+msgid "Enter text to translate"
+msgstr "Inserisci il testo da tradurre"
+
+msgid "Translate"
+msgstr "Traduci"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Albanian"
+msgstr "Albanian"
+
+msgid "Amharic"
+msgstr "Amharic"
+
+msgid "Arabic"
+msgstr "Arabic"
+
+msgid "Armenian"
+msgstr "Armenian"
+
+msgid "Azerbaijani"
+msgstr "Azerbaijani"
+
+msgid "Basque"
+msgstr "Basque"
+
+msgid "Belarusian"
+msgstr "Belarusian"
+
+msgid "Bengali"
+msgstr "Bengali"
+
+msgid "Bosnian"
+msgstr "Bosnian"
+
+msgid "Bulgarian"
+msgstr "Bulgarian"
+
+msgid "Catalan"
+msgstr "Catalan"
+
+msgid "Cebuano"
+msgstr "Cebuano"
+
+msgid "Chichewa"
+msgstr "Chichewa"
+
+msgid "Chinese"
+msgstr "Chinese"
+
+msgid "Corsican"
+msgstr "Corsican"
+
+msgid "Croatian"
+msgstr "Croatian"
+
+msgid "Czech"
+msgstr "Czech"
+
+msgid "Danish"
+msgstr "Danish"
+
+msgid "Dutch"
+msgstr "Dutch"
+
+msgid "Esperanto"
+msgstr "Esperanto"
+
+msgid "Estonian"
+msgstr "Estonian"
+
+msgid "Filipino"
+msgstr "Filipino"
+
+msgid "Finnish"
+msgstr "Finnish"
+
+msgid "French"
+msgstr "French"
+
+msgid "Galician"
+msgstr "Galician"
+
+msgid "Georgian"
+msgstr "Georgian"
+
+msgid "German"
+msgstr "German"
+
+msgid "Greek"
+msgstr "Greek"
+
+msgid "Gujarati"
+msgstr "Gujarati"
+
+msgid "Haitian"
+msgstr "Haitian"
+
+msgid "Hausa"
+msgstr "Hausa"
+
+msgid "Hawaiian"
+msgstr "Hawaiian"
+
+msgid "Hebrew"
+msgstr "Hebrew"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hmong"
+msgstr "Hmong"
+
+msgid "Hungarian"
+msgstr "Hungarian"
+
+msgid "Icelandic"
+msgstr "Icelandic"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Indonesian"
+msgstr "Indonesian"
+
+msgid "Irish"
+msgstr "Irish"
+
+msgid "Japanese"
+msgstr "Japanese"
+
+msgid "Javanese"
+msgstr "Javanese"
+
+msgid "Kannada"
+msgstr "Kannada"
+
+msgid "Kazakh"
+msgstr "Kazakh"
+
+msgid "Khmer"
+msgstr "Khmer"
+
+msgid "Korean"
+msgstr "Korean"
+
+msgid "Kurdish"
+msgstr "Kurdish"
+
+msgid "Kyrgyz"
+msgstr "Kyrgyz"
+
+msgid "Lao"
+msgstr "Lao"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Latvian"
+msgstr "Latvian"
+
+msgid "Lithuanian"
+msgstr "Lithuanian"
+
+msgid "Luxembourgish"
+msgstr "Luxembourgish"
+
+msgid "Macedonian"
+msgstr "Macedonian"
+
+msgid "Malagasy"
+msgstr "Malagasy"
+
+msgid "Malay"
+msgstr "Malay"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Maltese"
+msgstr "Maltese"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Mongolian"
+msgstr "Mongolian"
+
+msgid "Burmese"
+msgstr "Burmese"
+
+msgid "Nepali"
+msgstr "Nepali"
+
+msgid "Norwegian"
+msgstr "Norwegian"
+
+msgid "Pashto"
+msgstr "Pashto"
+
+msgid "Persian"
+msgstr "Persian"
+
+msgid "Polish"
+msgstr "Polish"
+
+msgid "Portuguese"
+msgstr "Portuguese"
+
+msgid "Punjabi"
+msgstr "Punjabi"
+
+msgid "Romanian"
+msgstr "Romanian"
+
+msgid "Russian"
+msgstr "Russian"
+
+msgid "Samoan"
+msgstr "Samoan"
+
+msgid "Scottish Gaelic"
+msgstr "Scottish Gaelic"
+
+msgid "Serbian"
+msgstr "Serbian"
+
+msgid "Sesotho"
+msgstr "Sesotho"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sinhala"
+msgstr "Sinhala"
+
+msgid "Slovak"
+msgstr "Slovak"
+
+msgid "Slovenian"
+msgstr "Slovenian"
+
+msgid "Somali"
+msgstr "Somali"
+
+msgid "Spanish"
+msgstr "Spanish"
+
+msgid "Sundanese"
+msgstr "Sundanese"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Swedish"
+msgstr "Swedish"
+
+msgid "Tajik"
+msgstr "Tajik"
+
+msgid "Tamil"
+msgstr "Tamil"
+
+msgid "Telugu"
+msgstr "Telugu"
+
+msgid "Thai"
+msgstr "Thai"
+
+msgid "Turkish"
+msgstr "Turkish"
+
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Uzbek"
+
+msgid "Vietnamese"
+msgstr "Vietnamese"
+
+msgid "Welsh"
+msgstr "Welsh"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Yiddish"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zulu"
+msgstr "Zulu"
+
+msgid "Generate random usernames for social media, games, or profiles."
+msgstr "Genera nomi utente casuali per social media, giochi o profili."
+
+msgid "Name (optional)"
+msgstr "Nome (opzionale)"
+
+msgid "e.g. Marco"
+msgstr "es. Marco"
+
+msgid "If you add a name, usernames will be based on it."
+msgstr "Se inserisci un nome, gli username saranno basati su quello."
+
+msgid "Style"
+msgstr "Stile"
+
+msgid "Word + Number (e.g. cosmic42)"
+msgstr "Parola + Numero (es. cosmic42)"
+
+msgid "With @ (e.g. @cosmic42)"
+msgstr "Con @ (es. @cosmic42)"
+
+msgid "Word@Number (e.g. cosmic@42)"
+msgstr "Parola@Numero (es. cosmic@42)"
+
+msgid "Word@Word (e.g. cosmic@panda)"
+msgstr "Parola@Parola (es. cosmic@panda)"
+
+msgid "Two words (e.g. cosmic_panda)"
+msgstr "Due parole (es. cosmic_panda)"
+
+msgid "Adjective + Noun (e.g. happy_cloud)"
+msgstr "Aggettivo + Nome (es. happy_cloud)"
+
+msgid "Random mix"
+msgstr "Mix casuale"
+
+msgid "Generate UUID v4 identifiers. Choose how many you need."
+msgstr "Genera identificatori UUID v4. Scegli quanti te ne servono."
+
+msgid "Number of UUIDs"
+msgstr "Numero di UUID"
+
+msgid "Email verified - Gadly"
+msgstr "Email verificata - Gadly"
+
+msgid "Email verified"
+msgstr "Email verificata"
+
+msgid ""
+"Your email has been verified. You can now reset your password anytime from "
+"the login page if you forget it."
+msgstr ""
+
+msgid "Invalid link - Gadly"
+msgstr "Link non valido - Gadly"
+
+msgid "Invalid or expired link"
+msgstr "Link non valido o scaduto"
+
+msgid "This verification link is invalid or has already been used."
+msgstr "Questo link di verifica non è valido oppure è già stato usato."
+
+msgid "If you're logged in, you can"
+msgstr "Se hai effettuato l'accesso, puoi"
+
+msgid "request a new verification email"
+msgstr "richiedere una nuova email di verifica"
+
+msgid "Home"
+msgstr "Home"
+
+msgid ""
+"We've sent a verification link to your email address. Click the link to "
+"verify your email and enable password reset."
+msgstr ""
+
+msgid "Verify email now"
+msgstr "Verifica email ora"
+
+msgid "Request verification email"
+msgstr "Richiedi email di verifica"
+
+msgid "If you don't see the email, check your spam folder."
+msgstr "Se non vedi l'email, controlla la cartella spam."
+
+msgid "Link not working? Request a new one"
+msgstr "Link non funzionante? Richiedine uno nuovo"
+
+msgid "Web / SEO Tools"
+msgstr "Web / SEO"
+
+msgid "Quick access to web and SEO tools."
+msgstr "Accesso rapido agli strumenti web e SEO."
+
+msgid "Word & Character Counter"
+msgstr "Conta parole e Caratteri"
+
+msgid "Tips for preparing text for publishing or SEO"
+msgstr "Consigli per preparare testi per pubblicazione o SEO"
+
+msgid "Enter your text here..."
+msgstr "Inserisci qui il tuo testo..."
+
+msgid "Click a button below to count."
+msgstr "Clicca un pulsante qui sotto per iniziare il conteggio."
+
+msgid "Spaces are counted as separators between words."
+msgstr "Gli spazi sono conteggiati come separatori tra le parole."
+
+msgid "Count Words"
+msgstr "Conta parole"
+
+msgid "Count Characters"
+msgstr "Conta caratteri"
+
+msgid "Profile updated."
+msgstr "Profilo aggiornato."
+
+msgid "Incorrect password."
+msgstr "Password non corretta."
+
+msgid "Verify your email - Gadly"
+msgstr "Verifica la tua email - Gadly"
+
+#, python-format
+msgid ""
+"Hi %(username)s,\n"
+"\n"
+"Please verify your email by clicking this link:\n"
+"\n"
+"%(url)s\n"
+"\n"
+"This allows you to reset your password if you forget it.\n"
+"\n"
+"If you didn't create an account, ignore this email.\n"
+"\n"
+"— Gadly"
+msgstr ""
+
+#, python-format
+msgid ""
+"Hi %(username)s,\n"
+"\n"
+"Please verify your email by clicking this link:\n"
+"\n"
+"%(url)s\n"
+"\n"
+"— Gadly"
+msgstr ""
+
+#, fuzzy
+#| msgid "Calculator"
+msgid "Finance calculator"
 msgstr "Calcolatrice"
 
-msgid "Change language"
-msgstr "Cambia lingua"
+msgid "Invalid request method"
+msgstr "Metodo richiesta non valido"
+
+msgid "No text provided"
+msgstr "Nessun testo fornito"
+
+msgid "No file uploaded"
+msgstr "Nessun file caricato"
+
+#, python-format
+msgid "Error: %(err)s"
+msgstr "Errore: %(err)s"
+
+msgid "PDF has no pages"
+msgstr "Il PDF non contiene pagine"
+
+msgid "POST with image file required"
+msgstr "Richiesta POST con file immagine obbligatoria"
+
+msgid "Background removal requires: pip install \"rembg[cpu]\""
+msgstr "La rimozione dello sfondo richiede: pip install \"rembg[cpu]\""
+
+msgid "rembg/onnxruntime error. Run: pip install \"rembg[cpu]\""
+msgstr "Errore rembg/onnxruntime. Esegui: pip install \"rembg[cpu]\""
+
+msgid "Unknown error"
+msgstr "Errore sconosciuto"
+
+msgid "Result would exceed 4096px. Use smaller image or scale."
+msgstr "Il risultato supererebbe 4096px. Usa un'immagine più piccola o riduci la scala."
+
+msgid "Invalid method"
+msgstr "Metodo non valido"
+
+msgid "URL required"
+msgstr "URL obbligatorio"
+
+msgid "The URL could not be reached. Check the address and try again."
+msgstr "Impossibile raggiungere l'URL. Controlla l'indirizzo e riprova."
+
+msgid "An error occurred while checking meta tags."
+msgstr "Si è verificato un errore durante il controllo dei meta tag."
+
+msgid ""
+"This URL returns a web page (HTML), not a sitemap. Please enter the direct "
+"link to your sitemap file (e.g. https://example.com/sitemap.xml)."
+msgstr ""
+"Questo URL restituisce una pagina web (HTML), non una sitemap. Inserisci il "
+"link diretto al file sitemap (es. https://example.com/sitemap.xml)."
+
+msgid ""
+"This URL does not return valid sitemap XML. Please enter the direct link to "
+"your sitemap file (e.g. https://example.com/sitemap.xml)."
+msgstr ""
+"Questo URL non restituisce una sitemap XML valida. Inserisci il link diretto "
+"al file sitemap (es. https://example.com/sitemap.xml)."
+
+msgid "An error occurred while extracting sitemap URLs."
+msgstr "Si è verificato un errore durante l'estrazione degli URL della sitemap."
+
+msgid "The request timed out. Please try again."
+msgstr "La richiesta è scaduta. Riprova."
+
+msgid "DOCX support is not available on the server."
+msgstr "Il supporto DOCX non è disponibile sul server."
+
+msgid "Unsupported file type. Please upload PDF, DOCX, or TXT."
+msgstr "Tipo file non supportato. Carica PDF, DOCX o TXT."
+
+msgid "Please upload your CV file."
+msgstr "Carica il file del tuo CV."
+
+msgid "File too large. Maximum allowed size is 8 MB."
+msgstr "File troppo grande. La dimensione massima consentita è 8 MB."
+
+msgid "Could not extract readable text from this file."
+msgstr "Impossibile estrarre testo leggibile da questo file."
+
+msgid "Your CV is very short. Add more detail about impact and achievements."
+msgstr "Il tuo CV è molto corto. Aggiungi più dettagli su impatto e risultati."
+
+msgid "Your CV is quite long. Try to keep it concise and focused."
+msgstr "Il tuo CV è piuttosto lungo. Prova a mantenerlo conciso e focalizzato."
+
+#, python-format
+msgid "Add or improve these sections: %(sections)s"
+msgstr "Aggiungi o migliora queste sezioni: %(sections)s"
+
+msgid ""
+"Low keyword match with the target role. Tailor your CV to the job "
+"description."
+msgstr ""
+"Bassa corrispondenza di parole chiave con il ruolo target. Adatta il tuo CV "
+"alla descrizione del lavoro."
+
+msgid "Good start, but you can include more role-specific keywords."
+msgstr "Buona base, ma puoi includere più parole chiave specifiche del ruolo."
+
+msgid ""
+"Great baseline CV. Fine-tune wording and quantifiable results for stronger "
+"impact."
+msgstr ""
+"CV con una buona base. Affina i testi e aggiungi risultati quantificabili per"
+" un impatto maggiore."
+
+msgid "An error occurred while optimizing the CV."
+msgstr "Si è verificato un errore durante l'ottimizzazione del CV."
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Warm tone"
+msgstr "Tonalità calda"
+
+msgid "Toggle dark mode"
+msgstr "Attiva/disattiva tema scuro"
+
+msgid "Toggle theme"
+msgstr "Cambia tema"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Main navigation"
+msgstr "Navigazione principale"
+
+msgid "About"
+msgstr "Chi siamo"
+
+msgid "Accounts"
+msgstr "Account"
+
+msgid "Account menu"
+msgstr "Menu account"
+
+msgid "Logout"
+msgstr "Esci"
+
+#~ msgid "Change language"
+#~ msgstr "Cambia lingua"
+
+#~ msgid "Tools Site"
+#~ msgstr "Tools Site"
+
+#~ msgid "Welcome! Choose a tool from the categories below."
+#~ msgstr "Benvenuto! Scegli uno strumento dalle categorie sottostanti."

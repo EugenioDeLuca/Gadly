@@ -1,0 +1,895 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block title %}{% trans "CV Generator" %}{% endblock %}
+{% block body_class %}text-tool cv-generator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.cv-generator .text-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cv-generator .text-tool-grid .form-group.full { grid-column: 1 / -1; }
+.cv-generator .form-group textarea,
+.cv-generator .form-group input,
+.cv-generator .form-group select,
+.cv-generator .form-group .text-tool-select,
+.cv-generator .form-group .text-tool-select .text-tool-select-trigger {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.cv-generator #cv-target-role-wrap .text-tool-select-trigger,
+.cv-generator #cv-target-role-wrap .text-tool-select-menu {
+  border-radius: 12px;
+}
+.cv-generator #cv-target-role-wrap {
+  position: relative;
+}
+.cv-generator #cv-target-role-wrap .role-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+.cv-generator #cv-target-role-wrap .role-arrow::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #003f7f;
+}
+.cv-generator #cv-target-role-wrap .text-tool-select-trigger {
+  padding-right: 34px;
+  cursor: text;
+}
+.cv-generator #cv-target-role-wrap .text-tool-select-menu {
+  max-height: 360px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cv-generator #cv-target-role-wrap .text-tool-select-menu::-webkit-scrollbar {
+  display: none;
+}
+.cv-generator #cv-target-role-wrap .text-tool-select-menu .role-group-label {
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: #003f7f;
+  background: #eef5fd;
+  cursor: default;
+  pointer-events: none;
+}
+.cv-generator .file-upload-area {
+  border: 2px dashed #b8d4f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #f8fcff;
+  width: 100%;
+  box-sizing: border-box;
+}
+.cv-generator .file-input-wrapper { display: flex; justify-content: center; align-items: center; margin-bottom: 0; width: 100%; }
+.cv-generator .file-input-wrapper input[type="file"] {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+.cv-generator .choose-file-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px !important;
+  background: #003f7f;
+  color: #fff !important;
+  font-weight: 400 !important;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  min-height: 44px;
+  line-height: 1.2;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cv-generator .choose-file-btn:hover { background: #dc3545; transform: scale(1.03); }
+.cv-generator .choose-file-btn,
+.cv-generator .choose-file-btn * {
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+}
+.cv-generator .button-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+  margin-bottom: 0;
+}
+.cv-generator .export-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+.cv-generator .format-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.cv-generator .format-toggle {
+  width: 76px;
+  min-width: 76px;
+  height: 40px;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #003f7f;
+  color: #fff;
+  font-weight: 400 !important;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  flex: 0 0 76px;
+  white-space: nowrap;
+  line-height: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.cv-generator .format-toggle:hover {
+  background: #dc3545;
+  transform: scale(1.03);
+}
+.cv-generator .format-toggle.active {
+  background: #28a745;
+}
+.cv-generator .export-format-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.cv-generator .button-group #cv-generate,
+.cv-generator .button-group #cv-download {
+  width: 170px;
+  min-width: 170px;
+  flex: 0 0 170px;
+  box-sizing: border-box;
+}
+.cv-generator .button-group #cv-download { background: #28a745; }
+.cv-generator .button-group #cv-download:hover { background: #218838; }
+.cv-generator .button-group button.hidden {
+  display: none;
+}
+.cv-generator .result-area { white-space: pre-wrap; font-family: monospace; margin-top: 12px; margin-bottom: 12px; }
+.cv-generator .result-area.error { margin-top: 0; }
+.cv-generator .result-area.file-ready {
+  font-family: Arial, sans-serif;
+  white-space: normal;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+.cv-generator .result-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #003f7f;
+  font-weight: 600;
+  font-size: 1.04rem;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+.cv-generator .result-file-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.cv-generator .photo-note {
+  margin: 8px 0 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+.cv-generator .panel-card {
+  border: 2px dashed #b8d4f0;
+  border-radius: 12px;
+  background: #f8fcff;
+  padding: 12px;
+}
+.cv-generator .panel-title {
+  margin: 0 0 10px 0;
+  color: #003f7f;
+  font-weight: 700;
+}
+.cv-generator .panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 0;
+}
+.cv-generator .cv-setup-group + .cv-setup-group {
+  margin-top: 12px;
+}
+.cv-generator .cv-setup-panel {
+  text-align: center;
+}
+.cv-generator .cv-setup-panel .panel-title,
+.cv-generator .cv-setup-panel .ats-note {
+  text-align: center;
+}
+.cv-generator .cv-setup-panel .panel-actions {
+  justify-content: center;
+}
+.cv-generator #cv-experience-list + .panel-actions {
+  margin-top: 12px;
+}
+.cv-generator #cv-education-list + .panel-actions {
+  margin-top: 12px;
+}
+.cv-generator #cv-skill-list + .panel-actions {
+  margin-top: 12px;
+}
+.cv-generator #cv-language-list + .panel-actions {
+  margin-top: 12px;
+}
+.cv-generator .panel-actions button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  min-height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #003f7f;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.cv-generator .panel-actions button:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+.cv-generator .repeat-list {
+  display: grid;
+  gap: 10px;
+}
+.cv-generator .repeat-item {
+  border: 1px solid #d8e6f5;
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+}
+.cv-generator .repeat-remove-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 400;
+  min-height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #003f7f;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.cv-generator .repeat-remove-btn:hover {
+  background: #dc3545;
+  transform: scale(1.03);
+}
+.cv-generator .repeat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.cv-generator .repeat-grid input {
+  min-height: 44px;
+}
+.cv-generator .repeat-item .skill-name {
+  height: 44px;
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}
+.cv-generator .repeat-item .level-toggle {
+  align-items: center;
+  min-height: 44px;
+}
+.cv-generator .repeat-item .level-toggle button {
+  height: 44px;
+  min-height: 44px;
+  line-height: 1;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cv-generator .section-stack {
+  display: grid;
+  gap: 12px;
+}
+.cv-generator .template-toggle button.active,
+.cv-generator .language-toggle button.active,
+.cv-generator .level-toggle button.active {
+  background: #28a745;
+}
+.cv-generator .language-toggle button {
+  width: 56px;
+  min-width: 56px;
+  height: 40px;
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1;
+  box-sizing: border-box;
+}
+.cv-generator #cv-toggle-ats.ats-on {
+  background: #28a745;
+}
+.cv-generator #cv-toggle-ats.ats-off {
+  background: #dc3545;
+}
+.cv-generator .mini-preview {
+  min-height: 140px;
+  border: 2px dashed #b8d4f0;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  white-space: normal;
+}
+.cv-generator .mini-preview.preview-classic {
+  background: #fff;
+  border-color: #b8d4f0;
+}
+.cv-generator .mini-preview.preview-modern {
+  background: linear-gradient(160deg, #f5fbff 0%, #eef7ff 100%);
+  border-color: #8ec5ff;
+  box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.12);
+}
+.cv-generator .mini-preview.preview-minimal {
+  background: #ffffff;
+  border-color: #d9e2ea;
+  border-style: solid;
+}
+.cv-generator .preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.cv-generator .preview-modern .preview-head {
+  border-bottom: 2px solid rgba(0, 123, 255, 0.2);
+  padding-bottom: 8px;
+}
+.cv-generator .preview-minimal .preview-head {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+.cv-generator .preview-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #003f7f;
+}
+.cv-generator .preview-modern .preview-name {
+  font-size: 1.22rem;
+  color: #0056b3;
+  letter-spacing: 0.2px;
+}
+.cv-generator .preview-minimal .preview-name {
+  font-size: 1rem;
+  color: #111827;
+  font-weight: 600;
+}
+.cv-generator .preview-role {
+  color: #4b6178;
+  font-size: 0.95rem;
+}
+.cv-generator .preview-modern .preview-role {
+  color: #2f6fa9;
+}
+.cv-generator .preview-minimal .preview-role {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+.cv-generator .preview-photo {
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #d8e6f5;
+}
+.cv-generator .preview-section {
+  margin-top: 8px;
+}
+.cv-generator .preview-modern .preview-section {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+}
+.cv-generator .preview-minimal .preview-section {
+  margin-top: 6px;
+}
+.cv-generator .preview-section-title {
+  font-weight: 700;
+  color: #003f7f;
+  margin-bottom: 4px;
+}
+.cv-generator .preview-modern .preview-section-title {
+  color: #0056b3;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.6px;
+}
+.cv-generator .preview-minimal .preview-section-title {
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.cv-generator .preview-text {
+  color: #222;
+  white-space: pre-wrap;
+}
+.cv-generator .preview-minimal .preview-text {
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+.cv-generator .quality-box {
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid #d8e6f5;
+  background: #fff;
+  padding: 10px 12px;
+}
+.cv-generator .ats-note {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #4b6178;
+}
+.cv-generator .quality-score {
+  font-weight: 700;
+}
+.cv-generator .quality-score.bad {
+  color: #c00;
+}
+.cv-generator .quality-score.good {
+  color: #28a745;
+}
+@media (max-width: 768px) {
+  .cv-generator .text-tool-grid { grid-template-columns: 1fr; }
+  .cv-generator .repeat-grid { grid-template-columns: 1fr; }
+  .cv-generator .button-group {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .cv-generator .button-group #cv-generate,
+  .cv-generator .button-group #cv-download {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+  .cv-generator .export-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% trans "CV Generator" %}</h1>
+  <p class="tool-desc">{% trans "Generate a clean CV draft from your details." %}</p>
+  <p class="tool-help">
+    <a href="{% url 'help_cv_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Generatore CV{% else %}Quick CV Generator guide{% endif %}</a>
+  </p>
+
+  <div class="text-tool-grid">
+    <div class="form-group">
+      <label for="cv-full-name">{% if LANGUAGE_CODE|slice:":2" == "it" %}Nome{% else %}{% trans "Name" %}{% endif %}</label>
+      <input type="text" id="cv-full-name" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Marco{% else %}e.g. Marco{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-last-name">{% if LANGUAGE_CODE|slice:":2" == "it" %}Cognome{% else %}{% trans "Last name" %}{% endif %}</label>
+      <input type="text" id="cv-last-name" placeholder="{% if LANGUAGE_CODE|slice:":2" == "it" %}es. Rossi{% else %}e.g. Rossi{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-birth-date">{% if LANGUAGE_CODE|slice:":2" == "it" %}Data di nascita{% else %}{% trans "Date of birth" %}{% endif %}</label>
+      <input type="text" id="cv-birth-date" inputmode="numeric" maxlength="10" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}gg/mm/aaaa{% else %}dd/mm/yyyy{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-target-role">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ruolo target{% else %}{% trans "Target role" %}{% endif %}</label>
+      <div class="text-tool-select" id="cv-target-role-wrap" data-value="">
+        <input type="text" id="cv-target-role" class="text-tool-select-trigger" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Seleziona o scrivi un ruolo{% else %}Select or type a role{% endif %}" autocomplete="off">
+        <span class="role-arrow" aria-hidden="true"></span>
+        <ul class="text-tool-select-menu">
+        {% if LANGUAGE_CODE|slice:":2" == "it" %}
+        <li class="role-group-label">Amministrazione e finanza</li>
+        <li data-value="Amministrativo">Amministrativo</li>
+        <li data-value="Assistente amministrativo">Assistente amministrativo</li>
+        <li data-value="Back Office">Back Office</li>
+        <li data-value="Contabile">Contabile</li>
+        <li data-value="Consulente">Consulente</li>
+        <li data-value="Financial Analyst">Financial Analyst</li>
+        <li data-value="Segreteria">Segreteria</li>
+
+        <li class="role-group-label">Creativo e contenuti</li>
+        <li data-value="3D Artist">3D Artist</li>
+        <li data-value="Art Director">Art Director</li>
+        <li data-value="Copy Chief">Copy Chief</li>
+        <li data-value="Copywriter">Copywriter</li>
+        <li data-value="Fotografo">Fotografo</li>
+        <li data-value="Graphic Designer">Graphic Designer</li>
+        <li data-value="Interprete">Interprete</li>
+        <li data-value="Traduttore">Traduttore</li>
+        <li data-value="Video Editor">Video Editor</li>
+
+        <li class="role-group-label">HR e legale</li>
+        <li data-value="HR Specialist">HR Specialist</li>
+        <li data-value="Legal Specialist">Legal Specialist</li>
+        <li data-value="Paralegal">Paralegal</li>
+        <li data-value="Recruiter">Recruiter</li>
+        <li data-value="Responsabile risorse umane">Responsabile risorse umane</li>
+
+        <li class="role-group-label">Istruzione e ricerca</li>
+        <li data-value="Docente">Docente</li>
+        <li data-value="Formatore aziendale">Formatore aziendale</li>
+        <li data-value="Ricercatore">Ricercatore</li>
+        <li data-value="Tutor">Tutor</li>
+
+        <li class="role-group-label">Marketing e vendite</li>
+        <li data-value="Account Manager">Account Manager</li>
+        <li data-value="Brand Manager">Brand Manager</li>
+        <li data-value="Category Manager">Category Manager</li>
+        <li data-value="Commerciale">Commerciale</li>
+        <li data-value="Content Marketing Manager">Content Marketing Manager</li>
+        <li data-value="Content Specialist">Content Specialist</li>
+        <li data-value="Customer Success Manager">Customer Success Manager</li>
+        <li data-value="Digital Marketing Specialist">Digital Marketing Specialist</li>
+        <li data-value="E-commerce Specialist">E-commerce Specialist</li>
+        <li data-value="Event Manager">Event Manager</li>
+        <li data-value="Export Manager">Export Manager</li>
+        <li data-value="Inside Sales">Inside Sales</li>
+        <li data-value="Media Buyer">Media Buyer</li>
+        <li data-value="PR Specialist">PR Specialist</li>
+        <li data-value="Sales Manager">Sales Manager</li>
+        <li data-value="SEO Specialist">SEO Specialist</li>
+        <li data-value="Social Media Manager">Social Media Manager</li>
+
+        <li class="role-group-label">Operations e logistica</li>
+        <li data-value="Logistica e Supply Chain">Logistica e Supply Chain</li>
+        <li data-value="Logistics Manager">Logistics Manager</li>
+        <li data-value="Magazziniere">Magazziniere</li>
+        <li data-value="Office Manager">Office Manager</li>
+        <li data-value="Pianificatore produzione">Pianificatore produzione</li>
+        <li data-value="Project Engineer">Project Engineer</li>
+        <li data-value="Receptionist">Receptionist</li>
+        <li data-value="Responsabile operativo">Responsabile operativo</li>
+        <li data-value="Responsabile produzione">Responsabile produzione</li>
+        <li data-value="Responsabile qualità">Responsabile qualità</li>
+        <li data-value="Responsabile vendite">Responsabile vendite</li>
+        <li data-value="Retail Manager">Retail Manager</li>
+        <li data-value="Specialista acquisti">Specialista acquisti</li>
+        <li data-value="Store Manager">Store Manager</li>
+        <li data-value="Supply Planner">Supply Planner</li>
+
+        <li class="role-group-label">Salute e benessere</li>
+        <li data-value="Farmacista">Farmacista</li>
+        <li data-value="Fisioterapista">Fisioterapista</li>
+        <li data-value="Infermiere">Infermiere</li>
+        <li data-value="Medico">Medico</li>
+        <li data-value="Psicologo">Psicologo</li>
+
+        <li class="role-group-label">Tech e data</li>
+        <li data-value="Agile Coach">Agile Coach</li>
+        <li data-value="AI Specialist">AI Specialist</li>
+        <li data-value="Backend Developer">Backend Developer</li>
+        <li data-value="Business Analyst">Business Analyst</li>
+        <li data-value="Cloud Engineer">Cloud Engineer</li>
+        <li data-value="Cybersecurity Specialist">Cybersecurity Specialist</li>
+        <li data-value="Data Analyst">Data Analyst</li>
+        <li data-value="Data Scientist">Data Scientist</li>
+        <li data-value="Database Administrator">Database Administrator</li>
+        <li data-value="DevOps Engineer">DevOps Engineer</li>
+        <li data-value="Frontend Developer">Frontend Developer</li>
+        <li data-value="Full Stack Developer">Full Stack Developer</li>
+        <li data-value="Ingegnere civile">Ingegnere civile</li>
+        <li data-value="Ingegnere elettrico">Ingegnere elettrico</li>
+        <li data-value="Ingegnere gestionale">Ingegnere gestionale</li>
+        <li data-value="Ingegnere meccanico">Ingegnere meccanico</li>
+        <li data-value="Ingegnere software">Ingegnere software</li>
+        <li data-value="Machine Learning Engineer">Machine Learning Engineer</li>
+        <li data-value="Network Engineer">Network Engineer</li>
+        <li data-value="Product Manager">Product Manager</li>
+        <li data-value="Project Manager">Project Manager</li>
+        <li data-value="QA Engineer">QA Engineer</li>
+        <li data-value="Scrum Master">Scrum Master</li>
+        <li data-value="Solutions Architect">Solutions Architect</li>
+        <li data-value="Supporto tecnico">Supporto tecnico</li>
+        <li data-value="System Administrator">System Administrator</li>
+        <li data-value="UI/UX Designer">UI/UX Designer</li>
+
+        <li data-value="Sviluppatore Web">Sviluppatore Web</li>
+        {% else %}
+        <li class="role-group-label">Administration and finance</li>
+        <li data-value="Accountant">Accountant</li>
+        <li data-value="Administrative Assistant">Administrative Assistant</li>
+        <li data-value="Administrative Specialist">Administrative Specialist</li>
+        <li data-value="Back Office Specialist">Back Office Specialist</li>
+        <li data-value="Consultant">Consultant</li>
+        <li data-value="Financial Analyst">Financial Analyst</li>
+        <li data-value="Secretary">Secretary</li>
+
+        <li class="role-group-label">Creative and content</li>
+        <li data-value="3D Artist">3D Artist</li>
+        <li data-value="Art Director">Art Director</li>
+        <li data-value="Copy Chief">Copy Chief</li>
+        <li data-value="Copywriter">Copywriter</li>
+        <li data-value="Graphic Designer">Graphic Designer</li>
+        <li data-value="Interpreter">Interpreter</li>
+        <li data-value="Photographer">Photographer</li>
+        <li data-value="Translator">Translator</li>
+        <li data-value="Video Editor">Video Editor</li>
+
+        <li class="role-group-label">Education and research</li>
+        <li data-value="Corporate Trainer">Corporate Trainer</li>
+        <li data-value="Researcher">Researcher</li>
+        <li data-value="Teacher">Teacher</li>
+        <li data-value="Tutor">Tutor</li>
+
+        <li class="role-group-label">HR and legal</li>
+        <li data-value="HR Manager">HR Manager</li>
+        <li data-value="HR Specialist">HR Specialist</li>
+        <li data-value="Legal Specialist">Legal Specialist</li>
+        <li data-value="Paralegal">Paralegal</li>
+        <li data-value="Recruiter">Recruiter</li>
+
+        <li class="role-group-label">Marketing and sales</li>
+        <li data-value="Account Manager">Account Manager</li>
+        <li data-value="Brand Manager">Brand Manager</li>
+        <li data-value="Category Manager">Category Manager</li>
+        <li data-value="Content Marketing Manager">Content Marketing Manager</li>
+        <li data-value="Content Specialist">Content Specialist</li>
+        <li data-value="Customer Success Manager">Customer Success Manager</li>
+        <li data-value="Digital Marketing Specialist">Digital Marketing Specialist</li>
+        <li data-value="E-commerce Specialist">E-commerce Specialist</li>
+        <li data-value="Event Manager">Event Manager</li>
+        <li data-value="Export Manager">Export Manager</li>
+        <li data-value="Inside Sales Representative">Inside Sales Representative</li>
+        <li data-value="Media Buyer">Media Buyer</li>
+        <li data-value="PR Specialist">PR Specialist</li>
+        <li data-value="Sales Lead">Sales Lead</li>
+        <li data-value="Sales Manager">Sales Manager</li>
+        <li data-value="Sales Representative">Sales Representative</li>
+        <li data-value="SEO Specialist">SEO Specialist</li>
+        <li data-value="Social Media Manager">Social Media Manager</li>
+
+        <li class="role-group-label">Operations and logistics</li>
+        <li data-value="Logistics & Supply Chain Specialist">Logistics & Supply Chain Specialist</li>
+        <li data-value="Logistics Manager">Logistics Manager</li>
+        <li data-value="Office Manager">Office Manager</li>
+        <li data-value="Operations Manager">Operations Manager</li>
+        <li data-value="Production Manager">Production Manager</li>
+        <li data-value="Production Planner">Production Planner</li>
+        <li data-value="Project Engineer">Project Engineer</li>
+        <li data-value="Procurement Specialist">Procurement Specialist</li>
+        <li data-value="Quality Manager">Quality Manager</li>
+        <li data-value="Receptionist">Receptionist</li>
+        <li data-value="Retail Manager">Retail Manager</li>
+        <li data-value="Store Manager">Store Manager</li>
+        <li data-value="Supply Planner">Supply Planner</li>
+        <li data-value="Warehouse Operator">Warehouse Operator</li>
+
+        <li class="role-group-label">Healthcare</li>
+        <li data-value="Doctor">Doctor</li>
+        <li data-value="Nurse">Nurse</li>
+        <li data-value="Pharmacist">Pharmacist</li>
+        <li data-value="Physiotherapist">Physiotherapist</li>
+        <li data-value="Psychologist">Psychologist</li>
+
+        <li class="role-group-label">Tech and data</li>
+        <li data-value="Agile Coach">Agile Coach</li>
+        <li data-value="AI Specialist">AI Specialist</li>
+        <li data-value="Architect">Architect</li>
+        <li data-value="Backend Developer">Backend Developer</li>
+        <li data-value="Business Analyst">Business Analyst</li>
+        <li data-value="Civil Engineer">Civil Engineer</li>
+        <li data-value="Cloud Engineer">Cloud Engineer</li>
+        <li data-value="Cybersecurity Specialist">Cybersecurity Specialist</li>
+        <li data-value="Data Analyst">Data Analyst</li>
+        <li data-value="Data Scientist">Data Scientist</li>
+        <li data-value="Database Administrator">Database Administrator</li>
+        <li data-value="DevOps Engineer">DevOps Engineer</li>
+        <li data-value="Electrical Engineer">Electrical Engineer</li>
+        <li data-value="Frontend Developer">Frontend Developer</li>
+        <li data-value="Full Stack Developer">Full Stack Developer</li>
+        <li data-value="Industrial Engineer">Industrial Engineer</li>
+        <li data-value="Machine Learning Engineer">Machine Learning Engineer</li>
+        <li data-value="Mechanical Engineer">Mechanical Engineer</li>
+        <li data-value="Network Engineer">Network Engineer</li>
+        <li data-value="Product Manager">Product Manager</li>
+        <li data-value="Project Manager">Project Manager</li>
+        <li data-value="QA Engineer">QA Engineer</li>
+        <li data-value="Scrum Master">Scrum Master</li>
+        <li data-value="Software Engineer">Software Engineer</li>
+        <li data-value="Solutions Architect">Solutions Architect</li>
+        <li data-value="System Administrator">System Administrator</li>
+        <li data-value="Technical Support Specialist">Technical Support Specialist</li>
+        <li data-value="UI/UX Designer">UI/UX Designer</li>
+
+        <li data-value="Web Developer">Web Developer</li>
+        {% endif %}
+        </ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cv-email">{% trans "Email" %}</label>
+      <input type="text" id="cv-email" placeholder="{% trans 'e.g. name@email.com' %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-phone">{% trans "Phone" %}</label>
+      <input type="text" id="cv-phone" placeholder="{% trans 'e.g. +39 333 1234567' %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-citizenship">{% if LANGUAGE_CODE|slice:":2" == "it" %}Cittadinanza{% else %}{% trans "Citizenship" %}{% endif %}</label>
+      <input type="text" id="cv-citizenship" placeholder="{% if LANGUAGE_CODE|slice:":2" == "it" %}es. Italiana{% else %}e.g. Italian{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-address">{% if LANGUAGE_CODE|slice:":2" == "it" %}Indirizzo{% else %}{% trans "Address" %}{% endif %}</label>
+      <input type="text" id="cv-address" placeholder="{% if LANGUAGE_CODE|slice:":2" == "it" %}es. Via Roma 12{% else %}e.g. 12 Main Street{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-city">{% if LANGUAGE_CODE|slice:":2" == "it" %}Città di residenza{% else %}{% trans "City of residence" %}{% endif %}</label>
+      <input type="text" id="cv-city" placeholder="{% if LANGUAGE_CODE|slice:":2" == "it" %}es. Milano{% else %}e.g. Milan{% endif %}">
+    </div>
+    <div class="form-group">
+      <label for="cv-linkedin">{% trans "LinkedIn / Portfolio" %}</label>
+      <input type="text" id="cv-linkedin" placeholder="{% trans 'e.g. linkedin.com/in/name' %}">
+    </div>
+    <div class="form-group full">
+      <label for="cv-photo">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto profilo (opzionale){% else %}{% trans "Profile photo (optional)" %}{% endif %}</label>
+      <div class="file-upload-area">
+        <div class="file-input-wrapper">
+          <input type="file" id="cv-photo" accept="image/*">
+          <label for="cv-photo" class="choose-file-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scegli file{% else %}{% trans "Choose file" %}{% endif %}</label>
+        </div>
+        <p class="photo-note">{% if LANGUAGE_CODE|slice:":2" == "it" %}Carica un'immagine per la foto profilo.{% else %}Upload an image for your profile photo.{% endif %}</p>
+      </div>
+    </div>
+    <div class="form-group full">
+      <label for="cv-summary">{% trans "Professional summary" %}</label>
+      <textarea id="cv-summary" rows="3" placeholder="{% trans 'Write 2-3 lines about your profile.' %}"></textarea>
+    </div>
+    <div class="form-group full panel-card cv-setup-panel">
+      <h3 class="panel-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Configurazione CV{% else %}CV setup{% endif %}</h3>
+      <div class="panel-actions cv-setup-group template-toggle" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Template{% else %}Template{% endif %}">
+        <button type="button" class="active" data-template="classic">{% if LANGUAGE_CODE|slice:":2" == "it" %}Classico{% else %}Classic{% endif %}</button>
+        <button type="button" data-template="modern">{% if LANGUAGE_CODE|slice:":2" == "it" %}Moderno{% else %}Modern{% endif %}</button>
+        <button type="button" data-template="minimal">{% if LANGUAGE_CODE|slice:":2" == "it" %}Minimale{% else %}Minimal{% endif %}</button>
+      </div>
+      <div class="panel-actions cv-setup-group language-toggle" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Lingua CV{% else %}CV language{% endif %}">
+        <button type="button" class="active" data-cv-lang="it">IT</button>
+        <button type="button" data-cv-lang="en">EN</button>
+        <button type="button" data-cv-lang="es">ES</button>
+        <button type="button" data-cv-lang="fr">FR</button>
+        <button type="button" data-cv-lang="de">DE</button>
+      </div>
+      <div class="panel-actions cv-setup-group">
+        <button type="button" id="cv-toggle-ats">{% if LANGUAGE_CODE|slice:":2" == "it" %}ATS: Disattivato{% else %}ATS: Off{% endif %}</button>
+      </div>
+      <p class="ats-note">{% if LANGUAGE_CODE|slice:":2" == "it" %}ATS ottimizza il layout per i software di screening CV automatico.{% else %}ATS optimizes layout for applicant tracking systems.{% endif %}</p>
+    </div>
+    <div class="form-group full panel-card">
+      <h3 class="panel-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Backup bozza{% else %}Draft backup{% endif %}</h3>
+      <div class="panel-actions">
+        <button type="button" id="cv-export-draft">{% if LANGUAGE_CODE|slice:":2" == "it" %}Esporta bozza JSON{% else %}Export draft JSON{% endif %}</button>
+        <input type="file" id="cv-import-draft-file" accept=".json" style="display:none;">
+        <button type="button" id="cv-import-draft">{% if LANGUAGE_CODE|slice:":2" == "it" %}Importa bozza JSON{% else %}Import draft JSON{% endif %}</button>
+      </div>
+    </div>
+    <div class="form-group full panel-card" data-section="experience">
+      <h3 class="panel-title" style="margin:0 0 8px 0;">{% if LANGUAGE_CODE|slice:":2" == "it" %}Esperienze{% else %}{% trans "Experience" %}{% endif %}</h3>
+      <div id="cv-experience-list" class="repeat-list"></div>
+      <div class="panel-actions">
+        <button type="button" id="cv-add-experience">{% if LANGUAGE_CODE|slice:":2" == "it" %}Aggiungi esperienza{% else %}Add experience{% endif %}</button>
+      </div>
+    </div>
+    <div class="form-group full panel-card" data-section="education">
+      <h3 class="panel-title" style="margin:0 0 8px 0;">{% trans "Education" %}</h3>
+      <div id="cv-education-list" class="repeat-list"></div>
+      <div class="panel-actions">
+        <button type="button" id="cv-add-education">{% if LANGUAGE_CODE|slice:":2" == "it" %}Aggiungi formazione{% else %}Add education{% endif %}</button>
+      </div>
+    </div>
+    <div class="form-group full panel-card" data-section="skills">
+      <h3 class="panel-title" style="margin:0 0 8px 0;">{% trans "Skills (comma separated)" %}</h3>
+      <div id="cv-skill-list" class="repeat-list"></div>
+      <div class="panel-actions">
+        <button type="button" id="cv-add-skill">{% if LANGUAGE_CODE|slice:":2" == "it" %}Aggiungi competenza{% else %}Add skill{% endif %}</button>
+      </div>
+    </div>
+    <div class="form-group full panel-card" data-section="languages">
+      <h3 class="panel-title" style="margin:0 0 8px 0;">{% trans "Languages" %}</h3>
+      <div id="cv-language-list" class="repeat-list"></div>
+      <div class="panel-actions">
+        <button type="button" id="cv-add-language">{% if LANGUAGE_CODE|slice:":2" == "it" %}Aggiungi lingua{% else %}Add language{% endif %}</button>
+      </div>
+    </div>
+    <div class="form-group full">
+      <label for="cv-certifications">{% trans "Certifications (optional)" %}</label>
+      <textarea id="cv-certifications" rows="3" placeholder="{% trans 'One per line: certification - issuer - year' %}"></textarea>
+    </div>
+    <div class="form-group full">
+      <label for="cv-projects">{% trans "Projects (optional)" %}</label>
+      <textarea id="cv-projects" rows="4" placeholder="{% trans 'One per line: project - tools - measurable result' %}"></textarea>
+    </div>
+    <div class="form-group full">
+      <label for="cv-achievements">{% trans "Achievements (optional)" %}</label>
+      <textarea id="cv-achievements" rows="3" placeholder="{% trans 'One per line: achievement + metric' %}"></textarea>
+    </div>
+    <div class="form-group full panel-card">
+      <h3 class="panel-title" style="margin:0 0 8px 0;">{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima live{% else %}Live preview{% endif %}</h3>
+      <div id="cv-preview" class="mini-preview"></div>
+      <div id="cv-quality" class="quality-box"></div>
+    </div>
+  </div>
+
+  <div id="cv-result" class="result-area hidden"></div>
+  <div class="button-group">
+    <button type="button" id="cv-generate">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera CV{% else %}Generate CV{% endif %}</button>
+    <div class="export-controls" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Esportazione CV{% else %}CV export{% endif %}">
+      <input type="hidden" id="cv-export-format" class="export-format-input" value="pdf">
+      <div class="format-toggle-group" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Formato esportazione{% else %}Export format{% endif %}">
+        <button type="button" class="format-toggle active" data-format="pdf">PDF</button>
+        <button type="button" class="format-toggle" data-format="docx">DOCX</button>
+        <button type="button" class="format-toggle" data-format="txt">TXT</button>
+      </div>
+      <button type="button" id="cv-download" class="hidden">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scarica IT{% else %}Download IT{% endif %}</button>
+    </div>
+  </div>
+
+  <div class="home-link-wrap">
+    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    </a>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.jspdf) {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" integrity="sha384-4xaIisuLEy2lo2HkB2C4rEf7v8jbTb2kuogX6TkuEt9feTWKBSFSOzsqNNbV+sKh" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.docx) {
+  document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="{% static 'tools/js/cv_generator.js' %}?v=20260417a"></script>
+{% endblock %}

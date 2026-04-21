@@ -1,7 +1,8 @@
 {% extends "tools/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Robots.txt guide{% endblock %}
+{% block title %}{% trans "Robots.txt guide" %}{% endblock %}
 {% block body_class %}web-seo help-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
@@ -9,24 +10,24 @@
 
 {% block content %}
 <div class="container">
-    <h1>Robots.txt guide</h1>
-    <p class="tool-desc">Basic tips on how search engines read your robots.txt file.</p>
+    <h1>{% trans "Robots.txt guide" %}</h1>
+    <p class="tool-desc">{% trans "Basic tips on how search engines read your robots.txt file." %}</p>
 
     <div class="help-section">
-        <h2>What is robots.txt?</h2>
-        <p>It is a simple text file at the root of your site (for example <code>https://example.com/robots.txt</code>) that tells search engine crawlers which areas they can or cannot crawl.</p>
+        <h2>{% trans "What is robots.txt?" %}</h2>
+        <p>{% blocktrans %}It is a simple text file at the root of your site (for example <code>https://example.com/robots.txt</code>) that tells search engine crawlers which areas they can or cannot crawl.{% endblocktrans %}</p>
     </div>
 
     <div class="help-section">
-        <h2>Common examples</h2>
+        <h2>{% trans "Common examples" %}</h2>
         <pre><code>User-agent: *
 Disallow: /admin/
 Allow: /</code></pre>
-        <p>This allows all crawlers to access the whole site except the <code>/admin/</code> area.</p>
+        <p>{% blocktrans %}This allows all crawlers to access the whole site except the <code>/admin/</code> area.{% endblocktrans %}</p>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'robots_txt_generator' %}" class="home-link">Back to Robots.txt Generator</a>
+        <a href="{% url 'robots_txt_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Robots.txt"{% else %}Back to "Robots.txt Generator"{% endif %}</a>
     </div>
 </div>
 {% endblock %}

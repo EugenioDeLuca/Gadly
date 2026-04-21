@@ -1,0 +1,35 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Simulatore colloquio{% else %}Interview Simulator Help{% endif %}{% endblock %}
+{% block body_class %}text-tool help-page help-interview-simulator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Simulatore colloquio{% else %}Interview Simulator help{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Come usare chat e suggerimenti per allenarti meglio.{% else %}How to use chat and feedback to practice effectively.{% endif %}</p>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Avvio rapido{% else %}Quick start{% endif %}</h2>
+        <ul>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Scegli uomo o donna per iniziare il flusso domande.{% else %}Choose male or female recruiter to start the flow.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Scrivi risposta e premi Invio per inviare.{% else %}Type your answer and press Enter to send.{% endif %}</li>
+            <li>{% if LANGUAGE_CODE|slice:":2" == "it" %}Usa Shift+Invio per andare a capo senza inviare il messaggio.{% else %}Use Shift+Enter to add a new line without sending.{% endif %}</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Qualità risposte{% else %}Answer quality{% endif %}</h2>
+        <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Dai risposte concrete con esempi, contesto, azione e risultato: riceverai feedback più utile e coerente col ruolo target.{% else %}Give concrete answers with context, action, and outcome to get more relevant feedback for your target role.{% endif %}</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'interview_simulator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Simulatore colloquio"{% else %}Back to "Interview Simulator"{% endif %}</a>
+    </div>
+</div>
+{% endblock %}
+

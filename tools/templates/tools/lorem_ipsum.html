@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Lorem Ipsum Generator{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Lorem Ipsum Generator" %}{% endblock %}
 {% block body_class %}web-seo lorem-ipsum{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
@@ -31,31 +32,31 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Lorem Ipsum Generator</h1>
-    <p class="tool-desc">Generate placeholder text for mockups and drafts.</p>
+    <h1>{% trans "Lorem Ipsum Generator" %}</h1>
+    <p class="tool-desc">{% trans "Generate placeholder text for mockups and drafts." %}</p>
     <div class="form-group">
-        <label>Type</label>
+        <label>{% trans "Type" %}</label>
         <div class="text-tool-select" id="lorem-type-wrap" data-value="paragraphs">
-            <button type="button" class="text-tool-select-trigger">Paragraphs</button>
+            <button type="button" class="text-tool-select-trigger">{% trans "Paragraphs" %}</button>
             <ul class="text-tool-select-menu">
-                <li data-value="paragraphs" class="selected">Paragraphs</li>
-                <li data-value="sentences">Sentences</li>
-                <li data-value="words">Words</li>
+                <li data-value="paragraphs" class="selected">{% trans "Paragraphs" %}</li>
+                <li data-value="sentences">{% trans "Sentences" %}</li>
+                <li data-value="words">{% trans "Words" %}</li>
             </ul>
         </div>
     </div>
     <div class="form-group">
-        <label for="lorem-count">Count</label>
-        <input type="number" id="lorem-count" value="3" min="1" max="1000000" placeholder="e.g. 1000" />
+        <label for="lorem-count">{% trans "Count" %}</label>
+        <input type="number" id="lorem-count" value="3" min="1" max="1000000" placeholder='{% trans "e.g. 1000" %}' />
     </div>
     <div class="button-group">
-        <button type="button" id="btn-generate">Generate</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

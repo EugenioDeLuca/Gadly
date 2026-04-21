@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     var urlInput = document.getElementById("url-input");
     var btnExtract = document.getElementById("btn-extract");
     var resultArea = document.getElementById("result-area");
@@ -8,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
         resultArea.classList.remove("hidden");
         if (!url) {
             resultArea.classList.add("error");
-            resultArea.textContent = "Please enter a sitemap URL";
+            resultArea.textContent = t("Please enter a sitemap URL");
             return;
         }
         resultArea.classList.remove("error");
-        resultArea.innerHTML = "Loading...";
+        resultArea.innerHTML = t("Loading...");
         fetch("/api/sitemap-extract/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             resultArea.classList.remove("error");
             if (!data.urls || data.urls.length === 0) {
-                resultArea.innerHTML = "<em>No URLs found in sitemap.</em>";
+                resultArea.innerHTML = "<em>" + t("No URLs found in sitemap.") + "</em>";
                 return;
             }
             resultArea.innerHTML = "<ul class='url-list'>" + data.urls.map(function(u) {
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(function() {
             resultArea.classList.add("error");
-            resultArea.textContent = "Request failed";
+            resultArea.textContent = t("Request failed");
         });
     });
 });

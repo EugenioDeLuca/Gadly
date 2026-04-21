@@ -1,9 +1,10 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Username Generator{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Username Generator" %}{% endblock %}
 {% block body_class %}text-tool username-gen{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260421b">
 <style>
 .username-gen .form-hint { display: block; font-size: 0.85rem; color: #7f8c8d; margin-top: 4px; }
 .username-gen .button-group button { min-width: 140px; }
@@ -20,54 +21,230 @@
     .username-gen .button-group {
         width: 100%;
         justify-content: space-between;
+        margin-bottom: 0px;
     }
     .username-gen .button-group #btn-copy { margin-left: auto; }
+    .username-gen .result-area { margin-top: 12px; }
 }
 @media (max-width: 768px) {
     .username-gen .button-group { justify-content: space-between; }
+}
+/* Mobile: nessun effetto hover (no scale), effetto solo al tap */
+@media (max-width: 768px) {
+    body.username-gen .button-group button,
+    body.username-gen .button-group button:hover,
+    body.username-gen .button-group button:focus {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.username-gen .button-group button:active {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+        border-color: #002d5c !important;
+        color: #003f7f !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.username-gen .button-group button,
+    body.dark-mode.username-gen .button-group button:hover,
+    body.dark-mode.username-gen .button-group button:focus {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.dark-mode.username-gen .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.username-gen #btn-copy.copied,
+    body.username-gen #btn-copy.copied:hover,
+    body.username-gen #btn-copy.copied:active {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    body.dark-mode.username-gen #btn-copy.copied,
+    body.dark-mode.username-gen #btn-copy.copied:hover,
+    body.dark-mode.username-gen #btn-copy.copied:active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-trigger,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:hover,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:active,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:focus {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-menu {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-menu li {
+        color: #003f7f !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-menu li:hover {
+        background: rgba(0, 63, 127, 0.08) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:hover,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:active,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:focus {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-menu {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-menu li {
+        color: var(--text-secondary) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-menu li:hover {
+        background: rgba(0, 63, 127, 0.2) !important;
+    }
+}
+/* Risultato come Caption Generator: classi caption-* (checkbox, Seleziona tutto, nota grigia). */
+.username-gen .result-area:not(.error) {
+    white-space: normal;
+}
+body.dark-mode.username-gen .site-main .container .result-area:not(.error) {
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+}
+.username-gen .result-area .caption-copy-footnote {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin: 14px 0 0 0;
+    line-height: 1.45;
+    text-align: center;
+}
+body.dark-mode.username-gen .site-main .container .result-area:not(.error) .caption-copy-footnote {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
+.username-gen .result-area .caption-results-header {
+    margin-bottom: 12px;
+}
+.username-gen .result-area .caption-results-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 6px 0;
+    color: #003f7f;
+}
+.username-gen .result-area .caption-select-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    max-width: 100%;
+    align-items: stretch;
+}
+.username-gen .result-area .caption-select-action-btn {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 15em;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 2px solid #003f7f;
+    background: transparent;
+    color: #003f7f;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.username-gen .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08);
+    border-color: #0056b3;
+    color: #0056b3;
+}
+.username-gen .result-area .caption-select-action-btn:active {
+    transform: scale(0.98);
+}
+.username-gen .result-area .caption-results-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    line-height: 1.55;
+}
+.username-gen .result-area .caption-results-list li.caption-result-row {
+    margin-bottom: 12px;
+}
+.username-gen .result-area .caption-results-list li.caption-result-row:last-child {
+    margin-bottom: 0;
+}
+body.dark-mode.username-gen .site-main .container .result-area:not(.error) .caption-results-title {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.username-gen .site-main .container .result-area .caption-select-action-btn {
+    border: 2px solid #003f7f !important;
+    background: transparent !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.username-gen .site-main .container .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08) !important;
+    border-color: #0056b3 !important;
+    color: #0056b3 !important;
+    -webkit-text-fill-color: #0056b3 !important;
 }
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Username Generator</h1>
-    <p class="tool-desc">Generate random usernames for social media, games, or profiles.</p>
+    <h1>{% trans "Username Generator" %}</h1>
+    <p class="tool-desc">{% trans "Generate random usernames for social media, games, or profiles." %}</p>
     <div class="text-tool-row">
         <div class="form-group">
-            <label>Name (optional)</label>
-            <input type="text" id="username-base-name" name="base_name" placeholder="e.g. Marco" maxlength="30" autocomplete="off" value="" />
-            <span class="form-hint">If you add a name, usernames will be based on it.</span>
+            <label>{% trans "Name (optional)" %}</label>
+            <input type="text" id="username-base-name" name="base_name" placeholder='{% trans "e.g. Marco" %}' maxlength="30" autocomplete="off" value="" />
+            <span class="form-hint">{% trans "If you add a name, usernames will be based on it." %}</span>
         </div>
         <div class="form-group">
-            <label>Style</label>
+            <label>{% trans "Style" %}</label>
             <div class="text-tool-select" id="username-style-wrap" data-value="word_number">
-                <button type="button" class="text-tool-select-trigger">Word + Number (e.g. cosmic42)</button>
+                <button type="button" class="text-tool-select-trigger">{% trans "Word + Number (e.g. cosmic42)" %}</button>
                 <ul class="text-tool-select-menu">
-                    <li data-value="word_number" class="selected">Word + Number (e.g. cosmic42)</li>
-                    <li data-value="word_number_at">With @ (e.g. @cosmic42)</li>
-                    <li data-value="word_at_number">Word@Number (e.g. cosmic@42)</li>
-                    <li data-value="word_at_word">Word@Word (e.g. cosmic@panda)</li>
-                    <li data-value="word_word">Two words (e.g. cosmic_panda)</li>
-                    <li data-value="adjective_noun">Adjective + Noun (e.g. happy_cloud)</li>
-                    <li data-value="random_chars">Random mix</li>
+                    <li data-value="word_number" class="selected">{% trans "Word + Number (e.g. cosmic42)" %}</li>
+                    <li data-value="word_number_at">{% trans "With @ (e.g. @cosmic42)" %}</li>
+                    <li data-value="word_at_number">{% trans "Word@Number (e.g. cosmic@42)" %}</li>
+                    <li data-value="word_at_word">{% trans "Word@Word (e.g. cosmic@panda)" %}</li>
+                    <li data-value="word_word">{% trans "Two words (e.g. cosmic_panda)" %}</li>
+                    <li data-value="adjective_noun">{% trans "Adjective + Noun (e.g. happy_cloud)" %}</li>
+                    <li data-value="random_chars">{% trans "Random mix" %}</li>
                 </ul>
             </div>
         </div>
         <div class="form-group">
-            <label>How many</label>
+            <label>{% trans "How many" %}</label>
             <input type="number" id="username-count" value="5" min="1" max="5000" />
         </div>
     </div>
     <div class="button-group">
-        <button type="button" id="btn-generate">Generate</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/username_generator.js' %}?v=2"></script>
+<script src="{% static 'tools/js/username_generator.js' %}?v=20260419e"></script>
 {% endblock %}

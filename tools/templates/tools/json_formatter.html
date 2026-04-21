@@ -1,6 +1,8 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}JSON Formatter{% endblock %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% block title %}{% trans "JSON Formatter" %}{% endblock %}
 {% block body_class %}text-tool json-formatter{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -34,6 +36,7 @@
     gap: 10px;
     width: 100%;
     max-width: 100%;
+    margin-bottom: 0px;
 }
 .json-formatter .button-group #btn-copy {
     margin-left: auto;
@@ -42,7 +45,7 @@
     padding: 20px;
     min-height: 100px;
     margin-top: 0;
-    margin-bottom: 0; /* distanza sotto gestita dalla variante errore */
+    margin-bottom: 12px; /* 12px tra risultato e bottoni (desktop + mobile) */
     border-radius: 12px;
     background: #f8fcff;
     border: 2px dashed #b8d4f0;
@@ -103,28 +106,28 @@ body.dark-mode .json-formatter .json-result.error {
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>JSON Formatter</h1>
-    <p class="tool-desc">Format, minify, or validate JSON. Paste your JSON below.</p>
+    <h1>{% trans "JSON Formatter" %}</h1>
+    <p class="tool-desc">{% trans "Format, minify, or validate JSON. Paste your JSON below." %}</p>
     <p class="tool-help">
-        <a href="{% url 'help_json_guide' %}">What is JSON and how to fix common errors</a>
+        <a href="{% url 'help_json_guide' %}">{% trans "What is JSON and how to fix common errors" %}</a>
     </p>
 
     <div class="form-group">
-        <label for="json-input">JSON input</label>
-        <textarea id="json-input" placeholder='e.g. {"name":"John","age":30}' rows="8"></textarea>
+        <label for="json-input">{% trans "JSON input" %}</label>
+        <textarea id="json-input" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:30}{% else %}e.g. {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:30}{% endif %}" rows="8"></textarea>
     </div>
 
     <div id="json-result" class="json-result hidden" aria-live="polite"></div>
 
     <div class="button-group">
-        <button type="button" id="btn-format">Format</button>
-        <button type="button" id="btn-minify">Minify</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-format">{% trans "Format" %}</button>
+        <button type="button" id="btn-minify">{% trans "Minify" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

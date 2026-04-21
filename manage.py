@@ -3,7 +3,7 @@
 import os
 import sys
 
-# Auto-use venv if available (ensures yt-dlp and other deps work)
+# Auto-use venv if available (ensures project deps work)
 _venv_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'venv', 'bin', 'python')
 if os.path.exists(_venv_py) and not sys.executable.startswith(os.path.dirname(_venv_py)):
     os.execv(_venv_py, [_venv_py] + sys.argv)

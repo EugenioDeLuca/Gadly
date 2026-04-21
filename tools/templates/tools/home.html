@@ -1,142 +1,172 @@
 {% extends "tools/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}Gadly{% endblock %}
 {% block body_class %}homepage{% if user.is_authenticated %} user-authenticated{% endif %}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=30">
 {% endblock %}
 
 {% block content %}
 <div id="login-required-modal" class="login-required-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="login-required-text">
     <div class="login-required-backdrop"></div>
     <div class="login-required-box">
-        <p id="login-required-text" class="login-required-text">You cannot use this feature. Please log in.</p>
+        <p id="login-required-text" class="login-required-text">{% trans "You cannot use this feature. Please log in." %}</p>
         <div class="login-required-buttons">
-            <a href="{% url 'login' %}?next={{ request.path }}" class="login-required-btn">Log in</a>
-            <button type="button" class="login-required-btn login-required-btn--close">Close</button>
+            <a href="{% url 'login' %}?next={{ request.path }}" class="login-required-btn">{% trans "Log in" %}</a>
+            <button type="button" class="login-required-btn login-required-btn--close">{% trans "Close" %}</button>
         </div>
     </div>
 </div>
 <div class="container">
 
-    <p class="intro">Welcome to Gadly – free online tools for text, files, social media, web and more.</p>
-
+    <p class="intro">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</p>
     <div class="search-wrap">
-        <input type="text" id="tool-search" placeholder="Search tools..." class="tool-search-input" autocomplete="off">
+        <input type="text" id="tool-search" placeholder="{% trans 'Search tools...' %}" class="tool-search-input" autocomplete="off">
     </div>
 
     <section class="shortcuts-section" id="shortcuts-section" style="display:none">
-        <h2 class="shortcuts-title">Quick access</h2>
+        <h2 class="shortcuts-title">{% trans "Quick access" %}</h2>
         <div class="shortcuts-grid" id="shortcuts-grid"></div>
     </section>
 
+    <div class="home-categories-wrap" id="home-categories-wrap">
     <!-- Text Tools -->
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text">
-            <span class="category-btn-label">Text Tools</span>
+    <section class="tool-section" data-icon="T">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text" data-icon="📝" data-icon-src="{% static 'tools/images/icons/text.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/text.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Text Tools" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Text" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-text">
-            <div class="tool-btn-wrap"><a href="{% url 'word_counter' %}" class="tool-btn">Word Counter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'translator' %}" class="tool-btn">Translator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'markdown_preview' %}" class="tool-btn">Markdown Preview</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'remove_spaces' %}" class="tool-btn">Remove Spaces</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'username_generator' %}" class="tool-btn">Username Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'diff_checker' %}" class="tool-btn">Diff Checker</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'json_formatter' %}" class="tool-btn">JSON Formatter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'case_converter' %}" class="tool-btn">Case Converter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'uuid_generator' %}" class="tool-btn">UUID Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'word_counter' %}" class="tool-btn">{% trans "Word Counter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'translator' %}" class="tool-btn">{% trans "Translator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'markdown_preview' %}" class="tool-btn">{% trans "Markdown Preview" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'remove_spaces' %}" class="tool-btn">{% trans "Remove Spaces" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'username_generator' %}" class="tool-btn">{% trans "Username Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'diff_checker' %}" class="tool-btn">{% trans "Diff Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'json_formatter' %}" class="tool-btn">{% trans "JSON Formatter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'case_converter' %}" class="tool-btn">{% trans "Case Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'uuid_generator' %}" class="tool-btn">{% trans "UUID Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social">
-            <span class="category-btn-label">Social Media</span>
+    <section class="tool-section" data-icon="S">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social" data-icon="📱" data-icon-src="{% static 'tools/images/icons/social.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/social.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Social Media" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Social" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-social">
-            <div class="tool-btn-wrap"><a href="{% url 'bio_generator' %}" class="tool-btn">Bio Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'hashtag_generator' %}" class="tool-btn">Hashtag Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'caption_generator' %}" class="tool-btn">Caption Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'video_downloader' %}" class="tool-btn">Video Downloader</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'bio_generator' %}" class="tool-btn">{% trans "Bio Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'hashtag_generator' %}" class="tool-btn">{% trans "Hashtag Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'caption_generator' %}" class="tool-btn">{% trans "Caption Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file">
-            <span class="category-btn-label">File Tools</span>
+    <section class="tool-section" data-icon="C">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-career" id="category-career" data-icon="💼" data-icon-src="{% static 'tools/images/icons/text.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/text.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Career & CV" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Career" %}</span>
+            <span class="category-btn-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="tool-grid" id="tool-grid-career">
+            <div class="tool-btn-wrap"><a href="{% url 'cv_generator' %}" class="tool-btn">{% trans "CV Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'cv_optimizer' %}" class="tool-btn">{% trans "CV Optimizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'cover_letter_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'application_email_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'interview_simulator' %}" class="tool-btn">{% trans "Interview Simulator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+        </div>
+    </section>
+
+    <section class="tool-section" data-icon="F">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file" data-icon="📁" data-icon-src="{% static 'tools/images/icons/file.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/file.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "File Tools" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "File" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-file">
-            <div class="tool-btn-wrap"><a href="{% url 'file_analyzer' %}" class="tool-btn">File Analyzer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'pdf_merger' %}" class="tool-btn">PDF Merge</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'pdf_split' %}" class="tool-btn">PDF Split</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'file_analyzer' %}" class="tool-btn">{% trans "File Analyzer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'pdf_merger' %}" class="tool-btn">{% trans "PDF Merge" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'pdf_split' %}" class="tool-btn">{% trans "PDF Split" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image">
-            <span class="category-btn-label">Image & Data Tools</span>
+    <section class="tool-section" data-icon="I">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image" data-icon="🖼️" data-icon-src="{% static 'tools/images/icons/image.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/image.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Image & Data Tools" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Image" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-image">
-            <div class="tool-btn-wrap"><a href="{% url 'image_editor' %}" class="tool-btn">Image Editor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'data_viz' %}" class="tool-btn">Data Visualizer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'color_converter' %}" class="tool-btn">Color Converter</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'image_editor' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'data_viz' %}" class="tool-btn">{% trans "Data Visualizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'color_converter' %}" class="tool-btn">{% trans "Color Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance">
-            <span class="category-btn-label">Finance</span>
+    <section class="tool-section" data-icon="$">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance" data-icon="💰" data-icon-src="{% static 'tools/images/icons/finance.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/finance.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Finance" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Finance" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-finance">
-            <div class="tool-btn-wrap"><a href="{% url 'calc_percentage' %}" class="tool-btn">Percentage</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_vat' %}" class="tool-btn">VAT</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_net_salary' %}" class="tool-btn">Net Salary</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_interest' %}" class="tool-btn">Interest</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_currency' %}" class="tool-btn">Currency</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_loan' %}" class="tool-btn">Loan</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_discount' %}" class="tool-btn">Discount</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_margin' %}" class="tool-btn">Margin</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_split_bill' %}" class="tool-btn">Split Bill</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_percentage' %}" class="tool-btn">{% trans "Percentage" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_vat' %}" class="tool-btn">{% trans "VAT" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_net_salary' %}" class="tool-btn">{% trans "Net Salary" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_interest' %}" class="tool-btn">{% trans "Interest" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_currency' %}" class="tool-btn">{% trans "Currency" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_loan' %}" class="tool-btn">{% trans "Loan" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_discount' %}" class="tool-btn">{% trans "Discount" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_margin' %}" class="tool-btn">{% trans "Margin" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'calc_split_bill' %}" class="tool-btn">{% trans "Split Bill" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web">
-            <span class="category-btn-label">Web / SEO</span>
+    <section class="tool-section" data-icon="W">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web" data-icon="🔍" data-icon-src="{% static 'tools/images/icons/seo.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/seo.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Web / SEO" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "SEO" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-web">
-            <div class="tool-btn-wrap"><a href="{% url 'meta_tag_checker' %}" class="tool-btn">Meta Tag Checker</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'sitemap_extractor' %}" class="tool-btn">Sitemap Extractor</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'robots_txt_generator' %}" class="tool-btn">Robots.txt Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'site_speed_check' %}" class="tool-btn">Site Speed Check</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'lorem_ipsum' %}" class="tool-btn">Lorem Ipsum</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'regex_tester' %}" class="tool-btn">Regex Tester</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'cron_explainer' %}" class="tool-btn">Cron Explainer</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'meta_tag_checker' %}" class="tool-btn">{% trans "Meta Tag Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'sitemap_extractor' %}" class="tool-btn">{% trans "Sitemap Extractor" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'robots_txt_generator' %}" class="tool-btn">{% trans "Robots.txt Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'site_speed_check' %}" class="tool-btn">{% trans "Site Speed Check" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'lorem_ipsum' %}" class="tool-btn">{% trans "Lorem Ipsum" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'regex_tester' %}" class="tool-btn">{% trans "Regex Tester" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'cron_explainer' %}" class="tool-btn">{% trans "Cron Explainer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
-    <section class="tool-section">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security">
-            <span class="category-btn-label">Security & Misc</span>
+    <section class="tool-section" data-icon="L">
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security" data-icon="🔒" data-icon-src="{% static 'tools/images/icons/security.svg' %}">
+            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/security.svg' %}" alt=""></span>
+            <span class="category-btn-label category-btn-label--desktop">{% trans "Security & Misc" %}</span>
+            <span class="category-btn-label category-btn-label--mobile">{% trans "Security" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-security">
-            <div class="tool-btn-wrap"><a href="{% url 'password_gen' %}" class="tool-btn">Password Gen</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'qr_generator' %}" class="tool-btn">QR Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'qr_decoder' %}" class="tool-btn">QR Decoder</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'base64_encoder' %}" class="tool-btn">Base64 Encoder</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'hash_generator' %}" class="tool-btn">Hash Generator</a><button type="button" class="tool-fav" title="Add to favorites" aria-label="Favorite">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'password_gen' %}" class="tool-btn">{% trans "Password Gen" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'qr_generator' %}" class="tool-btn">{% trans "QR Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'qr_decoder' %}" class="tool-btn">{% trans "QR Decoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'base64_encoder' %}" class="tool-btn">{% trans "Base64 Encoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            <div class="tool-btn-wrap"><a href="{% url 'hash_generator' %}" class="tool-btn">{% trans "Hash Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
         </div>
     </section>
 
+    </div>
 </div>
-<script>window.GADLY_USER_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};</script>
 <script src="{% static 'tools/js/home.js' %}"></script>
 {% endblock %}

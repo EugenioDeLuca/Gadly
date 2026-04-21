@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Hash Generator{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Hash Generator" %}{% endblock %}
 {% block body_class %}web-seo hash-generator{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
@@ -18,7 +19,7 @@
 .hash-generator .text-tool-select-menu li:hover { background: #e8f4fd; }
 .hash-generator .text-tool-select-menu li.selected { background: #d0e8f9; font-weight: 600; }
 .hash-generator .text-tool-select.open .text-tool-select-menu li.selected { display: none; }
-.hash-generator .result-area { width: 100%; box-sizing: border-box; margin-top: 0; margin-bottom: 0; padding: 20px; min-height: 60px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; line-height: 1.5; font-family: monospace; }
+.hash-generator .result-area { width: 100%; box-sizing: border-box; margin-top: 12px; margin-bottom: 0; padding: 20px; min-height: 60px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; line-height: 1.5; font-family: monospace; }
 .hash-generator .result-area.hidden { display: none; }
 .hash-generator .result-area.error { margin-bottom: 12px; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
 .hash-generator .button-group { margin-top: 12px; }
@@ -37,32 +38,32 @@ body.dark-mode .hash-generator .result-area.error { background: rgba(220,80,80,0
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Hash Generator</h1>
-    <p class="tool-desc">Generate MD5, SHA-1, SHA-256, or SHA-512 hash from text.</p>
+    <h1>{% trans "Hash Generator" %}</h1>
+    <p class="tool-desc">{% trans "Generate MD5, SHA-1, SHA-256, or SHA-512 hash from text." %}</p>
     <div class="form-group">
-        <label for="hash-algo-wrap">Algorithm</label>
+        <label for="hash-algo-wrap">{% trans "Algorithm" %}</label>
         <div class="text-tool-select" id="hash-algo-wrap" data-value="SHA-256">
-            <button type="button" class="text-tool-select-trigger" id="hash-algo-trigger">SHA-256</button>
+            <button type="button" class="text-tool-select-trigger" id="hash-algo-trigger">{% trans "SHA-256" %}</button>
             <ul class="text-tool-select-menu">
-                <li data-value="SHA-256" class="selected">SHA-256</li>
-                <li data-value="MD5">MD5</li>
-                <li data-value="SHA-1">SHA-1</li>
-                <li data-value="SHA-512">SHA-512</li>
+                <li data-value="SHA-256" class="selected">{% trans "SHA-256" %}</li>
+                <li data-value="MD5">{% trans "MD5" %}</li>
+                <li data-value="SHA-1">{% trans "SHA-1" %}</li>
+                <li data-value="SHA-512">{% trans "SHA-512" %}</li>
             </ul>
         </div>
     </div>
     <div class="form-group">
-        <label for="hash-input">Input</label>
-        <textarea id="hash-input" rows="4" placeholder="Enter text to hash..."></textarea>
+        <label for="hash-input">{% trans "Input" %}</label>
+        <textarea id="hash-input" rows="4" placeholder='{% trans "Enter text to hash..." %}'></textarea>
     </div>
     <div id="result-area" class="result-area hidden" aria-live="polite"></div>
     <div class="button-group">
-        <button type="button" id="btn-generate">Generate</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

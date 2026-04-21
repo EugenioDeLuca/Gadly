@@ -1,0 +1,31 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Ottimizza CV{% else %}CV Optimizer Help{% endif %}{% endblock %}
+{% block body_class %}text-tool help-page help-cv-optimizer{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Ottimizza CV{% else %}CV Optimizer help{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Come ottenere suggerimenti pratici dal tuo CV e dalla job description.{% else %}How to get practical suggestions from your CV and job description.{% endif %}</p>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Formato file{% else %}File format{% endif %}</h2>
+        <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Carica PDF, DOCX o TXT. Se il testo non viene letto correttamente, prova a esportare il CV in PDF testuale (non scansione immagine).{% else %}Upload PDF, DOCX, or TXT. If extraction is poor, export your CV as a text-based PDF (not an image scan).{% endif %}</p>
+    </div>
+
+    <div class="help-section">
+        <h2>{% if LANGUAGE_CODE|slice:":2" == "it" %}Parole chiave{% else %}Keywords{% endif %}</h2>
+        <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Inserisci il ruolo target e, se possibile, la descrizione lavoro completa: il confronto sarà più preciso e utile.{% else %}Add the target role and, when possible, the full job description for more accurate matching.{% endif %}</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'cv_optimizer' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Ottimizza CV"{% else %}Back to "CV Optimizer"{% endif %}</a>
+    </div>
+</div>
+{% endblock %}
+

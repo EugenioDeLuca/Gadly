@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     var userAgent = document.getElementById("user-agent");
     var disallow = document.getElementById("disallow");
     var allow = document.getElementById("allow");
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var ua = uaRaw;
         // Consider empty or default "*" as "not provided" – user must explicitly set it
         if (!ua || ua === "*") {
-            showError("Please enter a User-agent before generating robots.txt");
+            showError(t("Please enter a User-agent before generating robots.txt"));
             return;
         }
         var dis = (disallow.value || "").trim().split(/\r?\n/).filter(Boolean).map(function(s) { return s.trim(); });
@@ -47,10 +48,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!text || resultArea.classList.contains("hidden") || resultArea.classList.contains("error")) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function() {
-                btnCopy.textContent = "Copied!";
+                btnCopy.textContent = gettext('Copied!');
                 btnCopy.classList.add("copied");
                 setTimeout(function() {
-                    btnCopy.textContent = "Copy";
+                    btnCopy.textContent = gettext('Copy');
                     btnCopy.classList.remove("copied");
                 }, 2000);
             }).catch(function() {});
@@ -61,10 +62,10 @@ document.addEventListener("DOMContentLoaded", function() {
             ta.select();
             try {
                 document.execCommand("copy");
-                btnCopy.textContent = "Copied!";
+                btnCopy.textContent = gettext('Copied!');
                 btnCopy.classList.add("copied");
                 setTimeout(function() {
-                    btnCopy.textContent = "Copy";
+                    btnCopy.textContent = gettext('Copy');
                     btnCopy.classList.remove("copied");
                 }, 2000);
             } catch (e) {}

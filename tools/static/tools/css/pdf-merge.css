@@ -10,8 +10,15 @@
 .pdf-merger h1 {
     font-size: 2em;
     color: #003f7f;
-    margin-bottom: 30px;
+    margin: 0 0 8px 0;
     text-align: center;
+}
+
+.pdf-merger .tool-desc {
+    text-align: center;
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
 }
 #pdf-merger-form {
     display: flex;
@@ -216,16 +223,32 @@
 .pdf-merger .choose-file-btn {
     display: inline-block;
     padding: 12px 24px;
-    font-size: 16px;
+    font-size: 16px !important;
     background: var(--btn-primary, #003f7f);
-    color: white;
+    color: #fff !important;
+    font-weight: 400 !important;
+    border: none;
     border-radius: 12px;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
+    min-height: 44px;
+    line-height: 1.2;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .pdf-merger .choose-file-btn:hover {
     background: #dc3545;
+    transform: scale(1.03);
+}
+
+.pdf-merger .choose-file-btn,
+.pdf-merger .choose-file-btn * {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
 }
 
 .pdf-file-input {
@@ -338,7 +361,7 @@
     justify-content: center;
     gap: 12px;
     margin-top: 12px;      /* 12px tra errore/risultato e bottone Merge */
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 .pdf-merger .button-group button {
@@ -360,7 +383,7 @@
 }
 
 .pdf-merger .home-link-wrap {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 

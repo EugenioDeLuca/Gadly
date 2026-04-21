@@ -1,23 +1,26 @@
 document.addEventListener("DOMContentLoaded", function() {
     var searchInput = document.getElementById("tool-search");
     var toolSections = document.querySelectorAll(".homepage .tool-section");
-    var favKey = "gadly-favorites";
+    var storageSuffix = window.GADLY_USER_STORAGE_KEY || "anon";
+    var favKey = "gadly-favorites:" + storageSuffix;
     var userAuthenticated = window.GADLY_USER_AUTHENTICATED === true;
 
-    /* Category accordion (mobile/tablet) */
-    var categoryBtns = document.querySelectorAll(".homepage .category-btn");
     var isMobileView = function() { return window.innerWidth <= 768; };
+
+    /* Category accordion (tablet + mobile) */
+    var categoryBtns = document.querySelectorAll(".homepage .category-btn");
     categoryBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
-            if (!isMobileView()) return;
             var section = btn.closest(".tool-section");
             if (!section) return;
-            var wasOpen = section.classList.contains("is-open");
-            section.classList.toggle("is-open", !wasOpen);
-            btn.setAttribute("aria-expanded", !wasOpen);
+            if (isMobileView()) {
+                var wasOpen = section.classList.contains("is-open");
+                section.classList.toggle("is-open", !wasOpen);
+                btn.setAttribute("aria-expanded", !wasOpen);
+            }
         });
     });
-    /* On resize: remove is-open from all if we switch back to desktop */
+
     window.addEventListener("resize", function() {
         if (!isMobileView()) {
             toolSections.forEach(function(s) { s.classList.remove("is-open"); });
@@ -85,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (searchInput) {
         searchInput.addEventListener("input", function() {
             var q = this.value.trim().toLowerCase();
+            var firstMatch = null;
             toolSections.forEach(function(section) {
                 var btns = section.querySelectorAll(".tool-btn-wrap");
                 var visible = 0;
@@ -96,7 +100,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (match) visible++;
                 });
                 section.style.display = visible > 0 ? "" : "none";
-                if (visible > 0 && isMobileView()) section.classList.add("is-open");
+                if (visible > 0) {
+                    if (!firstMatch) firstMatch = section;
+                    if (isMobileView()) section.classList.add("is-open");
+                } else {
+                    section.classList.remove("is-open");
+                }
             });
         });
     }
@@ -110,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (modal) {
                     modal.style.display = "flex";
                 } else {
-                    alert("You cannot use this feature. Please log in.");
+                    alert(gettext("You cannot use this feature. Please log in."));
                 }
                 return;
             }

@@ -11,6 +11,8 @@ dist/
 build/
 
 # Django
+# Root-level makemessages output shadows tools/locale — ignore it.
+/locale/
 db.sqlite3
 *.sqlite3
 media/

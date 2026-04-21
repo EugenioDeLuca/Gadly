@@ -51,7 +51,7 @@
 }
 
 .web-seo .form-group {
-    margin-bottom: 0; /* distanza verticale gestita da result-area.error (12px sopra/sotto) */
+    margin-bottom: 12px;
 }
 
 .web-seo .form-group label {
@@ -97,7 +97,7 @@
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin: 12px 0 20px 0; /* 12px sopra (errore → bottoni), 20px sotto per respiro verso il resto */
+    margin: 12px 0 12px 0;
 }
 
 .web-seo .button-group button {
@@ -132,6 +132,30 @@
     background: #e74c3c;
 }
 
+body.dark-mode .web-seo .button-group button.copied,
+body.dark-mode .web-seo .button-group button.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+/* Color Converter: avoid forced 52px control height from global mobile styles */
+.color-converter .color-copy-group button {
+    height: auto !important;
+    min-height: 44px !important;
+    max-height: none !important;
+    padding: 12px 24px !important;
+}
+
+/* Color Converter: show 12px spacing only when error is visible */
+#color-converter-error.hidden {
+    display: none !important;
+}
+#color-converter-error.error {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
 .video-downloader .form-group {
     margin-bottom: 12px; /* 12px tra input e messaggio */
 }
@@ -146,7 +170,163 @@
     margin-bottom: 12px; /* 12px sotto l'errore */
 }
 .video-downloader .button-group {
-    margin-top: 0;       /* nessun extra oltre ai 12px dell'errore */
+    margin-top: 12px;    /* 12px tra barra download/risultato e bottone */
+}
+
+.video-downloader .button-group button {
+    min-width: 140px;
+    width: auto;
+    flex: 0 0 auto;
+}
+
+/* Same choose-file button layout as image editor */
+.video-downloader .upload-area {
+    width: 100%;
+    text-align: center;
+    padding: 48px 40px;
+    border: 2px dashed #b8d4f0;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #f8fcff 0%, #e8f4fd 50%, #f0f7fc 100%);
+    margin-bottom: 0;
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 8px rgba(0, 123, 255, 0.04);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.video-downloader .upload-area:hover {
+    border-color: #7eb8f0;
+    box-shadow: inset 0 2px 12px rgba(0, 123, 255, 0.06);
+}
+
+.video-downloader .file-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.video-downloader .file-input-wrapper input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.video-downloader .choose-file-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 400 !important;
+    background: #003f7f;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.video-downloader .choose-file-btn:hover {
+    background: #dc3545;
+    transform: scale(1.03);
+}
+
+.video-downloader .upload-hint {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.video-downloader .format-hint {
+    display: block;
+    margin-top: 8px;
+    color: #4d5a6d;
+    font-size: 0.9rem;
+    font-family: Arial, sans-serif;
+}
+
+/* Converter menu: same visual layout as bio generator */
+.video-downloader .text-tool-select {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+.video-downloader .text-tool-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+}
+
+.video-downloader .text-tool-select-trigger:hover {
+    border-color: #007BFF;
+    background: #f8fcff;
+}
+
+.video-downloader .text-tool-select-trigger::after {
+    content: "";
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    flex-shrink: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #555;
+}
+
+.video-downloader .text-tool-select-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 4px 0 0 0;
+    padding: 6px 0;
+    width: 100%;
+    list-style: none;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 63, 127, 0.15);
+    z-index: 100;
+    display: none;
+}
+
+.video-downloader .text-tool-select.open .text-tool-select-menu {
+    display: block;
+}
+
+.video-downloader .text-tool-select-menu li {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.video-downloader .text-tool-select-menu li:hover {
+    background: #e8f4fd;
+}
+
+.video-downloader .text-tool-select-menu li.selected {
+    background: #d0e8f9;
+    font-weight: 600;
+}
+
+.video-downloader .text-tool-select-menu li[data-disabled="1"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.video-downloader .text-tool-select.open .text-tool-select-menu li.selected {
+    display: none;
 }
 
 .robots-txt-gen .button-group {
@@ -238,6 +418,36 @@
     text-align: center;
 }
 
+/* Meta Tag Checker: 12px tra URL input e risultato (override .web-seo .result-area) */
+body.meta-tag-checker .result-area {
+    margin-top: 12px !important;
+}
+
+/* Sitemap Extractor: 12px tra URL input e risultato */
+body.sitemap-extractor .result-area {
+    margin-top: 12px !important;
+}
+
+/* Robots.txt Generator: 12px tra form e risultato */
+body.robots-txt-gen .result-area {
+    margin-top: 12px !important;
+}
+
+/* Site Speed Check: 12px tra URL input e risultato */
+body.site-speed-check .result-area {
+    margin-top: 12px !important;
+}
+
+/* Regex Tester: 12px tra test string e risultato */
+body.regex-tester .result-area {
+    margin-top: 12px !important;
+}
+
+/* Cron Explainer: 12px tra input e risultato */
+body.cron-explainer .result-area {
+    margin-top: 12px !important;
+}
+
 .web-seo .meta-tag-item {
     margin-bottom: 12px;
     padding: 10px;
@@ -272,7 +482,7 @@
 }
 
 .web-seo .home-link-wrap {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 
@@ -310,14 +520,14 @@
         flex: 1;
         min-width: 140px;
     }
-    /* Robots.txt generator: bottoni affiancati sulla stessa riga in mobile */
+    /* Robots.txt generator: bottoni uno sotto l'altro su mobile */
     .robots-txt-gen .button-group {
-        flex-direction: row;
+        flex-direction: column;
         justify-content: center;
         gap: 10px;
     }
     .robots-txt-gen .button-group button {
-        width: 50%;
+        width: 100%;
         min-width: 0;
     }
     /* Color Converter: bottoni Copy stessa dimensione di prima su mobile */
@@ -365,6 +575,11 @@
     .web-seo .container {
         margin: 8px 8px;
         padding: 20px 14px;
+    }
+
+    .video-downloader .button-group button {
+        width: 100%;
+        min-height: 48px;
     }
 }
 

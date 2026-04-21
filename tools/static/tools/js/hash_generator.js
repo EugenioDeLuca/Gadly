@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+    function t(it, en) { return isItalian ? it : en; }
 
     var algoWrap = document.getElementById('hash-algo-wrap');
     var algoTrigger = document.getElementById('hash-algo-trigger');
@@ -99,7 +101,7 @@
         var text = inputEl.value;
         var algo = getAlgo();
         if (!text || !text.trim()) {
-            showResult('Enter text to hash', true);
+            showResult(t("Inserisci un testo da convertire in hash", "Enter text to hash"), true);
             return;
         }
         var enc = new TextEncoder();
@@ -111,7 +113,7 @@
         crypto.subtle.digest(algo, bytes).then(function (buf) {
             showResult(hex(buf), false);
         }).catch(function (err) {
-            showResult('Error: ' + err.message, true);
+            showResult(t("Errore", "Error") + ": " + err.message, true);
         });
     }
 
@@ -123,9 +125,9 @@
             if (!text || resultEl.classList.contains('hidden') || resultEl.classList.contains('error')) return;
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(function () {
-                    btnCopy.textContent = 'Copied!';
+                    btnCopy.textContent = gettext('Copied!');
                     btnCopy.classList.add('copied');
-                    setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                    setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
                 }).catch(function () {});
             } else {
                 var ta = document.createElement('textarea');
@@ -134,9 +136,9 @@
                 ta.select();
                 try {
                     document.execCommand('copy');
-                    btnCopy.textContent = 'Copied!';
+                    btnCopy.textContent = gettext('Copied!');
                     btnCopy.classList.add('copied');
-                    setTimeout(function () { btnCopy.textContent = 'Copy'; btnCopy.classList.remove('copied'); }, 2000);
+                    setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
                 } catch (e) {}
                 document.body.removeChild(ta);
             }

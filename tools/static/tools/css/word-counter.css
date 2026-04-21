@@ -43,12 +43,13 @@
     text-decoration: none;
 }
 
-/* textarea */
+/* textarea - stesso font di Remove Spaces */
 .word-counter textarea {
     width: 100%;
     box-sizing: border-box;
-    min-height: 220px;
+    min-height: 180px;
     padding: 20px;
+    font-family: Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 12px;
@@ -109,41 +110,61 @@
     margin: 0;
 }
 
-/* buttons */
+/* buttons - solo desktop (mobile in @media max-width 600px) */
+/* Desktop: mostra "Count Words" / "Count Characters" */
+.word-counter .button-group .btn-text-mobile {
+    display: none;
+}
 .word-counter .button-group {
     display: flex;
+    width: 100%;
+    box-sizing: border-box;
     gap: 16px;
     justify-content: space-between;
+    align-items: stretch;
     flex-wrap: nowrap;
 }
 
-.word-counter .container button,
-.word-counter .button-group button {
-    padding: 10px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 12px;
-    border: none;
-    background: #003f7f;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-    height: 44px;
-    min-height: 44px;
-    box-sizing: border-box;
-    /* Desktop/tablet: larghezza minima comoda, ma senza forzare 260px rigidi */
-    min-width: 160px;
-}
-
-/* Desktop/tablet: allarga solo il primo bottone (Count Words) per avvicinarlo alla larghezza di Count Characters */
-.word-counter .button-group button:first-child {
+/* Larghezza fissa 200px; space-between = primo a sinistra, secondo a destra */
+.word-counter .button-group .wc-action-btn {
+    flex: 0 0 200px;
+    width: 200px;
     min-width: 200px;
+    max-width: 200px;
+    box-sizing: border-box;
 }
 
-.word-counter .container button:hover,
-.word-counter .button-group button:hover {
-    background: #0056b3;
-    transform: scale(1.03);
+@media (min-width: 769px) {
+    .word-counter .container button,
+    .word-counter .button-group button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+        background: #003f7f;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+        min-height: 44px;
+        height: auto;
+        box-sizing: border-box;
+    }
+    .word-counter .container button:hover,
+    .word-counter .button-group button:hover {
+        background: #0056b3;
+        transform: scale(1.03);
+    }
+}
+
+/* Desktop: Back to Home - 12px come gli altri tool */
+.word-counter .home-link-wrap {
+    margin-top: 12px;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -151,44 +172,154 @@
         margin: 20px 16px;
         padding: 28px 24px;
     }
-}
-
-@media (max-width: 600px) {
-    .word-counter .container {
-        margin: 12px 10px;
-        padding: 24px 18px;
-    }
-    .word-counter h1 {
-        font-size: 1.5em;
-    }
-    .word-counter textarea {
-        min-height: 160px;
-        font-size: 16px;
-    }
-    /* Mobile: two buttons on one row, same width, no wrapping */
-    .word-counter .button-group {
-        flex-direction: row;
-        gap: 8px;
-        justify-content: center;
-    }
-    .word-counter .button-group button {
-        flex: 1 1 0;
-        min-width: 0;
-        width: auto;
-        min-height: 48px;
-        white-space: nowrap; /* avoid "Count Characters" wrapping */
-        text-align: center;
-    }
-    /* Remove desktop min-width override on first button in mobile */
-    .word-counter .button-group button:first-child {
-        min-width: 0;
+    body.word-counter .button-group button,
+    body.word-counter form .button-group button {
+        min-height: 52px !important;
+        max-height: 52px !important;
+        height: 52px !important;
+        box-sizing: border-box;
     }
 }
 
 @media (max-width: 480px) {
+    /* Mobile: container trasparente, textarea più largo (meno margini) */
+    body.word-counter .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
     .word-counter .container {
-        margin: 8px 8px;
-        padding: 20px 14px;
+        max-width: 100%;
+    }
+    .word-counter h1 {
+        font-size: 1.6em;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    body.word-counter.help-page .container h1 {
+        text-align: left;
+    }
+    .word-counter .tool-help {
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+    .word-counter textarea,
+    .word-counter textarea:focus {
+        min-height: 280px;
+        font-family: Arial, sans-serif;
+        font-size: 17px;
+        padding: 16px;
+        margin-bottom: 16px;
+        line-height: 1.5;
+        width: 100%;
+        box-sizing: border-box;
+        background: #f8f9fa;
+        border-color: #ddd;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.word-counter .site-main .container textarea,
+    body.dark-mode.word-counter .site-main .container textarea:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode .word-counter textarea::placeholder {
+        color: #555 !important;
+    }
+    /* Mobile: risultato senza contenitore, in rosso */
+    .word-counter .result {
+        margin-bottom: 20px;
+        padding: 0;
+        min-height: 0;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .word-counter .result-item {
+        gap: 2px;
+    }
+    .word-counter .result-label {
+        color: #666;
+    }
+    .word-counter .result-value {
+        font-size: 1.5em;
+        color: #c00 !important;
+        font-weight: bold;
+    }
+    .word-counter .result-placeholder {
+        color: #999;
+    }
+    body.dark-mode .word-counter .result-value {
+        color: #ff6b6b !important;
+    }
+    .word-counter .tool-desc {
+        margin-bottom: 8px;
+    }
+    .word-counter .button-group {
+        flex-direction: column;
+        gap: 16px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+    body.word-counter .button-group .wc-action-btn,
+    body.word-counter .button-group button,
+    body.word-counter form .button-group button {
+        flex: 1 1 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        font-size: 1.05rem;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+        background: var(--btn-primary, #003f7f);
+        color: white;
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: transform 0.05s ease-out;
+    }
+    body.word-counter .site-main .container .button-group button:focus {
+        transform: scale(1) !important;
+    }
+    body.word-counter .site-main .container .button-group button:hover,
+    body.word-counter .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border-color: #003f7f !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.word-counter .site-main .container .button-group button:active {
+        transform: scale(1.05) !important;
+    }
+    body.dark-mode.word-counter .site-main .container .button-group button:focus {
+        transform: scale(1) !important;
+    }
+    body.dark-mode.word-counter .site-main .container .button-group button:hover,
+    body.dark-mode.word-counter .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.word-counter .site-main .container .button-group button:active {
+        transform: scale(1.05) !important;
+    }
+    /* Desktop text su mobile - nascondi versione corta se presente */
+    .word-counter .button-group .btn-text-mobile {
+        display: none;
+    }
+    .word-counter .button-group .btn-text-desktop {
+        display: inline;
     }
 }
+
 

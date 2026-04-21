@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}UUID Generator{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "UUID Generator" %}{% endblock %}
 {% block body_class %}text-tool uuid-generator{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -9,10 +10,13 @@
 .uuid-generator .form-group input[type="number"] { -moz-appearance: textfield; }
 .uuid-generator .form-group input[type="number"]::-webkit-outer-spin-button,
 .uuid-generator .form-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.uuid-generator .button-group { width: 100%; justify-content: space-between; }
+.uuid-generator .button-group { width: 100%; justify-content: space-between; margin-bottom: 0px; }
 .uuid-generator .button-group button { min-width: 140px; }
 .uuid-generator .uuid-result { padding: 20px; min-height: 80px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-all; font-size: 0.9rem; line-height: 1.8; font-family: monospace; }
 .uuid-generator .uuid-result.hidden { display: none; }
+@media (min-width: 769px) {
+    .uuid-generator .uuid-result { margin-top: 12px !important; }
+}
 @media (max-width: 768px) {
     .uuid-generator .form-group input { max-width: 100%; width: 100%; }
     .uuid-generator .button-group { justify-content: space-between; }
@@ -20,26 +24,27 @@
 body.dark-mode .uuid-generator .uuid-result { background: rgba(255,255,255,0.05); border-color: var(--border-color); }
 </style>
 {% endblock %}
+{% get_current_language as CURRENT_LANGUAGE %}
 {% block content %}
 <div class="container">
-    <h1>UUID Generator</h1>
-    <p class="tool-desc">Generate UUID v4 identifiers. Choose how many you need.</p>
+    <h1>{% trans "UUID Generator" %}</h1>
+    <p class="tool-desc">{% trans "Generate UUID v4 identifiers. Choose how many you need." %}</p>
 
     <div class="form-group">
-        <label for="uuid-count">Number of UUIDs</label>
-        <input type="number" id="uuid-count" value="1" min="1" max="10000" placeholder="e.g. 10">
+        <label for="uuid-count">{% trans "Number of UUIDs" %}</label>
+        <input type="number" id="uuid-count" value="" min="1" max="10000" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. 10{% else %}e.g. 10{% endif %}">
     </div>
 
     <div class="button-group">
-        <button type="button" id="btn-generate">Generate</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
 
     <div id="uuid-result" class="uuid-result hidden" aria-live="polite"></div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

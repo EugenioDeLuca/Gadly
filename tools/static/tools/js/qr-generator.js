@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+    function t(it, en) { return isItalian ? it : en; }
     const input = document.getElementById("qr-input");
     const btn = document.getElementById("generate-qr");
     const output = document.getElementById("qr-output");
@@ -67,12 +69,12 @@ document.addEventListener("DOMContentLoaded", function() {
         colorLight.value = "#ffffff";
         document.querySelectorAll(".qr-preset").forEach(function(b) { b.classList.remove("selected"); });
         qrSizeWrap.dataset.value = "256";
-        qrSizeWrap.querySelector(".qr-select-trigger").textContent = "Medium (256px)";
+        qrSizeWrap.querySelector(".qr-select-trigger").textContent = t("Medio (256px)", "Medium (256px)");
         qrSizeWrap.querySelectorAll(".qr-select-menu li").forEach(function(li) {
             li.classList.toggle("selected", li.dataset.value === "256");
         });
         qrEcWrap.dataset.value = "L";
-        qrEcWrap.querySelector(".qr-select-trigger").textContent = "Low (7%)";
+        qrEcWrap.querySelector(".qr-select-trigger").textContent = t("Basso (7%)", "Low (7%)");
         qrEcWrap.querySelectorAll(".qr-select-menu li").forEach(function(li) {
             li.classList.toggle("selected", li.dataset.value === "L");
         });
@@ -103,14 +105,14 @@ document.addEventListener("DOMContentLoaded", function() {
     btn.addEventListener("click", function() {
         var text = input.value.trim();
         if (!text) {
-            showError("Please enter some text or a URL, or load a file");
+            showError(t("Inserisci testo o URL, oppure carica un file", "Please enter some text or a URL, or load a file"));
             return;
         }
         hideError();
         output.innerHTML = "";
         try {
             if (typeof QRCode === "undefined") {
-                showError("QR library not loaded. Please refresh the page");
+                showError(t("Libreria QR non caricata. Aggiorna la pagina", "QR library not loaded. Please refresh the page"));
                 return;
             }
             var size = getQrSize();
@@ -124,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             resultDiv.classList.add("show");
         } catch (e) {
-            showError("Error generating QR code: " + (e.message || e));
+            showError(t("Errore durante la generazione del QR code", "Error generating QR code") + ": " + (e.message || e));
             resultDiv.classList.remove("show");
         }
     });
@@ -143,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
             link.href = img.src;
             link.click();
         } else {
-            showError("Generate a QR code first");
+            showError(t("Genera prima un QR code", "Generate a QR code first"));
         }
     });
 
@@ -162,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
             reader.readAsText(file);
         } else if (ext === "pdf") {
             if (typeof pdfjsLib === "undefined") {
-                showError("PDF library not loaded. Please refresh the page");
+                showError(t("Libreria PDF non caricata. Aggiorna la pagina", "PDF library not loaded. Please refresh the page"));
                 this.value = "";
                 return;
             }
@@ -182,10 +184,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     return Promise.all(promises).then(function(texts) {
                         input.value = texts.join("\n\n");
                         hideError();
-                    }).catch(function() { showError("Error reading PDF"); });
-                }).catch(function() { showError("Error loading PDF"); });
+                    }).catch(function() { showError(t("Errore nella lettura del PDF", "Error reading PDF")); });
+                }).catch(function() { showError(t("Errore nel caricamento del PDF", "Error loading PDF")); });
             };
-            reader.onerror = function() { showError("Error reading file"); };
+            reader.onerror = function() { showError(t("Errore nella lettura del file", "Error reading file")); };
             reader.readAsArrayBuffer(file);
         }
         this.value = "";

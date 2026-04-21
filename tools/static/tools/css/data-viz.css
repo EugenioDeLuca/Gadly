@@ -13,8 +13,15 @@
 .data-viz h1 {
     font-size: 2em;
     color: #003f7f;
-    margin-bottom: 25px;
+    margin: 0 0 8px 0;
     text-align: center;
+}
+
+.data-viz .tool-desc {
+    text-align: center;
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
 }
 
 .viz-controls {
@@ -199,7 +206,7 @@
 
 /* Chart type + Generate sulla stessa riga, allineati */
 .data-viz .chart-options {
-    margin-bottom: 24px;
+    margin-bottom: 0px;
 }
 
 .data-viz .chart-options #btn-generate {
@@ -227,7 +234,7 @@
 }
 
 .data-viz .home-link-wrap {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 
@@ -245,6 +252,7 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
+    margin-top: 12px;
     padding: 20px;
     box-sizing: border-box;
     background: #fafafa;

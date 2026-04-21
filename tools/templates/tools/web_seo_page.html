@@ -1,0 +1,31 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Web / SEO Tools" %}{% endblock %}
+{% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=12">
+<style>
+.text-tools-page .container { max-width: 900px; }
+.text-tools-page-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-top:16px; }
+.text-tools-page .tool-btn-wrap { width:180px; display:flex; justify-content:center; }
+.text-tools-page .tool-btn { width:180px; height:56px; display:flex; align-items:center; justify-content:center; text-align:center; background:#003f7f; color:#fff; font-weight:600; font-size:1em; text-decoration:none; border-radius:12px; transition:transform .2s, background .2s; }
+.text-tools-page .tool-btn:hover { background:#0056b3; transform:scale(1.05); }
+@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% trans "Web / SEO Tools" %}</h1>
+  <p class="tool-desc">{% trans "Quick access to web and SEO tools." %}</p>
+  <div class="text-tools-page-grid">
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'meta_tag_checker' %}">{% trans "Meta Tag Checker" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'sitemap_extractor' %}">{% trans "Sitemap Extractor" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'robots_txt_generator' %}">{% trans "Robots.txt Generator" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'site_speed_check' %}">{% trans "Site Speed Check" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'lorem_ipsum' %}">{% trans "Lorem Ipsum" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'regex_tester' %}">{% trans "Regex Tester" %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cron_explainer' %}">{% trans "Cron Explainer" %}</a></div>
+  </div>
+</div>
+{% endblock %}

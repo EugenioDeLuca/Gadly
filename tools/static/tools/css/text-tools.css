@@ -227,6 +227,17 @@
     background: #0056b3;
     transform: scale(1.03);
 }
+/* Username gen: MAI blu/scale al hover */
+body.username-gen .text-tool .button-group button:hover {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    transform: none !important;
+    transition: none !important;
+}
+body.dark-mode.username-gen .text-tool .button-group button:hover {
+    background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+    transform: none !important;
+    transition: none !important;
+}
 
 .text-tool .button-group button.copied {
     background: #dc3545;
@@ -235,6 +246,15 @@
 .text-tool .button-group button.copied:hover {
     background: #e74c3c;
 }
+
+/* Dark: theme.css imposta .button-group button con !important; vince solo con stessa catena + .copied. */
+body.dark-mode.text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied,
+body.dark-mode.text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+
 
 
 .text-tool .result-area {
@@ -255,8 +275,100 @@
     display: none;
 }
 
+.text-tool .result-area.error {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00;
+    text-align: center;
+    white-space: normal;
+    word-break: normal;
+}
+
+/* Dark: stesso contrasto del light (sfondo rosa + rosso #c00). L’area risultato resta chiara; il rosso “tenue” era illeggibile. */
+body.dark-mode .text-tool .result-area.error {
+    background: #fff5f5;
+    color: #c00;
+    border-color: #fcc;
+}
+
+/* Messaggio di validazione dentro l’area risultato (stesso linguaggio visivo di .result-area.error). */
+/* !important su colore / -webkit-text-fill-color: il parent .result-area in dark imposta testo scuro con !important. */
+.text-tool .result-area:not(.error) .text-tool-inline-error {
+    margin: 0 0 14px 0;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #fcc;
+    background: #fff5f5;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+    text-align: center;
+    white-space: normal;
+    word-break: normal;
+}
+body.dark-mode .text-tool .result-area:not(.error) .text-tool-inline-error {
+    background: #fff5f5;
+    border: 2px solid #fcc;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+}
+body.dark-mode.caption-gen .site-main .container .result-area:not(.error) .text-tool-inline-error,
+body.dark-mode.username-gen .site-main .container .result-area:not(.error) .text-tool-inline-error {
+    background: #fff5f5;
+    border: 2px solid #fcc;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+}
+
+/* Caption + Username generator: checkbox centrata sulla prima riga rispetto al testo (stesso font-size sulla label) */
+body.text-tool.caption-gen .result-area .caption-select-label,
+body.text-tool.username-gen .result-area .caption-select-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 400;
+    line-height: 1.55;
+}
+body.text-tool.caption-gen .result-area .caption-select-label {
+    font-size: 1rem;
+}
+body.text-tool.username-gen .result-area .caption-select-label {
+    font-size: 0.95rem;
+}
+body.text-tool.caption-gen .result-area .caption-text,
+body.text-tool.username-gen .result-area .caption-text {
+    flex: 1;
+    min-width: 0;
+    font-size: inherit;
+}
+body.text-tool.username-gen .result-area .caption-text {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+body.text-tool.caption-gen .result-area .caption-pick,
+body.text-tool.username-gen .result-area .caption-pick {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    margin-top: calc((1.55em - 18px) / 2);
+    accent-color: #003f7f;
+    cursor: pointer;
+}
+
 .text-tool .home-link-wrap {
-    margin-top: 28px;
+    margin-top: 12px;
     text-align: center;
 }
 
@@ -264,6 +376,36 @@
     .text-tool .container {
         margin: 20px 16px;
         padding: 28px 24px;
+    }
+    /* Username gen: nessun effetto hover (no scale, no blu), effetto solo al tap */
+    body.username-gen .text-tool .button-group button,
+    body.username-gen .text-tool .button-group button:hover,
+    body.username-gen .text-tool .button-group button:focus {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.username-gen .text-tool .button-group button:active {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+        border-color: #002d5c !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.username-gen .text-tool .button-group button,
+    body.dark-mode.username-gen .text-tool .button-group button:hover,
+    body.dark-mode.username-gen .text-tool .button-group button:focus {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.dark-mode.username-gen .text-tool .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%) !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
     }
     /* Mobile: input e select larghi come il bottone Copy (stessa larghezza del button-group) */
     .username-gen .form-group input,
@@ -294,9 +436,13 @@
 }
 
 @media (max-width: 600px) {
+    /* Mobile app-like: containers are handled globally (full-bleed) */
     .text-tool .container {
-        margin: 12px 10px;
-        padding: 24px 18px;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
     }
     .text-tool h1 {
         font-size: 1.4em;
@@ -305,7 +451,7 @@
         font-size: 0.95rem;
     }
     .text-tool textarea {
-        min-height: 140px;
+        min-height: 120px;
         font-size: 16px; /* prevent zoom on iOS */
     }
     .text-tool .button-group {
@@ -338,5 +484,405 @@
     .text-tool .container {
         margin: 8px 8px;
         padding: 20px 14px;
+    }
+    /* Username Generator: nessun effetto hover (no scale), effetto solo al tap */
+    body.username-gen .text-tool .button-group button,
+    body.username-gen .text-tool .button-group button:hover,
+    body.username-gen .text-tool .button-group button:focus {
+        transform: none !important;
+        transition: none !important;
+    }
+    body.username-gen .text-tool .button-group button:active {
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.username-gen .text-tool .button-group button:active {
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    /* Username Generator: stessa larghezza container e bottoni del Word Counter (solo mobile) */
+    body.username-gen .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.username-gen .site-main .container .text-tool-row {
+        margin-top: 40px !important;
+    }
+    /* Username Generator: input come textarea Word Counter (stesso sfondo, font più scuro) */
+    body.username-gen .site-main .container input {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #0f2f55 !important;
+        -webkit-text-fill-color: #0f2f55 !important;
+    }
+    body.username-gen .site-main .container input::placeholder {
+        color: #444 !important;
+    }
+    body.dark-mode.username-gen .site-main .container input {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+    }
+    body.dark-mode.username-gen .site-main .container input::placeholder {
+        color: #333 !important;
+    }
+    /* Username Generator: Style button e menu - stesso sfondo/colore del bottone Generate, MAI blu */
+    body.username-gen #username-style-wrap .text-tool-select-trigger,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:hover,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:active,
+    body.username-gen #username-style-wrap .text-tool-select-trigger:focus {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-menu {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-menu li {
+        color: #003f7f !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:hover,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:active,
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger:focus {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-menu {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-menu li {
+        color: var(--text-secondary) !important;
+    }
+    /* Username Generator: risultato come Remove Spaces (font ingrandito) */
+    body.username-gen .site-main .container .result-area:not(.hidden) {
+        margin-top: 16px !important;
+        font-size: 1.05rem !important;
+        color: #1a1a2e !important;
+        border: 1px solid #ddd !important;
+        background: #f8f9fa !important;
+    }
+    body.dark-mode.username-gen .site-main .container .result-area:not(.hidden) {
+        color: #1a1a2e !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        background: rgba(240, 242, 245, 0.95) !important;
+    }
+    /* Diff Checker: container e sfondo come Word Counter (#f8f9fa) */
+    body.diff-checker .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.diff-checker .site-main .container .diff-column textarea {
+        background: #f8f9fa !important;
+    }
+    body.diff-checker .site-main .container .diff-result {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd;
+    }
+    body.diff-checker .site-main .container .diff-result.error {
+        margin-bottom: 20px !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .diff-column textarea {
+        background: rgba(240, 242, 245, 0.95) !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .diff-result {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9);
+    }
+    /* Diff Checker mobile: bottoni come Translator (no blu hover/tap, Copy rosso quando copiato) */
+    body.diff-checker .site-main .container .button-group button,
+    body.diff-checker .site-main .container .button-group button:hover,
+    body.diff-checker .site-main .container .button-group button:focus {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.diff-checker .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+        border-color: #002d5c !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.diff-checker .site-main .container .button-group button.copied,
+    body.diff-checker .site-main .container .button-group button.copied:hover {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .button-group button,
+    body.dark-mode.diff-checker .site-main .container .button-group button:hover,
+    body.dark-mode.diff-checker .site-main .container .button-group button:focus {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%) !important;
+        transform: scale(1.03) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.diff-checker .site-main .container .button-group button.copied,
+    body.dark-mode.diff-checker .site-main .container .button-group button.copied:hover {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    body.diff-checker.help-page .container h1,
+    body.diff-checker.help-page .container .tool-desc {
+        text-align: left;
+    }
+    /* JSON help page mobile: allineamento a sinistra */
+    body.help-json-guide.help-page .site-main .container,
+    body.help-json-guide.help-page .site-main .container h1,
+    body.help-json-guide.help-page .site-main .container .tool-desc,
+    body.help-json-guide.help-page .site-main .container .help-section,
+    body.help-json-guide.help-page .site-main .container .help-section h2,
+    body.help-json-guide.help-page .site-main .container .help-section p,
+    body.help-json-guide.help-page .site-main .container .help-section ul,
+    body.help-json-guide.help-page .site-main .container .help-section pre,
+    body.help-json-guide.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+    /* JSON Formatter mobile: container stessa larghezza textarea Word Counter */
+    body.json-formatter .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.json-formatter .site-main .container .button-group {
+        flex-direction: column !important;
+        gap: 16px !important;
+        flex-wrap: nowrap !important;
+    }
+    body.json-formatter .site-main .container .button-group button {
+        flex: 1 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        transform: scale(1) !important;
+        transition: transform 0.1s ease-out !important;
+        touch-action: manipulation !important;
+    }
+    body.json-formatter .site-main .container .button-group button:focus {
+        transform: scale(1) !important;
+    }
+    body.json-formatter .site-main .container .button-group button:hover,
+    body.json-formatter .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.json-formatter .site-main .container .button-group button:active,
+    body.json-formatter .site-main .container .button-group button.tap-active {
+        transform: scale(1.03) !important;
+    }
+    body.json-formatter .site-main .container .button-group button.copied,
+    body.json-formatter .site-main .container .button-group button.copied:hover,
+    body.json-formatter .site-main .container .button-group button.copied:active {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .button-group button {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .button-group button:hover,
+    body.dark-mode.json-formatter .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .button-group button.copied,
+    body.dark-mode.json-formatter .site-main .container .button-group button.copied:hover,
+    body.dark-mode.json-formatter .site-main .container .button-group button.copied:active {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.json-formatter .site-main .container .json-result.error {
+        margin-bottom: 12px !important;
+    }
+    body.json-formatter .site-main .container .form-group textarea,
+    body.json-formatter .site-main .container .form-group textarea:focus {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.json-formatter .site-main .container .json-result:not(.hidden):not(.error) {
+        font-size: 1.05rem !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .form-group textarea,
+    body.dark-mode.json-formatter .site-main .container .form-group textarea:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .json-result:not(.hidden):not(.error) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+    }
+    /* Remove Spaces: stessa larghezza textarea Word Counter + bottoni come Translator */
+    body.remove-spaces .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.remove-spaces .site-main .container textarea {
+        min-height: 280px !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        padding: 16px !important;
+        margin-bottom: 0 !important;
+        line-height: 1.5 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container textarea {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.remove-spaces .site-main .container .button-group button {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.remove-spaces .site-main .container .button-group button:focus {
+        transform: scale(1) !important;
+    }
+    body.remove-spaces .site-main .container .button-group button:active {
+        transform: scale(1.03) !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group button {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
+    body.remove-spaces .site-main .container .remove-spaces-error:not(.hidden) {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+    }
+    body.remove-spaces .site-main .container .result-area:not(.hidden) {
+        margin-top: 16px !important;
+        font-size: 1.05rem !important;
+        color: #1a1a2e !important;
+        border: 1px solid #ddd !important;
+        background: #f8f9fa !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .result-area:not(.hidden) {
+        color: #1a1a2e !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        background: rgba(240, 242, 245, 0.95) !important;
+    }
+    body.remove-spaces .site-main .container .button-group button.copied {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group button.copied {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+    }
+    /* Markdown Preview: stessa larghezza e colori di Word Counter */
+    body.markdown-preview .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.markdown-preview .preview-layout {
+        gap: 10px !important;
+    }
+    body.markdown-preview .site-main .container .preview-panel textarea {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        height: 250px !important;
+        min-height: 250px !important;
+        padding: 10px 16px 16px 16px !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+    }
+    body.markdown-preview .site-main .container .preview-output {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        height: 250px !important;
+        min-height: 250px !important;
+        padding: 10px 16px 16px 16px !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+    }
+    body.markdown-preview .site-main .container .preview-output a {
+        color: #002d5c !important;
+    }
+    body.markdown-preview .site-main .container .preview-panel textarea::placeholder {
+        color: #555 !important;
+    }
+    body.markdown-preview .site-main .container .preview-output .placeholder {
+        color: #999 !important;
+    }
+    body.dark-mode.markdown-preview .preview-panel textarea,
+    body.dark-mode.markdown-preview .preview-output {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+    }
+    body.dark-mode.markdown-preview .preview-output .placeholder {
+        color: #555 !important;
+    }
+    body.dark-mode.markdown-preview .preview-panel textarea::placeholder {
+        color: #555 !important;
+    }
+    body.dark-mode.markdown-preview .preview-output h1,
+    body.dark-mode.markdown-preview .preview-output h2,
+    body.dark-mode.markdown-preview .preview-output h3 {
+        color: #1a1a2e !important;
+    }
+    body.dark-mode.markdown-preview .preview-output a {
+        color: #002d5c !important;
+    }
+    body.dark-mode.markdown-preview .preview-output pre,
+    body.dark-mode.markdown-preview .preview-output code {
+        background: rgba(220, 224, 230, 0.5) !important;
     }
 }

@@ -1,0 +1,117 @@
+.text-tools-page .tool-btn-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+.text-tools-page .tool-btn-wrap .tool-fav {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    line-height: 1;
+    z-index: 1;
+    padding: 2px 6px;
+}
+
+.text-tools-page .tool-btn-wrap .tool-fav.is-favorite {
+    color: #dc3545;
+}
+
+.text-tools-page .tool-btn-wrap .tool-fav:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.login-required-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-required-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.login-required-box {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 320px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.login-required-text {
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.login-required-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.login-required-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    background: #003f7f;
+    color: white;
+}
+
+.login-required-btn:hover {
+    background: #0056b3;
+}
+
+.login-required-btn--close {
+    background: #e84c4c;
+    color: white;
+}
+
+.login-required-btn--close:hover {
+    background: #b01830;
+}
+
+body.dark-mode .login-required-box {
+    background: var(--bg-secondary, #1e2a3a);
+}
+
+body.dark-mode .login-required-text {
+    color: #ffffff;
+}
+
+body.dark-mode .login-required-btn--close {
+    background: #e84c4c;
+    color: white;
+}
+
+body.dark-mode .login-required-btn--close:hover {
+    background: #b01830;
+}
+
+@media (max-width: 480px) {
+    .login-required-buttons {
+        flex-direction: column;
+    }
+
+    .login-required-buttons .login-required-btn {
+        width: 100%;
+    }
+}

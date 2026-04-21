@@ -1,0 +1,297 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "CV Optimizer" %}{% endblock %}
+{% block body_class %}text-tool cv-optimizer{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.cv-optimizer .form-group textarea, .cv-optimizer .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
+.cv-optimizer .file-upload-area {
+  border: 2px dashed #b8d4f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #f8fcff;
+  width: 100%;
+  box-sizing: border-box;
+}
+.cv-optimizer .file-input-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.cv-optimizer .file-note {
+  margin: 8px 0 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+.cv-optimizer .file-input-wrapper input[type="file"] {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+.cv-optimizer .choose-file-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px !important;
+  background: #003f7f;
+  color: #fff !important;
+  font-weight: 400 !important;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  min-height: 44px;
+  line-height: 1.2;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cv-optimizer .choose-file-btn:hover { background: #dc3545; transform: scale(1.03); }
+.cv-optimizer .button-group {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+.cv-optimizer .button-group #cvopt-analyze {
+  width: 160px;
+  min-width: 160px;
+  height: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.cv-optimizer .export-controls {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.cv-optimizer .export-controls.hidden {
+  display: none;
+}
+.cv-optimizer .export-btn {
+  width: 76px;
+  min-width: 76px;
+  height: 44px;
+  min-height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #003f7f;
+  color: #fff;
+  font-weight: 400 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cv-optimizer .export-btn:hover { background: #0056b3; }
+.cv-optimizer .result-area { white-space: normal; }
+.cvopt-cards {
+  display: grid;
+  gap: 12px;
+}
+.cvopt-card {
+  border: 1px solid #d8e6f5;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+.cvopt-card h4 {
+  margin: 0 0 8px 0;
+  color: #003f7f;
+  font-size: 1rem;
+}
+.cvopt-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cvopt-score-main {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #003f7f;
+}
+.cvopt-score-sub {
+  font-size: 0.95rem;
+  color: #4b6178;
+}
+.cvopt-breakdown {
+  display: grid;
+  gap: 8px;
+}
+.cvopt-breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fcff;
+  border: 1px dashed #b8d4f0;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.cvopt-keywords {
+  display: grid;
+  gap: 8px;
+}
+.cvopt-keyword-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.cvopt-label {
+  color: #4b6178;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.cvopt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.cvopt-badge.good {
+  background: #e9f8ee;
+  color: #1f7a35;
+  border: 1px solid #bfe8c9;
+}
+.cvopt-badge.bad {
+  background: #fff2f2;
+  color: #b4232c;
+  border: 1px solid #f4c7cb;
+}
+.cvopt-suggestion {
+  border: 1px solid #d8e6f5;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fcfeff;
+  margin-bottom: 8px;
+}
+.cvopt-suggestion:last-child { margin-bottom: 0; }
+.cvopt-suggestion-text {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+}
+.cvopt-apply-btn {
+  border: none;
+  border-radius: 10px;
+  background: #003f7f;
+  color: #fff;
+  padding: 10px 16px;
+  min-height: 42px;
+  min-width: 148px;
+  font-size: 0.96rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+.cvopt-apply-btn:hover { background: #0056b3; }
+.cvopt-example {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f4f9ff;
+  border: 1px solid #cfe4fb;
+  color: #1f3552;
+  font-size: 0.93rem;
+}
+.cvopt-example.hidden {
+  display: none;
+}
+.cvopt-skeleton { display: grid; gap: 10px; }
+.cvopt-skeleton-bar {
+  height: 14px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #edf3fa 25%, #dfeaf7 50%, #edf3fa 75%);
+  background-size: 200% 100%;
+  animation: cvoptShimmer 1.1s infinite linear;
+}
+.cvopt-skeleton-bar.w40 { width: 40%; }
+.cvopt-skeleton-bar.w60 { width: 60%; }
+.cvopt-skeleton-bar.w80 { width: 80%; }
+.cvopt-skeleton-bar.w100 { width: 100%; }
+.cvopt-confidence {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  color: #4b6178;
+}
+.cvopt-confidence strong { color: #003f7f; }
+.cvopt-history-item + .cvopt-history-item {
+  margin-top: 12px;
+}
+@keyframes cvoptShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% trans "CV Optimizer" %}</h1>
+  <p class="tool-desc">{% trans "Upload your CV and get practical improvement tips." %}</p>
+  <p class="tool-help">
+    <a href="{% url 'help_cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Ottimizza CV{% else %}Quick CV Optimizer guide{% endif %}</a>
+  </p>
+
+  <div class="form-group">
+    <label for="cvopt-file">{% trans "Upload CV (PDF, DOCX, TXT)" %}</label>
+    <div class="file-upload-area">
+      <div class="file-input-wrapper">
+        <input type="file" id="cvopt-file" accept=".pdf,.docx,.txt">
+        <label for="cvopt-file" id="cvopt-file-label" class="choose-file-btn">{% trans "Choose file" %}</label>
+      </div>
+      <p class="file-note">{% if LANGUAGE_CODE|slice:":2" == "it" %}Carica il tuo CV in formato PDF, DOCX o TXT.{% else %}Upload your CV in PDF, DOCX, or TXT format.{% endif %}</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="cvopt-job-title">{% trans "Target job title" %}</label>
+    <input type="text" id="cvopt-job-title" placeholder="{% trans 'e.g. Backend Developer' %}">
+  </div>
+  <div class="form-group">
+    <label for="cvopt-job-description">{% trans "Job description (optional)" %}</label>
+    <textarea id="cvopt-job-description" rows="5" placeholder="{% trans 'Paste job requirements to compare keywords.' %}"></textarea>
+  </div>
+
+  <div id="cvopt-result" class="result-area hidden"></div>
+  <div class="button-group">
+    <button type="button" id="cvopt-analyze">{% trans "Analyze" %}</button>
+    <div id="cvopt-export-controls" class="export-controls hidden">
+      <button type="button" id="cvopt-export-pdf" class="export-btn">PDF</button>
+      <button type="button" id="cvopt-export-docx" class="export-btn">DOCX</button>
+      <button type="button" id="cvopt-export-txt" class="export-btn">TXT</button>
+    </div>
+  </div>
+
+  <div class="home-link-wrap">
+    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    </a>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.jspdf) {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" integrity="sha384-4xaIisuLEy2lo2HkB2C4rEf7v8jbTb2kuogX6TkuEt9feTWKBSFSOzsqNNbV+sKh" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+if (!window.docx) {
+  document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+}
+</script>
+<script src="{% static 'tools/js/cv_optimizer.js' %}?v=20260417a"></script>
+{% endblock %}

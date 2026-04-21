@@ -1,0 +1,144 @@
+{% load i18n %}
+<aside class="tool-quick-nav" aria-label="{% trans 'Quick tool navigation' %}">
+    <div class="tool-quick-nav-head-row">
+        <div class="tool-quick-nav-head">{% trans "Quick Tools" %}</div>
+        <div class="tool-quick-nav-side-controls" aria-label="{% trans 'Quick nav side controls' %}">
+            <button type="button" class="tool-quick-nav-side-btn" data-side="left">{% if LANGUAGE_CODE|slice:":2" == "it" %}Sinistra{% else %}Left{% endif %}</button>
+            <button type="button" class="tool-quick-nav-side-btn" data-side="right">{% if LANGUAGE_CODE|slice:":2" == "it" %}Destra{% else %}Right{% endif %}</button>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'text_tools_page' %}">{% trans "Text Tools" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Text Tools' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a>
+            <a href="{% url 'translator' %}">{% trans "Translator" %}</a>
+            <a href="{% url 'markdown_preview' %}">{% trans "Markdown Preview" %}</a>
+            <a href="{% url 'remove_spaces' %}">{% trans "Remove Spaces" %}</a>
+            <a href="{% url 'username_generator' %}">{% trans "Username Generator" %}</a>
+            <a href="{% url 'diff_checker' %}">{% trans "Diff Checker" %}</a>
+            <a href="{% url 'json_formatter' %}">{% trans "JSON Formatter" %}</a>
+            <a href="{% url 'case_converter' %}">{% trans "Case Converter" %}</a>
+            <a href="{% url 'uuid_generator' %}">{% trans "UUID Generator" %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'social_media_page' %}">{% trans "Social Media" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Social Media' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'bio_generator' %}">{% trans "Bio Generator" %}</a>
+            <a href="{% url 'hashtag_generator' %}">{% trans "Hashtag Generator" %}</a>
+            <a href="{% url 'caption_generator' %}">{% trans "Caption Generator" %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'career_cv_page' %}">{% trans "Career & CV" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Career and CV' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'cv_generator' %}">{% trans "CV Generator" %}</a>
+            <a href="{% url 'cv_optimizer' %}">{% trans "CV Optimizer" %}</a>
+            <a href="{% url 'cover_letter_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera di presentazione{% else %}{% trans "Cover Letter Generator" %}{% endif %}</a>
+            <a href="{% url 'application_email_generator' %}">{% trans "Application Email Generator" %}</a>
+            <a href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Simulatore colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'file_image_page' %}">{% trans "File & Image" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle File and Image' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'file_analyzer' %}">{% trans "File Analyzer" %}</a>
+            <a href="{% url 'pdf_merger' %}">{% trans "PDF Merge" %}</a>
+            <a href="{% url 'pdf_split' %}">{% trans "PDF Split" %}</a>
+            <a href="{% url 'image_editor' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a>
+            <a href="{% url 'data_viz' %}">{% trans "Data Visualizer" %}</a>
+            <a href="{% url 'color_converter' %}">{% trans "Color Converter" %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'finance_page' %}">{% trans "Finance" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Finance' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a>
+            <a href="{% url 'calc_vat' %}">{% trans "VAT" %}</a>
+            <a href="{% url 'calc_net_salary' %}">{% trans "Net Salary" %}</a>
+            <a href="{% url 'calc_interest' %}">{% trans "Interest" %}</a>
+            <a href="{% url 'calc_currency' %}">{% trans "Currency" %}</a>
+            <a href="{% url 'calc_loan' %}">{% trans "Loan" %}</a>
+            <a href="{% url 'calc_discount' %}">{% trans "Discount" %}</a>
+            <a href="{% url 'calc_margin' %}">{% trans "Margin" %}</a>
+            <a href="{% url 'calc_split_bill' %}">{% trans "Split Bill" %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'web_seo_page' %}">{% trans "Web / SEO" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Web SEO' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'meta_tag_checker' %}">{% trans "Meta Tag Checker" %}</a>
+            <a href="{% url 'sitemap_extractor' %}">{% trans "Sitemap Extractor" %}</a>
+            <a href="{% url 'robots_txt_generator' %}">{% trans "Robots.txt Generator" %}</a>
+            <a href="{% url 'site_speed_check' %}">{% trans "Site Speed Check" %}</a>
+            <a href="{% url 'lorem_ipsum' %}">{% trans "Lorem Ipsum" %}</a>
+            <a href="{% url 'regex_tester' %}">{% trans "Regex Tester" %}</a>
+            <a href="{% url 'cron_explainer' %}">{% trans "Cron Explainer" %}</a>
+        </div>
+    </div>
+
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'security_misc_page' %}">{% trans "Security & Misc" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Security' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a>
+            <a href="{% url 'qr_generator' %}">{% trans "QR Generator" %}</a>
+            <a href="{% url 'qr_decoder' %}">{% trans "QR Decoder" %}</a>
+            <a href="{% url 'base64_encoder' %}">{% trans "Base64 Encoder" %}</a>
+            <a href="{% url 'hash_generator' %}">{% trans "Hash Generator" %}</a>
+        </div>
+    </div>
+</aside>
+
+<aside class="tool-popular-nav" aria-label="{% trans 'Most used tools' %}">
+    <div class="tool-popular-nav-head">{% trans "Top 15 Tools" %}</div>
+    <div class="tool-quick-nav-group" data-open="0">
+        <div class="tool-quick-nav-row">
+            <a class="tool-quick-nav-title" href="{% url 'top_tools_page' %}">{% trans "Most Used Tools" %}</a>
+            <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle most used tools' %}">▼</button>
+        </div>
+        <div class="tool-quick-nav-links">
+            <a href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a>
+            <a href="{% url 'translator' %}">{% trans "Translator" %}</a>
+            <a href="{% url 'remove_spaces' %}">{% trans "Remove Spaces" %}</a>
+            <a href="{% url 'diff_checker' %}">{% trans "Diff Checker" %}</a>
+            <a href="{% url 'json_formatter' %}">{% trans "JSON Formatter" %}</a>
+            <a href="{% url 'image_editor' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a>
+            <a href="{% url 'pdf_merger' %}">{% trans "PDF Merge" %}</a>
+            <a href="{% url 'file_analyzer' %}">{% trans "File Analyzer" %}</a>
+            <a href="{% url 'bio_generator' %}">{% trans "Bio Generator" %}</a>
+            <a href="{% url 'hashtag_generator' %}">{% trans "Hashtag Generator" %}</a>
+            <a href="{% url 'caption_generator' %}">{% trans "Caption Generator" %}</a>
+            <a href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a>
+            <a href="{% url 'calc_currency' %}">{% trans "Currency" %}</a>
+            <a href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a>
+            <a href="{% url 'qr_generator' %}">{% trans "QR Generator" %}</a>
+        </div>
+    </div>
+</aside>

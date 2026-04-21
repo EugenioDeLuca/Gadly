@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
-{% block title %}Case Converter{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Case Converter" %}{% endblock %}
 {% block body_class %}text-tool case-converter{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
@@ -34,6 +35,7 @@
     gap: 10px;
     width: 100%;
     max-width: 100%;
+    margin-bottom: 0px;
 }
 .case-converter .button-group #btn-copy {
     margin-left: auto;
@@ -53,6 +55,9 @@
 }
 .case-converter .case-result.hidden {
     display: none;
+}
+@media (min-width: 769px) {
+    .case-converter .case-result { margin-bottom: 12px !important; }
 }
 /* Layout errore allineato agli altri tool (12px di distanza, min-height 44px, padding 10x16) */
 .case-converter .case-result.error {
@@ -103,27 +108,27 @@ body.dark-mode .case-converter .case-result.error {
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Case Converter</h1>
-    <p class="tool-desc">Convert text to UPPERCASE, lowercase, or Title Case.</p>
+    <h1>{% trans "Case Converter" %}</h1>
+    <p class="tool-desc">{% trans "Convert text to UPPERCASE, lowercase, or Title Case." %}</p>
 
     <div class="form-group">
-        <label for="case-input">Text</label>
-        <textarea id="case-input" placeholder="Enter text to convert..." rows="8"></textarea>
+        <label for="case-input">{% trans "Text" %}</label>
+        <textarea id="case-input" placeholder='{% trans "Enter text to convert..." %}' rows="8"></textarea>
     </div>
 
     <!-- Messaggio di risultato/errore sopra ai bottoni -->
     <div id="case-result" class="case-result hidden" aria-live="polite"></div>
 
     <div class="button-group">
-        <button type="button" id="btn-upper">Uppercase</button>
-        <button type="button" id="btn-lower">Lowercase</button>
-        <button type="button" id="btn-title">Title Case</button>
-        <button type="button" id="btn-copy">Copy</button>
+        <button type="button" id="btn-upper">{% trans "Uppercase" %}</button>
+        <button type="button" id="btn-lower">{% trans "Lowercase" %}</button>
+        <button type="button" id="btn-title">{% trans "Title Case" %}</button>
+        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'home' %}" class="home-link" title="Back to Home" aria-label="Back to Home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>

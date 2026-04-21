@@ -1,0 +1,58 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Application Email Generator" %}{% endblock %}
+{% block body_class %}text-tool application-email-generator{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<style>
+.application-email-generator .form-group textarea, .application-email-generator .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
+.application-email-generator .text-tool-error-above { margin: 0 0 12px 0; padding: 10px 16px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
+.application-email-generator .text-tool-error-above.hidden { display: none !important; }
+body.dark-mode.application-email-generator .text-tool-error-above { background: #fff5f5; color: #c00; border-color: #fcc; }
+.application-email-generator .button-group { width: 100%; justify-content: space-between; margin-bottom: 0; flex-wrap: wrap; }
+.application-email-generator .button-group #email-copy { margin-left: auto; }
+.application-email-generator .button-group button { width: 140px; min-width: 140px; max-width: 140px; height: 44px; min-height: 44px; max-height: 44px; padding: 0 8px; box-sizing: border-box; }
+.application-email-generator .result-area { white-space: pre-wrap; margin-top: 12px; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>{% trans "Application Email Generator" %}</h1>
+  <p class="tool-desc">{% trans "Generate a clear email for job applications." %}</p>
+  <p class="tool-help">
+    <a href="{% url 'help_application_email' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Email candidatura{% else %}Quick Application Email guide{% endif %}</a>
+  </p>
+
+  <div class="form-group">
+    <label for="email-name">{% trans "Your name" %}</label>
+    <input type="text" id="email-name" placeholder="{% trans 'e.g. Marco Rossi' %}">
+  </div>
+  <div class="form-group">
+    <label for="email-role">{% trans "Target role" %}</label>
+    <input type="text" id="email-role" placeholder="{% trans 'e.g. Data Analyst' %}">
+  </div>
+  <div class="form-group">
+    <label for="email-company">{% trans "Company" %}</label>
+    <input type="text" id="email-company" placeholder="{% trans 'e.g. Example SRL' %}">
+  </div>
+  <div class="form-group">
+    <label for="email-points">{% trans "Key points" %}</label>
+    <textarea id="email-points" rows="4" placeholder="{% trans 'Write your main strengths (one per line).' %}"></textarea>
+  </div>
+
+  <div id="email-error" class="text-tool-error-above hidden" role="alert" aria-live="assertive"></div>
+  <div class="button-group">
+    <button type="button" id="email-generate">{% trans "Generate" %}</button>
+    <button type="button" id="email-copy">{% trans "Copy" %}</button>
+  </div>
+  <div id="email-result" class="result-area hidden" aria-live="polite"></div>
+
+  <div class="home-link-wrap">
+    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    </a>
+  </div>
+</div>
+<script src="{% static 'tools/js/application_email_generator.js' %}?v=20260421a"></script>
+{% endblock %}

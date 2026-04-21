@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+    function t(it, en) { return isItalian ? it : en; }
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const cropCanvas = document.getElementById("crop-canvas");
@@ -114,16 +116,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     var toolbarUserMoved = false;
+    function headerOffset() {
+        return window.innerWidth <= 768 ? 74 : 84;
+    }
+    function clearAutoFollowToolbar() {
+        var toolbar = document.querySelector(".editor-area .toolbar");
+        var wrap = document.getElementById("toolbar-wrap");
+        var isFloated = document.body.classList.contains("toolbar-floated");
+        document.body.classList.remove("toolbar-auto-follow");
+        if (toolbar && !isFloated) {
+            toolbar.style.top = "";
+            toolbar.style.left = "";
+            toolbar.style.width = "";
+            toolbar.style.minWidth = "";
+        }
+        if (wrap) wrap.style.minHeight = "";
+    }
     function syncToolbarPosition() {
-        if (toolbarUserMoved || document.body.classList.contains("toolbar-floated")) return;
-        if (!document.body.classList.contains("editor-tall-image")) return;
+        if (!document.body.classList.contains("toolbar-auto-follow")) return;
         var toolbar = document.querySelector(".editor-area .toolbar");
         var wrap = document.getElementById("toolbar-wrap");
         if (toolbar && wrap) {
             var rect = wrap.getBoundingClientRect();
-            toolbar.style.top = rect.top + "px";
+            toolbar.style.top = headerOffset() + "px";
             toolbar.style.left = rect.left + "px";
             toolbar.style.width = rect.width + "px";
+            toolbar.style.minWidth = rect.width + "px";
             wrap.style.minHeight = rect.height + "px";
         }
     }
@@ -133,55 +151,14 @@ document.addEventListener("DOMContentLoaded", function() {
         else if (window.innerWidth <= 600) headerH = 70;
         var availH = window.innerWidth <= 768 ? window.innerHeight - headerH - 120 : window.innerHeight - headerH - 140;
         if (canvasHeight > availH) {
-            var alreadyHad = document.body.classList.contains("editor-tall-image");
-            var toolbar = document.querySelector(".editor-area .toolbar");
-            var wrap = document.getElementById("toolbar-wrap");
             document.body.classList.add("editor-tall-image");
             if (!toolbarUserMoved) {
-                var rect = (toolbar && wrap) ? wrap.getBoundingClientRect() : null;
-                if (rect && toolbar) {
-                    toolbar.style.top = rect.top + "px";
-                    toolbar.style.left = rect.left + "px";
-                    toolbar.style.width = rect.width + "px";
-                    wrap.style.minHeight = rect.height + "px";
-                }
+                document.body.classList.add("toolbar-auto-follow");
+                syncToolbarPosition();
             }
         } else {
-            var wrap = document.getElementById("toolbar-wrap");
-            var toolbar = document.querySelector(".editor-area .toolbar");
-            var resBtn = document.getElementById("toolbar-reset-pos");
-            var hadExplicitToolbarStyle = toolbar && (toolbar.style.width || toolbar.style.top || toolbar.style.left);
-            var savedToolbarWidth = toolbar ? (parseInt(toolbar.style.width, 10) || toolbar.offsetWidth) : 0;
-            var savedToolbarLeft = toolbar ? (parseInt(toolbar.style.left, 10) || toolbar.getBoundingClientRect().left) : 0;
-            var savedToolbarTop = toolbar ? (parseInt(toolbar.style.top, 10) || toolbar.getBoundingClientRect().top) : 0;
-            var savedWrapMinHeight = wrap && wrap.style.minHeight ? wrap.style.minHeight : "";
-            if (toolbarUserMoved || hadExplicitToolbarStyle) {
-                document.body.classList.add("toolbar-floated");
-                if (toolbar && savedToolbarWidth > 0) {
-                    toolbar.style.width = savedToolbarWidth + "px";
-                    toolbar.style.minWidth = savedToolbarWidth + "px";
-                }
-                if (toolbar && (savedToolbarLeft !== 0 || savedToolbarTop !== 0)) {
-                    toolbar.style.left = savedToolbarLeft + "px";
-                    toolbar.style.top = savedToolbarTop + "px";
-                }
-                if (wrap && savedWrapMinHeight) wrap.style.minHeight = savedWrapMinHeight;
-                if (hadExplicitToolbarStyle && !toolbarUserMoved) {
-                    toolbarUserMoved = true;
-                }
-            }
             document.body.classList.remove("editor-tall-image");
-            if (!toolbarUserMoved && !hadExplicitToolbarStyle) {
-                document.body.classList.remove("toolbar-floated");
-                if (wrap) wrap.style.minHeight = "";
-                if (toolbar) {
-                    toolbar.style.top = "";
-                    toolbar.style.left = "";
-                    toolbar.style.width = "";
-                    toolbar.style.minWidth = "";
-                }
-                if (resBtn) resBtn.classList.remove("visible");
-            }
+            clearAutoFollowToolbar();
         }
     }
 
@@ -230,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (editorLoading) editorLoading.style.display = "none";
             var mp = (img.width * img.height) / 1000000;
             if (mp > IMAGE_MAX_MP) {
-                if (confirm("This image is very large (" + Math.round(mp) + " MP). Editing may be slow. Continue anyway?")) {
+                if (confirm(t("Questa immagine è molto grande", "This image is very large") + " (" + Math.round(mp) + " MP). " + t("L'editing potrebbe essere lento. Continuare?", "Editing may be slow. Continue anyway?"))) {
                     doLoadImage(img);
                 }
                 URL.revokeObjectURL(url);
@@ -242,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function() {
         img.onerror = function() {
             if (editorLoading) editorLoading.style.display = "none";
             URL.revokeObjectURL(url);
-            showError("Failed to load image. Please try another file.");
+            showError(t("Impossibile caricare l'immagine. Prova un altro file.", "Failed to load image. Please try another file."));
         };
         img.src = url;
     }
@@ -259,9 +236,12 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".upload-area").style.display = "none";
         var titleEl = document.querySelector(".image-editor-title");
         if (titleEl) titleEl.style.display = "none";
+        var descEl = document.querySelector(".image-editor-desc");
+        if (descEl) descEl.style.display = "none";
         editorArea.style.display = "flex";
         document.body.classList.add("editor-active");
         document.body.classList.remove("toolbar-floated");
+        clearAutoFollowToolbar();
         toolbarUserMoved = false;
         var tb = document.querySelector(".editor-area .toolbar");
         var wr = document.getElementById("toolbar-wrap");
@@ -476,6 +456,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("btn-blur-start").addEventListener("click", function() {
+        if (blurMode) {
+            blurMode = false;
+            this.classList.remove("active");
+            document.getElementById("blur-cursor").style.display = "none";
+            canvas.style.cursor = "default";
+            return;
+        }
         if (textOverlayApplied) saveState();
         finalizeTextOverlay(false);
         clearLastTextObject();
@@ -494,7 +481,6 @@ document.addEventListener("DOMContentLoaded", function() {
         var cursorEl = document.getElementById("blur-cursor");
         cursorEl.style.display = "block";
         updateBlurCursorSize();
-        document.getElementById("btn-blur-cancel").style.display = "inline-block";
         canvas.style.cursor = "none";
     });
 
@@ -967,7 +953,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("btn-watermark").addEventListener("click", function() {
-        if (!workCanvas) { showAlertModal("Load an image first."); return; }
+        if (!workCanvas) { showAlertModal(t("Carica prima un'immagine.", "Load an image first.")); return; }
         if (textOverlayApplied) saveState();
         finalizeTextOverlay(false);
         clearLastTextObject();
@@ -1119,25 +1105,34 @@ document.addEventListener("DOMContentLoaded", function() {
         var el = document.getElementById("zoom-val");
         if (el) el.textContent = zoomLevel + "%";
     }
-    document.getElementById("zoom-out").addEventListener("click", function() {
-        zoomLevel = Math.max(25, zoomLevel - 25);
-        panX = 0;
-        panY = 0;
+    function setZoom(nextZoom) {
+        var clamped = Math.max(25, Math.min(400, nextZoom));
+        if (clamped === zoomLevel) return;
+        zoomLevel = clamped;
         updateZoomDisplay();
         drawToDisplay();
+    }
+    document.getElementById("zoom-out").addEventListener("click", function() {
+        setZoom(zoomLevel - 25);
+        panX = 0;
+        panY = 0;
     });
     document.getElementById("zoom-in").addEventListener("click", function() {
-        zoomLevel = Math.min(400, zoomLevel + 25);
-        updateZoomDisplay();
-        drawToDisplay();
+        setZoom(zoomLevel + 25);
     });
     document.getElementById("zoom-fit").addEventListener("click", function() {
-        zoomLevel = 100;
+        setZoom(100);
         panX = 0;
         panY = 0;
-        updateZoomDisplay();
-        drawToDisplay();
     });
+    // Disable ctrl/cmd+wheel zoom inside editor area.
+    if (wrapperEl) {
+        wrapperEl.addEventListener("wheel", function(e) {
+            if (!workCanvas) return;
+            if (!(e.ctrlKey || e.metaKey)) return;
+            e.preventDefault();
+        }, { passive: false });
+    }
 
     document.getElementById("btn-border").addEventListener("click", function() {
         const size = parseInt(document.getElementById("border-size").value) || 5;
@@ -1160,19 +1155,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function callImageApi(url, onSuccess, onError) {
         if (!workCanvas) {
-            showAlertModal("Please load an image first.");
+            showAlertModal(t("Carica prima un'immagine.", "Please load an image first."));
             return;
         }
         workCanvas.toBlob(function(blob) {
             if (!blob) {
-                onError("Could not create image. Try a smaller image or different format.");
+                onError(t("Impossibile creare l'immagine. Prova un'immagine più piccola o un formato diverso.", "Could not create image. Try a smaller image or different format."));
                 return;
             }
             const fd = new FormData();
             fd.append("image", blob, "image.png");
             const msgEl = document.createElement("div");
             msgEl.className = "image-api-loading";
-            msgEl.textContent = "Processing…";
+            msgEl.textContent = t("Elaborazione…", "Processing…");
             msgEl.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#003f7f;color:white;padding:16px 24px;border-radius:12px;z-index:9999;font-weight:600;";
             document.body.appendChild(msgEl);
             fetch(url, { method: "POST", body: fd })
@@ -1186,7 +1181,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 if (parseErr instanceof Error && parseErr.message && parseErr.message !== "Request failed") {
                                     throw parseErr;
                                 }
-                                throw new Error("Server error " + r.status + ". For Remove BG run: pip install \"rembg[cpu]\"");
+                                throw new Error(t("Errore server", "Server error") + " " + r.status + ". " + t("Per Remove BG esegui", "For Remove BG run") + ": pip install \"rembg[cpu]\"");
                             }
                         });
                     }
@@ -1203,12 +1198,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         drawToDisplay();
                         if (onSuccess) onSuccess();
                     };
-                    img.onerror = function() { onError("Failed to load result image"); };
+                    img.onerror = function() { onError(t("Impossibile caricare l'immagine risultato", "Failed to load result image")); };
                     img.src = URL.createObjectURL(blob);
                 })
                 .catch(function(err) {
                     if (msgEl.parentNode) document.body.removeChild(msgEl);
-                    onError(err.message || "Request failed");
+                    onError(err.message || t("Richiesta fallita", "Request failed"));
                 });
         }, "image/png");
     }
@@ -1593,7 +1588,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (resetConfirmYes) resetConfirmYes.addEventListener("click", function() {
         var t = document.querySelector(".editor-area .toolbar");
         var wrap = document.getElementById("toolbar-wrap");
-        var isFixed = document.body.classList.contains("editor-tall-image") || document.body.classList.contains("toolbar-floated");
+        var isFixed = document.body.classList.contains("toolbar-floated");
         if (t && isFixed) {
             var rect = t.getBoundingClientRect();
             toolbarSizeBeforeReset = {
@@ -1645,12 +1640,17 @@ document.addEventListener("DOMContentLoaded", function() {
             syncToolbarPosition();
         }, 150);
     });
+    window.addEventListener("scroll", function() {
+        if (document.body.classList.contains("toolbar-auto-follow")) {
+            syncToolbarPosition();
+        }
+    }, { passive: true });
     var toolbarEl = document.querySelector(".editor-area .toolbar");
     var dragHandle = document.getElementById("toolbar-drag-handle");
     if (dragHandle && toolbarEl) {
         var dragX = 0, dragY = 0, startLeft = 0, startTop = 0;
         function isDesktop() { return window.innerWidth >= 769; }
-        function isToolbarFixed() { return document.body.classList.contains("editor-tall-image") || document.body.classList.contains("toolbar-floated"); }
+        function isToolbarFixed() { return document.body.classList.contains("toolbar-floated"); }
         function clampToolbarPosition() {
             if (!isToolbarFixed()) return;
             var t = toolbarEl;
@@ -1672,11 +1672,13 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             if (!isToolbarFixed()) {
                 document.body.classList.add("toolbar-floated");
+                clearAutoFollowToolbar();
                 var wrap = document.getElementById("toolbar-wrap");
                 var rect = wrap ? wrap.getBoundingClientRect() : toolbarEl.getBoundingClientRect();
                 toolbarEl.style.top = rect.top + "px";
                 toolbarEl.style.left = rect.left + "px";
                 toolbarEl.style.width = rect.width + "px";
+                toolbarEl.style.minWidth = rect.width + "px";
                 if (wrap) wrap.style.minHeight = rect.height + "px";
             }
             toolbarUserMoved = true;
@@ -1727,12 +1729,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     toolbarEl.style.width = savedW + "px";
                     toolbarEl.style.minWidth = savedW + "px";
                 }
-            } else if (document.body.classList.contains("editor-tall-image")) {
-                var savedW = toolbarEl.offsetWidth;
-                syncToolbarPosition();
-                if (savedW > 0) {
-                    toolbarEl.style.width = savedW + "px";
-                    toolbarEl.style.minWidth = savedW + "px";
+                if (document.body.classList.contains("editor-tall-image")) {
+                    document.body.classList.add("toolbar-auto-follow");
+                    syncToolbarPosition();
                 }
             }
         }
