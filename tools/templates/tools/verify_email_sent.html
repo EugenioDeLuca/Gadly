@@ -18,8 +18,7 @@
         This account is already verified, so no new verification email was sent. You can sign in immediately with your credentials or use password reset if needed.
         {% endif %}
     </p>
-    {% endif %}
-    {% if resend_failed %}
+    {% elif resend_failed %}
     <p style="margin: 14px 0 18px; color: #dc2626; font-weight: 700; line-height: 1.5;">
         {% trans "We could not send the verification email right now. Please try again in a moment." %}
     </p>
@@ -34,7 +33,9 @@
     </p>
     {% endif %}
     <p style="margin: 24px 0; color: #555; line-height: 1.6;">
-        {% if resend_failed %}
+        {% if already_verified %}
+            {% comment %}No success/sent copy for already-verified accounts{% endcomment %}
+        {% elif resend_failed %}
             {% if LANGUAGE_CODE|slice:":2" == "it" %}
             Non risulta alcun invio completato. Riprova a richiedere l'email di verifica.
             {% else %}
@@ -49,7 +50,9 @@
         {% endif %}
     </p>
     <p style="margin: 20px 0;">
-        {% if verify_url %}
+        {% if already_verified %}
+        <a href="{% url 'login' %}" class="login-hint" style="display:inline-block;margin:0;">{% trans "Sign in to your account" %}</a>
+        {% elif verify_url %}
         <a href="{{ verify_url }}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Verify email now" %}</a>
         {% else %}
         <a href="{% url 'request_verification_email_page' %}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Request verification email" %}</a>

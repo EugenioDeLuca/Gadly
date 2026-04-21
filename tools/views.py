@@ -84,7 +84,8 @@ def _send_verification_email(request, user, token):
         "Please verify your email by clicking this link:\n\n%(url)s\n\n"
         "This allows you to reset your password if you forget it.\n\n"
         "If you didn't create an account, ignore this email.\n\n"
-        "— Gadly"
+        "Best regards,\n"
+        "Gadly Support"
     ) % {'username': user.username, 'url': verify_url}
     html_message = render_to_string(
         "tools/emails/verify_email.html",
@@ -289,8 +290,8 @@ def verify_email_sent(request):
     verify_url = request.session.pop('pending_verify_url', None)
     sent = request.GET.get('sent') == '1'
     resent = request.GET.get('resent') == '1'
-    resend_failed = request.GET.get('resent') == '0'
     already_verified = request.GET.get('already_verified') == '1'
+    resend_failed = (request.GET.get('resent') == '0') and (not already_verified)
     return render(request, 'tools/verify_email_sent.html', {
         'verify_url': verify_url,
         'sent': sent,
@@ -310,13 +311,11 @@ def resend_verification_email(request):
     if target_user is None:
         return redirect('login')
     profile, _ = UserProfile.objects.get_or_create(user=target_user)
-    has_active_tokens = EmailVerificationToken.objects.filter(user=target_user).exists()
-    # Defensive guard: if there are no active verification tokens, the account is
-    # effectively already verified in this flow. Keep profile flag aligned.
-    if (not has_active_tokens) and (not profile.email_verified):
+    # Keep profile flag aligned for legacy accounts that are clearly active.
+    if (not profile.email_verified) and target_user.last_login is not None:
         profile.email_verified = True
         profile.save(update_fields=["email_verified"])
-    if profile.email_verified or (not has_active_tokens):
+    if profile.email_verified:
         return redirect(reverse('verify_email_sent') + '?already_verified=1')
     token = secrets.token_hex(24)
     new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
@@ -338,12 +337,11 @@ def resend_verification_email_public(request):
         user = User.objects.filter(email__iexact=email).first()
         if user:
             profile, _ = UserProfile.objects.get_or_create(user=user)
-            has_active_tokens = EmailVerificationToken.objects.filter(user=user).exists()
-            # Defensive guard for legacy/misaligned profiles.
-            if (not has_active_tokens) and (not profile.email_verified):
+            # Defensive alignment for legacy accounts that already logged in.
+            if (not profile.email_verified) and user.last_login is not None:
                 profile.email_verified = True
                 profile.save(update_fields=["email_verified"])
-            if profile.email_verified or (not has_active_tokens):
+            if profile.email_verified:
                 return redirect(reverse('verify_email_sent') + '?already_verified=1')
             token = secrets.token_hex(24)
             new_evt = EmailVerificationToken.objects.create(user=user, token=token)

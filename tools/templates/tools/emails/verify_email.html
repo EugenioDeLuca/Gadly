@@ -10,45 +10,46 @@
   <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f8fafc;padding:24px 12px;">
     <tr>
       <td align="center">
-        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;">
           <tr>
-            <td style="padding:22px 22px 8px;">
+            <td style="padding:26px 26px 10px;">
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="vertical-align:middle;">
-                    <span style="display:inline-block;background:#eef4fb;border:1px solid #d6e4f6;border-radius:10px;padding:6px;">
-                      <img src="{{ brand_logo_url }}" width="34" height="34" alt="Gadly logo" style="display:block;border:0;outline:none;text-decoration:none;">
-                    </span>
+                    <img src="{{ brand_logo_url }}" width="42" height="42" alt="Gadly logo" style="display:block;border:0;outline:none;text-decoration:none;">
                   </td>
-                  <td style="padding-left:10px;vertical-align:middle;">
-                    <h1 style="margin:0;font-size:22px;line-height:1.3;color:#003f7f;">Gadly</h1>
+                  <td style="padding-left:12px;vertical-align:middle;">
+                    <h1 style="margin:0;font-size:24px;line-height:1.3;color:#003f7f;">Gadly</h1>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="padding:8px 22px 0;">
+            <td style="padding:10px 26px 0;">
               <p style="margin:0 0 10px;font-size:13px;line-height:1.5;color:#475569;">
                 {% trans "Account Security Confirmation" %}
               </p>
               <p style="margin:0 0 12px;font-size:15px;line-height:1.6;">
                 {% blocktrans with username=username %}Hi {{ username }},{% endblocktrans %}
               </p>
-              <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+              <p style="margin:0 0 18px;font-size:15px;line-height:1.7;">
                 {% trans "Please verify your email to activate password reset and secure your account." %}
+              </p>
+              <p style="margin:0 0 20px;font-size:14px;line-height:1.7;color:#475569;">
+                {% trans "For your security, this verification link is single-use and should be opened from the same device whenever possible." %}
               </p>
             </td>
           </tr>
           <tr>
-            <td style="padding:0 22px 6px;">
+            <td style="padding:0 26px 8px;">
               <a href="{{ verify_url }}" style="display:inline-block;background:#003f7f;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:8px;font-weight:700;">
                 {% trans "Verify Email" %}
               </a>
             </td>
           </tr>
           <tr>
-            <td style="padding:6px 22px 18px;">
+            <td style="padding:8px 26px 18px;">
               <p style="margin:0;font-size:13px;line-height:1.6;color:#475569;">
                 {% trans "If the button does not work, copy and paste this link into your browser:" %}
               </p>
@@ -56,9 +57,13 @@
             </td>
           </tr>
           <tr>
-            <td style="padding:0 22px 22px;">
+            <td style="padding:0 26px 26px;">
               <p style="margin:0;font-size:12px;line-height:1.6;color:#64748b;">
                 {% trans "If you did not create this account, you can ignore this email." %}
+              </p>
+              <p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:#0f172a;">
+                {% trans "Best regards," %}<br>
+                <strong>Gadly Support</strong>
               </p>
             </td>
           </tr>

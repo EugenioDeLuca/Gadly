@@ -13,7 +13,7 @@
 }
 
 .login-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .login-form label {
@@ -68,7 +68,7 @@ body.dark-mode .login-input:focus {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: 0;
     transition: background 0.2s, transform 0.2s;
 }
 
@@ -213,4 +213,30 @@ body.dark-mode .login-hint a:hover {
     color: #0056b3 !important;
     opacity: 0.95;
     transform: scale(1.01);
+}
+
+.verify-done-success {
+    color: #16a34a;
+    font-weight: 700;
+    line-height: 1.6;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    animation: verifyDoneFadeIn 0.4s ease-out;
+}
+
+.verify-done-check {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+@keyframes verifyDoneFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

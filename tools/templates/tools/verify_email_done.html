@@ -11,14 +11,13 @@
 <div class="static-container login-container">
     <h1>{% trans "Email verified" %}</h1>
 
-    <p style="margin: 24px 0; color: #555; line-height: 1.6;">
-        {% trans "Your email has been verified. You can now reset your password anytime from the login page if you forget it." %}
+    <p class="verify-done-success" style="margin: 24px 0 10px;">
+        <span class="verify-done-check" aria-hidden="true">✓</span>
+        <span>{% trans "Your email has been verified. You can now reset your password anytime from the login page if you forget it." %}</span>
     </p>
 
-    <p style="margin: 0 0 18px;">
-        <a href="{% url 'login' %}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display:inline-block;text-decoration:none;padding:12px 24px;">
-            {% trans "Sign in to your account" %}
-        </a>
+    <p class="login-hint" style="margin: 0 0 18px;">
+        <a href="{% url 'login' %}">{% trans "Sign in to your account" %}</a>
     </p>
 
     <div class="static-footer">
