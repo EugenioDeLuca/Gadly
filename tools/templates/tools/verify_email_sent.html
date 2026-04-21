@@ -43,7 +43,7 @@
         {% if verify_url %}
         <a href="{{ verify_url }}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Verify email now" %}</a>
         {% else %}
-        <a href="{% url 'request_verification_email_page' %}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Request verification email" %}</a>
+        <a href="{% url 'request_verification_email_page' %}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Request verification email" %}</a>
         {% endif %}
     </p>
     <p style="font-size: 0.9rem; color: #666;">
