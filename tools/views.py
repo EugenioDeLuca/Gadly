@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 import asyncio
 import secrets
+import logging
 
 from .forms import UserRegistrationForm, ProfileUpdateForm, AvatarUploadForm
 from .interview_banks import get_interview_simulator_payload
@@ -31,6 +32,8 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 import socket
 import json
+
+logger = logging.getLogger(__name__)
 
 
 def _send_verification_email(request, user, token):
@@ -56,6 +59,7 @@ def _send_verification_email(request, user, token):
     try:
         msg.send(fail_silently=False)
     except Exception:
+        logger.exception("Failed to send verification email to user_id=%s email=%s", user.id, user.email)
         return None
     return verify_url
 
@@ -175,9 +179,11 @@ def register(request):
             verify_url = _send_verification_email(request, user, token)
             request.session['pending_verify_user_id'] = user.id
             # In dev (DEBUG): store link in session so user can click it directly from the page
-            if settings.DEBUG:
+            if settings.DEBUG and verify_url:
                 request.session['pending_verify_url'] = verify_url
-            return redirect('verify_email_sent')
+            if verify_url:
+                return redirect('verify_email_sent')
+            return redirect(reverse('verify_email_sent') + '?resent=0')
     else:
         form = UserRegistrationForm()
     return render(request, 'tools/register.html', {'form': form})
@@ -227,15 +233,16 @@ def resend_verification_email(request):
     profile, _ = UserProfile.objects.get_or_create(user=target_user)
     if profile.email_verified:
         return redirect('home')
-    EmailVerificationToken.objects.filter(user=target_user).delete()
     token = secrets.token_hex(24)
-    EmailVerificationToken.objects.create(user=target_user, token=token)
+    new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
     request.session['pending_verify_user_id'] = target_user.id
     if settings.DEBUG and verify_url:
         request.session['pending_verify_url'] = verify_url
     if verify_url:
+        EmailVerificationToken.objects.filter(user=target_user).exclude(pk=new_evt.pk).delete()
         return redirect(reverse('verify_email_sent') + '?resent=1')
+    new_evt.delete()
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
@@ -247,16 +254,17 @@ def resend_verification_email_public(request):
         if user:
             profile, _ = UserProfile.objects.get_or_create(user=user)
             if not profile.email_verified:
-                EmailVerificationToken.objects.filter(user=user).delete()
                 token = secrets.token_hex(24)
-                EmailVerificationToken.objects.create(user=user, token=token)
+                new_evt = EmailVerificationToken.objects.create(user=user, token=token)
                 verify_url = _send_verification_email(request, user, token)
                 if settings.DEBUG and verify_url:
                     request.session['pending_verify_url'] = verify_url
                 if verify_url:
+                    EmailVerificationToken.objects.filter(user=user).exclude(pk=new_evt.pk).delete()
                     return redirect(reverse('verify_email_sent') + '?resent=1')
+                new_evt.delete()
                 return redirect(reverse('verify_email_sent') + '?resent=0')
-    return redirect(reverse('verify_email_sent') + '?resent=1')
+    return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
 @require_GET

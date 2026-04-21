@@ -175,19 +175,23 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 
-# Email (for password reset and verification)
-# Development: console backend (emails printed to terminal)
-# Production: set EMAIL_HOST + EMAIL_HOST_USER + EMAIL_HOST_PASSWORD in Render
-if os.environ.get('EMAIL_HOST'):
+# Email (password reset + verification)
+# Dev: console backend by default. Production: force SMTP backend (SendGrid).
+if DEBUG and not os.environ.get('EMAIL_HOST'):
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_HOST = ''
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.sendgrid.net')
     EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() == 'true'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'apikey')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@gadly.it')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Gadly Support <contact@gadly.it>')
 
 # Require verified email before login for regular users.
 # In local dev (DEBUG=True) default is disabled to avoid lockout during testing.
