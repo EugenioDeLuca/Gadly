@@ -310,7 +310,13 @@ def resend_verification_email(request):
     if target_user is None:
         return redirect('login')
     profile, _ = UserProfile.objects.get_or_create(user=target_user)
-    if profile.email_verified:
+    has_active_tokens = EmailVerificationToken.objects.filter(user=target_user).exists()
+    # Defensive guard: if there are no active verification tokens, the account is
+    # effectively already verified in this flow. Keep profile flag aligned.
+    if (not has_active_tokens) and (not profile.email_verified):
+        profile.email_verified = True
+        profile.save(update_fields=["email_verified"])
+    if profile.email_verified or (not has_active_tokens):
         return redirect(reverse('verify_email_sent') + '?already_verified=1')
     token = secrets.token_hex(24)
     new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
@@ -332,7 +338,12 @@ def resend_verification_email_public(request):
         user = User.objects.filter(email__iexact=email).first()
         if user:
             profile, _ = UserProfile.objects.get_or_create(user=user)
-            if profile.email_verified:
+            has_active_tokens = EmailVerificationToken.objects.filter(user=user).exists()
+            # Defensive guard for legacy/misaligned profiles.
+            if (not has_active_tokens) and (not profile.email_verified):
+                profile.email_verified = True
+                profile.save(update_fields=["email_verified"])
+            if profile.email_verified or (not has_active_tokens):
                 return redirect(reverse('verify_email_sent') + '?already_verified=1')
             token = secrets.token_hex(24)
             new_evt = EmailVerificationToken.objects.create(user=user, token=token)

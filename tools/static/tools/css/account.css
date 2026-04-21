@@ -130,7 +130,7 @@
 .account-choose-file-btn:hover {
     background: #dc3545;
     border-color: #dc3545;
-    transform: scale(1.03);
+    transform: scale(1.01);
 }
 
 .login-btn--password,
@@ -141,6 +141,7 @@
 
 .login-btn--password:hover {
     background: #c41e3a !important;
+    transform: scale(1.01) !important;
 }
 
 .account-section--danger h2 {
@@ -164,6 +165,7 @@
 .login-btn--danger:hover {
     background: #a01830 !important;
     color: white !important;
+    transform: scale(1.01) !important;
 }
 
 .login-btn--save-avatar:hover {
@@ -175,4 +177,12 @@
     color: #28a745;
     font-weight: bold;
     font-size: 1.1em;
+}
+
+.account-delete-form .form-group {
+    margin-bottom: 0;
+}
+
+.account-delete-form .login-btn {
+    margin-top: 12px;
 }

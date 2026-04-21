@@ -23,7 +23,7 @@
     <div class="login-error">{{ err }}</div>
     {% endif %}
 
-    <form method="post" class="login-form">
+    <form method="post" class="login-form account-delete-form">
         {% csrf_token %}
         <div class="form-group">
             <input type="password" name="password" id="id_password" required
@@ -36,10 +36,5 @@
         <a href="{% url 'account_profile' %}">{% trans "Cancel - back to account" %}</a>
     </p>
 
-    <div class="static-footer">
-        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-        </a>
-    </div>
 </div>
 {% endblock %}
