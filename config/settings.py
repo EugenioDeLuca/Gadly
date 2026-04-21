@@ -182,7 +182,7 @@ _email_tls_raw = (os.environ.get('EMAIL_USE_TLS') or 'true').strip().lower()
 _email_user_raw = (os.environ.get('EMAIL_HOST_USER') or '').strip()
 _email_pass_raw = (os.environ.get('EMAIL_HOST_PASSWORD') or '').strip()
 _sendgrid_key_raw = (os.environ.get('SENDGRID_API_KEY') or '').strip()
-if DEBUG and not _email_host_raw:
+if DEBUG and not _email_host_raw and not _sendgrid_key_raw:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST = ''
     EMAIL_PORT = 587
