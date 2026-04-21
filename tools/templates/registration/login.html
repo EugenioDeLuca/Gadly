@@ -16,7 +16,7 @@
 
     {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
-        <p class="login-error-inline">{{ error }}</p>
+        <p class="login-error-inline">{{ error|safe }}</p>
         {% endfor %}
     {% endif %}
 

@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
+from django.utils.html import format_html
 
 from .models import UserProfile
 
@@ -80,7 +82,13 @@ class VerifiedEmailAuthenticationForm(AuthenticationForm):
             return
         profile, created = UserProfile.objects.get_or_create(user=user)
         if not profile.email_verified:
+            resend_url = reverse("request_verification_email_page")
             raise forms.ValidationError(
-                _("Please verify your email before signing in. Check your inbox or request a new verification email."),
+                format_html(
+                    "{} <a href=\"{}\">{}</a>.",
+                    _("Please verify your email before signing in. Check your inbox or"),
+                    resend_url,
+                    _("request a new verification email"),
+                ),
                 code="email_not_verified",
             )

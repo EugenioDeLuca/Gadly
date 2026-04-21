@@ -25,10 +25,18 @@
     </p>
     {% endif %}
     <p style="margin: 24px 0; color: #555; line-height: 1.6;">
-        {% if LANGUAGE_CODE|slice:":2" == "it" %}
-        Abbiamo inviato un link di verifica al tuo indirizzo email. Clicca il link per verificare la tua email.
+        {% if resend_failed %}
+            {% if LANGUAGE_CODE|slice:":2" == "it" %}
+            Non risulta alcun invio completato. Riprova a richiedere l'email di verifica.
+            {% else %}
+            No email was sent successfully. Please try requesting a verification email again.
+            {% endif %}
         {% else %}
-        {% trans "We've sent a verification link to your email address. Click the link to verify your email." %}
+            {% if LANGUAGE_CODE|slice:":2" == "it" %}
+            Abbiamo inviato un link di verifica al tuo indirizzo email. Clicca il link per verificare la tua email.
+            {% else %}
+            {% trans "We've sent a verification link to your email address. Click the link to verify your email." %}
+            {% endif %}
         {% endif %}
     </p>
     <p style="margin: 20px 0;">

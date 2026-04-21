@@ -3218,6 +3218,9 @@ msgstr "Non siamo riusciti a inviare l'email di verifica in questo momento. Ripr
 msgid "Please verify your email before signing in. Check your inbox or request a new verification email."
 msgstr "Verifica prima la tua email per accedere. Controlla la posta in arrivo oppure richiedi una nuova email di verifica."
 
+msgid "Please verify your email before signing in. Check your inbox or"
+msgstr "Verifica prima la tua email per accedere. Controlla la posta in arrivo oppure"
+
 msgid "If you don't see the email, check your spam folder."
 msgstr "Se non vedi l'email, controlla la cartella spam."
 

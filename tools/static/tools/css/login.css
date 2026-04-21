@@ -82,6 +82,10 @@ body.dark-mode .login-input:focus {
     color: white !important;
 }
 
+.login-btn--accounts-like:hover {
+    transform: none;
+}
+
 .login-error {
     background: #ffe6e6;
     border: 1px solid #ffcccc;
@@ -155,13 +159,14 @@ body.dark-mode .login-error {
 }
 
 .login-hint {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #666;
     margin-top: 20px;
     text-align: center;
 }
 
 .login-hint a {
+    font-size: 1rem;
     color: #003f7f;
     font-weight: 600;
     text-decoration: none;
@@ -185,4 +190,18 @@ body.dark-mode .login-hint a {
 
 body.dark-mode .login-hint a:hover {
     color: #0056b3;
+}
+
+.verify-invalid-link {
+    color: #003f7f !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    margin-left: 8px;
+    white-space: nowrap;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.verify-invalid-link:hover {
+    color: #0056b3 !important;
+    transform: scale(1.01);
 }

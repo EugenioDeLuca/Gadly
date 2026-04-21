@@ -25,12 +25,12 @@
                 class="login-input"
             >
         </div>
-        <button type="submit" class="login-btn login-btn--white-text">
+        <button type="submit" class="login-btn login-btn--white-text login-btn--accounts-like">
             {% trans "Request verification email" %}
         </button>
     </form>
-    <p class="login-hint" style="margin-top: 16px;">
-        <a href="{% url 'login' %}">{% trans "Sign in" %}</a>
+    <p class="login-hint" style="margin-top: 16px; font-size: 1rem;">
+        <a href="{% url 'login' %}" style="font-size: 1rem; font-weight: 600;">{% trans "Sign in" %}</a>
     </p>
 </div>
 {% endblock %}
