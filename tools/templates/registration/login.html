@@ -10,6 +10,9 @@
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Login" %}</h1>
+    <p style="margin: 16px 0; color: #555; line-height: 1.6;">
+        {% trans "Sign in to manage your account and continue using Gadly tools." %}
+    </p>
 
     {% if form.non_field_errors %}
     <div class="login-error">

@@ -13,6 +13,9 @@
 {% trans "✗ Username already taken" as msg_taken %}
 <div class="static-container login-container">
     <h1>{% trans "Register" %}</h1>
+    <p style="margin: 16px 0; color: #555; line-height: 1.6;">
+        {% trans "Create your account to save favorites and access all Gadly features." %}
+    </p>
 
     {% if form.non_field_errors %}
     <div class="login-error">
