@@ -237,9 +237,7 @@ def resend_verification_email(request):
             target_user = User.objects.filter(pk=pending_user_id).first()
     if target_user is None:
         return redirect('login')
-    profile, _ = UserProfile.objects.get_or_create(user=target_user)
-    if profile.email_verified:
-        return redirect(reverse('verify_email_sent') + '?already_verified=1')
+    UserProfile.objects.get_or_create(user=target_user)
     token = secrets.token_hex(24)
     new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
@@ -259,19 +257,17 @@ def resend_verification_email_public(request):
     if email:
         user = User.objects.filter(email__iexact=email).first()
         if user:
-            profile, _ = UserProfile.objects.get_or_create(user=user)
-            if not profile.email_verified:
-                token = secrets.token_hex(24)
-                new_evt = EmailVerificationToken.objects.create(user=user, token=token)
-                verify_url = _send_verification_email(request, user, token)
-                if settings.DEBUG and verify_url:
-                    request.session['pending_verify_url'] = verify_url
-                if verify_url:
-                    EmailVerificationToken.objects.filter(user=user).exclude(pk=new_evt.pk).delete()
-                    return redirect(reverse('verify_email_sent') + '?resent=1')
-                new_evt.delete()
-                return redirect(reverse('verify_email_sent') + '?resent=0')
-            return redirect(reverse('verify_email_sent') + '?already_verified=1')
+            UserProfile.objects.get_or_create(user=user)
+            token = secrets.token_hex(24)
+            new_evt = EmailVerificationToken.objects.create(user=user, token=token)
+            verify_url = _send_verification_email(request, user, token)
+            if settings.DEBUG and verify_url:
+                request.session['pending_verify_url'] = verify_url
+            if verify_url:
+                EmailVerificationToken.objects.filter(user=user).exclude(pk=new_evt.pk).delete()
+                return redirect(reverse('verify_email_sent') + '?resent=1')
+            new_evt.delete()
+            return redirect(reverse('verify_email_sent') + '?resent=0')
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
