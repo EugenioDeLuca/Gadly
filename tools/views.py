@@ -7,6 +7,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.urls import reverse
 from django.template.loader import render_to_string
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -87,7 +88,11 @@ def _send_verification_email(request, user, token):
     ) % {'username': user.username, 'url': verify_url}
     html_message = render_to_string(
         "tools/emails/verify_email.html",
-        {"username": user.username, "verify_url": verify_url},
+        {
+            "username": user.username,
+            "verify_url": verify_url,
+            "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
+        },
         request=request,
     )
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
@@ -252,7 +257,7 @@ def register(request):
             if settings.DEBUG and verify_url:
                 request.session['pending_verify_url'] = verify_url
             if verify_url:
-                return redirect('verify_email_sent')
+                return redirect(reverse('verify_email_sent') + '?sent=1')
             return redirect(reverse('verify_email_sent') + '?resent=0')
     else:
         form = UserRegistrationForm()
@@ -282,12 +287,16 @@ def verify_email_sent(request):
     """Page shown after registration: check your email."""
     # In DEBUG mode, show clickable link (email goes to console, link is easier here)
     verify_url = request.session.pop('pending_verify_url', None)
+    sent = request.GET.get('sent') == '1'
     resent = request.GET.get('resent') == '1'
     resend_failed = request.GET.get('resent') == '0'
+    already_verified = request.GET.get('already_verified') == '1'
     return render(request, 'tools/verify_email_sent.html', {
         'verify_url': verify_url,
+        'sent': sent,
         'resent': resent,
         'resend_failed': resend_failed,
+        'already_verified': already_verified,
     })
 
 
@@ -300,16 +309,19 @@ def resend_verification_email(request):
             target_user = User.objects.filter(pk=pending_user_id).first()
     if target_user is None:
         return redirect('login')
-    UserProfile.objects.get_or_create(user=target_user)
-    EmailVerificationToken.objects.filter(user=target_user).delete()
+    profile, _ = UserProfile.objects.get_or_create(user=target_user)
+    if profile.email_verified:
+        return redirect(reverse('verify_email_sent') + '?already_verified=1')
     token = secrets.token_hex(24)
-    EmailVerificationToken.objects.create(user=target_user, token=token)
+    new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
     request.session['pending_verify_user_id'] = target_user.id
     if settings.DEBUG and verify_url:
         request.session['pending_verify_url'] = verify_url
     if verify_url:
+        EmailVerificationToken.objects.filter(user=target_user).exclude(pk=new_evt.pk).delete()
         return redirect(reverse('verify_email_sent') + '?resent=1')
+    new_evt.delete()
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
@@ -319,15 +331,18 @@ def resend_verification_email_public(request):
     if email:
         user = User.objects.filter(email__iexact=email).first()
         if user:
-            UserProfile.objects.get_or_create(user=user)
-            EmailVerificationToken.objects.filter(user=user).delete()
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            if profile.email_verified:
+                return redirect(reverse('verify_email_sent') + '?already_verified=1')
             token = secrets.token_hex(24)
-            EmailVerificationToken.objects.create(user=user, token=token)
+            new_evt = EmailVerificationToken.objects.create(user=user, token=token)
             verify_url = _send_verification_email(request, user, token)
             if settings.DEBUG and verify_url:
                 request.session['pending_verify_url'] = verify_url
             if verify_url:
+                EmailVerificationToken.objects.filter(user=user).exclude(pk=new_evt.pk).delete()
                 return redirect(reverse('verify_email_sent') + '?resent=1')
+            new_evt.delete()
             return redirect(reverse('verify_email_sent') + '?resent=0')
         logger.warning("EMAIL_FLOW user=- email=%s user_found=0 smtp_ok=0 api_ok=0 reason=user_not_found_for_resend", email)
     else:

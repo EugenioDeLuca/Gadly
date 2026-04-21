@@ -3154,9 +3154,6 @@ msgstr "Email verificata - Gadly"
 msgid "Email verified"
 msgstr "Email verificata"
 
-msgid "Sign in to your account"
-msgstr "Accedi al tuo account"
-
 msgid ""
 "Your email has been verified. You can now reset your password anytime from "
 "the login page if you forget it."
@@ -3221,9 +3218,6 @@ msgstr "Non siamo riusciti a inviare l'email di verifica in questo momento. Ripr
 msgid "Please verify your email before signing in. Check your inbox or request a new verification email."
 msgstr "Verifica prima la tua email per accedere. Controlla la posta in arrivo oppure richiedi una nuova email di verifica."
 
-msgid "Please verify your email before signing in. Check your inbox or"
-msgstr "Verifica prima la tua email per accedere. Controlla la posta in arrivo oppure"
-
 msgid "If you don't see the email, check your spam folder."
 msgstr "Se non vedi l'email, controlla la cartella spam."
 
@@ -3265,9 +3259,6 @@ msgstr "Password non corretta."
 
 msgid "Verify your email - Gadly"
 msgstr "Verifica la tua email - Gadly"
-
-msgid "Account Security Confirmation"
-msgstr "Conferma sicurezza account"
 
 #, python-format
 msgid ""

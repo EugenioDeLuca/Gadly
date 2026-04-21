@@ -15,10 +15,14 @@
         {% trans "Your email has been verified. You can now reset your password anytime from the login page if you forget it." %}
     </p>
 
-    <div class="static-footer">
-        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+    <p style="margin: 0 0 18px;">
+        <a href="{% url 'login' %}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display:inline-block;text-decoration:none;padding:12px 24px;">
+            {% trans "Sign in to your account" %}
         </a>
+    </p>
+
+    <div class="static-footer">
+        <!-- Empty footer: back-to-home icon removed as requested -->
     </div>
 </div>
 {% endblock %}

@@ -10,12 +10,21 @@
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Check your email" %}</h1>
+    {% if already_verified %}
+    <p style="margin: 14px 0 18px; color: #dc2626; font-weight: 700; line-height: 1.5;">
+        {% if LANGUAGE_CODE|slice:":2" == "it" %}
+        Questo account risulta già verificato: non abbiamo inviato una nuova email di verifica. Puoi accedere subito con le tue credenziali o usare il reset password se non ricordi la password.
+        {% else %}
+        This account is already verified, so no new verification email was sent. You can sign in immediately with your credentials or use password reset if needed.
+        {% endif %}
+    </p>
+    {% endif %}
     {% if resend_failed %}
     <p style="margin: 14px 0 18px; color: #dc2626; font-weight: 700; line-height: 1.5;">
         {% trans "We could not send the verification email right now. Please try again in a moment." %}
     </p>
     {% endif %}
-    {% if resent %}
+    {% if sent or resent %}
     <p style="margin: 14px 0 18px; color: #16a34a; font-weight: 700; line-height: 1.5;">
         {% if LANGUAGE_CODE|slice:":2" == "it" %}
         Richiesta inviata: abbiamo spedito una nuova email di verifica. Controlla anche spam o promozioni.
