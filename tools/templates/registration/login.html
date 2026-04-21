@@ -42,6 +42,9 @@
     <p class="login-hint">
         <a href="{% url 'password_reset' %}">{% trans "Forgot password?" %}</a>
     </p>
+    <p class="login-hint">
+        <a href="{% url 'request_verification_email_page' %}">{% trans "Didn't receive the verification email?" %}</a>
+    </p>
     <p class="login-hint">{% trans "Don't have an account?" %} <a href="{% url 'register' %}">{% trans "Sign up" %}</a></p>
 
 </div>

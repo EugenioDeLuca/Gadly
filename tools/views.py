@@ -3,9 +3,10 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.urls import reverse
+from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -30,6 +31,30 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 import socket
 import json
+
+
+def _send_verification_email(request, user, token):
+    verify_url = request.build_absolute_uri(
+        reverse("verify_email", kwargs={"token": token})
+    )
+    subject = gettext("Verify your email - Gadly")
+    plain_message = gettext(
+        "Hi %(username)s,\n\n"
+        "Please verify your email by clicking this link:\n\n%(url)s\n\n"
+        "This allows you to reset your password if you forget it.\n\n"
+        "If you didn't create an account, ignore this email.\n\n"
+        "— Gadly"
+    ) % {'username': user.username, 'url': verify_url}
+    html_message = render_to_string(
+        "tools/emails/verify_email.html",
+        {"username": user.username, "verify_url": verify_url},
+        request=request,
+    )
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
+    msg = EmailMultiAlternatives(subject, plain_message, from_email, [user.email])
+    msg.attach_alternative(html_message, "text/html")
+    msg.send(fail_silently=True)
+    return verify_url
 
 # -------------------------
 # Normal page views
@@ -144,25 +169,8 @@ def register(request):
             EmailVerificationToken.objects.filter(user=user).delete()
             token = secrets.token_hex(24)
             EmailVerificationToken.objects.create(user=user, token=token)
-            verify_url = request.build_absolute_uri(
-                reverse("verify_email", kwargs={"token": token})
-            )
-            subject = gettext("Verify your email - Gadly")
-            message = gettext(
-                "Hi %(username)s,\n\n"
-                "Please verify your email by clicking this link:\n\n%(url)s\n\n"
-                "This allows you to reset your password if you forget it.\n\n"
-                "If you didn't create an account, ignore this email.\n\n"
-                "— Gadly"
-            ) % {'username': user.username, 'url': verify_url}
-            send_mail(
-                subject,
-                message,
-                getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local'),
-                [user.email],
-                fail_silently=True,
-            )
-            login(request, user)
+            verify_url = _send_verification_email(request, user, token)
+            request.session['pending_verify_user_id'] = user.id
             # In dev (DEBUG): store link in session so user can click it directly from the page
             if settings.DEBUG:
                 request.session['pending_verify_url'] = verify_url
@@ -182,6 +190,11 @@ def verify_email(request, token):
     profile, _ = UserProfile.objects.get_or_create(user=evt.user)
     profile.email_verified = True
     profile.save()
+    if request.session.get('pending_verify_user_id') == evt.user.id:
+        try:
+            del request.session['pending_verify_user_id']
+        except Exception:
+            pass
     evt.delete()
     return render(request, 'tools/verify_email_done.html')
 
@@ -190,39 +203,50 @@ def verify_email_sent(request):
     """Page shown after registration: check your email."""
     # In DEBUG mode, show clickable link (email goes to console, link is easier here)
     verify_url = request.session.pop('pending_verify_url', None)
-    return render(request, 'tools/verify_email_sent.html', {'verify_url': verify_url})
+    resent = request.GET.get('resent') == '1'
+    return render(request, 'tools/verify_email_sent.html', {'verify_url': verify_url, 'resent': resent})
 
 
-@login_required
 def resend_verification_email(request):
-    """Resend verification email (for logged-in users who haven't verified)."""
-    if not request.user.is_authenticated:
+    """Resend verification email for logged-in or just-registered users."""
+    target_user = request.user if request.user.is_authenticated else None
+    if target_user is None:
+        pending_user_id = request.session.get('pending_verify_user_id')
+        if pending_user_id:
+            target_user = User.objects.filter(pk=pending_user_id).first()
+    if target_user is None:
         return redirect('login')
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    profile, _ = UserProfile.objects.get_or_create(user=target_user)
     if profile.email_verified:
         return redirect('home')
-    EmailVerificationToken.objects.filter(user=request.user).delete()
+    EmailVerificationToken.objects.filter(user=target_user).delete()
     token = secrets.token_hex(24)
-    EmailVerificationToken.objects.create(user=request.user, token=token)
-    verify_url = request.build_absolute_uri(
-        reverse("verify_email", kwargs={"token": token})
-    )
-    subject = gettext("Verify your email - Gadly")
-    message = gettext(
-        "Hi %(username)s,\n\n"
-        "Please verify your email by clicking this link:\n\n%(url)s\n\n"
-        "— Gadly"
-    ) % {'username': request.user.username, 'url': verify_url}
-    send_mail(
-        subject,
-        message,
-        getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local'),
-        [request.user.email],
-        fail_silently=True,
-    )
+    EmailVerificationToken.objects.create(user=target_user, token=token)
+    verify_url = _send_verification_email(request, target_user, token)
+    request.session['pending_verify_user_id'] = target_user.id
     if settings.DEBUG:
         request.session['pending_verify_url'] = verify_url
-    return redirect('verify_email_sent')
+    return redirect(reverse('verify_email_sent') + '?resent=1')
+
+
+@require_http_methods(["POST"])
+def resend_verification_email_public(request):
+    email = (request.POST.get("email") or "").strip()
+    if email:
+        user = User.objects.filter(email__iexact=email).first()
+        if user:
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            if not profile.email_verified:
+                EmailVerificationToken.objects.filter(user=user).delete()
+                token = secrets.token_hex(24)
+                EmailVerificationToken.objects.create(user=user, token=token)
+                _send_verification_email(request, user, token)
+    return redirect(reverse('verify_email_sent') + '?resent=1')
+
+
+@require_GET
+def request_verification_email_page(request):
+    return render(request, 'tools/request_verification_email.html')
 
 def calculator(request):
     return render(request, 'tools/calculator.html')

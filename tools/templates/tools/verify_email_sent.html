@@ -10,9 +10,22 @@
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Check your email" %}</h1>
+    {% if resent %}
+    <p style="margin: 14px 0 18px; color: #14532d; background: #ecfdf5; border: 1px solid #86efac; border-radius: 10px; padding: 10px 12px; line-height: 1.5;">
+        {% if LANGUAGE_CODE|slice:":2" == "it" %}
+        Richiesta inviata: abbiamo spedito una nuova email di verifica. Controlla anche spam o promozioni.
+        {% else %}
+        Request sent: we sent a new verification email. Please also check spam or promotions.
+        {% endif %}
+    </p>
+    {% endif %}
 
     <p style="margin: 24px 0; color: #555; line-height: 1.6;">
-        {% trans "We've sent a verification link to your email address. Click the link to verify your email and enable password reset." %}
+        {% if LANGUAGE_CODE|slice:":2" == "it" %}
+        Abbiamo inviato un link di verifica al tuo indirizzo email. Clicca il link per verificare la tua email.
+        {% else %}
+        {% trans "We've sent a verification link to your email address. Click the link to verify your email." %}
+        {% endif %}
     </p>
     <p style="margin: 20px 0;">
         {% if verify_url %}
@@ -25,13 +38,7 @@
         {% trans "If you don't see the email, check your spam folder." %}
     </p>
     <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">
-        <a href="{% url 'resend_verification' %}">{% trans "Link not working? Request a new one" %}</a>
+        <a href="{% url 'resend_verification' %}" style="color:#003f7f; font-weight:400;">{% trans "Link not working? Request a new one" %}</a>
     </p>
-
-    <div class="static-footer">
-        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-        </a>
-    </div>
 </div>
 {% endblock %}

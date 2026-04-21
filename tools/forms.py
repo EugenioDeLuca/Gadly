@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
@@ -71,3 +71,16 @@ class AvatarUploadForm(forms.ModelForm):
         widgets = {
             'avatar': forms.FileInput(attrs={'accept': 'image/*'}),
         }
+
+
+class VerifiedEmailAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        if user.is_staff or user.is_superuser:
+            return
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        if not profile.email_verified:
+            raise forms.ValidationError(
+                _("Please verify your email before signing in. Check your inbox or request a new verification email."),
+                code="email_not_verified",
+            )

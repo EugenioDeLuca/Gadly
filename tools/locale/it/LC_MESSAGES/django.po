@@ -3188,6 +3188,15 @@ msgstr "Verifica email ora"
 msgid "Request verification email"
 msgstr "Richiedi email di verifica"
 
+msgid "Resend verification email - Gadly"
+msgstr "Rinvia email di verifica - Gadly"
+
+msgid "Didn't receive the verification email?"
+msgstr "Non hai ricevuto l'email di verifica?"
+
+msgid "Enter your email and we will send you a new verification link."
+msgstr "Inserisci la tua email e ti invieremo un nuovo link di verifica."
+
 msgid "If you don't see the email, check your spam folder."
 msgstr "Se non vedi l'email, controlla la cartella spam."
 

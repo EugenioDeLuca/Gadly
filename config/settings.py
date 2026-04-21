@@ -189,6 +189,14 @@ else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@gadly.it')
 
+# Require verified email before login for regular users.
+# In local dev (DEBUG=True) default is disabled to avoid lockout during testing.
+_email_verify_raw = os.environ.get('EMAIL_VERIFICATION_REQUIRED_LOGIN')
+if _email_verify_raw is None:
+    EMAIL_VERIFICATION_REQUIRED_LOGIN = not DEBUG
+else:
+    EMAIL_VERIFICATION_REQUIRED_LOGIN = _email_verify_raw.strip().lower() in ('1', 'true', 'yes', 'on')
+
 # Local AI for Interview Simulator (no external APIs).
 INTERVIEW_AI_ENABLED = os.environ.get('INTERVIEW_AI_ENABLED', '0').strip().lower() in ('1', 'true', 'yes', 'on')
 INTERVIEW_AI_ENDPOINT = os.environ.get('INTERVIEW_AI_ENDPOINT', 'http://127.0.0.1:11434/api/generate').strip()
