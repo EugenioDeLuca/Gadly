@@ -7,6 +7,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.urls import reverse
 from django.template.loader import render_to_string
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -50,7 +51,11 @@ def _send_verification_email(request, user, token):
     ) % {'username': user.username, 'url': verify_url}
     html_message = render_to_string(
         "tools/emails/verify_email.html",
-        {"username": user.username, "verify_url": verify_url},
+        {
+            "username": user.username,
+            "verify_url": verify_url,
+            "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
+        },
         request=request,
     )
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')

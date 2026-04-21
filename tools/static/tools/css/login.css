@@ -98,9 +98,15 @@ body.dark-mode .login-error {
 
 .login-error-inline {
     margin: 8px 0 14px;
-    color: #dc2626;
-    font-weight: 700;
+    color: #dc2626 !important;
+    font-weight: 700 !important;
     line-height: 1.5;
+}
+
+.login-error-inline a {
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+    text-decoration: underline;
 }
 
 .field-error {
