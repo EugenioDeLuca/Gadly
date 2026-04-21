@@ -212,5 +212,5 @@ body.dark-mode .login-hint a:hover {
 .verify-invalid-link:hover {
     color: #0056b3 !important;
     opacity: 0.95;
-    transform: scale(1.06);
+    transform: scale(1.01);
 }
