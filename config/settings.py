@@ -183,6 +183,7 @@ _email_tls_raw = (os.environ.get('EMAIL_USE_TLS') or 'true').strip().lower()
 _email_ssl_raw = (os.environ.get('EMAIL_USE_SSL') or 'false').strip().lower()
 _email_user_raw = (os.environ.get('EMAIL_HOST_USER') or '').strip()
 _email_pass_raw = (os.environ.get('EMAIL_HOST_PASSWORD') or '').strip()
+_sendgrid_key_raw = (os.environ.get('SENDGRID_API_KEY') or '').strip()
 
 if DEBUG and not _email_host_raw:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -201,8 +202,11 @@ else:
         EMAIL_PORT = 587
     EMAIL_USE_TLS = _email_tls_raw in ('1', 'true', 'yes', 'on')
     EMAIL_USE_SSL = _email_ssl_raw in ('1', 'true', 'yes', 'on')
+    if EMAIL_USE_SSL:
+        EMAIL_USE_TLS = False
     EMAIL_HOST_USER = _email_user_raw or 'apikey'
-    EMAIL_HOST_PASSWORD = _email_pass_raw
+    EMAIL_HOST_PASSWORD = _email_pass_raw or _sendgrid_key_raw
+    EMAIL_TIMEOUT = int((os.environ.get('EMAIL_TIMEOUT') or '20').strip() or '20')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Gadly Support <contact@gadly.it>')
 
 # Require verified email before login for regular users.
