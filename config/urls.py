@@ -31,6 +31,7 @@ urlpatterns = [
     path('accounts/register/', tools_views.register, name='register'),
     path('accounts/verify-email-sent/', tools_views.verify_email_sent, name='verify_email_sent'),
     path('accounts/verify-email/<str:token>/', tools_views.verify_email, name='verify_email'),
+    path('v/<str:token>/', tools_views.verify_email, name='verify_email_short'),
     path('accounts/resend-verification/', tools_views.resend_verification_email, name='resend_verification'),
     path('accounts/request-verification-email/', tools_views.request_verification_email_page, name='request_verification_email_page'),
     path('accounts/resend-verification-public/', tools_views.resend_verification_email_public, name='resend_verification_public'),
@@ -54,6 +55,13 @@ urlpatterns = [
             subject_template_name='registration/password_reset_subject.txt',
         ),
         name='password_reset',
+    ),
+    path(
+        'rp/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='registration/password_reset_confirm.html',
+        ),
+        name='password_reset_confirm_short',
     ),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('tools.urls')),

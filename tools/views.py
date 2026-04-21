@@ -35,7 +35,7 @@ import json
 
 def _send_verification_email(request, user, token):
     verify_url = request.build_absolute_uri(
-        reverse("verify_email", kwargs={"token": token})
+        reverse("verify_email_short", kwargs={"token": token})
     )
     subject = gettext("Verify your email - Gadly")
     plain_message = gettext(
