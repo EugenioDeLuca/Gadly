@@ -219,10 +219,12 @@ def verify_email_sent(request):
     verify_url = request.session.pop('pending_verify_url', None)
     resent = request.GET.get('resent') == '1'
     resend_failed = request.GET.get('resent') == '0'
+    already_verified = request.GET.get('already_verified') == '1'
     return render(request, 'tools/verify_email_sent.html', {
         'verify_url': verify_url,
         'resent': resent,
         'resend_failed': resend_failed,
+        'already_verified': already_verified,
     })
 
 
@@ -237,7 +239,7 @@ def resend_verification_email(request):
         return redirect('login')
     profile, _ = UserProfile.objects.get_or_create(user=target_user)
     if profile.email_verified:
-        return redirect('home')
+        return redirect(reverse('verify_email_sent') + '?already_verified=1')
     token = secrets.token_hex(24)
     new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
@@ -269,6 +271,7 @@ def resend_verification_email_public(request):
                     return redirect(reverse('verify_email_sent') + '?resent=1')
                 new_evt.delete()
                 return redirect(reverse('verify_email_sent') + '?resent=0')
+            return redirect(reverse('verify_email_sent') + '?already_verified=1')
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
