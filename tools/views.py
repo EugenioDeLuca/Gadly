@@ -93,13 +93,44 @@ def _send_verification_email(request, user, token):
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
     msg = EmailMultiAlternatives(subject, plain_message, from_email, [user.email])
     msg.attach_alternative(html_message, "text/html")
+    smtp_ok = False
+    api_ok = False
+    reason = "unknown"
     try:
         msg.send(fail_silently=False)
+        smtp_ok = True
+        reason = "smtp_sent"
+        logger.info(
+            "EMAIL_FLOW user=%s email=%s user_found=1 smtp_ok=1 api_ok=0 reason=%s",
+            user.username,
+            user.email,
+            reason,
+        )
         return verify_url
     except Exception:
         logger.exception("SMTP send failed for verification email user=%s", user.email)
+        reason = "smtp_failed"
     if _send_via_sendgrid_api(from_email, user.email, subject, plain_message, html_message):
+        api_ok = True
+        reason = "api_sent_after_smtp_fail"
+        logger.info(
+            "EMAIL_FLOW user=%s email=%s user_found=1 smtp_ok=%d api_ok=%d reason=%s",
+            user.username,
+            user.email,
+            1 if smtp_ok else 0,
+            1 if api_ok else 0,
+            reason,
+        )
         return verify_url
+    reason = "smtp_and_api_failed"
+    logger.error(
+        "EMAIL_FLOW user=%s email=%s user_found=1 smtp_ok=%d api_ok=%d reason=%s",
+        user.username,
+        user.email,
+        1 if smtp_ok else 0,
+        1 if api_ok else 0,
+        reason,
+    )
     return None
 
 # -------------------------
@@ -218,9 +249,11 @@ def register(request):
             verify_url = _send_verification_email(request, user, token)
             request.session['pending_verify_user_id'] = user.id
             # In dev (DEBUG): store link in session so user can click it directly from the page
-            if settings.DEBUG:
+            if settings.DEBUG and verify_url:
                 request.session['pending_verify_url'] = verify_url
-            return redirect('verify_email_sent')
+            if verify_url:
+                return redirect('verify_email_sent')
+            return redirect(reverse('verify_email_sent') + '?resent=0')
     else:
         form = UserRegistrationForm()
     return render(request, 'tools/register.html', {'form': form})
@@ -296,6 +329,9 @@ def resend_verification_email_public(request):
             if verify_url:
                 return redirect(reverse('verify_email_sent') + '?resent=1')
             return redirect(reverse('verify_email_sent') + '?resent=0')
+        logger.warning("EMAIL_FLOW user=- email=%s user_found=0 smtp_ok=0 api_ok=0 reason=user_not_found_for_resend", email)
+    else:
+        logger.warning("EMAIL_FLOW user=- email=- user_found=0 smtp_ok=0 api_ok=0 reason=empty_email_input")
     return redirect(reverse('verify_email_sent') + '?resent=0')
 
 

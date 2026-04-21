@@ -201,13 +201,16 @@ body.dark-mode .login-hint a:hover {
     font-weight: 600 !important;
     font-size: 1rem !important;
     margin-left: 2px;
+    margin-right: 2px;
+    padding: 0 2px;
     display: inline-block;
     vertical-align: baseline;
-    transform-origin: left center;
-    transition: transform 0.2s, color 0.2s;
+    transform-origin: center center;
+    transition: color 0.2s, transform 0.2s, opacity 0.2s;
 }
 
 .verify-invalid-link:hover {
     color: #0056b3 !important;
-    transform: scale(1.01);
+    opacity: 0.95;
+    transform: scale(1.06);
 }
