@@ -96,6 +96,13 @@ body.dark-mode .login-error {
     border-color: rgba(220, 53, 69, 0.5);
 }
 
+.login-error-inline {
+    margin: 8px 0 14px;
+    color: #dc2626;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
 .field-error {
     display: block;
     font-size: 0.85rem;

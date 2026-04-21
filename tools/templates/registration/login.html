@@ -15,11 +15,9 @@
     </p>
 
     {% if form.non_field_errors %}
-    <div class="login-error">
         {% for error in form.non_field_errors %}
-        <p>{{ error }}</p>
+        <p class="login-error-inline">{{ error }}</p>
         {% endfor %}
-    </div>
     {% endif %}
 
     <form method="post" class="login-form">

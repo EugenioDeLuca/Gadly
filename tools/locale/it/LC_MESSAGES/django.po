@@ -3207,13 +3207,16 @@ msgid "Sign in to manage your account and continue using Gadly tools."
 msgstr "Accedi per gestire il tuo account e continuare a usare gli strumenti Gadly."
 
 msgid "Create your account to save favorites and access all Gadly features."
-msgstr "Crea il tuo account per salvare i preferiti e accedere a tutte le funzionalita di Gadly."
+msgstr "Crea il tuo account per salvare i preferiti e accedere a tutte le funzionalità di Gadly."
 
 msgid "Enter your email and we will send you a new verification link."
 msgstr "Inserisci la tua email e ti invieremo un nuovo link di verifica."
 
 msgid "We could not send the verification email right now. Please try again in a moment."
 msgstr "Non siamo riusciti a inviare l'email di verifica in questo momento. Riprova tra poco."
+
+msgid "Please verify your email before signing in. Check your inbox or request a new verification email."
+msgstr "Verifica prima la tua email per accedere. Controlla la posta in arrivo oppure richiedi una nuova email di verifica."
 
 msgid "If you don't see the email, check your spam folder."
 msgstr "Se non vedi l'email, controlla la cartella spam."
