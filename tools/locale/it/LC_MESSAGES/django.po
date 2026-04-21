@@ -3174,6 +3174,9 @@ msgstr "Se hai effettuato l'accesso, puoi"
 msgid "request a new verification email"
 msgstr "richiedere una nuova email di verifica"
 
+msgid "If you still need to verify your account, you can"
+msgstr "Se devi ancora verificare il tuo account, puoi"
+
 msgid "Home"
 msgstr "Home"
 
@@ -3184,6 +3187,12 @@ msgstr ""
 
 msgid "Verify email now"
 msgstr "Verifica email ora"
+
+msgid "Verify Email"
+msgstr "Verifica Email"
+
+msgid "Reset Password"
+msgstr "Reset Password"
 
 msgid "Request verification email"
 msgstr "Richiedi email di verifica"
@@ -3202,6 +3211,9 @@ msgstr "Crea il tuo account per salvare i preferiti e accedere a tutte le funzio
 
 msgid "Enter your email and we will send you a new verification link."
 msgstr "Inserisci la tua email e ti invieremo un nuovo link di verifica."
+
+msgid "We could not send the verification email right now. Please try again in a moment."
+msgstr "Non siamo riusciti a inviare l'email di verifica in questo momento. Riprova tra poco."
 
 msgid "If you don't see the email, check your spam folder."
 msgstr "Se non vedi l'email, controlla la cartella spam."

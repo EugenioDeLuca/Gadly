@@ -10,8 +10,13 @@
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Check your email" %}</h1>
+    {% if resend_failed %}
+    <p style="margin: 14px 0 18px; color: #991b1b; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 10px 12px; line-height: 1.5;">
+        {% trans "We could not send the verification email right now. Please try again in a moment." %}
+    </p>
+    {% endif %}
     {% if resent %}
-    <p style="margin: 14px 0 18px; color: #14532d; background: #ecfdf5; border: 1px solid #86efac; border-radius: 10px; padding: 10px 12px; line-height: 1.5;">
+    <p style="margin: 14px 0 18px; color: #16a34a; font-weight: 700; line-height: 1.5;">
         {% if LANGUAGE_CODE|slice:":2" == "it" %}
         Richiesta inviata: abbiamo spedito una nuova email di verifica. Controlla anche spam o promozioni.
         {% else %}
@@ -19,7 +24,6 @@
         {% endif %}
     </p>
     {% endif %}
-
     <p style="margin: 24px 0; color: #555; line-height: 1.6;">
         {% if LANGUAGE_CODE|slice:":2" == "it" %}
         Abbiamo inviato un link di verifica al tuo indirizzo email. Clicca il link per verificare la tua email.
@@ -31,14 +35,14 @@
         {% if verify_url %}
         <a href="{{ verify_url }}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Verify email now" %}</a>
         {% else %}
-        <a href="{% url 'resend_verification' %}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Request verification email" %}</a>
+        <a href="{% url 'request_verification_email_page' %}" class="login-btn login-btn--white-text" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Request verification email" %}</a>
         {% endif %}
     </p>
     <p style="font-size: 0.9rem; color: #666;">
         {% trans "If you don't see the email, check your spam folder." %}
     </p>
     <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">
-        <a href="{% url 'resend_verification' %}" style="color:#003f7f; font-weight:400;">{% trans "Link not working? Request a new one" %}</a>
+        <a href="{% url 'request_verification_email_page' %}" style="color:#003f7f; font-weight:400;">{% trans "Link not working? Request a new one" %}</a>
     </p>
 </div>
 {% endblock %}

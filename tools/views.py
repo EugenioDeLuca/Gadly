@@ -53,7 +53,10 @@ def _send_verification_email(request, user, token):
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
     msg = EmailMultiAlternatives(subject, plain_message, from_email, [user.email])
     msg.attach_alternative(html_message, "text/html")
-    msg.send(fail_silently=True)
+    try:
+        msg.send(fail_silently=False)
+    except Exception:
+        return None
     return verify_url
 
 # -------------------------
@@ -204,7 +207,12 @@ def verify_email_sent(request):
     # In DEBUG mode, show clickable link (email goes to console, link is easier here)
     verify_url = request.session.pop('pending_verify_url', None)
     resent = request.GET.get('resent') == '1'
-    return render(request, 'tools/verify_email_sent.html', {'verify_url': verify_url, 'resent': resent})
+    resend_failed = request.GET.get('resent') == '0'
+    return render(request, 'tools/verify_email_sent.html', {
+        'verify_url': verify_url,
+        'resent': resent,
+        'resend_failed': resend_failed,
+    })
 
 
 def resend_verification_email(request):
@@ -224,9 +232,11 @@ def resend_verification_email(request):
     EmailVerificationToken.objects.create(user=target_user, token=token)
     verify_url = _send_verification_email(request, target_user, token)
     request.session['pending_verify_user_id'] = target_user.id
-    if settings.DEBUG:
+    if settings.DEBUG and verify_url:
         request.session['pending_verify_url'] = verify_url
-    return redirect(reverse('verify_email_sent') + '?resent=1')
+    if verify_url:
+        return redirect(reverse('verify_email_sent') + '?resent=1')
+    return redirect(reverse('verify_email_sent') + '?resent=0')
 
 
 @require_http_methods(["POST"])
@@ -240,7 +250,12 @@ def resend_verification_email_public(request):
                 EmailVerificationToken.objects.filter(user=user).delete()
                 token = secrets.token_hex(24)
                 EmailVerificationToken.objects.create(user=user, token=token)
-                _send_verification_email(request, user, token)
+                verify_url = _send_verification_email(request, user, token)
+                if settings.DEBUG and verify_url:
+                    request.session['pending_verify_url'] = verify_url
+                if verify_url:
+                    return redirect(reverse('verify_email_sent') + '?resent=1')
+                return redirect(reverse('verify_email_sent') + '?resent=0')
     return redirect(reverse('verify_email_sent') + '?resent=1')
 
 

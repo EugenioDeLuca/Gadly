@@ -15,27 +15,14 @@
         {% trans "This verification link is invalid or has already been used." %}
     </p>
     <p style="margin: 16px 0; color: #555;">
-        {% trans "Enter your email and we will send you a new verification link." %}
+        {% trans "If you still need to verify your account, you can" %}
+        <a href="{% url 'request_verification_email_page' %}" style="color:#003f7f; font-weight:400; font-size:1rem;">
+            {% trans "request a new verification email" %}
+        </a>.
     </p>
-    <form method="post" action="{% url 'resend_verification_public' %}" style="margin: 14px 0 6px;">
-        {% csrf_token %}
-        <input
-            type="email"
-            name="email"
-            required
-            autocomplete="email"
-            placeholder="{% trans 'Email address' %}"
-            style="width:100%;max-width:360px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;"
-        >
-        <div style="margin-top:10px;">
-            <button type="submit" class="login-btn login-btn--white-text" style="display:inline-block;min-height:42px;padding:0 14px;">
-                {% trans "Request verification email" %}
-            </button>
-        </div>
-    </form>
 
     <p class="login-hint" style="margin-top: 24px; font-size: 1rem;">
-        <a href="{% url 'login' %}" style="font-size: 1rem; font-weight: 600;">{% trans "Sign in" %}</a> &middot; <a href="{% url 'home' %}" style="font-size: 1rem; font-weight: 600;">{% trans "Home" %}</a>
+        <a href="{% url 'login' %}" style="font-size: 1rem; font-weight: 600;">{% trans "Sign in" %}</a>
     </p>
 </div>
 {% endblock %}
