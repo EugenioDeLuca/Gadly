@@ -4,9 +4,27 @@
 {% block title %}{% trans "Bio Generator" %}{% endblock %}
 {% block body_class %}text-tool bio-gen{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426a">
 <style>
 .bio-gen .button-group button { min-width: 140px; }
+.bio-gen .result-area:not(.error) {
+    white-space: normal;
+}
+body.dark-mode.bio-gen .site-main .container .result-area:not(.error) {
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+}
+.bio-gen .result-area .caption-copy-footnote {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin: 14px 0 0 0;
+    line-height: 1.45;
+    text-align: center;
+}
+body.dark-mode.bio-gen .site-main .container .result-area:not(.error) .caption-copy-footnote {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
 /* Solo desktop: input/select fino in fondo al container, Copy tutto a destra */
 @media (min-width: 769px) {
     .bio-gen .form-group input,
@@ -28,6 +46,76 @@
 @media (max-width: 768px) {
     .bio-gen .button-group { justify-content: space-between; }
 }
+.bio-gen .result-area .caption-results-header {
+    margin-bottom: 12px;
+}
+.bio-gen .result-area .caption-results-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 6px 0;
+    color: #003f7f;
+}
+.bio-gen .result-area .caption-select-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    max-width: 100%;
+    align-items: stretch;
+}
+.bio-gen .result-area .caption-select-action-btn {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 15em;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 2px solid #003f7f;
+    background: transparent;
+    color: #003f7f;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.bio-gen .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08);
+    border-color: #0056b3;
+    color: #0056b3;
+}
+.bio-gen .result-area .caption-select-action-btn:active {
+    transform: scale(0.98);
+}
+.bio-gen .result-area .caption-results-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    line-height: 1.55;
+}
+.bio-gen .result-area .caption-results-list li.caption-result-row {
+    margin-bottom: 12px;
+}
+.bio-gen .result-area .caption-results-list li.caption-result-row:last-child {
+    margin-bottom: 0;
+}
+body.dark-mode.bio-gen .site-main .container .result-area:not(.error) .caption-results-title {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.bio-gen .site-main .container .result-area .caption-select-action-btn {
+    border: 2px solid #003f7f !important;
+    background: transparent !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+body.dark-mode.bio-gen .site-main .container .result-area .caption-select-action-btn:hover {
+    background: rgba(0, 63, 127, 0.08) !important;
+    border-color: #0056b3 !important;
+    color: #0056b3 !important;
+    -webkit-text-fill-color: #0056b3 !important;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -36,9 +124,9 @@
     <p class="tool-desc">{% trans "Generate short bios for social media or full biography paragraphs." %}</p>
     <div class="text-tool-row">
         <div class="form-group">
-            <label>{% trans "Type" %}</label>
+            <label for="bio-type-trigger">{% trans "Type" %}</label>
             <div class="text-tool-select" id="bio-type-wrap" data-value="short">
-                <button type="button" class="text-tool-select-trigger">{% trans "Short (Instagram/TikTok)" %}</button>
+                <button type="button" id="bio-type-trigger" class="text-tool-select-trigger">{% trans "Short (Instagram/TikTok)" %}</button>
                 <ul class="text-tool-select-menu">
                     <li data-value="short" class="selected">{% trans "Short (Instagram/TikTok)" %}</li>
                     <li data-value="full">{% trans "Full biography (2–3 sentences)" %}</li>
@@ -46,9 +134,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{% trans "Platform" %}</label>
+            <label for="bio-platform-trigger">{% trans "Platform" %}</label>
             <div class="text-tool-select" id="bio-platform-wrap" data-value="instagram">
-                <button type="button" class="text-tool-select-trigger">{% trans "Instagram" %}</button>
+                <button type="button" id="bio-platform-trigger" class="text-tool-select-trigger">{% trans "Instagram" %}</button>
                 <ul class="text-tool-select-menu">
                     <li data-value="instagram" class="selected">{% trans "Instagram" %}</li>
                     <li data-value="tiktok">{% trans "TikTok" %}</li>
@@ -56,8 +144,8 @@
             </div>
         </div>
         <div class="form-group">
-            <label>{% trans "Niche / topic (optional)" %}</label>
-            <input type="text" id="bio-niche" placeholder='{% trans "e.g. travel, fitness, food" %}' />
+            <label for="bio-niche">{% trans "Niche / topic (optional)" %}</label>
+            <input type="text" id="bio-niche" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. viaggi, fitness, cibo, moda{% else %}{% trans 'e.g. travel, fitness, food' %}{% endif %}" />
         </div>
     </div>
     <div class="button-group">
@@ -71,5 +159,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/bio_generator.js' %}"></script>
+<script src="{% static 'tools/js/bio_generator.js' %}?v=20260426d"></script>
 {% endblock %}

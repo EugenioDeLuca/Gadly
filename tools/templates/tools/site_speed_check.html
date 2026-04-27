@@ -4,7 +4,26 @@
 {% block title %}{% trans "Site Speed Check" %}{% endblock %}
 {% block body_class %}web-seo site-speed-check{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+<style>
+.site-speed-check .result-area {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 2px solid #d0e8f9;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #003f7f;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+body.dark-mode .site-speed-check .result-area {
+    background: #fff;
+    border-color: #d0e8f9;
+    color: #003f7f;
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">

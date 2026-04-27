@@ -7,8 +7,374 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
 <style>
+body.cv-generator .site-main {
+  padding-bottom: 24px !important;
+}
+body.cv-generator .site-main .container {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
 .cv-generator .text-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .cv-generator .text-tool-grid .form-group.full { grid-column: 1 / -1; }
+/* Anteprima: stesso “linguaggio” visivo di Quick Tools (tool-quick-nav) */
+.cv-preview-dock {
+  position: fixed;
+  top: var(--cv-preview-dock-top, calc(82px + 24px + 40px));
+  left: var(--cv-preview-dock-left, auto);
+  width: 292px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  z-index: 140;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 63, 127, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 10px 26px rgba(0, 63, 127, 0.12);
+  box-sizing: border-box;
+}
+.cv-preview-dock::-webkit-scrollbar { display: none; }
+.cv-preview-dock.cv-preview-dock--inline {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 16px 0;
+  z-index: auto;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+}
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-head {
+  margin: 0 0 8px 0;
+}
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-head {
+  display: none;
+}
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-group {
+  border: 2px dashed #b8d4f0 !important;
+  border-radius: 12px;
+  background: #f8fcff !important;
+  box-shadow: none !important;
+  margin-bottom: 10px;
+}
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-row {
+  background: transparent !important;
+  padding: 8px 10px 6px;
+}
+.cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body {
+  background: transparent !important;
+  padding: 0 10px 10px;
+}
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-head,
+.cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-title,
+.cv-preview-dock.cv-preview-dock--inline #cv-quality {
+  color: #003f7f !important;
+}
+.cv-preview-dock.cv-preview-dock--inline #cv-quality {
+  background: #ffffff !important;
+  border: 1px solid #dbe7f5 !important;
+  border-radius: 10px;
+  padding: 10px 12px !important;
+}
+.cv-preview-dock.cv-preview-dock--inline .quality-score.bad {
+  color: #b91c1c !important;
+}
+.cv-preview-dock.cv-preview-dock--inline .quality-score.good {
+  color: #15803d !important;
+}
+body.dark-mode .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-group {
+  background: #f8fcff !important;
+  border-color: #b8d4f0 !important;
+}
+body.dark-mode .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-head,
+body.dark-mode .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-title,
+body.dark-mode .cv-preview-dock.cv-preview-dock--inline #cv-quality {
+  color: #003f7f !important;
+}
+.cv-preview-dock.cv-preview-dock--hidden,
+.cv-preview-dock[data-ready="0"] {
+  display: none !important;
+}
+.cv-preview-dock .tool-quick-nav-head {
+  margin: 2px 4px 10px;
+}
+.cv-preview-dock .tool-quick-nav-group {
+  margin-bottom: 8px;
+}
+.cv-preview-dock .tool-quick-nav-group:last-child {
+  margin-bottom: 0;
+}
+.cv-preview-dock .cv-preview-dock-section-body {
+  display: block;
+  padding: 10px 10px 12px;
+  background: rgba(255, 255, 255, 0.55);
+  overflow: visible;
+}
+/* Anteprima + punteggio: altezza segue il contenuto (niente clipping da tool-quick-nav) */
+.cv-preview-dock > .tool-quick-nav-group {
+  overflow: visible;
+}
+.cv-preview-dock .tool-quick-nav-row .tool-quick-nav-title {
+  cursor: default;
+  pointer-events: none;
+}
+.cv-preview-dock .cv-web-preview-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.88rem;
+  color: #003f7f !important;
+  font-weight: 700;
+  text-decoration: underline;
+  transition: color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+}
+.cv-preview-dock .cv-web-preview-link:hover {
+  color: #0056b3 !important;
+  text-decoration: underline;
+  opacity: 1;
+  transform: translateY(-1px);
+}
+body.dark-mode .cv-preview-dock:not(.cv-preview-dock--inline) .cv-web-preview-link {
+  color: #b0c4de !important;
+}
+body.dark-mode .cv-preview-dock:not(.cv-preview-dock--inline) .cv-web-preview-link:hover {
+  color: #7eb8f0 !important;
+}
+.cv-preview-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.52);
+  z-index: 260;
+  padding: 18px;
+}
+.cv-preview-modal.is-open { display: flex; }
+.cv-preview-modal.is-open {
+  align-items: flex-start;
+  padding-top: 44px;
+}
+.cv-preview-modal-card {
+  width: min(980px, 96vw);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+  padding: 14px;
+}
+.cv-preview-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cv-preview-modal-title {
+  margin: 0;
+  color: #111827;
+  font-weight: 700;
+}
+.cv-preview-modal-close {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #111827;
+  border-radius: 10px;
+  min-height: 36px;
+  min-width: 36px;
+  cursor: pointer;
+}
+.cv-preview-modal-close:hover {
+  color: #dc2626;
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+.cv-preview-modal-body .mini-preview {
+  min-height: 320px;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px;
+  background: #fff !important;
+}
+body.dark-mode .cv-preview-modal-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+/* Anteprima nel dock: sempre bianca, testo nero (alto contrasto) */
+.cv-preview-dock .mini-preview,
+.cv-preview-dock .mini-preview.preview-classic,
+.cv-preview-dock .mini-preview.preview-modern,
+.cv-preview-dock .mini-preview.preview-minimal {
+  height: auto;
+  min-height: 120px;
+  max-height: none;
+  overflow: visible;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #111827 !important;
+}
+.cv-preview-dock .preview-name,
+.cv-preview-dock .preview-role,
+.cv-preview-dock .preview-section-title,
+.cv-preview-dock .preview-text {
+  color: #111827 !important;
+}
+.cv-preview-dock .preview-modern .preview-name,
+.cv-preview-dock .preview-modern .preview-role,
+.cv-preview-dock .preview-modern .preview-section-title {
+  color: #111827 !important;
+}
+.cv-preview-dock .preview-minimal .preview-name,
+.cv-preview-dock .preview-minimal .preview-role,
+.cv-preview-dock .preview-minimal .preview-section-title,
+.cv-preview-dock .preview-minimal .preview-text {
+  color: #111827 !important;
+}
+.cv-preview-dock .preview-modern .preview-section {
+  background: transparent !important;
+  border: none !important;
+}
+/* Colonna stretta: nome/ruolo non devono “mangiare” lo spazio della foto */
+.cv-preview-dock .preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cv-preview-dock .preview-head > div:first-of-type {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.cv-preview-dock .preview-name,
+.cv-preview-dock .preview-role {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.cv-preview-dock .preview-name {
+  font-size: 0.98rem !important;
+  line-height: 1.2;
+}
+.cv-preview-dock .preview-role {
+  font-size: 0.84rem !important;
+  line-height: 1.25;
+}
+.cv-preview-dock .preview-section {
+  margin-top: 6px;
+}
+.cv-preview-dock .preview-section-title {
+  font-size: 0.76rem !important;
+  margin-bottom: 3px;
+}
+.cv-preview-dock .preview-text {
+  font-size: 0.83rem !important;
+  line-height: 1.3;
+}
+.cv-preview-dock .preview-photo {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  display: block;
+  border-color: #d1d5db !important;
+}
+/* Solo dock laterale: ancora più compatta per somigliare al risultato finale */
+.cv-preview-dock:not(.cv-preview-dock--inline) .mini-preview {
+  padding: 9px;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-head {
+  gap: 6px;
+  margin-bottom: 7px;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-name {
+  font-size: 0.92rem !important;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-role {
+  font-size: 0.78rem !important;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-section {
+  margin-top: 5px;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-section-title {
+  font-size: 0.71rem !important;
+  margin-bottom: 2px;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-text {
+  font-size: 0.78rem !important;
+  line-height: 1.25;
+}
+.cv-preview-dock:not(.cv-preview-dock--inline) .preview-photo {
+  width: 38px;
+  height: 38px;
+}
+.cv-preview-dock #cv-quality {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: #003f7f;
+}
+body.dark-mode .cv-preview-dock #cv-quality {
+  color: #003f7f;
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+body.dark-mode .cv-preview-dock .cv-preview-dock-section-body {
+  background: rgba(255, 255, 255, 0.04);
+}
+/* Stesso contrasto anche in dark mode (solo area anteprima nel dock) */
+body.dark-mode .cv-preview-dock .mini-preview,
+body.dark-mode .cv-preview-dock .mini-preview.preview-classic,
+body.dark-mode .cv-preview-dock .mini-preview.preview-modern,
+body.dark-mode .cv-preview-dock .mini-preview.preview-minimal {
+  background: #fff !important;
+  background-image: none !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+body.dark-mode .cv-preview-dock .preview-name,
+body.dark-mode .cv-preview-dock .preview-role,
+body.dark-mode .cv-preview-dock .preview-section-title,
+body.dark-mode .cv-preview-dock .preview-text,
+body.dark-mode .cv-preview-dock .preview-modern .preview-name,
+body.dark-mode .cv-preview-dock .preview-modern .preview-role,
+body.dark-mode .cv-preview-dock .preview-modern .preview-section-title,
+body.dark-mode .cv-preview-dock .preview-minimal .preview-name,
+body.dark-mode .cv-preview-dock .preview-minimal .preview-text {
+  color: #111827 !important;
+}
+body.warm-tone .cv-preview-dock {
+  background: rgba(255, 246, 230, 0.92);
+  border-color: rgba(184, 106, 0, 0.22);
+  box-shadow: 0 10px 26px rgba(184, 106, 0, 0.12);
+}
+body.warm-tone .cv-preview-dock #cv-quality {
+  color: #5c3d10;
+}
+body.dark-mode .cv-preview-dock {
+  background: rgba(15, 15, 35, 0.88);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+}
+body.dark-mode.warm-tone .cv-preview-dock {
+  background: rgba(44, 33, 24, 0.9);
+  border-color: rgba(232, 160, 64, 0.24);
+}
 .cv-generator .form-group textarea,
 .cv-generator .form-group input,
 .cv-generator .form-group select,
@@ -504,7 +870,13 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "CV Generator" %}</h1>
-  <p class="tool-desc">{% trans "Generate a clean CV draft from your details." %}</p>
+  <p class="tool-desc">
+    {% if LANGUAGE_CODE|slice:":2" == "it" %}
+      Genera un CV professionale partendo dai tuoi dati. Completa tutti i campi richiesti e migliora il contenuto fino a raggiungere un punteggio di 100/100: solo allora potrai generare il file e fare il download.
+    {% else %}
+      Generate a professional CV from your details. Complete all required fields and improve the content until you reach a score of 100/100: only then you can generate the file and download it.
+    {% endif %}
+  </p>
   <p class="tool-help">
     <a href="{% url 'help_cv_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Generatore CV{% else %}Quick CV Generator guide{% endif %}</a>
   </p>
@@ -852,11 +1224,6 @@
       <label for="cv-achievements">{% trans "Achievements (optional)" %}</label>
       <textarea id="cv-achievements" rows="3" placeholder="{% trans 'One per line: achievement + metric' %}"></textarea>
     </div>
-    <div class="form-group full panel-card">
-      <h3 class="panel-title" style="margin:0 0 8px 0;">{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima live{% else %}Live preview{% endif %}</h3>
-      <div id="cv-preview" class="mini-preview"></div>
-      <div id="cv-quality" class="quality-box"></div>
-    </div>
   </div>
 
   <div id="cv-result" class="result-area hidden"></div>
@@ -879,6 +1246,41 @@
     </a>
   </div>
 </div>
+
+<aside id="cv-preview-dock" class="cv-preview-dock cv-preview-dock--hidden" data-ready="0" hidden aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Anteprima CV{% else %}CV live preview{% endif %}">
+  <div class="tool-quick-nav-head">{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima CV{% else %}CV preview{% endif %}</div>
+  <div class="tool-quick-nav-group">
+    <div class="tool-quick-nav-row">
+      <span class="tool-quick-nav-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima live{% else %}Live preview{% endif %}</span>
+    </div>
+    <div class="cv-preview-dock-section-body">
+      <div id="cv-preview" class="mini-preview"></div>
+      <a id="cv-open-web-preview" class="cv-web-preview-link" href="#">
+        {% if LANGUAGE_CODE|slice:":2" == "it" %}Apri anteprima completa qui{% else %}Open full preview here{% endif %}
+      </a>
+    </div>
+  </div>
+  <div class="tool-quick-nav-group">
+    <div class="tool-quick-nav-row">
+      <span class="tool-quick-nav-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Punteggio e suggerimenti{% else %}Score & tips{% endif %}</span>
+    </div>
+    <div class="cv-preview-dock-section-body">
+      <div id="cv-quality"></div>
+    </div>
+  </div>
+</aside>
+<div id="cv-preview-modal" class="cv-preview-modal" aria-hidden="true">
+  <div class="cv-preview-modal-card" role="dialog" aria-modal="true" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Anteprima CV completa{% else %}Full CV preview{% endif %}">
+    <div class="cv-preview-modal-head">
+      <h3 class="cv-preview-modal-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima CV completa{% else %}Full CV preview{% endif %}</h3>
+      <button type="button" id="cv-preview-modal-close" class="cv-preview-modal-close" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Chiudi{% else %}Close{% endif %}">×</button>
+    </div>
+    <div class="cv-preview-modal-body">
+      <div id="cv-preview-full" class="mini-preview"></div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 if (!window.jspdf) {
@@ -891,5 +1293,139 @@ if (!window.docx) {
   document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
 }
 </script>
-<script src="{% static 'tools/js/cv_generator.js' %}?v=20260417a"></script>
+<script src="{% static 'tools/js/cv_generator.js' %}?v=20260427a"></script>
+<script>
+(function() {
+  var BP = 1280;
+  function quickSide() {
+    try {
+      var v = localStorage.getItem("gadly-quick-nav-side-v1");
+      return (v === "left" || v === "right") ? v : "right";
+    } catch (e) { return "right"; }
+  }
+  function applyCvDockMaxHeight(dock) {
+    if (!dock || dock.classList.contains("cv-preview-dock--inline")) return;
+    var rect = dock.getBoundingClientRect();
+    var footer = document.querySelector(".site-footer");
+    var footerTop = window.innerHeight - 16;
+    if (footer) {
+      var fr = footer.getBoundingClientRect();
+      footerTop = Math.min(footerTop, Math.round(fr.top - 8));
+    }
+    var quickTop = Math.max(12, Math.round(rect.top));
+    dock.style.maxHeight = Math.max(120, footerTop - quickTop) + "px";
+  }
+  function placeCvPreviewDock() {
+    var dock = document.getElementById("cv-preview-dock");
+    var container = document.querySelector("body.cv-generator .site-main .container");
+    if (!dock || !container) return;
+    var parent = container.parentNode;
+
+    if (window.innerWidth <= BP) {
+      dock.classList.add("cv-preview-dock--inline");
+      dock.style.removeProperty("max-height");
+      dock.style.removeProperty("--cv-preview-dock-top");
+      dock.style.removeProperty("--cv-preview-dock-left");
+      var result = document.getElementById("cv-result");
+      if (result && result.parentNode === container) {
+        container.insertBefore(dock, result);
+      } else {
+        container.appendChild(dock);
+      }
+      dock.classList.remove("cv-preview-dock--hidden");
+      dock.removeAttribute("hidden");
+      dock.setAttribute("data-ready", "1");
+      return;
+    }
+
+    dock.classList.remove("cv-preview-dock--inline");
+    if (dock.parentNode !== parent) {
+      parent.insertBefore(dock, container.nextSibling);
+    }
+
+    var rect = container.getBoundingClientRect();
+    var gap = 12;
+    var viewportPad = 16;
+    var navWidth = dock.offsetWidth;
+    if (!navWidth) navWidth = 292;
+    var requiredSpace = navWidth + gap + viewportPad;
+    var availableRight = window.innerWidth - Math.round(rect.right);
+    var availableLeft = Math.round(rect.left);
+    var qs = quickSide();
+    var canRight = availableRight >= requiredSpace;
+    var canLeft = availableLeft >= requiredSpace;
+    var side = null;
+    // Never overlap Quick Tools: pick the opposite side, otherwise go inline.
+    if (qs === "left") {
+      side = canRight ? "right" : null;
+    } else {
+      side = canLeft ? "left" : null;
+    }
+    if (!side) {
+      dock.classList.add("cv-preview-dock--inline");
+      dock.style.removeProperty("max-height");
+      dock.style.removeProperty("--cv-preview-dock-top");
+      dock.style.removeProperty("--cv-preview-dock-left");
+      var resultEl = document.getElementById("cv-result");
+      if (resultEl && resultEl.parentNode === container) {
+        container.insertBefore(dock, resultEl);
+      } else {
+        container.appendChild(dock);
+      }
+      dock.classList.remove("cv-preview-dock--hidden");
+      dock.removeAttribute("hidden");
+      dock.setAttribute("data-ready", "1");
+      return;
+    }
+
+    var top = Math.max(12, Math.round(rect.top + window.scrollY));
+    var left;
+    if (side === "left") {
+      left = Math.round(rect.left - gap - navWidth);
+      if (left < viewportPad) left = viewportPad;
+    } else {
+      left = Math.round(rect.right + gap);
+      var maxLeft = window.innerWidth - navWidth - viewportPad;
+      if (left > maxLeft) left = maxLeft;
+    }
+    dock.style.setProperty("--cv-preview-dock-top", top + "px");
+    dock.style.setProperty("--cv-preview-dock-left", left + "px");
+    applyCvDockMaxHeight(dock);
+    dock.classList.remove("cv-preview-dock--hidden");
+    dock.removeAttribute("hidden");
+    dock.setAttribute("data-ready", "1");
+  }
+  function init() {
+    // Avoid flicker on hard refresh: reveal only after stable layout.
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        placeCvPreviewDock();
+      });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+  window.addEventListener("pageshow", placeCvPreviewDock);
+  window.addEventListener("resize", placeCvPreviewDock);
+  window.addEventListener("scroll", function() {
+    var dock = document.getElementById("cv-preview-dock");
+    if (dock && !dock.classList.contains("cv-preview-dock--inline")) applyCvDockMaxHeight(dock);
+  }, { passive: true });
+  window.addEventListener("focus", placeCvPreviewDock);
+  window.addEventListener("storage", function(e) {
+    if (e.key === "gadly-quick-nav-side-v1") placeCvPreviewDock();
+  });
+  // In the same tab, storage event does not fire: react immediately to side button clicks.
+  document.addEventListener("click", function(e) {
+    var btn = e.target && e.target.closest ? e.target.closest(".tool-quick-nav-side-btn[data-side]") : null;
+    if (!btn) return;
+    requestAnimationFrame(function() {
+      placeCvPreviewDock();
+    });
+  });
+})();
+</script>
 {% endblock %}

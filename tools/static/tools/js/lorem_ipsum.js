@@ -28,6 +28,8 @@
     var resultEl = document.getElementById('result-area');
     var btnGenerate = document.getElementById('btn-generate');
     var btnCopy = document.getElementById('btn-copy');
+    var buttonGroup = btnGenerate ? btnGenerate.closest('.button-group') : null;
+    var containerEl = resultEl ? resultEl.parentElement : null;
 
     if (typeWrap) {
         var trigger = typeWrap.querySelector('.text-tool-select-trigger');
@@ -52,6 +54,23 @@
         document.querySelectorAll('.text-tool-select.open').forEach(function (s) { s.classList.remove('open'); });
     });
 
+    function updateButtonsPosition() {
+        if (!buttonGroup || !containerEl || !resultEl || resultEl.classList.contains('hidden')) {
+            return;
+        }
+        var lineHeight = parseFloat(window.getComputedStyle(resultEl).lineHeight) || 24;
+        var estimatedLines = Math.ceil(resultEl.scrollHeight / lineHeight);
+        if (estimatedLines > 6) {
+            if (resultEl.nextElementSibling !== buttonGroup) {
+                containerEl.insertBefore(buttonGroup, resultEl.nextElementSibling);
+            }
+        } else {
+            if (buttonGroup.nextElementSibling !== resultEl) {
+                containerEl.insertBefore(buttonGroup, resultEl);
+            }
+        }
+    }
+
     function generate() {
         var type = typeWrap ? typeWrap.dataset.value : 'paragraphs';
         var count = parseInt(countInput.value, 10) || 1;
@@ -69,18 +88,27 @@
             resultEl.textContent = out.join('\n\n');
         }
         resultEl.classList.remove('hidden');
+        updateButtonsPosition();
     }
 
     btnGenerate.addEventListener('click', generate);
 
-    btnCopy.addEventListener('click', function () {
+    function flashCopiedState(button) {
+        if (!button) return;
+        button.textContent = gettext('Copied!');
+        button.classList.add('copied');
+        setTimeout(function () {
+            button.textContent = gettext('Copy');
+            button.classList.remove('copied');
+        }, 2000);
+    }
+
+    function copyResult() {
         var text = resultEl.textContent;
         if (!text || resultEl.classList.contains('hidden')) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
-                btnCopy.textContent = gettext('Copied!');
-                btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
+                flashCopiedState(btnCopy);
             }).catch(function () {});
         } else {
             var ta = document.createElement('textarea');
@@ -89,11 +117,13 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                btnCopy.textContent = gettext('Copied!');
-                btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
+                flashCopiedState(btnCopy);
             } catch (e) {}
             document.body.removeChild(ta);
         }
-    });
+    }
+
+    btnCopy.addEventListener('click', copyResult);
+
+    window.addEventListener('resize', updateButtonsPosition);
 })();

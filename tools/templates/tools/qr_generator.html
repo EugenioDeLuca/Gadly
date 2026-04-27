@@ -4,12 +4,13 @@
 {% block title %}{% trans "QR Generator" %}{% endblock %}
 {% block body_class %}qr-generator{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}?v=2">
 {% endblock %}
 {% block content %}
 <div class="qr-generator">
     <div class="container">
         <h1>{% trans "QR Generator" %}</h1>
+        <p class="tool-desc">{% trans "Create a QR code from text or a link. Adjust colors, size, and error correction, then download the image." %}</p>
 
         <div class="qr-controls">
             <label for="qr-input">{% trans "Enter text or URL" %}</label>
@@ -23,17 +24,17 @@
             </div>
             <div class="qr-options">
                 <div class="qr-option-group">
-                    <label>{% trans "QR color" %}</label>
+                    <label for="color-dark">{% trans "QR color" %}</label>
                     <input type="color" id="color-dark" value="#003f7f" />
                 </div>
                 <div class="qr-option-group">
-                    <label>{% trans "Background" %}</label>
+                    <label for="color-light">{% trans "Background" %}</label>
                     <input type="color" id="color-light" value="#ffffff" />
                 </div>
                 <div class="qr-option-group">
-                    <label>{% trans "Size" %}</label>
+                    <label for="qr-size-trigger">{% trans "Size" %}</label>
                     <div class="qr-custom-select" id="qr-size-wrap" data-value="256">
-                        <button type="button" class="qr-select-trigger">{% trans "Medium (256px)" %}</button>
+                        <button type="button" id="qr-size-trigger" class="qr-select-trigger">{% trans "Medium (256px)" %}</button>
                         <ul class="qr-select-menu">
                             <li data-value="128">{% trans "Small (128px)" %}</li>
                             <li data-value="256" class="selected">{% trans "Medium (256px)" %}</li>
@@ -42,9 +43,9 @@
                     </div>
                 </div>
                 <div class="qr-option-group">
-                    <label>{% trans "Error correction" %}</label>
+                    <label for="qr-ec-trigger">{% trans "Error correction" %}</label>
                     <div class="qr-custom-select" id="qr-ec-wrap" data-value="L">
-                        <button type="button" class="qr-select-trigger">{% trans "Low (7%)" %}</button>
+                        <button type="button" id="qr-ec-trigger" class="qr-select-trigger">{% trans "Low (7%)" %}</button>
                         <ul class="qr-select-menu">
                             <li data-value="L" class="selected">{% trans "Low (7%)" %}</li>
                             <li data-value="M">{% trans "Medium (15%)" %}</li>

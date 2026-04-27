@@ -656,6 +656,18 @@ msgstr "Il tasto Copia copia solo le didascalie selezionate."
 msgid "Select at least one caption to copy."
 msgstr "Seleziona almeno una didascalia da copiare."
 
+#: tools/static/tools/js/bio_generator.js
+msgid "Suggested bios"
+msgstr "Bio suggerite"
+
+#: tools/static/tools/js/bio_generator.js
+msgid "The Copy button copies only the bios you have selected."
+msgstr "Il tasto Copia copia solo le bio selezionate."
+
+#: tools/static/tools/js/bio_generator.js
+msgid "Select at least one bio to copy."
+msgstr "Seleziona almeno una bio da copiare."
+
 #~ msgid "Formal and concise"
 #~ msgstr "Formale e conciso"
 

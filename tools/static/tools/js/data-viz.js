@@ -10,18 +10,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let chart = null;
 
-    // Auto-resize textarea based on content (desktop + mobile), with max height (~40 righe)
+    // Auto-ingrandimento con il testo (come prima). Pavimento = altezza iniziale con esempio
+    // (placeholder), così alla prima battuta non collassa quando il placeholder sparisce.
     if (dataInput) {
-        const MAX_HEIGHT = 750; // px, circa 40 righe a seconda del device
+        const MAX_HEIGHT = 750;
+        var cssMin = parseFloat(window.getComputedStyle(dataInput).minHeight);
+        if (!(cssMin > 0)) cssMin = 120;
+        var placeholderFloorPx = Math.max(dataInput.scrollHeight, dataInput.offsetHeight, cssMin);
+
         const autoResize = function() {
             dataInput.style.height = "auto";
-            const newHeight = Math.min(dataInput.scrollHeight, MAX_HEIGHT);
+            var sh = dataInput.scrollHeight;
+            var newHeight = Math.min(Math.max(sh, placeholderFloorPx), MAX_HEIGHT);
             dataInput.style.height = newHeight + "px";
-            // Se superiamo il max, abilitiamo lo scroll verticale, altrimenti lo nascondiamo
-            dataInput.style.overflowY = (dataInput.scrollHeight > MAX_HEIGHT) ? "auto" : "hidden";
+            dataInput.style.overflowY = sh > MAX_HEIGHT ? "auto" : "hidden";
         };
         dataInput.addEventListener("input", autoResize);
-        // Inizializza l'altezza in base al placeholder/contenuto attuale
         autoResize();
     }
 

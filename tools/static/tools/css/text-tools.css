@@ -50,16 +50,26 @@
     text-decoration: none;
 }
 
+/* Tipografia textarea come Translator (.translator textarea) */
 .text-tool textarea {
     width: 100%;
     box-sizing: border-box;
     min-height: 180px;
-    padding: 16px 20px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 12px;
     border: 2px solid #ddd;
     resize: vertical;
+}
+
+.text-tool textarea::placeholder {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #999;
+    opacity: 1;
 }
 
 .text-tool textarea:focus {
@@ -323,7 +333,8 @@ body.dark-mode .text-tool .result-area:not(.error) .text-tool-inline-error {
     -webkit-text-fill-color: #c00 !important;
 }
 body.dark-mode.caption-gen .site-main .container .result-area:not(.error) .text-tool-inline-error,
-body.dark-mode.username-gen .site-main .container .result-area:not(.error) .text-tool-inline-error {
+body.dark-mode.username-gen .site-main .container .result-area:not(.error) .text-tool-inline-error,
+body.dark-mode.bio-gen .site-main .container .result-area:not(.error) .text-tool-inline-error {
     background: #fff5f5;
     border: 2px solid #fcc;
     color: #c00 !important;
@@ -332,7 +343,8 @@ body.dark-mode.username-gen .site-main .container .result-area:not(.error) .text
 
 /* Caption + Username generator: checkbox centrata sulla prima riga rispetto al testo (stesso font-size sulla label) */
 body.text-tool.caption-gen .result-area .caption-select-label,
-body.text-tool.username-gen .result-area .caption-select-label {
+body.text-tool.username-gen .result-area .caption-select-label,
+body.text-tool.bio-gen .result-area .caption-select-label {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -346,8 +358,12 @@ body.text-tool.caption-gen .result-area .caption-select-label {
 body.text-tool.username-gen .result-area .caption-select-label {
     font-size: 0.95rem;
 }
+body.text-tool.bio-gen .result-area .caption-select-label {
+    font-size: 1rem;
+}
 body.text-tool.caption-gen .result-area .caption-text,
-body.text-tool.username-gen .result-area .caption-text {
+body.text-tool.username-gen .result-area .caption-text,
+body.text-tool.bio-gen .result-area .caption-text {
     flex: 1;
     min-width: 0;
     font-size: inherit;
@@ -356,7 +372,8 @@ body.text-tool.username-gen .result-area .caption-text {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 body.text-tool.caption-gen .result-area .caption-pick,
-body.text-tool.username-gen .result-area .caption-pick {
+body.text-tool.username-gen .result-area .caption-pick,
+body.text-tool.bio-gen .result-area .caption-pick {
     flex-shrink: 0;
     box-sizing: border-box;
     width: 18px;
@@ -454,6 +471,9 @@ body.text-tool.username-gen .result-area .caption-pick {
         min-height: 120px;
         font-size: 16px; /* prevent zoom on iOS */
     }
+    .text-tool textarea::placeholder {
+        font-size: 16px;
+    }
     .text-tool .button-group {
         flex-wrap: wrap;
         justify-content: center;
@@ -481,6 +501,24 @@ body.text-tool.username-gen .result-area .caption-pick {
 }
 
 @media (max-width: 480px) {
+    /* Stesso stack tipografico textarea Translator su mobile (translator.css @ 480px) */
+    .text-tool textarea,
+    .text-tool textarea:focus {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+    }
+    .text-tool textarea::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #999 !important;
+        opacity: 1 !important;
+    }
+    body.dark-mode .text-tool textarea::placeholder {
+        color: #555 !important;
+    }
     .text-tool .container {
         margin: 8px 8px;
         padding: 20px 14px;
@@ -571,6 +609,18 @@ body.text-tool.username-gen .result-area .caption-pick {
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         background: rgba(240, 242, 245, 0.95) !important;
     }
+    body.bio-gen .site-main .container .result-area:not(.hidden) {
+        margin-top: 16px !important;
+        font-size: 1.05rem !important;
+        color: #1a1a2e !important;
+        border: 1px solid #ddd !important;
+        background: #f8f9fa !important;
+    }
+    body.dark-mode.bio-gen .site-main .container .result-area:not(.hidden) {
+        color: #1a1a2e !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        background: rgba(240, 242, 245, 0.95) !important;
+    }
     /* Diff Checker: container e sfondo come Word Counter (#f8f9fa) */
     body.diff-checker .site-main .container {
         margin: 8px 6px 24px 6px !important;
@@ -653,6 +703,16 @@ body.text-tool.username-gen .result-area .caption-pick {
     body.help-json-guide.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
     }
+    /* Password Generator help: stesso layout mobile della guida JSON */
+    body.help-password-gen.help-page .site-main .container,
+    body.help-password-gen.help-page .site-main .container h1,
+    body.help-password-gen.help-page .site-main .container .tool-desc,
+    body.help-password-gen.help-page .site-main .container .help-section,
+    body.help-password-gen.help-page .site-main .container .help-section h2,
+    body.help-password-gen.help-page .site-main .container .help-section p,
+    body.help-password-gen.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
     /* JSON Formatter mobile: container stessa larghezza textarea Word Counter */
     body.json-formatter .site-main .container {
         margin: 8px 6px 24px 6px !important;
@@ -731,9 +791,25 @@ body.text-tool.username-gen .result-area .caption-pick {
         border: 1px solid #ddd !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+    }
+    body.json-formatter .site-main .container .form-group textarea::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #999 !important;
+        opacity: 1 !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .form-group textarea::placeholder {
+        color: #555 !important;
     }
     body.json-formatter .site-main .container .json-result:not(.hidden):not(.error) {
-        font-size: 1.05rem !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
         color: #1a1a2e !important;
@@ -744,8 +820,12 @@ body.text-tool.username-gen .result-area .caption-pick {
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
     }
     body.dark-mode.json-formatter .site-main .container .json-result:not(.hidden):not(.error) {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
@@ -759,11 +839,11 @@ body.text-tool.username-gen .result-area .caption-pick {
         min-height: 280px !important;
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
+        line-height: 1.5 !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
-        padding: 16px !important;
+        padding: 12px !important;
         margin-bottom: 0 !important;
-        line-height: 1.5 !important;
         width: 100% !important;
         box-sizing: border-box !important;
         background: #f8f9fa !important;
@@ -774,6 +854,14 @@ body.text-tool.username-gen .result-area .caption-pick {
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container textarea::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #555 !important;
+        opacity: 1 !important;
     }
     body.remove-spaces .site-main .container .button-group button {
         border: 2px solid #003f7f !important;
@@ -804,7 +892,9 @@ body.text-tool.username-gen .result-area .caption-pick {
     }
     body.remove-spaces .site-main .container .result-area:not(.hidden) {
         margin-top: 16px !important;
-        font-size: 1.05rem !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
         color: #1a1a2e !important;
         border: 1px solid #ddd !important;
         background: #f8f9fa !important;
@@ -838,9 +928,22 @@ body.text-tool.username-gen .result-area .caption-pick {
         color: #1a1a2e !important;
         height: 250px !important;
         min-height: 250px !important;
-        padding: 10px 16px 16px 16px !important;
+        padding: 12px !important;
         overflow-y: auto !important;
         box-sizing: border-box !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    body.markdown-preview .site-main .container .preview-panel textarea::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #999 !important;
+        opacity: 1 !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-panel textarea::placeholder {
+        color: #555 !important;
     }
     body.markdown-preview .site-main .container .preview-output {
         background: #f8f9fa !important;
@@ -848,9 +951,12 @@ body.text-tool.username-gen .result-area .caption-pick {
         color: #1a1a2e !important;
         height: 250px !important;
         min-height: 250px !important;
-        padding: 10px 16px 16px 16px !important;
+        padding: 12px !important;
         overflow-y: auto !important;
         box-sizing: border-box !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
     }
     body.markdown-preview .site-main .container .preview-output a {
         color: #002d5c !important;

@@ -138,7 +138,9 @@
         if (!nav) return;
         if (window.innerWidth <= 1280) {
             nav.classList.add("tool-quick-nav--hidden");
+            nav.setAttribute("hidden", "");
             if (popularNav) popularNav.classList.add("tool-popular-nav--hidden");
+            if (popularNav) popularNav.setAttribute("hidden", "");
             return;
         }
 
@@ -173,11 +175,14 @@
 
         if ((side === "right" && !canPlaceRight) || (side === "left" && !canPlaceLeft)) {
             nav.classList.add("tool-quick-nav--hidden");
+            nav.setAttribute("hidden", "");
             if (popularNav) popularNav.classList.add("tool-popular-nav--hidden");
+            if (popularNav) popularNav.setAttribute("hidden", "");
             return;
         }
 
         nav.classList.remove("tool-quick-nav--hidden");
+        nav.removeAttribute("hidden");
         // Keep top aligned to the main container's document position,
         // so refresh while scrolled does not shift it.
         var top = Math.max(12, Math.round(rect.top + window.scrollY));
@@ -193,28 +198,35 @@
 
         nav.style.setProperty("--tool-quick-nav-top", top + "px");
         nav.style.setProperty("--tool-quick-nav-left", left + "px");
+        nav.setAttribute("data-ready", "1");
 
         if (!popularNav) return;
         popularNav.classList.remove("tool-popular-nav--hidden");
+        popularNav.removeAttribute("hidden");
         popularNav.style.setProperty("--tool-popular-nav-left", left + "px");
+        popularNav.setAttribute("data-ready", "1");
         applyVerticalConstraints();
+    }
+
+    function scheduleInitialPlacement() {
+        // Avoid blink on hard refresh: wait until layout settles, then place once.
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                placeQuickNav();
+            });
+        });
     }
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", function() {
             initSideControls();
             initQuickNavToggles();
-            placeQuickNav();
-            // Re-align after browser restores scroll position on refresh.
-            setTimeout(placeQuickNav, 0);
-            setTimeout(placeQuickNav, 120);
+            scheduleInitialPlacement();
         });
     } else {
         initSideControls();
         initQuickNavToggles();
-        placeQuickNav();
-        setTimeout(placeQuickNav, 0);
-        setTimeout(placeQuickNav, 120);
+        scheduleInitialPlacement();
     }
     window.addEventListener("pageshow", placeQuickNav);
     window.addEventListener("resize", placeQuickNav);

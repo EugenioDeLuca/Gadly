@@ -4,14 +4,20 @@
 {% block title %}{% trans "Finance Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=12">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
 .text-tools-page .container { max-width: 900px; }
 .text-tools-page-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-top:16px; }
 .text-tools-page .tool-btn-wrap { width:180px; display:flex; justify-content:center; }
 .text-tools-page .tool-btn { width:180px; height:56px; display:flex; align-items:center; justify-content:center; text-align:center; background:#003f7f; color:#fff; font-weight:600; font-size:1em; text-decoration:none; border-radius:12px; transition:transform .2s, background .2s; }
 .text-tools-page .tool-btn:hover { background:#0056b3; transform:scale(1.05); }
-@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } }
+.text-tools-page-top { margin-top:26px; padding-top:20px; border-top:1px solid rgba(0, 63, 127, 0.15); text-align:center; }
+.text-tools-page-top-title { margin:0 0 8px; font-size:1rem; font-weight:700; color:#003f7f; }
+.text-tools-page-top-desc { margin:0 auto 14px; max-width:32rem; font-size:.92rem; line-height:1.45; color:#555; }
+.text-tools-page-top-links { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.text-tools-page-top-links a { display:flex; align-items:center; justify-content:center; width:180px; height:50px; padding:0 12px; border-radius:12px; text-decoration:none; font-size:.95rem; font-weight:600; color:#003f7f; background:#e8f4fd; border:2px solid #003f7f; transition:background .2s,border-color .2s,color .2s,transform .16s ease,box-shadow .16s ease; }
+.text-tools-page-top-links a:hover { background:#d0e8f9; border-color:#002d5c; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,63,127,.12); }
+@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } .text-tools-page-top { margin-top:20px; padding-top:16px; } }
 </style>
 {% endblock %}
 {% block content %}
@@ -29,5 +35,14 @@
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_margin' %}">{% trans "Margin" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_split_bill' %}">{% trans "Split Bill" %}</a></div>
   </div>
+  <section class="text-tools-page-top" aria-label="{% trans 'Top finance tools' %}">
+    <h2 class="text-tools-page-top-title">{% trans "Top tools" %}</h2>
+    <p class="text-tools-page-top-desc">{% trans "Handy entry points if you are not sure where to start." %}</p>
+    <div class="text-tools-page-top-links">
+      <a href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a>
+      <a href="{% url 'calc_vat' %}">{% trans "VAT" %}</a>
+      <a href="{% url 'calc_loan' %}">{% trans "Loan" %}</a>
+    </div>
+  </section>
 </div>
 {% endblock %}

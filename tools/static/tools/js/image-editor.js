@@ -35,12 +35,29 @@ document.addEventListener("DOMContentLoaded", function() {
     let panX = 0, panY = 0;
     let isPanning = false;
     let panStartX = 0, panStartY = 0, panStartOffsetX = 0, panStartOffsetY = 0;
+    let isRotateOperation = false;
+    let lastOperationWasRotate = false;
+    let rotateAnchorCanvas = null;
+    let rotateAccumDeg = 0;
 
     function saveState() {
         if (!workCanvas) return;
+        if (!isRotateOperation) {
+            lastOperationWasRotate = false;
+            rotateAnchorCanvas = null;
+            rotateAccumDeg = 0;
+        }
         redoStack.length = 0;
         history.push(workCanvas.toDataURL());
         if (history.length > historyMax) history.shift();
+    }
+
+    function cloneCanvas(src) {
+        const out = document.createElement("canvas");
+        out.width = src.width;
+        out.height = src.height;
+        out.getContext("2d").drawImage(src, 0, 0);
+        return out;
     }
 
     function restoreState(dataUrl) {
@@ -62,8 +79,10 @@ document.addEventListener("DOMContentLoaded", function() {
         workCtx = workCanvas.getContext("2d");
     }
 
+
     function drawToDisplay() {
         if (!workCanvas) return;
+        document.body.classList.remove("toolbar-auto-follow");
         const dpr = window.devicePixelRatio || 1;
         const wrapper = document.getElementById("canvas-wrapper");
         const editorArea = document.querySelector(".editor-area");
@@ -152,13 +171,8 @@ document.addEventListener("DOMContentLoaded", function() {
         var availH = window.innerWidth <= 768 ? window.innerHeight - headerH - 120 : window.innerHeight - headerH - 140;
         if (canvasHeight > availH) {
             document.body.classList.add("editor-tall-image");
-            if (!toolbarUserMoved) {
-                document.body.classList.add("toolbar-auto-follow");
-                syncToolbarPosition();
-            }
         } else {
             document.body.classList.remove("editor-tall-image");
-            clearAutoFollowToolbar();
         }
     }
 
@@ -333,29 +347,106 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("btn-rotate-left").addEventListener("click", function() {
-        rotate(-90);
+        rotateRightAngle(-90);
     });
     document.getElementById("btn-rotate-right").addEventListener("click", function() {
-        rotate(90);
+        rotateRightAngle(90);
     });
 
-    function rotate(deg) {
+    function resetRotateTracking() {
+        lastOperationWasRotate = false;
+        rotateAnchorCanvas = null;
+        rotateAccumDeg = 0;
+    }
+
+    function rotateRightAngle(deg) {
+        isRotateOperation = true;
         saveState();
+        resetRotateTracking();
         const w = workCanvas.width;
         const h = workCanvas.height;
         const newCanvas = document.createElement("canvas");
-        newCanvas.width = deg % 180 === 0 ? w : h;
-        newCanvas.height = deg % 180 === 0 ? h : w;
+        newCanvas.width = h;
+        newCanvas.height = w;
         const newCtx = newCanvas.getContext("2d");
         newCtx.translate(newCanvas.width / 2, newCanvas.height / 2);
         newCtx.rotate((deg * Math.PI) / 180);
         newCtx.drawImage(workCanvas, -w / 2, -h / 2, w, h);
         workCanvas = newCanvas;
         workCtx = workCanvas.getContext("2d");
+        panX = 0;
+        panY = 0;
+        isRotateOperation = false;
+        updateZoomDisplay();
         clearLastTextObject();
         updateResizeInputs();
         drawToDisplay();
         updateResetButton();
+    }
+
+    function rotate(deg) {
+        isRotateOperation = true;
+        saveState();
+        if (!lastOperationWasRotate || !rotateAnchorCanvas) {
+            rotateAnchorCanvas = cloneCanvas(workCanvas);
+            rotateAccumDeg = 0;
+        }
+        rotateAccumDeg += deg;
+        const sourceCanvas = rotateAnchorCanvas;
+        const w = sourceCanvas.width;
+        const h = sourceCanvas.height;
+        var rad = (rotateAccumDeg * Math.PI) / 180;
+        var absCos = Math.abs(Math.cos(rad));
+        var absSin = Math.abs(Math.sin(rad));
+        const newCanvas = document.createElement("canvas");
+        /* Resize canvas to contain full rotated image. */
+        newCanvas.width = Math.ceil(w * absCos + h * absSin);
+        newCanvas.height = Math.ceil(w * absSin + h * absCos);
+        const newCtx = newCanvas.getContext("2d");
+        newCtx.translate(newCanvas.width / 2, newCanvas.height / 2);
+        newCtx.rotate(rad);
+        newCtx.drawImage(sourceCanvas, -w / 2, -h / 2, w, h);
+        workCanvas = newCanvas;
+        workCtx = workCanvas.getContext("2d");
+        panX = 0;
+        panY = 0;
+        lastOperationWasRotate = true;
+        isRotateOperation = false;
+        updateZoomDisplay();
+        clearLastTextObject();
+        updateResizeInputs();
+        drawToDisplay();
+        updateResetButton();
+    }
+
+    function trimTransparentCanvas(srcCanvas) {
+        const w = srcCanvas.width;
+        const h = srcCanvas.height;
+        if (!w || !h) return srcCanvas;
+        const srcCtx = srcCanvas.getContext("2d");
+        const data = srcCtx.getImageData(0, 0, w, h).data;
+        let minX = w, minY = h, maxX = -1, maxY = -1;
+        for (let y = 0; y < h; y++) {
+            const rowBase = y * w * 4;
+            for (let x = 0; x < w; x++) {
+                const a = data[rowBase + x * 4 + 3];
+                if (a > 0) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+        if (maxX < minX || maxY < minY) return srcCanvas;
+        const outW = maxX - minX + 1;
+        const outH = maxY - minY + 1;
+        if (outW === w && outH === h) return srcCanvas;
+        const out = document.createElement("canvas");
+        out.width = outW;
+        out.height = outH;
+        out.getContext("2d").drawImage(srcCanvas, minX, minY, outW, outH, 0, 0, outW, outH);
+        return out;
     }
 
     document.getElementById("btn-flip-h").addEventListener("click", function() {
@@ -415,13 +506,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function resize(w, h) {
         saveState();
+        const sourceCanvas = trimTransparentCanvas(workCanvas);
         const newCanvas = document.createElement("canvas");
-        newCanvas.width = w;
-        newCanvas.height = h;
+        newCanvas.width = Math.max(1, w);
+        newCanvas.height = Math.max(1, h);
         const newCtx = newCanvas.getContext("2d");
-        newCtx.drawImage(workCanvas, 0, 0, w, h);
+        newCtx.drawImage(sourceCanvas, 0, 0, newCanvas.width, newCanvas.height);
         workCanvas = newCanvas;
-        workCtx = workCanvas.getContext("2d");
+        workCtx = newCtx;
         clearLastTextObject();
         updateResizeInputs();
         drawToDisplay();
@@ -1717,7 +1809,6 @@ document.addEventListener("DOMContentLoaded", function() {
             var resetBtn = document.getElementById("toolbar-reset-pos");
             if (resetBtn) resetBtn.classList.remove("visible");
             if (document.body.classList.contains("toolbar-floated")) {
-                var savedW = toolbarEl.offsetWidth;
                 document.body.classList.remove("toolbar-floated");
                 var wr = document.getElementById("toolbar-wrap");
                 if (wr) wr.style.minHeight = "";
@@ -1725,14 +1816,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 toolbarEl.style.left = "";
                 toolbarEl.style.width = "";
                 toolbarEl.style.minWidth = "";
-                if (savedW > 0) {
-                    toolbarEl.style.width = savedW + "px";
-                    toolbarEl.style.minWidth = savedW + "px";
-                }
-                if (document.body.classList.contains("editor-tall-image")) {
-                    document.body.classList.add("toolbar-auto-follow");
-                    syncToolbarPosition();
-                }
             }
         }
         var resetBtn = document.getElementById("toolbar-reset-pos");

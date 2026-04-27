@@ -31,6 +31,7 @@ urlpatterns = [
     path('qr-generator/', views.qr_generator, name='qr_generator'),
     path('qr-decoder/', views.qr_decoder, name='qr_decoder'),
     path('password-gen/', views.password_gen, name='password_gen'),
+    path('help/password-generator/', views.help_password_gen, name='help_password_gen'),
     path('remove-spaces/', views.remove_spaces, name='remove_spaces'),
     path('username-generator/', views.username_generator, name='username_generator'),
     path('bio-generator/', views.bio_generator, name='bio_generator'),
@@ -56,6 +57,7 @@ urlpatterns = [
     path('hashtag-generator/', views.hashtag_generator, name='hashtag_generator'),
     path('caption-generator/', views.caption_generator, name='caption_generator'),
     path('cv-generator/', views.cv_generator, name='cv_generator'),
+    path('cv-preview-web/', views.cv_preview_web, name='cv_preview_web'),
     path('cv-optimizer/', views.cv_optimizer, name='cv_optimizer'),
     path('cover-letter-generator/', views.cover_letter_generator, name='cover_letter_generator'),
     path('application-email-generator/', views.application_email_generator, name='application_email_generator'),
@@ -78,6 +80,7 @@ urlpatterns = [
     path('help/cover-letter/', views.help_cover_letter, name='help_cover_letter'),
     path('help/application-email/', views.help_application_email, name='help_application_email'),
     path('help/interview-simulator/', views.help_interview_simulator, name='help_interview_simulator'),
+    path('help/cron-explainer/', views.help_cron_explainer, name='help_cron_explainer'),
     path('api/interview-simulator-ai-reply/', views.interview_simulator_ai_reply, name='interview_simulator_ai_reply'),
 ]
 

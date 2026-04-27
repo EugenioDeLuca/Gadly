@@ -80,6 +80,10 @@
     margin-bottom: 16px;
 }
 
+.account-container .field-error {
+    text-align: center;
+}
+
 .account-form .login-btn {
     margin-top: 0;
 }
@@ -185,4 +189,13 @@
 
 .account-delete-form .login-btn {
     margin-top: 12px;
+}
+
+@media (min-width: 769px) {
+    body.account-page .site-main {
+        padding-bottom: 24px !important;
+    }
+    body.account-page .site-main .static-container.account-container {
+        margin: 24px auto 24px !important;
+    }
 }

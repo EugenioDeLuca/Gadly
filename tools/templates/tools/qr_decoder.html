@@ -20,8 +20,8 @@
 .qr-decoder .preview-wrap img { max-width: 100%; max-height: 240px; border-radius: 8px; border: 1px solid #ddd; }
 .qr-decoder .result-wrap { margin-top: 12px; }
 .qr-decoder .result-wrap label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; }
-.qr-decoder .result-wrap textarea { width: 100%; box-sizing: border-box; min-height: 120px; padding: 14px 18px; font-size: 1rem; border: 2px solid #ddd; border-radius: 12px; resize: vertical; }
-.qr-decoder .result-wrap textarea:focus { outline: none; border-color: #007BFF; }
+.qr-decoder .result-wrap textarea { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 16px; font-size: 1.05rem; font-weight: 600; font-family: Arial, sans-serif; color: #003f7f; background: #fff; border: 2px solid #d0e8f9; border-radius: 12px; resize: vertical; line-height: 1.55; }
+.qr-decoder .result-wrap textarea:focus { outline: none; border-color: #d0e8f9; }
 .qr-decoder .result-wrap .btn-copy-wrap { text-align: center; margin-top: 10px; margin-bottom: 8px; }
 .qr-decoder .btn-copy { padding: 12px 32px; min-width: 140px; font-size: 1rem; font-weight: 600; background: #003f7f; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s, transform 0.2s; }
 .qr-decoder .btn-copy:hover { background: #0056b3; transform: scale(1.05); }
@@ -30,7 +30,7 @@
 .qr-decoder .msg { margin: 16px 0 12px 0; font-size: 0.95rem; color: #666; }
 .qr-decoder .msg.success { color: #28a745; text-align: center; font-weight: 600; }
 .qr-decoder .msg.error { color: #c00; text-align: center; font-weight: bold; }
-.qr-decoder .result-area { width: 100%; box-sizing: border-box; margin: 12px 0 12px 0; padding: 16px; min-height: 44px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; font-size: 1rem; text-align: center; color: #003f7f; font-weight: 600; }
+.qr-decoder .result-area { width: 100%; box-sizing: border-box; margin: 12px 0 12px 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; background: #fff; border: 2px solid #d0e8f9; font-size: 1rem; text-align: center; color: #003f7f; font-weight: 600; }
 .qr-decoder .result-area.hidden { display: none !important; }
 .qr-decoder .result-area.error { display: block !important; margin: 12px 0 12px 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
 .qr-decoder .home-link-wrap { margin-top: 0; text-align: center; }
@@ -67,13 +67,13 @@ body.dark-mode .qr-decoder .preview-wrap img { border-color: #ddd; }
 body.dark-mode .qr-decoder .result-wrap label { color: #333; font-weight: 600; }
 body.dark-mode .qr-decoder .result-wrap textarea {
     background: #fff;
-    border: 2px solid #ddd;
-    color: #1a1a2e;
-    -webkit-text-fill-color: #1a1a2e;
+    border: 2px solid #d0e8f9;
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
 }
 body.dark-mode .qr-decoder .result-wrap textarea:focus {
     outline: none;
-    border-color: #007BFF;
+    border-color: #d0e8f9;
 }
 body.dark-mode .qr-decoder .btn-copy { background: #003f7f; }
 body.dark-mode .qr-decoder .btn-copy:hover { background: #0056b3; }
@@ -82,6 +82,7 @@ body.dark-mode .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
 body.dark-mode .qr-decoder .msg.success { color: #1e7e34; text-align: center; font-weight: 600; }
 body.dark-mode .qr-decoder .msg { color: #555; }
 body.dark-mode .qr-decoder .msg.error { color: #c00; text-align: center; font-weight: bold; }
+body.dark-mode .qr-decoder .result-area { background: #fff; border-color: #d0e8f9; color: #003f7f; }
 </style>
 {% endblock %}
 {% block content %}

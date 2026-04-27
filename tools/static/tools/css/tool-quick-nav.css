@@ -70,6 +70,9 @@ body.warm-tone .tool-quick-nav-links a:hover {
 .tool-quick-nav.tool-quick-nav--hidden {
     display: none !important;
 }
+.tool-quick-nav[data-ready="0"] {
+    display: none !important;
+}
 
 .tool-popular-nav {
     position: fixed;
@@ -91,6 +94,9 @@ body.warm-tone .tool-quick-nav-links a:hover {
 .tool-popular-nav::-webkit-scrollbar { display: none; }
 
 .tool-popular-nav.tool-popular-nav--hidden {
+    display: none !important;
+}
+.tool-popular-nav[data-ready="0"] {
     display: none !important;
 }
 

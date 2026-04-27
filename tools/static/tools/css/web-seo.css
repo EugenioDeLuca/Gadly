@@ -77,6 +77,20 @@
     font-family: inherit;
 }
 
+/* Textarea: stesso stack di Markdown / Translator (input/select restano inherit) */
+.web-seo .form-group textarea {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.web-seo .form-group textarea::placeholder {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #999;
+    opacity: 1;
+}
+
 .web-seo .form-group select {
     cursor: pointer;
     appearance: none;
@@ -509,6 +523,9 @@ body.cron-explainer .result-area {
         padding: 12px 14px;
         font-size: 16px; /* prevent zoom on iOS */
     }
+    .web-seo .form-group textarea::placeholder {
+        font-size: 16px;
+    }
     .web-seo .button-group {
         flex-wrap: wrap;
         justify-content: center;
@@ -575,6 +592,21 @@ body.cron-explainer .result-area {
     .web-seo .container {
         margin: 8px 8px;
         padding: 20px 14px;
+    }
+
+    .web-seo .form-group textarea,
+    .web-seo .form-group textarea:focus {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+    }
+    .web-seo .form-group textarea::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #999 !important;
+        opacity: 1 !important;
     }
 
     .video-downloader .button-group button {

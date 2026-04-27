@@ -2,7 +2,12 @@ document.addEventListener("DOMContentLoaded", function () {
     var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
     var result = document.getElementById("cv-result");
     var preview = document.getElementById("cv-preview");
+    var previewDock = document.getElementById("cv-preview-dock");
+    var previewFull = document.getElementById("cv-preview-full");
     var quality = document.getElementById("cv-quality");
+    var openFullPreviewLink = document.getElementById("cv-open-web-preview");
+    var previewModal = document.getElementById("cv-preview-modal");
+    var previewModalClose = document.getElementById("cv-preview-modal-close");
     var btnGenerate = document.getElementById("cv-generate");
     var btnDownload = document.getElementById("cv-download");
     var exportFormatSelect = document.getElementById("cv-export-format");
@@ -32,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var atsMode = false;
     var lastQualityScore = 0;
     var previewPhotoUrl = null;
+    var previewPhotoObjectUrl = null;
 
     if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js";
@@ -65,6 +71,20 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/"/g, "&quot;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;");
+    }
+    function revokePreviewPhotoObjectUrl() {
+        if (!previewPhotoObjectUrl) return;
+        try {
+            URL.revokeObjectURL(previewPhotoObjectUrl);
+        } catch (e) { /* ignore */ }
+        previewPhotoObjectUrl = null;
+    }
+    function getPreviewPhotoUrl(data) {
+        if (previewPhotoUrl) return previewPhotoUrl;
+        if (!data || !data.photoFile) return "";
+        revokePreviewPhotoObjectUrl();
+        previewPhotoObjectUrl = URL.createObjectURL(data.photoFile);
+        return previewPhotoObjectUrl;
     }
     function showFileReady(fileName) {
         result.classList.remove("error");
@@ -107,10 +127,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function createExperienceItem(data) {
         var item = document.createElement("div");
         item.className = "repeat-item repeat-grid";
-        item.innerHTML = '<input class="exp-role" placeholder="' + uiText("Ruolo", "Role") + '" value="' + escapeAttr(data && data.role ? data.role : "") + '">' +
-            '<input class="exp-company" placeholder="' + uiText("Azienda", "Company") + '" value="' + escapeAttr(data && data.company ? data.company : "") + '">' +
-            '<input class="exp-period" placeholder="' + uiText("Periodo", "Period") + '" value="' + escapeAttr(data && data.period ? data.period : "") + '">' +
-            '<input class="exp-result" placeholder="' + uiText("Risultati", "Results") + '" value="' + escapeAttr(data && data.result ? data.result : "") + '">' +
+        item.innerHTML = '<input class="exp-role" name="exp-role" placeholder="' + uiText("Ruolo", "Role") + '" value="' + escapeAttr(data && data.role ? data.role : "") + '">' +
+            '<input class="exp-company" name="exp-company" placeholder="' + uiText("Azienda", "Company") + '" value="' + escapeAttr(data && data.company ? data.company : "") + '">' +
+            '<input class="exp-period" name="exp-period" placeholder="' + uiText("Periodo", "Period") + '" value="' + escapeAttr(data && data.period ? data.period : "") + '">' +
+            '<input class="exp-result" name="exp-result" placeholder="' + uiText("Risultati", "Results") + '" value="' + escapeAttr(data && data.result ? data.result : "") + '">' +
             '<button type="button" class="exp-remove repeat-remove-btn">' + uiText("Rimuovi", "Remove") + "</button>";
         item.querySelectorAll("input").forEach(function (i) { i.addEventListener("input", onDataChanged); });
         item.querySelector(".exp-remove").addEventListener("click", function () { item.remove(); onDataChanged(); });
@@ -119,10 +139,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function createEducationItem(data) {
         var item = document.createElement("div");
         item.className = "repeat-item repeat-grid";
-        item.innerHTML = '<input class="edu-title" placeholder="' + uiText("Titolo", "Title") + '" value="' + escapeAttr(data && data.title ? data.title : "") + '">' +
-            '<input class="edu-school" placeholder="' + uiText("Istituto", "Institution") + '" value="' + escapeAttr(data && data.school ? data.school : "") + '">' +
-            '<input class="edu-year" placeholder="' + uiText("Anno", "Year") + '" value="' + escapeAttr(data && data.year ? data.year : "") + '">' +
-            '<input class="edu-grade" placeholder="' + uiText("Voto", "Grade") + '" value="' + escapeAttr(data && data.grade ? data.grade : "") + '">' +
+        item.innerHTML = '<input class="edu-title" name="edu-title" placeholder="' + uiText("Titolo", "Title") + '" value="' + escapeAttr(data && data.title ? data.title : "") + '">' +
+            '<input class="edu-school" name="edu-school" placeholder="' + uiText("Istituto", "Institution") + '" value="' + escapeAttr(data && data.school ? data.school : "") + '">' +
+            '<input class="edu-year" name="edu-year" placeholder="' + uiText("Anno", "Year") + '" value="' + escapeAttr(data && data.year ? data.year : "") + '">' +
+            '<input class="edu-grade" name="edu-grade" placeholder="' + uiText("Voto", "Grade") + '" value="' + escapeAttr(data && data.grade ? data.grade : "") + '">' +
             '<button type="button" class="edu-remove repeat-remove-btn">' + uiText("Rimuovi", "Remove") + "</button>";
         item.querySelectorAll("input").forEach(function (i) { i.addEventListener("input", onDataChanged); });
         item.querySelector(".edu-remove").addEventListener("click", function () { item.remove(); onDataChanged(); });
@@ -131,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function createSkillItem(data) {
         var item = document.createElement("div");
         item.className = "repeat-item repeat-grid";
-        item.innerHTML = '<input class="skill-name" placeholder="' + uiText("Competenza", "Skill") + '" value="' + escapeAttr(data && data.name ? data.name : "") + '">' +
+        item.innerHTML = '<input class="skill-name" name="skill-name" placeholder="' + uiText("Competenza", "Skill") + '" value="' + escapeAttr(data && data.name ? data.name : "") + '">' +
             '<div class="panel-actions level-toggle">' +
             '<button type="button" data-level="base">' + uiText("Base", "Basic") + "</button>" +
             '<button type="button" data-level="intermedio">' + uiText("Intermedio", "Intermediate") + "</button>" +
@@ -153,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function createLanguageItem(data) {
         var item = document.createElement("div");
         item.className = "repeat-item repeat-grid";
-        item.innerHTML = '<input class="lang-name" placeholder="' + uiText("Lingua", "Language") + '" value="' + escapeAttr(data && data.name ? data.name : "") + '">' +
+        item.innerHTML = '<input class="lang-name" name="lang-name" placeholder="' + uiText("Lingua", "Language") + '" value="' + escapeAttr(data && data.name ? data.name : "") + '">' +
             '<div class="panel-actions level-toggle">' +
             '<button type="button" data-level="base">' + uiText("Base", "Basic") + "</button>" +
             '<button type="button" data-level="intermedio">' + uiText("Intermedio", "Intermediate") + "</button>" +
@@ -206,6 +226,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }).filter(function (x) { return x.name; });
     }
 
+    /** Nome e cognome nei due campi: non basta mettere nome+cognome solo in "Nome". */
+    function hasSeparateFirstAndLastName(data) {
+        var f = (data.firstName || "").trim();
+        var l = (data.lastName || "").trim();
+        var fTokens = f.split(/\s+/).filter(Boolean);
+        if (fTokens.length >= 2 && l.length < 2) return false;
+        if (f.length < 2 || l.length < 2) return false;
+        return true;
+    }
+
     function collectFormData() {
         var firstName = value("cv-full-name");
         var lastName = value("cv-last-name");
@@ -239,11 +269,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function buildCvContent(data, lang) {
         var dict = {
-            summary: { it: "Profilo", en: "Summary", es: "Perfil", fr: "Profil", de: "Profil" },
-            exp: { it: "Esperienze", en: "Experience", es: "Experiencia", fr: "Experience", de: "Erfahrung" },
+            summary: { it: "Profilo professionale", en: "Professional summary", es: "Perfil profesional", fr: "Profil professionnel", de: "Berufsprofil" },
+            exp: { it: "Esperienza professionale", en: "Professional experience", es: "Experiencia profesional", fr: "Experience professionnelle", de: "Berufserfahrung" },
             edu: { it: "Formazione", en: "Education", es: "Educacion", fr: "Formation", de: "Ausbildung" },
             skills: { it: "Competenze", en: "Skills", es: "Competencias", fr: "Competences", de: "Kompetenzen" },
-            contacts: { it: "Contatti", en: "Contact", es: "Contacto", fr: "Contact", de: "Kontakt" }
+            contacts: { it: "Contatti", en: "Contact", es: "Contacto", fr: "Contact", de: "Kontakt" },
+            period: { it: "Periodo", en: "Period", es: "Periodo", fr: "Periode", de: "Zeitraum" },
+            result: { it: "Risultati", en: "Results", es: "Logros", fr: "Resultats", de: "Ergebnisse" },
+            grade: { it: "Voto", en: "Grade", es: "Nota", fr: "Note", de: "Note" }
         };
         var lines = [];
         var contactParts = [data.email, data.phone, data.linkedin].filter(Boolean);
@@ -253,28 +286,73 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.address || data.city) lines.push(tr(lang, { it: "Residenza", en: "Residence", es: "Residencia", fr: "Residence", de: "Wohnort" }) + ": " + [data.address, data.city].filter(Boolean).join(" | "));
         lines.push("");
 
-        var blocks = {
-            summary: [tr(lang, dict.summary), data.summary || "-"],
-            experience: [tr(lang, dict.exp), (data.experienceItems.map(function (x) { return [x.role, x.company, x.period, x.result].filter(Boolean).join(" - "); }).join("\n") || "-")],
-            education: [tr(lang, dict.edu), (data.educationItems.map(function (x) { return [x.title, x.school, x.year, x.grade].filter(Boolean).join(" - "); }).join("\n") || "-")],
-            skills: [tr(lang, dict.skills), (data.skillItems.map(function (x) { return x.name + " (" + x.level + ")"; }).join(", ") || "-")]
-        };
+        function pushSection(title) {
+            lines.push(title);
+            lines.push("=".repeat(title.length));
+        }
+        function pushSpacer() {
+            if (lines.length && lines[lines.length - 1] !== "") lines.push("");
+        }
 
         data.sectionOrder.forEach(function (key) {
-            if (!blocks[key]) return;
-            lines.push(blocks[key][0]);
-            lines.push(blocks[key][1]);
-            lines.push("");
+            if (key === "summary" && data.summary) {
+                pushSection(tr(lang, dict.summary));
+                lines.push(data.summary);
+                pushSpacer();
+                return;
+            }
+            if (key === "experience" && data.experienceItems.length) {
+                pushSection(tr(lang, dict.exp));
+                data.experienceItems.forEach(function (x) {
+                    var header = [x.role, x.company].filter(Boolean).join(" - ");
+                    lines.push((header || "-"));
+                    if (x.period) lines.push("  " + tr(lang, dict.period) + ": " + x.period);
+                    if (x.result) lines.push("  " + tr(lang, dict.result) + ": " + x.result);
+                    lines.push("");
+                });
+                pushSpacer();
+                return;
+            }
+            if (key === "education" && data.educationItems.length) {
+                pushSection(tr(lang, dict.edu));
+                data.educationItems.forEach(function (x) {
+                    var eduHeader = [x.title, x.school].filter(Boolean).join(" - ");
+                    lines.push((eduHeader || "-"));
+                    if (x.year) lines.push("  " + x.year);
+                    if (x.grade) lines.push("  " + tr(lang, dict.grade) + ": " + x.grade);
+                    lines.push("");
+                });
+                pushSpacer();
+                return;
+            }
+            if (key === "skills" && data.skillItems.length) {
+                pushSection(tr(lang, dict.skills));
+                data.skillItems.forEach(function (x) {
+                    lines.push("- " + x.name + " (" + x.level + ")");
+                });
+                pushSpacer();
+            }
         });
 
         if (data.languageItems && data.languageItems.length) {
-            lines.push(tr(lang, { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" }));
-            lines.push(data.languageItems.map(function (x) { return x.name + " (" + x.level + ")"; }).join(", "));
-            lines.push("");
+            pushSection(tr(lang, { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" }));
+            data.languageItems.forEach(function (x) { lines.push("- " + x.name + " (" + x.level + ")"); });
+            pushSpacer();
         }
-        if (data.certifications) { lines.push(tr(lang, { it: "Certificazioni", en: "Certifications", es: "Certificaciones", fr: "Certifications", de: "Zertifizierungen" })); lines.push(data.certifications); lines.push(""); }
-        if (data.projects) { lines.push(tr(lang, { it: "Progetti", en: "Projects", es: "Proyectos", fr: "Projets", de: "Projekte" })); lines.push(data.projects); lines.push(""); }
-        if (data.achievements) { lines.push(tr(lang, { it: "Risultati", en: "Achievements", es: "Logros", fr: "Realisations", de: "Erfolge" })); lines.push(data.achievements); }
+        if (data.certifications) {
+            pushSection(tr(lang, { it: "Certificazioni", en: "Certifications", es: "Certificaciones", fr: "Certifications", de: "Zertifizierungen" }));
+            lines.push(data.certifications);
+            pushSpacer();
+        }
+        if (data.projects) {
+            pushSection(tr(lang, { it: "Progetti", en: "Projects", es: "Proyectos", fr: "Projets", de: "Projekte" }));
+            lines.push(data.projects);
+            pushSpacer();
+        }
+        if (data.achievements) {
+            pushSection(tr(lang, { it: "Risultati", en: "Achievements", es: "Logros", fr: "Realisations", de: "Erfolge" }));
+            lines.push(data.achievements);
+        }
 
         return {
             text: lines.join("\n"),
@@ -299,6 +377,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderPreviewAndQuality() {
         var data = collectFormData();
+        var isInlineDock = !!(previewDock && previewDock.classList.contains("cv-preview-dock--inline"));
+        function tipText(shortIt, shortEn, longIt, longEn) {
+            return uiText(isInlineDock ? longIt : shortIt, isInlineDock ? longEn : shortEn);
+        }
         var content = buildCvContent(data, selectedCvLang);
         preview.classList.remove("preview-classic", "preview-modern", "preview-minimal");
         preview.classList.add("preview-" + selectedTemplate);
@@ -315,7 +397,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var skills = data.skillItems.length
             ? data.skillItems.map(function (x) { return x.name + " (" + getLevelLabel(x.level, selectedCvLang) + ")"; }).join(", ")
             : "";
-        var photoTag = previewPhotoUrl ? '<img class="preview-photo" src="' + previewPhotoUrl + '" alt="preview photo">' : "";
+        var currentPhotoUrl = getPreviewPhotoUrl(data);
+        var photoTag = currentPhotoUrl
+            ? '<img class="preview-photo" src="' + escapeAttr(currentPhotoUrl) + '" alt="">'
+            : "";
         var previewLabels = {
             summary: { it: "Profilo", en: "Summary", es: "Perfil", fr: "Profil", de: "Profil" },
             experience: { it: "Esperienze", en: "Experience", es: "Experiencia", fr: "Experience", de: "Erfahrung" },
@@ -333,18 +418,33 @@ document.addEventListener("DOMContentLoaded", function () {
         preview.innerHTML =
             '<div class="preview-head"><div><div class="preview-name">' + escapeHtml(previewName) + "</div>" + roleTag + "</div>" + photoTag + "</div>" +
             parts.join("");
+        if (previewFull) {
+            previewFull.classList.remove("preview-classic", "preview-modern", "preview-minimal");
+            previewFull.classList.add("preview-" + selectedTemplate);
+            var fullParts = parts.slice();
+            if (data.languageItems.length) {
+                var languagesText = data.languageItems.map(function (x) { return x.name + " (" + getLevelLabel(x.level, selectedCvLang) + ")"; }).join(", ");
+                fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Lingue", "Languages")) + '</div><div class="preview-text">' + escapeHtml(languagesText) + "</div></div>");
+            }
+            if (data.certifications) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Certificazioni", "Certifications")) + '</div><div class="preview-text">' + escapeHtml(data.certifications) + "</div></div>");
+            if (data.projects) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Progetti", "Projects")) + '</div><div class="preview-text">' + escapeHtml(data.projects) + "</div></div>");
+            if (data.achievements) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Risultati", "Achievements")) + '</div><div class="preview-text">' + escapeHtml(data.achievements) + "</div></div>");
+            previewFull.innerHTML =
+                '<div class="preview-head"><div><div class="preview-name">' + escapeHtml(previewName) + "</div>" + roleTag + "</div>" + photoTag + "</div>" +
+                fullParts.join("");
+        }
         var score = 0;
         var tips = [];
-        if (data.fullName) score += 10; else tips.push(uiText("Inserisci nome e cognome.", "Add name and surname."));
-        if (data.role) score += 10; else tips.push(uiText("Specifica il ruolo target.", "Specify target role."));
-        if (data.email) score += 10; else tips.push(uiText("Inserisci l'email.", "Add email."));
-        if (data.phone) score += 5; else tips.push(uiText("Inserisci il telefono.", "Add phone number."));
-        if ((data.summary || "").length >= 40) score += 15; else tips.push(uiText("Scrivi un profilo più completo.", "Write a fuller summary."));
-        if (data.experienceItems.length > 0) score += 15; else tips.push(uiText("Aggiungi almeno un'esperienza.", "Add at least one experience."));
-        if (data.educationItems.length > 0) score += 10; else tips.push(uiText("Aggiungi almeno una formazione.", "Add at least one education entry."));
-        if (data.skillItems.length >= 3) score += 10; else tips.push(uiText("Aggiungi almeno 3 competenze.", "Add at least 3 skills."));
-        if (data.languageItems.length > 0) score += 5; else tips.push(uiText("Aggiungi le lingue.", "Add languages."));
-        if (data.certifications || data.projects || data.achievements) score += 10; else tips.push(uiText("Aggiungi certificazioni/progetti/risultati.", "Add certifications/projects/achievements."));
+        if (hasSeparateFirstAndLastName(data)) score += 10;
+        else tips.push(tipText("Nome + cognome.", "Name + surname.", "Inserisci nome e cognome completi.", "Add full name and surname."));
+        if (data.role) score += 15; else tips.push(tipText("Ruolo.", "Role.", "Specifica il ruolo target.", "Specify target role."));
+        if (data.email) score += 10; else tips.push(tipText("Email.", "Email.", "Inserisci un'email valida.", "Add a valid email."));
+        if (data.phone) score += 5; else tips.push(tipText("Telefono.", "Phone.", "Inserisci il numero di telefono.", "Add phone number."));
+        if ((data.summary || "").length >= 40) score += 20; else tips.push(tipText("Profilo (40+).", "Summary (40+).", "Scrivi un profilo di almeno 40 caratteri.", "Write a summary with at least 40 characters."));
+        if (data.experienceItems.length > 0) score += 15; else tips.push(tipText("Esperienza.", "Experience.", "Aggiungi almeno un'esperienza professionale.", "Add at least one work experience."));
+        if (data.educationItems.length > 0) score += 10; else tips.push(tipText("Formazione.", "Education.", "Aggiungi almeno un percorso di formazione.", "Add at least one education entry."));
+        if (data.skillItems.length >= 3) score += 10; else tips.push(tipText("3+ competenze.", "3+ skills.", "Inserisci almeno 3 competenze.", "Add at least 3 skills."));
+        if (data.languageItems.length > 0) score += 5; else tips.push(tipText("Lingue.", "Languages.", "Aggiungi almeno una lingua.", "Add at least one language."));
         if (score > 100) score = 100;
         lastQualityScore = score;
         var scoreClass = score === 100 ? "good" : "bad";
@@ -352,13 +452,34 @@ document.addEventListener("DOMContentLoaded", function () {
             '<span class="quality-score ' + scoreClass + '">' +
             uiText("Punteggio CV", "CV score") + ": " + score + "/100</span><br>" +
             (tips.length ? tips.join("<br>") : uiText("Ottimo! CV completo.", "Great! CV looks complete."));
+
+        // Save current state for dedicated web preview page (view-only).
+        try {
+            localStorage.setItem("cv-live-preview-payload-v1", JSON.stringify({
+                firstName: data.firstName || "",
+                lastName: data.lastName || "",
+                role: data.role || "",
+                email: data.email || "",
+                phone: data.phone || "",
+                linkedin: data.linkedin || "",
+                summary: data.summary || "",
+                experienceItems: data.experienceItems || [],
+                educationItems: data.educationItems || [],
+                skillItems: data.skillItems || [],
+                languageItems: data.languageItems || [],
+                certifications: data.certifications || "",
+                projects: data.projects || "",
+                achievements: data.achievements || "",
+                photoDataUrl: previewPhotoUrl || ""
+            }));
+        } catch (e) { /* localStorage unavailable */ }
     }
 
     function validateData(data) {
         var emailOk = !data.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
         var phoneOk = !data.phone || /^[+\d][\d\s\-()]{6,}$/.test(data.phone);
         var linkedinOk = !data.linkedin || /^(https?:\/\/)?([\w-]+\.)?linkedin\.com\/.+/i.test(data.linkedin);
-        if (!data.fullName || !data.role) {
+        if (!hasSeparateFirstAndLastName(data) || !data.role) {
             return uiText(
                 "Generazione bloccata: completa il CV fino a 100/100.",
                 "Generation blocked: complete the CV to 100/100."
@@ -448,9 +569,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         var headerBottom = hasPhoto ? 150 : y;
-        y = Math.max(y, headerBottom + 10);
-        doc.setTextColor(34, 34, 34);
-        doc.setFontSize(11);
+        y = Math.max(y, headerBottom + 12);
         var contentLines = (content.text || "").split("\n");
         if (headerInfoLines.length) {
             while (contentLines.length && !contentLines[0].trim()) contentLines.shift();
@@ -459,7 +578,62 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             while (contentLines.length && !contentLines[0].trim()) contentLines.shift();
         }
-        doc.text(doc.splitTextToSize(contentLines.join("\n"), maxWidth), left, y);
+
+        function ensurePageSpace(requiredHeight) {
+            var bottomLimit = doc.internal.pageSize.getHeight() - (data.atsMode ? 26 : 40);
+            if (y + requiredHeight <= bottomLimit) return;
+            doc.addPage();
+            y = 46;
+        }
+
+        for (var i = 0; i < contentLines.length; i++) {
+            var line = (contentLines[i] || "").trim();
+            if (!line) {
+                y += 6;
+                continue;
+            }
+            var nextLine = (contentLines[i + 1] || "").trim();
+            var isSectionTitle = nextLine && nextLine === "=".repeat(line.length);
+            if (isSectionTitle) {
+                ensurePageSpace(24);
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(13);
+                doc.setTextColor(headerAccent[0], headerAccent[1], headerAccent[2]);
+                doc.text(line, left, y);
+                y += 5;
+                doc.setDrawColor(headerAccent[0], headerAccent[1], headerAccent[2]);
+                doc.setLineWidth(0.7);
+                doc.line(left, y, Math.min(left + 190, pageWidth - 44), y);
+                y += 12;
+                i += 1; // Skip underline marker line made of "=".
+                continue;
+            }
+
+            var textColor = [34, 34, 34];
+            var fontName = "helvetica";
+            var fontWeight = "normal";
+            var fontSize = 11;
+            var lineIndent = 0;
+            if (line.indexOf("- ") === 0) {
+                lineIndent = 8;
+            } else if (line.indexOf("  ") === 0) {
+                lineIndent = 10;
+                fontSize = 10.5;
+                textColor = [75, 97, 120];
+            } else if (line.indexOf(" - ") > 0) {
+                fontWeight = "bold";
+            }
+
+            var textWidth = Math.max(120, maxWidth - lineIndent);
+            var wrapped = doc.splitTextToSize(line, textWidth);
+            ensurePageSpace(Math.max(14, wrapped.length * 13));
+            doc.setFont(fontName, fontWeight);
+            doc.setFontSize(fontSize);
+            doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+            doc.text(wrapped, left + lineIndent, y);
+            y += (wrapped.length * 12) + 2;
+        }
+
         if (!data.atsMode) {
             doc.setFontSize(9);
             doc.setTextColor(80, 80, 80);
@@ -579,15 +753,34 @@ document.addEventListener("DOMContentLoaded", function () {
     if (photoInput && photoLabel) {
         var defaultChooseText = uiText("Scegli file", "Choose file");
         photoLabel.textContent = defaultChooseText;
+    }
+    if (photoInput) {
         photoInput.addEventListener("change", function () {
             var f = (photoInput.files || [])[0];
-            photoLabel.textContent = f ? f.name : defaultChooseText;
-            if (previewPhotoUrl) {
-                URL.revokeObjectURL(previewPhotoUrl);
-                previewPhotoUrl = null;
+            if (photoLabel) {
+                var defaultChooseText = uiText("Scegli file", "Choose file");
+                photoLabel.textContent = f ? f.name : defaultChooseText;
             }
-            if (f) previewPhotoUrl = URL.createObjectURL(f);
-            onDataChanged();
+            revokePreviewPhotoObjectUrl();
+            if (previewPhotoUrl && previewPhotoUrl.indexOf("blob:") === 0) {
+                try {
+                    URL.revokeObjectURL(previewPhotoUrl);
+                } catch (e) { /* ignore */ }
+            }
+            previewPhotoUrl = null;
+            if (!f) {
+                onDataChanged();
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                previewPhotoUrl = (e.target && e.target.result) ? String(e.target.result) : null;
+                onDataChanged();
+            };
+            reader.onerror = function () {
+                onDataChanged();
+            };
+            reader.readAsDataURL(f);
         });
     }
 
@@ -614,6 +807,43 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!el) return;
         el.addEventListener("keyup", onDataChanged);
     });
+    if (openFullPreviewLink && previewModal) {
+        openFullPreviewLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            renderPreviewAndQuality();
+            previewModal.classList.add("is-open");
+            previewModal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        });
+    }
+    if (previewModalClose && previewModal) {
+        previewModalClose.addEventListener("click", function () {
+            previewModal.classList.remove("is-open");
+            previewModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        });
+    }
+    if (previewModal) {
+        previewModal.addEventListener("click", function (e) {
+            if (e.target !== previewModal) return;
+            previewModal.classList.remove("is-open");
+            previewModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        });
+        document.addEventListener("keydown", function (e) {
+            if (e.key !== "Escape") return;
+            if (!previewModal.classList.contains("is-open")) return;
+            previewModal.classList.remove("is-open");
+            previewModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        });
+    }
+    if (previewDock && typeof MutationObserver !== "undefined") {
+        var dockObserver = new MutationObserver(function () {
+            renderPreviewAndQuality();
+        });
+        dockObserver.observe(previewDock, { attributes: true, attributeFilter: ["class"] });
+    }
 
     loadDraft();
     initCustomTargetRoleSelect();

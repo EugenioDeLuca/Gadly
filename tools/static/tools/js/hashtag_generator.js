@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
         food: ["cibo", "foodie", "cucinaitaliana", "ricette", "delizioso", "instafood", "foodlover", "gourmet", "homemade", "chef", "mangiarebene", "sapori", "foodstagram", "yummy", "cucina", "piattidelgiorno", "foodreels", "pranzo", "cena", "dolci", "brunch", "cucinasana", "ricettaveloce", "buonissimo", "passioneincucina"],
         fashion: ["moda", "stile", "outfit", "ootd", "fashionista", "tendenze", "look", "streetwear", "instafashion", "styleinspo", "fashionweek", "eleganza", "trendy", "guardaroba", "fashionblogger", "lookdelgiorno", "consiglidistile", "outfitideas", "modaitaliana", "chic", "minimalstyle", "fashionreels", "abbigliamento", "stilepersonale", "trendalert"],
         beauty: ["beauty", "trucco", "skincare", "makeup", "selfcare", "glow", "beautyroutine", "cosmetici", "makeuplover", "instabeauty", "lashes", "lipstick", "bellezza", "curadellapelle", "benessere", "beautytips", "skincareroutine", "makeuptutorial", "glowup", "capelli", "haircare", "visoluminoso", "beautyreels", "looknaturale", "curapersonale"],
-        default: ["amore", "instagood", "photooftheday", "bello", "felicita", "arte", "foto", "natura", "vita", "like", "follow", "estate", "momenti", "vibes", "ispirazione", "quotidiano", "lifestyle", "reels", "viral", "trending", "creator", "contenuti", "oggi", "energia", "goodvibes"]
+        default: ["amore", "instagood", "photooftheday", "bello", "felicità", "arte", "foto", "natura", "vita", "like", "follow", "estate", "momenti", "vibes", "ispirazione", "quotidiano", "lifestyle", "reels", "viral", "trending", "creator", "contenuti", "oggi", "energia", "goodvibes"]
     };
 
     function pick(arr, n) {
@@ -62,22 +62,35 @@ document.addEventListener("DOMContentLoaded", function() {
     var resultArea = document.getElementById("result-area");
     var btnGen = document.getElementById("btn-generate");
     var btnCopy = document.getElementById("btn-copy");
+    var lastOutput = "";
 
     btnGen.addEventListener("click", function() {
         var nicheRaw = (nicheInput.value || "").trim();
         var source = isItalian ? nichesIt : niches;
         var list = buildTagPool(source, nicheRaw);
         var n = Math.min(1000, Math.max(1, parseInt(countInput.value, 10) || 15));
-        var tags = pick(list, Math.min(n, list.length));
-        while (tags.length < n && list.length > 0) {
-            tags = tags.concat(pick(list, Math.min(n - tags.length, list.length)));
+        var tags = [];
+        var out = "";
+        var attempts = 0;
+        do {
+            tags = pick(list, Math.min(n, list.length));
+            while (tags.length < n && list.length > 0) {
+                tags = tags.concat(pick(list, Math.min(n - tags.length, list.length)));
+            }
+            out = tags.map(function(t) { return "#" + t; }).join(" ");
+            attempts += 1;
+        } while (out === lastOutput && attempts < 6);
+        lastOutput = out;
+        if (!out) {
+            resultArea.classList.add("hidden");
+            return;
         }
-        resultArea.textContent = tags.map(function(t) { return "#" + t; }).join(" ");
+        resultArea.innerHTML = '<span class="hashtags-output">' + out + "</span>";
         resultArea.classList.remove("hidden");
     });
 
     btnCopy.addEventListener("click", function() {
-        var text = resultArea.textContent;
+        var text = resultArea.innerText || resultArea.textContent;
         if (!text) return;
         navigator.clipboard.writeText(text).then(function() {
             btnCopy.textContent = gettext("Copied!");

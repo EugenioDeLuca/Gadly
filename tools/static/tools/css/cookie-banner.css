@@ -18,6 +18,9 @@
 .cookie-banner.hidden {
     display: none;
 }
+.cookie-banner[data-ready="0"] {
+    display: none !important;
+}
 
 .cookie-banner p {
     margin: 0;

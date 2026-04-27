@@ -1,5 +1,5 @@
 {% load i18n %}
-<aside class="tool-quick-nav" aria-label="{% trans 'Quick tool navigation' %}">
+<aside class="tool-quick-nav tool-quick-nav--hidden" data-ready="0" hidden aria-label="{% trans 'Quick tool navigation' %}">
     <div class="tool-quick-nav-head-row">
         <div class="tool-quick-nav-head">{% trans "Quick Tools" %}</div>
         <div class="tool-quick-nav-side-controls" aria-label="{% trans 'Quick nav side controls' %}">
@@ -116,7 +116,7 @@
     </div>
 </aside>
 
-<aside class="tool-popular-nav" aria-label="{% trans 'Most used tools' %}">
+<aside class="tool-popular-nav tool-popular-nav--hidden" data-ready="0" hidden aria-label="{% trans 'Most used tools' %}">
     <div class="tool-popular-nav-head">{% trans "Top 15 Tools" %}</div>
     <div class="tool-quick-nav-group" data-open="0">
         <div class="tool-quick-nav-row">

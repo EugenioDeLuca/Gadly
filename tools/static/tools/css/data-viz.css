@@ -49,15 +49,24 @@
 
 #data-input {
     width: 100%;
-    min-height: 120px;  /* abbastanza alto da mostrare tutti gli esempi senza scroll */
-    padding: 12px 15px;
-    font-size: 14px;
-    font-family: monospace;
+    min-height: 120px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
     border: 2px solid #ddd;
     border-radius: 12px;
     resize: vertical;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: hidden;
+}
+
+#data-input::placeholder {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #999;
+    opacity: 1;
 }
 
 #data-input:focus {
@@ -341,8 +350,11 @@
         font-size: 1.4em;
     }
     #data-input {
-        min-height: 130px;  /* un filo più alto per il font 16px, così gli esempi non scrollano */
-        font-size: 16px;    /* prevent zoom on iOS */
+        min-height: 130px;
+        font-size: 16px; /* prevent zoom on iOS */
+    }
+    #data-input::placeholder {
+        font-size: 16px;
     }
     .chart-select-trigger {
         min-width: 100%;
@@ -370,5 +382,19 @@
     .data-viz .container {
         margin: 8px 0;
         padding: 20px 14px;
+    }
+    #data-input,
+    #data-input:focus {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+    }
+    #data-input::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #999 !important;
+        opacity: 1 !important;
     }
 }

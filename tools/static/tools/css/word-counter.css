@@ -69,16 +69,15 @@
     color: #999;
 }
 
-/* results box */
+/* Risultato senza contenitore (valori in rosso); min-height fissa l’altezza così il .container non salta */
 .word-counter .result {
-    margin-bottom: 28px;
-    padding: 24px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: 1px solid #e2e8f0;
-    /* Altezza base compatta ma sufficiente per i due valori,
-       così prima e dopo il click la dimensione resta uguale */
+    margin-bottom: 20px;
+    padding: 0;
     min-height: 120px;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -95,19 +94,23 @@
 
 .word-counter .result-label {
     font-size: 0.9em;
-    color: #64748b;
+    color: #666;
     font-weight: 600;
 }
 
 .word-counter .result-value {
-    font-size: 1.8em;
+    font-size: 1.75em;
     font-weight: bold;
-    color: #003f7f;
+    color: #c00 !important;
 }
 
 .word-counter .result-placeholder {
     color: #94a3b8;
     margin: 0;
+}
+
+body.dark-mode .word-counter .result-value {
+    color: #ff6b6b !important;
 }
 
 /* buttons - solo desktop (mobile in @media max-width 600px) */
@@ -230,31 +233,14 @@
     body.dark-mode .word-counter textarea::placeholder {
         color: #555 !important;
     }
-    /* Mobile: risultato senza contenitore, in rosso */
-    .word-counter .result {
-        margin-bottom: 20px;
-        padding: 0;
-        min-height: 0;
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
     .word-counter .result-item {
         gap: 2px;
     }
-    .word-counter .result-label {
-        color: #666;
-    }
     .word-counter .result-value {
         font-size: 1.5em;
-        color: #c00 !important;
-        font-weight: bold;
     }
     .word-counter .result-placeholder {
         color: #999;
-    }
-    body.dark-mode .word-counter .result-value {
-        color: #ff6b6b !important;
     }
     .word-counter .tool-desc {
         margin-bottom: 8px;

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
@@ -13,6 +14,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
+from django.utils.translation import override, get_language_from_request
 import asyncio
 import secrets
 import logging
@@ -37,6 +39,22 @@ import socket
 import json
 
 logger = logging.getLogger(__name__)
+
+
+def _request_language(request):
+    lang = getattr(request, "LANGUAGE_CODE", None)
+    if not lang:
+        lang = get_language_from_request(request, check_path=True)
+    return lang or settings.LANGUAGE_CODE
+
+
+class LocalizedPasswordResetView(auth_views.PasswordResetView):
+    """
+    Ensures reset email subject/body are rendered in the current UI language.
+    """
+    def form_valid(self, form):
+        with override(_request_language(self.request)):
+            return super().form_valid(form)
 
 
 def _send_via_sendgrid_api(from_email, to_email, subject, plain_message, html_message):
@@ -74,28 +92,45 @@ def _send_via_sendgrid_api(from_email, to_email, subject, plain_message, html_me
     return False
 
 
-def _send_verification_email(request, user, token):
+def _send_verification_email(request, user, token, *, email_change=False):
     verify_url = request.build_absolute_uri(
         reverse("verify_email_short", kwargs={"token": token})
     )
-    subject = gettext("Verify your email - Gadly")
-    plain_message = gettext(
-        "Hi %(username)s,\n\n"
-        "Please verify your email by clicking this link:\n\n%(url)s\n\n"
-        "This allows you to reset your password if you forget it.\n\n"
-        "If you didn't create an account, ignore this email.\n\n"
-        "Best regards,\n"
-        "Gadly Support"
-    ) % {'username': user.username, 'url': verify_url}
-    html_message = render_to_string(
-        "tools/emails/verify_email.html",
-        {
-            "username": user.username,
-            "verify_url": verify_url,
-            "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
-        },
-        request=request,
-    )
+    with override(_request_language(request)):
+        if email_change:
+            subject = gettext("Confirm your new email - Gadly")
+            plain_message = gettext(
+                "Hi %(username)s,\n\n"
+                "You recently changed the email address on your Gadly account. "
+                "Please confirm this new address by opening the following link:\n\n"
+                "%(url)s\n\n"
+                "Confirming this address keeps your account secure and lets you use it for password recovery.\n\n"
+                "For your security, this verification link is valid for a limited time and can be used only once.\n\n"
+                "If you did not change your email on Gadly, you can ignore this email.\n\n"
+                "Best regards,\n"
+                "Gadly Support"
+            ) % {"username": user.username, "url": verify_url}
+        else:
+            subject = gettext("Verify your email - Gadly")
+            plain_message = gettext(
+                "Hi %(username)s,\n\n"
+                "Please verify your email address by clicking this link:\n\n%(url)s\n\n"
+                "This confirmation helps keep your account secure, completes your account setup, and enables account recovery.\n\n"
+                "For your security, this verification link is valid for a limited time and can be used only once.\n\n"
+                "If you didn't create an account, ignore this email.\n\n"
+                "Best regards,\n"
+                "Gadly Support"
+            ) % {"username": user.username, "url": verify_url}
+        html_message = render_to_string(
+            "tools/emails/verify_email.html",
+            {
+                "username": user.username,
+                "verify_url": verify_url,
+                "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
+                "email_change": email_change,
+            },
+            request=request,
+        )
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
     msg = EmailMultiAlternatives(subject, plain_message, from_email, [user.email])
     msg.attach_alternative(html_message, "text/html")
@@ -185,10 +220,28 @@ def account_profile(request):
         if 'update_profile' in request.POST:
             profile_form = ProfileUpdateForm(request.POST, user=request.user)
             if profile_form.is_valid():
+                old_email = (request.user.email or "").strip().lower()
+                new_email = profile_form.cleaned_data['email'].strip()
                 request.user.username = profile_form.cleaned_data['username']
-                request.user.email = profile_form.cleaned_data['email']
+                request.user.email = new_email
                 request.user.save()
-                msg = gettext('Profile updated.')
+                email_changed = old_email != new_email.lower()
+                if email_changed:
+                    profile.email_verified = False
+                    profile.save(update_fields=["email_verified"])
+                    EmailVerificationToken.objects.filter(user=request.user).delete()
+                    token = secrets.token_hex(24)
+                    EmailVerificationToken.objects.create(user=request.user, token=token)
+                    verify_url = _send_verification_email(
+                        request, request.user, token, email_change=True
+                    )
+                    request.session["pending_verify_user_id"] = request.user.id
+                    if settings.DEBUG and verify_url:
+                        request.session["pending_verify_url"] = verify_url
+                    if verify_url:
+                        return redirect(reverse("verify_email_sent") + "?sent=1")
+                    return redirect(reverse("verify_email_sent") + "?resent=0")
+                msg = gettext("Profile updated.")
                 profile_form = ProfileUpdateForm(user=request.user)
         elif 'update_avatar' in request.POST:
             avatar_form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
@@ -414,6 +467,11 @@ def qr_decoder(request):
 def password_gen(request):
     return render(request, 'tools/password_gen.html')
 
+
+def help_password_gen(request):
+    return render(request, 'tools/help_password_gen.html')
+
+
 def remove_spaces(request):
     return render(request, 'tools/remove_spaces.html')
 
@@ -487,6 +545,9 @@ def caption_generator(request):
 
 def cv_generator(request):
     return render(request, 'tools/cv_generator.html')
+
+def cv_preview_web(request):
+    return render(request, 'tools/cv_preview_web.html')
 
 def cv_optimizer(request):
     return render(request, 'tools/cv_optimizer.html')
@@ -573,6 +634,10 @@ def help_application_email(request):
 
 def help_interview_simulator(request):
     return render(request, 'tools/help_interview_simulator.html')
+
+
+def help_cron_explainer(request):
+    return render(request, 'tools/help_cron_explainer.html')
 
 
 @require_http_methods(["POST"])
@@ -1080,13 +1145,17 @@ def site_speed_api(request):
     except (URLError, HTTPError) as e:
         if isinstance(e, URLError) and isinstance(getattr(e, "reason", None), socket.timeout):
             return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
-        return JsonResponse({"error": str(e)}, status=400)
+        return JsonResponse({
+            "error": gettext("The URL could not be reached. Check the address and try again.")
+        }, status=400)
     except socket.timeout:
         return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
     except Exception as e:
         if "timed out" in str(e).lower():
             return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({
+            "error": gettext("The URL could not be reached. Check the address and try again.")
+        }, status=500)
 
 
 def _extract_text_from_uploaded_cv(uploaded_file):

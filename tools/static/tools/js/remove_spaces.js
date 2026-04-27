@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
+    /** Soglia caratteri: sopra = risultato sopra ai bottoni (meno scroll per Copia / Trasforma). */
+    var LONG_OUTPUT_CHARS = 900;
+
     var input = document.getElementById("text-input");
+    var outcomeStack = document.getElementById("remove-spaces-outcome-stack");
     function tr(msgid, fallbackIt) {
         var out = (typeof gettext === 'function') ? gettext(msgid) : msgid;
         var isIt = document.documentElement.lang && document.documentElement.lang.toLowerCase().indexOf('it') === 0;
@@ -31,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!text || !text.trim()) {
             resultArea.textContent = "";
             resultArea.classList.add("hidden");
+            if (outcomeStack) outcomeStack.classList.remove("remove-spaces--result-first");
             showError(tr("Please enter text to process", "Inserisci del testo"));
             return;
         }
@@ -45,6 +50,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         resultArea.textContent = out;
         resultArea.classList.remove("hidden");
+        if (outcomeStack) {
+            if (out.length > LONG_OUTPUT_CHARS) {
+                outcomeStack.classList.add("remove-spaces--result-first");
+            } else {
+                outcomeStack.classList.remove("remove-spaces--result-first");
+            }
+        }
     });
 
     btnCopy.addEventListener("click", function() {

@@ -12,7 +12,7 @@
 .uuid-generator .form-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .uuid-generator .button-group { width: 100%; justify-content: space-between; margin-bottom: 0px; }
 .uuid-generator .button-group button { min-width: 140px; }
-.uuid-generator .uuid-result { padding: 20px; min-height: 80px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-all; font-size: 0.9rem; line-height: 1.8; font-family: monospace; }
+.uuid-generator .uuid-result { padding: 10px 16px; min-height: 44px; border-radius: 12px; background: #fff; border: 2px solid #d0e8f9; white-space: pre-wrap; word-break: break-all; font-size: 1rem; line-height: 1.5; font-family: inherit; font-weight: 600; color: #003f7f; }
 .uuid-generator .uuid-result.hidden { display: none; }
 @media (min-width: 769px) {
     .uuid-generator .uuid-result { margin-top: 12px !important; }
@@ -21,7 +21,7 @@
     .uuid-generator .form-group input { max-width: 100%; width: 100%; }
     .uuid-generator .button-group { justify-content: space-between; }
 }
-body.dark-mode .uuid-generator .uuid-result { background: rgba(255,255,255,0.05); border-color: var(--border-color); }
+body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d0e8f9; color: #003f7f; }
 </style>
 {% endblock %}
 {% get_current_language as CURRENT_LANGUAGE %}

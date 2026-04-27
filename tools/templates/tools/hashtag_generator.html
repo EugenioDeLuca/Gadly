@@ -7,6 +7,28 @@
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
 <style>
 .hashtag-gen .button-group button { min-width: 140px; }
+.hashtag-gen #result-area {
+    padding: 10px 16px;
+    min-height: 44px;
+    border-radius: 12px;
+    background: #fff;
+    border: 2px solid #d0e8f9;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    color: #003f7f;
+}
+.hashtag-gen #result-area .hashtags-output {
+    display: block;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+}
+body.dark-mode .hashtag-gen #result-area {
+    background: #fff;
+    border-color: #d0e8f9;
+    color: #003f7f;
+}
 /* Solo desktop: input fino in fondo al container, Copy tutto a destra */
 @media (min-width: 769px) {
     .hashtag-gen .form-group input {
@@ -50,5 +72,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/hashtag_generator.js' %}"></script>
+<script src="{% static 'tools/js/hashtag_generator.js' %}?v=20260427d"></script>
 {% endblock %}

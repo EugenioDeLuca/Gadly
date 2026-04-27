@@ -5,23 +5,31 @@
 {% block title %}{% trans "JSON Formatter" %}{% endblock %}
 {% block body_class %}text-tool json-formatter{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426j">
 <style>
 .json-formatter .form-group {
     margin-bottom: 12px; /* 12px tra textarea e messaggio errore/risultato */
 }
+/* Stessa tipografia textarea Traduttore (.translator textarea) */
 .json-formatter .form-group textarea {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
     min-height: 200px;
-    padding: 14px 18px;
-    font-size: 0.95rem;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
     line-height: 1.5;
     border: 2px solid #ddd;
     border-radius: 12px;
     resize: vertical;
-    font-family: monospace;
+}
+.json-formatter .form-group textarea::placeholder {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #999;
+    opacity: 1;
 }
 .json-formatter .form-group textarea:focus {
     outline: none;
@@ -51,9 +59,9 @@
     border: 2px dashed #b8d4f0;
     white-space: pre-wrap;
     word-break: break-word;
-    font-size: 0.9rem;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
     line-height: 1.5;
-    font-family: monospace;
 }
 .json-formatter .json-result.hidden {
     display: none;

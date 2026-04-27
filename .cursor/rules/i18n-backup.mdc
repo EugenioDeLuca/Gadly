@@ -1,0 +1,34 @@
+---
+description: Dopo modifiche alle traduzioni (.po o stringhe gettext/trans), eseguire snapshot in Tools_Site_i18n_backups.
+alwaysApply: true
+---
+
+# Backup lingua (i18n)
+
+Ogni volta che **aggiungi o modifichi** testi tradotti (file sotto `tools/locale/**/*.po`, oppure stringhe `{% trans %}`, `gettext` / catalogo JS che richiedono aggiornamento dei `.po`), **crea un backup** alla fine del lavoro (o subito dopo aver salvato i `.po`).
+
+- **Non** salvare backup dentro `tools/locale/` (niente `.backup` accanto ai `.po` nel repo).
+- **Percorso unico:** `C:\Users\eugen\OneDrive\Documents\Tools_Site_i18n_backups`
+- **Nome cartella** (come gli snapshot già presenti): `italian-language-YYYYMMDD-HHmmss`
+- **Struttura:** `locale/it/LC_MESSAGES/django.po`, `djangojs.po` e `locale/en/LC_MESSAGES/django.po` (copia dal progetto `Tools_Site`).
+
+**Retention:** nella cartella di backup tieni al massimo **5** snapshot `italian-language-*` (i più recenti). Elimina i più vecchi dopo ogni copia, così la cartella non cresce all’infinito.
+
+Esegui in PowerShell:
+
+```powershell
+$stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+$backupBase = "C:\Users\eugen\OneDrive\Documents\Tools_Site_i18n_backups"
+$root = "$backupBase\italian-language-$stamp"
+$src = "C:\Users\eugen\OneDrive\Documents\Tools_Site\tools\locale"
+New-Item -ItemType Directory -Path "$root\locale\it\LC_MESSAGES", "$root\locale\en\LC_MESSAGES" -Force | Out-Null
+Copy-Item "$src\it\LC_MESSAGES\django.po", "$src\it\LC_MESSAGES\djangojs.po" "$root\locale\it\LC_MESSAGES\" -Force
+Copy-Item "$src\en\LC_MESSAGES\django.po" "$root\locale\en\LC_MESSAGES\" -Force
+# Mantieni solo le 5 cartelle più recenti (nome con data/ora ordinabile lessicograficamente)
+Get-ChildItem $backupBase -Directory -Filter "italian-language-*" |
+    Sort-Object Name -Descending |
+    Select-Object -Skip 5 |
+    Remove-Item -Recurse -Force
+```
+
+Se in un turno **non** tocchi file di traduzione, questo passo non serve.

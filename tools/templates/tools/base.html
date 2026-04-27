@@ -7,13 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% block title %}Gadly{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" sizes="any" href="{% static 'tools/images/favicon.svg' %}?v=12">
+    <link rel="shortcut icon" href="{% static 'tools/images/favicon.svg' %}?v=12">
 
     <!-- CSS globale -->
-    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=43">
-    <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=25">
-    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=17">
-    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}">
-    <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=52">
+    <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=31">
+    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=21">
+    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'tools/css/tool-favorites.css' %}?v=1">
 
     {% block extra_css %}{% endblock %}
@@ -163,7 +165,7 @@
         </div>
     </footer>
     {% url 'privacy' as privacy_url %}
-    <div id="cookie-banner" class="cookie-banner">
+    <div id="cookie-banner" class="cookie-banner hidden" data-ready="0" hidden>
         <p>{% blocktrans trimmed with privacy_url=privacy_url %}We use cookies to improve your experience. By continuing you accept our <a href="{{ privacy_url }}">Privacy Policy</a>.{% endblocktrans %}</p>
         <button type="button" class="cookie-banner-btn" id="cookie-accept">{% trans "Accept" %}</button>
     </div>
@@ -174,14 +176,14 @@
         </a>
     </div>
     <script src="{% static 'tools/js/theme.js' %}"></script>
-    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=1"></script>
+    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=6"></script>
     <script>
     window.GADLY_USER_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};
     window.GADLY_USER_STORAGE_KEY = "{% if user.is_authenticated %}{{ user.id }}{% else %}anon{% endif %}";
     </script>
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
-    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=16"></script>
-    <script src="{% static 'tools/js/cookie-banner.js' %}"></script>
+    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=17"></script>
+    <script src="{% static 'tools/js/cookie-banner.js' %}?v=2"></script>
     <script>
     (function() {
         var menuBtn = document.getElementById('header-menu-btn');

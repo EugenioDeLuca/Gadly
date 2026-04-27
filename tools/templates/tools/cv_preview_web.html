@@ -1,0 +1,124 @@
+{% extends "tools/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "CV Web Preview" %}{% endblock %}
+{% block body_class %}text-tool cv-web-preview-page{% endblock %}
+{% block extra_css %}
+<style>
+.cv-web-preview-wrap { max-width: 920px; margin: 20px auto; }
+.cv-web-preview-note { margin-bottom: 10px; color: #4b6178; font-size: 0.95rem; }
+.cv-web-preview-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 16px;
+}
+.cv-web-preview-card .preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.cv-web-preview-card .preview-name { font-size: 1.45rem; font-weight: 700; color: #111827; }
+.cv-web-preview-card .preview-role { color: #374151; font-size: 1rem; }
+.cv-web-preview-card .preview-photo {
+  width: 92px;
+  height: 92px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
+}
+.cv-web-preview-card .preview-section { margin-top: 10px; }
+.cv-web-preview-card .preview-section-title { font-weight: 700; color: #111827; margin-bottom: 4px; }
+.cv-web-preview-card .preview-text { color: #111827; white-space: pre-wrap; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container cv-web-preview-wrap">
+  <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Anteprima CV completa{% else %}Full CV preview{% endif %}</h1>
+  <p class="cv-web-preview-note">
+    {% if LANGUAGE_CODE|slice:":2" == "it" %}
+      Questa pagina mostra solo l'anteprima web del CV (nessun download qui).
+    {% else %}
+      This page shows web preview only (no download here).
+    {% endif %}
+  </p>
+  <div id="cv-web-preview" class="cv-web-preview-card">
+    <div class="preview-text">{% if LANGUAGE_CODE|slice:":2" == "it" %}Nessun dato trovato. Torna al CV Generator e apri di nuovo l'anteprima web.{% else %}No data found. Go back to CV Generator and open web preview again.{% endif %}</div>
+  </div>
+</div>
+<script>
+(function () {
+  var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
+  var root = document.getElementById("cv-web-preview");
+  if (!root) return;
+
+  function tr(it, en) { return isItalian ? it : en; }
+  function esc(v) {
+    return (v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function escAttr(v) {
+    return (v || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function levelLabel(level) {
+    var map = {
+      base: tr("base", "basic"),
+      intermedio: tr("intermedio", "intermediate"),
+      avanzato: tr("avanzato", "advanced")
+    };
+    return map[level] || map.intermedio;
+  }
+
+  var raw = "";
+  try { raw = localStorage.getItem("cv-live-preview-payload-v1") || ""; } catch (e) { raw = ""; }
+  if (!raw) return;
+
+  var data;
+  try { data = JSON.parse(raw); } catch (e) { return; }
+  if (!data || typeof data !== "object") return;
+
+  var fullName = [data.firstName || "", data.lastName || ""].join(" ").trim() || tr("Nome Cognome", "Name Surname");
+  var role = (data.role || "").trim();
+  var contact = [data.email, data.phone, data.linkedin].filter(Boolean).join(" | ");
+  var sections = [];
+
+  if (data.summary) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Profilo", "Summary")) + '</div><div class="preview-text">' + esc(data.summary) + "</div></div>");
+  }
+  if (Array.isArray(data.experienceItems) && data.experienceItems.length) {
+    var exp = data.experienceItems.map(function (x) { return [x.role, x.company, x.period, x.result].filter(Boolean).join(" - "); }).join("\n");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Esperienze", "Experience")) + '</div><div class="preview-text">' + esc(exp) + "</div></div>");
+  }
+  if (Array.isArray(data.educationItems) && data.educationItems.length) {
+    var edu = data.educationItems.map(function (x) { return [x.title, x.school, x.year, x.grade].filter(Boolean).join(" - "); }).join("\n");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Formazione", "Education")) + '</div><div class="preview-text">' + esc(edu) + "</div></div>");
+  }
+  if (Array.isArray(data.skillItems) && data.skillItems.length) {
+    var skills = data.skillItems.map(function (x) { return (x.name || "") + " (" + levelLabel(x.level) + ")"; }).join(", ");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Competenze", "Skills")) + '</div><div class="preview-text">' + esc(skills) + "</div></div>");
+  }
+  if (Array.isArray(data.languageItems) && data.languageItems.length) {
+    var langs = data.languageItems.map(function (x) { return (x.name || "") + " (" + levelLabel(x.level) + ")"; }).join(", ");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Lingue", "Languages")) + '</div><div class="preview-text">' + esc(langs) + "</div></div>");
+  }
+  if (data.certifications) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Certificazioni", "Certifications")) + '</div><div class="preview-text">' + esc(data.certifications) + "</div></div>");
+  }
+  if (data.projects) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Progetti", "Projects")) + '</div><div class="preview-text">' + esc(data.projects) + "</div></div>");
+  }
+  if (data.achievements) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Risultati", "Achievements")) + '</div><div class="preview-text">' + esc(data.achievements) + "</div></div>");
+  }
+
+  var photoTag = data.photoDataUrl ? '<img class="preview-photo" src="' + escAttr(data.photoDataUrl) + '" alt="">' : "";
+  var roleTag = role ? '<div class="preview-role">' + esc(role) + '</div>' : "";
+  var contactTag = contact ? '<div class="preview-text">' + esc(contact) + '</div>' : "";
+
+  root.innerHTML =
+    '<div class="preview-head"><div><div class="preview-name">' + esc(fullName) + '</div>' + roleTag + '</div>' + photoTag + '</div>' +
+    contactTag +
+    sections.join("");
+})();
+</script>
+{% endblock %}

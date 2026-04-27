@@ -4,7 +4,7 @@
 {% block title %}{% trans "Remove Spaces" %}{% endblock %}
 {% block body_class %}text-tool remove-spaces{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426i">
 <style>
 .remove-spaces .text-tool-row {
     margin-bottom: 12px; /* 12px sopra l'errore */
@@ -18,8 +18,23 @@
 .remove-spaces .button-group .btn-copy-right {
     margin-left: auto;
 }
+/* Stack: default = bottoni sopra, risultato sotto (testo corto). Lungo = column-reverse → risultato sopra i bottoni. */
+.remove-spaces .remove-spaces-outcome-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.remove-spaces .remove-spaces-outcome-stack.remove-spaces--result-first {
+    flex-direction: column-reverse;
+}
 @media (min-width: 769px) {
-    .remove-spaces .result-area { margin-top: 12px; }
+    .remove-spaces .remove-spaces-outcome-stack:not(.remove-spaces--result-first) .result-area {
+        margin-top: 0;
+    }
+    .remove-spaces .remove-spaces-outcome-stack.remove-spaces--result-first .result-area {
+        margin-top: 0;
+        margin-bottom: 4px;
+    }
 }
 .remove-spaces-error {
     width: 100%;
@@ -50,20 +65,24 @@
         <textarea id="text-input" placeholder='{% trans "Paste your text here..." %}' rows="8"></textarea>
     </div>
     <div id="remove-spaces-error" class="remove-spaces-error hidden" aria-live="polite"></div>
-    <div class="text-tool-options">
-        <label><input type="radio" name="mode" value="all" checked>{% trans "Remove all spaces" %}</label>
-        <label><input type="radio" name="mode" value="extra">{% trans "Collapse multiple spaces" %}</label>
+    <div class="remove-spaces-outcome-stack" id="remove-spaces-outcome-stack">
+        <div class="remove-spaces-actions">
+            <div class="text-tool-options">
+                <label><input type="radio" name="mode" value="all" checked>{% trans "Remove all spaces" %}</label>
+                <label><input type="radio" name="mode" value="extra">{% trans "Collapse multiple spaces" %}</label>
+            </div>
+            <div class="button-group">
+                <button type="button" id="btn-transform">{% trans "Transform" %}</button>
+                <button type="button" id="btn-copy" class="btn-copy-right">{% trans "Copy" %}</button>
+            </div>
+        </div>
+        <div id="result-area" class="result-area hidden"></div>
     </div>
-    <div class="button-group">
-        <button type="button" id="btn-transform">{% trans "Transform" %}</button>
-        <button type="button" id="btn-copy" class="btn-copy-right">{% trans "Copy" %}</button>
-    </div>
-    <div id="result-area" class="result-area hidden"></div>
     <div class="home-link-wrap">
         <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/remove_spaces.js' %}"></script>
+<script src="{% static 'tools/js/remove_spaces.js' %}?v=20260426e"></script>
 {% endblock %}

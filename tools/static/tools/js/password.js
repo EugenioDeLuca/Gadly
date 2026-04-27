@@ -56,17 +56,50 @@ function generatePassword(showAlert) {
     return password;
 }
 
+/** Altezza del textarea = contenuto a font size invariato (CSS); niente riduzione font. */
+function sizePasswordBox() {
+    if (!passwordInput) return;
+    if (!passwordInput.value) {
+        passwordInput.style.height = '';
+        passwordInput.style.overflowY = '';
+        return;
+    }
+    passwordInput.style.fontSize = '';
+    passwordInput.style.overflowY = 'hidden';
+    passwordInput.style.height = 'auto';
+    passwordInput.style.height = passwordInput.scrollHeight + 'px';
+}
+
 function updatePassword(showAlert) {
     const pwd = generatePassword(showAlert);
     passwordInput.value = pwd;
+    if (pwd) {
+        requestAnimationFrame(function() {
+            requestAnimationFrame(sizePasswordBox);
+        });
+    } else {
+        passwordInput.style.height = '';
+        passwordInput.style.overflowY = '';
+    }
 }
 
 generateBtn.addEventListener('click', function() { updatePassword(true); });
 
-lengthInput.addEventListener('input', function() { hideError(); updatePassword(false); });
-lengthInput.addEventListener('change', function() { hideError(); updatePassword(false); });
+function onLengthTweak() {
+    hideError();
+    passwordInput.value = '';
+    passwordInput.style.height = '';
+    passwordInput.style.overflowY = '';
+}
+
+lengthInput.addEventListener('input', onLengthTweak);
+lengthInput.addEventListener('change', onLengthTweak);
 [includeLower, includeUpper, includeNumbers, includeSymbols].forEach(function(cb) {
     cb.addEventListener('change', function() { hideError(); });
+});
+
+window.addEventListener('resize', function() {
+    if (passwordInput && passwordInput.value) sizePasswordBox();
 });
 
 copyBtn.addEventListener('click', () => {

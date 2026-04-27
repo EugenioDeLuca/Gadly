@@ -211,14 +211,14 @@ body.dark-mode.username-gen .site-main .container .result-area .caption-select-a
     <p class="tool-desc">{% trans "Generate random usernames for social media, games, or profiles." %}</p>
     <div class="text-tool-row">
         <div class="form-group">
-            <label>{% trans "Name (optional)" %}</label>
+            <label for="username-base-name">{% trans "Name (optional)" %}</label>
             <input type="text" id="username-base-name" name="base_name" placeholder='{% trans "e.g. Marco" %}' maxlength="30" autocomplete="off" value="" />
             <span class="form-hint">{% trans "If you add a name, usernames will be based on it." %}</span>
         </div>
         <div class="form-group">
-            <label>{% trans "Style" %}</label>
+            <label for="username-style-trigger">{% trans "Style" %}</label>
             <div class="text-tool-select" id="username-style-wrap" data-value="word_number">
-                <button type="button" class="text-tool-select-trigger">{% trans "Word + Number (e.g. cosmic42)" %}</button>
+                <button type="button" id="username-style-trigger" class="text-tool-select-trigger">{% trans "Word + Number (e.g. cosmic42)" %}</button>
                 <ul class="text-tool-select-menu">
                     <li data-value="word_number" class="selected">{% trans "Word + Number (e.g. cosmic42)" %}</li>
                     <li data-value="word_number_at">{% trans "With @ (e.g. @cosmic42)" %}</li>
@@ -231,7 +231,7 @@ body.dark-mode.username-gen .site-main .container .result-area .caption-select-a
             </div>
         </div>
         <div class="form-group">
-            <label>{% trans "How many" %}</label>
+            <label for="username-count">{% trans "How many" %}</label>
             <input type="number" id="username-count" value="5" min="1" max="5000" />
         </div>
     </div>

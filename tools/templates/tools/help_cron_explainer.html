@@ -1,0 +1,40 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Cron Explainer help" %}{% endblock %}
+{% block body_class %}web-seo help-page{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Cron Explainer help" %}</h1>
+    <p class="tool-desc">{% trans "How cron fields work, practical examples, and common validation errors." %}</p>
+
+    <div class="help-section">
+        <h2>{% trans "Cron format (5 fields)" %}</h2>
+        <p>{% trans "Most expressions use five fields in this order: minute, hour, day of month, month, day of week." %}</p>
+        <pre><code>* * * * *</code></pre>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Common examples" %}</h2>
+        <ul>
+            <li><code>0 9 * * 1-5</code> - {% trans "every weekday at 09:00" %}</li>
+            <li><code>*/15 * * * *</code> - {% trans "every 15 minutes" %}</li>
+            <li><code>0 */2 * * *</code> - {% trans "every 2 hours" %}</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Common mistakes" %}</h2>
+        <p>{% trans "Avoid using out-of-range values (for example minute 60), missing fields, or extra spaces. Use numbers, ranges (1-5), lists (1,3,5), and steps (*/10) correctly." %}</p>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'cron_explainer' %}" class="home-link">{% trans 'Back to "Cron Explainer"' %}</a>
+    </div>
+</div>
+{% endblock %}

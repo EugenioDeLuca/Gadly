@@ -5,7 +5,7 @@
 {% block title %}{% trans "Data Visualizer" %}{% endblock %}
 {% block body_class %}data-viz{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=4">
 {% endblock %}
 {% block content %}
 <div class="data-viz">
@@ -56,5 +56,5 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'tools/js/data-viz.js' %}"></script>
+<script src="{% static 'tools/js/data-viz.js' %}?v=5"></script>
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block body_class %}homepage{% if user.is_authenticated %} user-authenticated{% endif %}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=30">
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=39">
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,8 @@
 </div>
 <div class="container">
 
-    <p class="intro">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</p>
+    <h1 class="home-main-title">{% trans "Free tools for everyday tasks" %}</h1>
+    <p class="intro">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</p>
     <div class="search-wrap">
         <input type="text" id="tool-search" placeholder="{% trans 'Search tools...' %}" class="tool-search-input" autocomplete="off">
     </div>
@@ -35,8 +36,7 @@
     <div class="home-categories-wrap" id="home-categories-wrap">
     <!-- Text Tools -->
     <section class="tool-section" data-icon="T">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text" data-icon="📝" data-icon-src="{% static 'tools/images/icons/text.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/text.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text" data-icon="📝">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Text Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Text" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -55,8 +55,7 @@
     </section>
 
     <section class="tool-section" data-icon="S">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social" data-icon="📱" data-icon-src="{% static 'tools/images/icons/social.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/social.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social" data-icon="📱">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Social Media" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Social" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -69,8 +68,7 @@
     </section>
 
     <section class="tool-section" data-icon="C">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-career" id="category-career" data-icon="💼" data-icon-src="{% static 'tools/images/icons/text.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/text.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-career" id="category-career" data-icon="💼">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Career & CV" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Career" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -85,8 +83,7 @@
     </section>
 
     <section class="tool-section" data-icon="F">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file" data-icon="📁" data-icon-src="{% static 'tools/images/icons/file.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/file.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file" data-icon="📁">
             <span class="category-btn-label category-btn-label--desktop">{% trans "File Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "File" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -99,8 +96,7 @@
     </section>
 
     <section class="tool-section" data-icon="I">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image" data-icon="🖼️" data-icon-src="{% static 'tools/images/icons/image.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/image.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image" data-icon="🖼️">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Image & Data Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Image" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -113,8 +109,7 @@
     </section>
 
     <section class="tool-section" data-icon="$">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance" data-icon="💰" data-icon-src="{% static 'tools/images/icons/finance.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/finance.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance" data-icon="💰">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Finance" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Finance" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -133,8 +128,7 @@
     </section>
 
     <section class="tool-section" data-icon="W">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web" data-icon="🔍" data-icon-src="{% static 'tools/images/icons/seo.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/seo.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web" data-icon="🔍">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Web / SEO" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "SEO" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
@@ -151,8 +145,7 @@
     </section>
 
     <section class="tool-section" data-icon="L">
-        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security" data-icon="🔒" data-icon-src="{% static 'tools/images/icons/security.svg' %}">
-            <span class="category-icon-img" aria-hidden="true"><img src="{% static 'tools/images/icons/security.svg' %}" alt=""></span>
+        <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security" data-icon="🔒">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Security & Misc" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Security" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>

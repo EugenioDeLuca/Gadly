@@ -125,9 +125,9 @@ body.dark-mode.caption-gen .site-main .container .result-area .caption-select-ac
     <h1>{% trans "Caption Generator" %}</h1>
     <p class="tool-desc">{% trans "Generate post captions for Instagram, TikTok, and more." %}</p>
     <div class="form-group">
-        <label>{% trans "Platform" %}</label>
+        <label for="caption-platform-trigger">{% trans "Platform" %}</label>
         <div class="text-tool-select" id="caption-platform-wrap" data-value="instagram">
-            <button type="button" class="text-tool-select-trigger">{% trans "Instagram" %}</button>
+            <button type="button" id="caption-platform-trigger" class="text-tool-select-trigger">{% trans "Instagram" %}</button>
             <ul class="text-tool-select-menu">
                 <li data-value="instagram">{% trans "Instagram" %}</li>
                 <li data-value="tiktok">{% trans "TikTok" %}</li>

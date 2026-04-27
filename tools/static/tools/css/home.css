@@ -104,19 +104,42 @@ body.dark-mode .login-required-btn--close:hover {
 .homepage .container {
     max-width: 900px;
     margin: 30px auto;
-    padding: 56px 40px;
+    padding: 34px 30px;
     text-align: center;
     box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25);
     border-radius: 16px;
     background: white;
 }
 
+/* Desktop: più respiro senza stravolgere il layout (mobile/tablet invariati) */
+@media (min-width: 769px) {
+    body.homepage .site-main {
+        padding-bottom: 24px !important;
+    }
+    .homepage .container {
+        padding-left: 36px;
+        padding-right: 36px;
+        margin-top: 24px !important;
+        margin-bottom: 24px !important;
+    }
+}
+
+.homepage .home-main-title {
+    margin: 0 0 10px 0;
+    font-size: clamp(1.35rem, 3.6vw, 1.9rem);
+    font-weight: 800;
+    color: #003f7f;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
 .homepage .intro {
     font-size: 1.1em;
     color: #555;
-    margin: 0 0 32px 0;
-    padding-top: 4px;
+    margin: 0 0 24px 0;
+    padding-top: 0;
     line-height: 1.5;
+    text-align: center;
 }
 
 .homepage .intro a {
@@ -283,7 +306,7 @@ body.dark-mode .login-required-btn--close:hover {
 }
 
 .tool-section {
-    margin-bottom: 24px;
+    margin-bottom: 18px;
 }
 
 .tool-section:first-of-type {
@@ -323,12 +346,24 @@ body.dark-mode .login-required-btn--close:hover {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 16px;
-    margin-bottom: 32px;
+    gap: 12px;
+    margin-bottom: 22px;
 }
 
 /* Desktop: shortcuts = stesse dimensioni dei tool-btn (favoriti) */
 @media (min-width: 769px) {
+    .homepage .category-btn {
+        font-size: 1.32em;
+        margin-bottom: 18px;
+    }
+    .homepage .home-main-title {
+        margin-bottom: 12px;
+    }
+    .homepage .intro {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 26px;
+    }
     .homepage .container.has-shortcuts .shortcuts-section {
         width: fit-content;
         margin-left: auto;
@@ -422,11 +457,11 @@ body.dark-mode .login-required-btn--close:hover {
     }
     .search-wrap {
         margin-bottom: 0;
-        padding-top: 80px;
-        padding-bottom: 80px;
+        padding-top: 28px;
+        padding-bottom: 28px;
     }
     .homepage .container.has-shortcuts .search-wrap {
-        padding-bottom: 40px;
+        padding-bottom: 20px;
     }
     .homepage .container.has-shortcuts .shortcuts-section {
         margin-top: 0;
@@ -639,10 +674,14 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .category-btn {
         color: #003f7f;
     }
+    body.dark-mode .homepage .home-main-title {
+        color: #7eb8ff;
+    }
 }
 
 /* Dark mode: category buttons e scritte mobile/tablet - blu scuro #003f7f */
 @media (max-width: 768px) {
+    body.dark-mode .homepage .home-main-title,
     body.dark-mode .homepage .intro,
     body.dark-mode .homepage .intro a {
         color: var(--text-secondary);
@@ -715,6 +754,7 @@ body.dark-mode .login-required-btn--close:hover {
     }
 
     /* Dark mode (mobile/tablet): force a single text color everywhere on Home */
+    body.dark-mode.homepage .home-main-title,
     body.dark-mode.homepage .intro,
     body.dark-mode.homepage .intro a,
     body.dark-mode.homepage .tool-search-input,
@@ -733,6 +773,7 @@ body.dark-mode .login-required-btn--close:hover {
 
 /* Dark mode mobile (480px): testi #b0c4de come logo - DEVE stare dopo il blocco 768px */
 @media (max-width: 480px) {
+    body.dark-mode.homepage .home-main-title,
     body.dark-mode.homepage .intro,
     body.dark-mode.homepage .intro a,
     body.dark-mode.homepage .tool-search-input,
@@ -743,4 +784,10 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode.homepage .tool-btn-wrap .tool-fav {
         color: #b0c4de !important;
     }
+}
+
+/* Home: same vertical spacing from header and footer */
+body.homepage .site-main .container {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
 }

@@ -4,15 +4,38 @@
 {% block title %}{% trans "Markdown Preview" %}{% endblock %}
 {% block body_class %}text-tool markdown-preview{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426i">
 <style>
 .text-tool.markdown-preview .container { max-width: 900px; }
 .text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
 .text-tool.markdown-preview .preview-panel { flex: 1; min-width: 280px; }
-.text-tool.markdown-preview .preview-panel label { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
-.text-tool.markdown-preview .preview-panel textarea { min-height: 280px; height: auto; resize: none; overflow-y: auto; color: #1a1a2e; }
+.text-tool.markdown-preview .preview-panel label,
+.text-tool.markdown-preview .preview-panel .preview-title { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
+.text-tool.markdown-preview .preview-panel textarea,
+.text-tool.markdown-preview #md-input {
+    min-height: 280px;
+    height: auto;
+    resize: none;
+    overflow-y: auto;
+    color: #1a1a2e;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+.text-tool.markdown-preview .preview-panel textarea::placeholder,
+.text-tool.markdown-preview #md-input::placeholder {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #999;
+    opacity: 1;
+}
 .text-tool.markdown-preview .preview-actions { margin-top: 10px; }
-.text-tool.markdown-preview .preview-actions .button-group { justify-content: flex-end; }
+.text-tool.markdown-preview .preview-actions .button-group {
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 0;
+}
 .text-tool.markdown-preview .preview-actions #btn-copy { min-width: 132px; }
 .text-tool.markdown-preview .preview-actions #btn-copy.copied,
 .text-tool.markdown-preview .preview-actions #btn-copy.copied:hover,
@@ -28,14 +51,27 @@ body.dark-mode.text-tool.markdown-preview .preview-actions #btn-copy.copied:hove
     color: #fff !important;
 }
 @media (max-width: 480px) {
-.text-tool.markdown-preview .preview-panel textarea { color: #1a1a2e !important; }
+.text-tool.markdown-preview .preview-panel textarea,
+.text-tool.markdown-preview #md-input { color: #1a1a2e !important; }
 }
 body.dark-mode.markdown-preview #md-input { color: #1a1a2e !important; }
 @media (max-width: 480px) {
 body.dark-mode.markdown-preview #md-input,
 body.dark-mode.markdown-preview .preview-panel textarea { color: #1a1a2e !important; }
 }
-.text-tool.markdown-preview .preview-output { min-height: 280px; padding: 16px 20px; border-radius: 12px; border: 2px solid #ddd; background: #f8fcff; overflow: auto; font-size: 1rem; line-height: 1.6; box-sizing: border-box; color: #1a1a2e; }
+.text-tool.markdown-preview .preview-output {
+    min-height: 280px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    background: #f8fcff;
+    overflow: auto;
+    box-sizing: border-box;
+    color: #1a1a2e;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+}
 .text-tool.markdown-preview .preview-output a { color: #002d5c; }
 .text-tool.markdown-preview .preview-output a:hover { color: #003f7f; }
 .text-tool.markdown-preview .preview-output h1, .text-tool.markdown-preview .preview-output h2, .text-tool.markdown-preview .preview-output h3 { margin-top: 1em; margin-bottom: 0.5em; color: #1a1a2e; }
@@ -72,7 +108,7 @@ Write **bold** or *italic* text.
 [Link](https://example.com){% endblocktrans %}</textarea>
         </div>
         <div class="preview-panel">
-            <label>{% trans "Preview" %}</label>
+            <div class="preview-title">{% trans "Preview" %}</div>
             <div id="md-preview" class="preview-output placeholder">{{ md_preview_empty }}</div>
             <div class="preview-actions">
                 <div class="button-group">

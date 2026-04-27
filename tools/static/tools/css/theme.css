@@ -122,7 +122,7 @@ body {
     body.dark-mode .site-main .container p,
     body.dark-mode .site-main .container label,
     body.dark-mode .site-main .container input:not([type="submit"]):not([type="button"]),
-    body.dark-mode:not(.markdown-preview):not(.remove-spaces):not(.word-counter):not(.translator):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container textarea,
+    body.dark-mode:not(.markdown-preview):not(.remove-spaces):not(.word-counter):not(.translator):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.qr-generator):not(.data-viz):not(.web-seo) .site-main .container textarea,
     body.dark-mode .site-main .container select,
     body.dark-mode .site-main .container .text-tool-select-trigger,
     body.dark-mode .site-main .container .result-area,
@@ -164,11 +164,18 @@ body {
     body.dark-mode.json-formatter .site-main .container .form-group textarea:focus,
     body.dark-mode.json-formatter .site-main .container .json-result:not(.error),
     body.dark-mode.markdown-preview .site-main .container textarea,
-    body.dark-mode.markdown-preview .site-main .container .preview-output {
+    body.dark-mode.markdown-preview .site-main .container .preview-output,
+    body.dark-mode.qr-generator .site-main .container textarea,
+    body.dark-mode.qr-generator .site-main .container textarea:focus,
+    body.dark-mode.data-viz .site-main .container #data-input,
+    body.dark-mode.data-viz .site-main .container #data-input:focus,
+    body.dark-mode.web-seo .site-main .container .form-group textarea,
+    body.dark-mode.web-seo .site-main .container .form-group textarea:focus {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
     }
     body.dark-mode.markdown-preview .site-main .container .preview-output p,
     body.dark-mode.markdown-preview .site-main .container .preview-output h1,
@@ -187,8 +194,15 @@ body {
     body.dark-mode.translator .site-main .container textarea::placeholder,
     body.dark-mode.translator .site-main .container .result:empty::before,
     body.dark-mode.json-formatter .site-main .container .form-group textarea::placeholder,
-    body.dark-mode.markdown-preview .site-main .container textarea::placeholder {
+    body.dark-mode.markdown-preview .site-main .container textarea::placeholder,
+    body.dark-mode.qr-generator .site-main .container textarea::placeholder,
+    body.dark-mode.data-viz .site-main .container #data-input::placeholder,
+    body.dark-mode.web-seo .site-main .container .form-group textarea::placeholder {
         color: #555 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        opacity: 1 !important;
     }
 
     /* Dark mode mobile: bottoni tool come homepage (stile category-btn) */
@@ -626,3 +640,23 @@ body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.bt
     color: #fff !important;
 }
 
+/* Solo finestre molto larghe (es. ultrawide a tutto schermo): evitare soglie basse che scattano a metà finestra su 34". */
+@media (min-width: 2200px) {
+    .site-main .container {
+        max-width: 1040px !important;
+    }
+    /* Come a 900px vs 1000px: header/footer un filo più larghi della card centrale. */
+    .header-inner,
+    .footer-inner {
+        max-width: 1140px !important;
+    }
+}
+@media (min-width: 3400px) {
+    .site-main .container {
+        max-width: 1120px !important;
+    }
+    .header-inner,
+    .footer-inner {
+        max-width: 1220px !important;
+    }
+}

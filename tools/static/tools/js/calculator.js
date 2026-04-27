@@ -519,8 +519,9 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             var sellingPrice = cost / (1 - pct);
             var marginAmount = sellingPrice - cost;
+            var marginPctText = String((pct * 100).toFixed(0));
             var html = gettext("Cost:") + " " + cost.toFixed(2) + " €<br>" +
-                interpolate(gettext("Margin (%(pct)s%%):"), { pct: String((pct * 100).toFixed(0)) }, true) + " +" + marginAmount.toFixed(2) + " €<br>" +
+                gettext("Margin") + " (" + marginPctText + "%): +" + marginAmount.toFixed(2) + " €<br>" +
                 "<strong>" + gettext("Selling price:") + " " + sellingPrice.toFixed(2) + " €</strong>";
             setMarginResult(html, false);
         }

@@ -4,7 +4,7 @@
 {% block title %}{% trans "Cron Explainer" %}{% endblock %}
 {% block body_class %}web-seo cron-explainer{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
 .cron-explainer .result-area { white-space: pre-wrap; }
 @media (min-width: 769px) {
@@ -17,6 +17,9 @@
 <div class="container">
     <h1>{% trans "Cron Explainer" %}</h1>
     <p class="tool-desc">{% trans "Enter a cron expression to get a human-readable description." %}</p>
+    <p class="tool-help">
+        <a href="{% url 'help_cron_explainer' %}">{% trans '"Cron Explainer" help: fields, examples, and mistakes to avoid' %}</a>
+    </p>
     <div class="form-group">
         <label for="cron-input">{% trans "Cron expression (5 or 6 fields)" %}</label>
         <input type="text" id="cron-input" placeholder='{% trans "e.g. 0 9 * * 1-5 or 0 */2 * * *" %}' />

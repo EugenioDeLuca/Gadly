@@ -2,10 +2,20 @@
    FAQ PAGE
 ========================= */
 
+/* FAQ page: same vertical spacing from header and footer */
+body.faq-page .site-main {
+    padding-bottom: 24px !important;
+}
+
+body.faq-page .site-main .faq-container {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+}
+
 .faq-page .faq-container {
     max-width: 900px;
     margin: 30px auto;
-    padding: 32px 28px;
+    padding: 36px 32px 44px;
     background: white;
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
@@ -24,12 +34,23 @@
     text-align: center;
     color: #555;
     font-size: 1rem;
-    margin: 0 0 36px 0;
-    line-height: 1.5;
+    margin: 0 auto;
+    line-height: 1.55;
+    max-width: 38rem;
+}
+
+.faq-intro-lead {
+    margin-bottom: 10px;
+}
+
+.faq-intro-detail {
+    font-size: 0.98rem;
+    color: #5a5a5a;
+    margin-bottom: 40px;
 }
 
 .faq-section {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
 }
 
 .faq-section h2 {
@@ -41,7 +62,7 @@
 }
 
 .faq-item {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .faq-item h3 {
@@ -55,11 +76,22 @@
     margin: 0;
     font-size: 0.95rem;
     color: #555;
-    line-height: 1.6;
+    line-height: 1.65;
+}
+
+.faq-item p a {
+    color: #003f7f;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.faq-item p a:hover {
+    color: #0056b3;
 }
 
 .faq-footer {
-    margin-top: 12px;
+    margin-top: 28px;
+    padding-top: 8px;
     text-align: center;
 }
 
