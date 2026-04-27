@@ -510,7 +510,6 @@ body:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
     border: 2px solid var(--home-fab-border, #dc2626);
     text-decoration: none;
     transition: transform 0.2s, box-shadow 0.2s;
-    cursor: grab;
 }
 
 body:not(.homepage) .mobile-home-fab:not(.is-dragging) .mobile-home-fab-link:active {
@@ -531,7 +530,6 @@ body:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg path {
 
 body:not(.homepage) .mobile-home-fab.is-dragging .mobile-home-fab-link {
     box-shadow: none;
-    cursor: grabbing;
     transform: none !important;
 }
 
