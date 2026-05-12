@@ -39,6 +39,73 @@ document.addEventListener("DOMContentLoaded", function () {
     var previewPhotoUrl = null;
     var previewPhotoObjectUrl = null;
 
+    // Mobile-only: clear sticky focus after tap/click to prevent blue highlight persistence.
+    if (window.matchMedia && window.matchMedia("(max-width: 480px)").matches) {
+        var nonTextClickableSelector = "button, .choose-file-btn, .format-toggle, [data-level], [data-template], [data-cv-lang], .role-arrow, .text-tool-select-menu li";
+        var tapClass = "tap-active";
+        function forceBlur(target) {
+            if (!target) return;
+            try { target.blur(); } catch (e) { /* ignore */ }
+            try {
+                if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+            } catch (e1) { /* ignore */ }
+        }
+        function addTapPulse(target) {
+            if (!target || !target.classList) return;
+            target.classList.add(tapClass);
+            setTimeout(function () {
+                target.classList.remove(tapClass);
+            }, 80);
+        }
+        function setupNoFocusMobileControls() {
+            var controls = document.querySelectorAll(nonTextClickableSelector);
+            controls.forEach(function (el) {
+                try {
+                    el.style.webkitTapHighlightColor = "transparent";
+                    el.style.outline = "none";
+                    el.style.boxShadow = "none";
+                } catch (e) { /* ignore */ }
+            });
+        }
+        function clearButtonFocus(event) {
+            var target = event.target && event.target.closest ? event.target.closest(nonTextClickableSelector) : null;
+            if (!target) return;
+
+            requestAnimationFrame(function () {
+                forceBlur(target);
+                setTimeout(function () {
+                    forceBlur(target);
+                }, 0);
+            });
+        }
+        document.addEventListener("touchstart", function (event) {
+            var target = event.target && event.target.closest ? event.target.closest(nonTextClickableSelector) : null;
+            if (!target) return;
+
+            forceBlur(target);
+        }, { passive: true });
+        document.addEventListener("pointerdown", function (event) {
+            var target = event.target && event.target.closest ? event.target.closest(nonTextClickableSelector) : null;
+            if (!target) return;
+
+            forceBlur(target);
+        });
+        document.addEventListener("touchstart", clearButtonFocus, { passive: true });
+        document.addEventListener("touchend", clearButtonFocus, { passive: true });
+        document.addEventListener("pointerup", clearButtonFocus);
+        document.addEventListener("click", clearButtonFocus);
+        document.addEventListener("focusin", function (event) {
+            var target = event.target && event.target.closest ? event.target.closest(nonTextClickableSelector) : null;
+            if (!target) return;
+            setTimeout(function () {
+                forceBlur(target);
+            }, 0);
+        });
+        setupNoFocusMobileControls();
+        // Also re-apply for dynamically added controls.
+        setInterval(setupNoFocusMobileControls, 1000);
+    }
+
     if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js";
     }
@@ -50,6 +117,9 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     function uiText(it, en) { return isItalian ? it : en; }
+    function isMobileCvViewport() {
+        return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
+    }
     function tr(lang, map) { return map[lang] || map.en; }
     function value(id) { var el = document.getElementById(id); return el ? (el.value || "").trim() : ""; }
     function sanitizeBaseName(firstName, lastName) {
@@ -378,13 +448,22 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderPreviewAndQuality() {
         var data = collectFormData();
         var isInlineDock = !!(previewDock && previewDock.classList.contains("cv-preview-dock--inline"));
-        function tipText(shortIt, shortEn, longIt, longEn) {
-            return uiText(isInlineDock ? longIt : shortIt, isInlineDock ? longEn : shortEn);
+        function cvLangText(map) {
+            return tr(selectedCvLang, map);
+        }
+        function tipText(shortMap, longMap) {
+            return isInlineDock ? cvLangText(longMap) : cvLangText(shortMap);
         }
         var content = buildCvContent(data, selectedCvLang);
         preview.classList.remove("preview-classic", "preview-modern", "preview-minimal");
         preview.classList.add("preview-" + selectedTemplate);
-        var previewName = data.fullName || uiText("Nome Cognome", "Name Surname");
+        var previewName = data.fullName || cvLangText({
+            it: "Nome Cognome",
+            en: "Name Surname",
+            es: "Nombre Apellido",
+            fr: "Nom Prenom",
+            de: "Vorname Nachname"
+        });
         var previewRole = data.role || "";
         var contact = [data.email, data.phone, data.linkedin].filter(Boolean).join(" | ");
         var summary = data.summary || "";
@@ -424,11 +503,11 @@ document.addEventListener("DOMContentLoaded", function () {
             var fullParts = parts.slice();
             if (data.languageItems.length) {
                 var languagesText = data.languageItems.map(function (x) { return x.name + " (" + getLevelLabel(x.level, selectedCvLang) + ")"; }).join(", ");
-                fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Lingue", "Languages")) + '</div><div class="preview-text">' + escapeHtml(languagesText) + "</div></div>");
+                fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(cvLangText({ it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" })) + '</div><div class="preview-text">' + escapeHtml(languagesText) + "</div></div>");
             }
-            if (data.certifications) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Certificazioni", "Certifications")) + '</div><div class="preview-text">' + escapeHtml(data.certifications) + "</div></div>");
-            if (data.projects) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Progetti", "Projects")) + '</div><div class="preview-text">' + escapeHtml(data.projects) + "</div></div>");
-            if (data.achievements) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(uiText("Risultati", "Achievements")) + '</div><div class="preview-text">' + escapeHtml(data.achievements) + "</div></div>");
+            if (data.certifications) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(cvLangText({ it: "Certificazioni", en: "Certifications", es: "Certificaciones", fr: "Certifications", de: "Zertifizierungen" })) + '</div><div class="preview-text">' + escapeHtml(data.certifications) + "</div></div>");
+            if (data.projects) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(cvLangText({ it: "Progetti", en: "Projects", es: "Proyectos", fr: "Projets", de: "Projekte" })) + '</div><div class="preview-text">' + escapeHtml(data.projects) + "</div></div>");
+            if (data.achievements) fullParts.push('<div class="preview-section"><div class="preview-section-title">' + escapeHtml(cvLangText({ it: "Risultati", en: "Achievements", es: "Logros", fr: "Realisations", de: "Erfolge" })) + '</div><div class="preview-text">' + escapeHtml(data.achievements) + "</div></div>");
             previewFull.innerHTML =
                 '<div class="preview-head"><div><div class="preview-name">' + escapeHtml(previewName) + "</div>" + roleTag + "</div>" + photoTag + "</div>" +
                 fullParts.join("");
@@ -436,22 +515,49 @@ document.addEventListener("DOMContentLoaded", function () {
         var score = 0;
         var tips = [];
         if (hasSeparateFirstAndLastName(data)) score += 10;
-        else tips.push(tipText("Nome + cognome.", "Name + surname.", "Inserisci nome e cognome completi.", "Add full name and surname."));
-        if (data.role) score += 15; else tips.push(tipText("Ruolo.", "Role.", "Specifica il ruolo target.", "Specify target role."));
-        if (data.email) score += 10; else tips.push(tipText("Email.", "Email.", "Inserisci un'email valida.", "Add a valid email."));
-        if (data.phone) score += 5; else tips.push(tipText("Telefono.", "Phone.", "Inserisci il numero di telefono.", "Add phone number."));
-        if ((data.summary || "").length >= 40) score += 20; else tips.push(tipText("Profilo (40+).", "Summary (40+).", "Scrivi un profilo di almeno 40 caratteri.", "Write a summary with at least 40 characters."));
-        if (data.experienceItems.length > 0) score += 15; else tips.push(tipText("Esperienza.", "Experience.", "Aggiungi almeno un'esperienza professionale.", "Add at least one work experience."));
-        if (data.educationItems.length > 0) score += 10; else tips.push(tipText("Formazione.", "Education.", "Aggiungi almeno un percorso di formazione.", "Add at least one education entry."));
-        if (data.skillItems.length >= 3) score += 10; else tips.push(tipText("3+ competenze.", "3+ skills.", "Inserisci almeno 3 competenze.", "Add at least 3 skills."));
-        if (data.languageItems.length > 0) score += 5; else tips.push(tipText("Lingue.", "Languages.", "Aggiungi almeno una lingua.", "Add at least one language."));
+        else tips.push(tipText(
+            { it: "Nome + cognome.", en: "Name + surname.", es: "Nombre + apellido.", fr: "Nom + prenom.", de: "Vorname + Nachname." },
+            { it: "Inserisci nome e cognome completi.", en: "Add full name and surname.", es: "Introduce nombre y apellido completos.", fr: "Ajoutez le nom et le prenom complets.", de: "Vollstandigen Vor- und Nachnamen eingeben." }
+        ));
+        if (data.role) score += 15; else tips.push(tipText(
+            { it: "Ruolo.", en: "Role.", es: "Rol.", fr: "Role.", de: "Rolle." },
+            { it: "Specifica il ruolo target.", en: "Specify target role.", es: "Especifica el rol objetivo.", fr: "Precisez le poste cible.", de: "Zielrolle angeben." }
+        ));
+        if (data.email) score += 10; else tips.push(tipText(
+            { it: "Email.", en: "Email.", es: "Correo.", fr: "Email.", de: "E-Mail." },
+            { it: "Inserisci un'email valida.", en: "Add a valid email.", es: "Introduce un correo valido.", fr: "Ajoutez un email valide.", de: "Gultige E-Mail eingeben." }
+        ));
+        if (data.phone) score += 5; else tips.push(tipText(
+            { it: "Telefono.", en: "Phone.", es: "Telefono.", fr: "Telephone.", de: "Telefon." },
+            { it: "Inserisci il numero di telefono.", en: "Add phone number.", es: "Introduce numero de telefono.", fr: "Ajoutez le numero de telephone.", de: "Telefonnummer eingeben." }
+        ));
+        if ((data.summary || "").length >= 40) score += 20; else tips.push(tipText(
+            { it: "Profilo (40+).", en: "Summary (40+).", es: "Perfil (40+).", fr: "Resume (40+).", de: "Profil (40+)." },
+            { it: "Scrivi un profilo di almeno 40 caratteri.", en: "Write a summary with at least 40 characters.", es: "Escribe un perfil de al menos 40 caracteres.", fr: "Ecrivez un resume d'au moins 40 caracteres.", de: "Profil mit mindestens 40 Zeichen schreiben." }
+        ));
+        if (data.experienceItems.length > 0) score += 15; else tips.push(tipText(
+            { it: "Esperienza.", en: "Experience.", es: "Experiencia.", fr: "Experience.", de: "Erfahrung." },
+            { it: "Aggiungi almeno un'esperienza professionale.", en: "Add at least one work experience.", es: "Agrega al menos una experiencia laboral.", fr: "Ajoutez au moins une experience professionnelle.", de: "Mindestens eine Berufserfahrung hinzufugen." }
+        ));
+        if (data.educationItems.length > 0) score += 10; else tips.push(tipText(
+            { it: "Formazione.", en: "Education.", es: "Formacion.", fr: "Formation.", de: "Ausbildung." },
+            { it: "Aggiungi almeno un percorso di formazione.", en: "Add at least one education entry.", es: "Agrega al menos una formacion.", fr: "Ajoutez au moins une formation.", de: "Mindestens einen Ausbildungseintrag hinzufugen." }
+        ));
+        if (data.skillItems.length >= 3) score += 10; else tips.push(tipText(
+            { it: "3+ competenze.", en: "3+ skills.", es: "3+ habilidades.", fr: "3+ competences.", de: "3+ Kompetenzen." },
+            { it: "Inserisci almeno 3 competenze.", en: "Add at least 3 skills.", es: "Introduce al menos 3 habilidades.", fr: "Ajoutez au moins 3 competences.", de: "Mindestens 3 Kompetenzen eingeben." }
+        ));
+        if (data.languageItems.length > 0) score += 5; else tips.push(tipText(
+            { it: "Lingue.", en: "Languages.", es: "Idiomas.", fr: "Langues.", de: "Sprachen." },
+            { it: "Aggiungi almeno una lingua.", en: "Add at least one language.", es: "Agrega al menos un idioma.", fr: "Ajoutez au moins une langue.", de: "Mindestens eine Sprache hinzufugen." }
+        ));
         if (score > 100) score = 100;
         lastQualityScore = score;
         var scoreClass = score === 100 ? "good" : "bad";
         quality.innerHTML =
             '<span class="quality-score ' + scoreClass + '">' +
-            uiText("Punteggio CV", "CV score") + ": " + score + "/100</span><br>" +
-            (tips.length ? tips.join("<br>") : uiText("Ottimo! CV completo.", "Great! CV looks complete."));
+            cvLangText({ it: "Punteggio CV", en: "CV score", es: "Puntuacion CV", fr: "Score CV", de: "CV-Punktzahl" }) + ": " + score + "/100</span><br>" +
+            (tips.length ? tips.join("<br>") : cvLangText({ it: "Ottimo! CV completo.", en: "Great! CV looks complete.", es: "Excelente! CV completo.", fr: "Excellent! CV complet.", de: "Super! Lebenslauf ist vollstandig." }));
 
         // Save current state for dedicated web preview page (view-only).
         try {
@@ -480,6 +586,9 @@ document.addEventListener("DOMContentLoaded", function () {
         var phoneOk = !data.phone || /^[+\d][\d\s\-()]{6,}$/.test(data.phone);
         var linkedinOk = !data.linkedin || /^(https?:\/\/)?([\w-]+\.)?linkedin\.com\/.+/i.test(data.linkedin);
         if (!hasSeparateFirstAndLastName(data) || !data.role) {
+            if (isMobileCvViewport()) {
+                return uiText("Completa i campi e porta il CV a 100/100.", "Complete fields and reach 100/100.");
+            }
             return uiText(
                 "Generazione bloccata: completa il CV fino a 100/100.",
                 "Generation blocked: complete the CV to 100/100."
@@ -489,6 +598,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!phoneOk) return uiText("Telefono non valido.", "Invalid phone.");
         if (!linkedinOk) return uiText("LinkedIn/Portfolio non valido.", "Invalid LinkedIn/Portfolio.");
         if (lastQualityScore < 100) {
+            if (isMobileCvViewport()) {
+                return uiText("Punteggio CV: " + lastQualityScore + "/100. Arriva a 100/100.", "CV score: " + lastQualityScore + "/100. Reach 100/100.");
+            }
             return uiText(
                 "Generazione bloccata: punteggio CV " + lastQualityScore + "/100. Completa tutti i campi richiesti per arrivare a 100/100.",
                 "Generation blocked: CV score " + lastQualityScore + "/100. Complete all required fields to reach 100/100."
@@ -687,22 +799,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function initCustomTargetRoleSelect() {
         if (!targetRoleWrap) return;
+        // Cleanup from previous fallback experiments: force custom dropdown only.
+        targetRoleWrap.classList.remove("use-native-mobile-select");
+        var staleNative = document.getElementById("cv-target-role-native");
+        if (staleNative && staleNative.parentNode) staleNative.parentNode.removeChild(staleNative);
         var roleInput = document.getElementById("cv-target-role");
         var roleArrow = targetRoleWrap.querySelector(".role-arrow");
         var options = Array.prototype.slice.call(targetRoleWrap.querySelectorAll(".text-tool-select-menu li[data-value]"));
+        var roleMenu = targetRoleWrap.querySelector(".text-tool-select-menu");
         if (!roleInput || !options.length) return;
-        roleInput.addEventListener("focus", function () { targetRoleWrap.classList.add("open"); });
-        roleInput.addEventListener("click", function () { targetRoleWrap.classList.toggle("open"); });
+
+        function setRoleMenuOpen(open) {
+            targetRoleWrap.classList.toggle("open", !!open);
+            if (open && isMobileCvViewport()) {
+                document.body.classList.add("cv-role-menu-open");
+            } else {
+                document.body.classList.remove("cv-role-menu-open");
+            }
+            if (!isMobileCvViewport()) {
+                document.body.classList.remove("cv-role-menu-open");
+            }
+            targetRoleWrap.style.removeProperty("z-index");
+        }
+
+        roleInput.addEventListener("focus", function () { setRoleMenuOpen(true); });
+        roleInput.addEventListener("click", function () { setRoleMenuOpen(!targetRoleWrap.classList.contains("open")); });
         roleInput.addEventListener("input", onDataChanged);
-        if (roleArrow) roleArrow.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); targetRoleWrap.classList.toggle("open"); roleInput.focus(); });
+        if (roleArrow) roleArrow.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Toggle only: second tap closes as expected on mobile.
+            setRoleMenuOpen(!targetRoleWrap.classList.contains("open"));
+        });
         options.forEach(function (li) {
             li.addEventListener("click", function () {
                 roleInput.value = li.getAttribute("data-value");
-                targetRoleWrap.classList.remove("open");
+                setRoleMenuOpen(false);
                 onDataChanged();
             });
         });
-        document.addEventListener("click", function (e) { if (!targetRoleWrap.contains(e.target)) targetRoleWrap.classList.remove("open"); });
+        document.addEventListener("click", function (e) { if (!targetRoleWrap.contains(e.target)) setRoleMenuOpen(false); });
+        window.addEventListener("resize", function () {
+            if (!isMobileCvViewport()) {
+                document.body.classList.remove("cv-role-menu-open");
+                targetRoleWrap.classList.remove("open");
+            }
+        });
     }
 
     function initBirthDateMask() {
@@ -789,7 +931,17 @@ document.addEventListener("DOMContentLoaded", function () {
     addSkillBtn.addEventListener("click", function () { skillList.appendChild(createSkillItem()); onDataChanged(); });
     addLanguageBtn.addEventListener("click", function () { languageList.appendChild(createLanguageItem()); onDataChanged(); });
     formatToggleButtons.forEach(function (button) { button.addEventListener("click", function () { setExportFormat(button.getAttribute("data-format") || "pdf"); onDataChanged(); }); });
-    templateButtons.forEach(function (button) { button.addEventListener("click", function () { setTemplate(button.getAttribute("data-template")); onDataChanged(); }); });
+    templateButtons.forEach(function (button) {
+        function activateTemplateEarly(event) {
+            if (event && event.cancelable) {
+                // Keep default behavior, just update visual state immediately on touch/pointer down.
+            }
+            setTemplate(button.getAttribute("data-template"));
+        }
+        button.addEventListener("touchstart", activateTemplateEarly, { passive: true });
+        button.addEventListener("pointerdown", activateTemplateEarly);
+        button.addEventListener("click", function () { setTemplate(button.getAttribute("data-template")); onDataChanged(); });
+    });
     cvLangButtons.forEach(function (button) { button.addEventListener("click", function () { setCvLang(button.getAttribute("data-cv-lang")); onDataChanged(); }); });
     atsBtn.addEventListener("click", function () { atsMode = !atsMode; updateAtsButtonState(); onDataChanged(); });
     exportDraftBtn.addEventListener("click", exportDraftJson);

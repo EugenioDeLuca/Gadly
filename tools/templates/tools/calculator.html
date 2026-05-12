@@ -59,11 +59,11 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola velocemente una percentuale partendo da un valore totale.{% else %}Quickly calculate a percentage value from a total amount.{% endif %}</p>
             <div class="calc-row calc-row-percent">
                 <div class="calc-group">
-                    <label for="pct-value">{% trans "Percentage (%)" %}</label>
+                    <label>{% trans "Percentage (%)" %}</label>
                     <input type="number" id="pct-value" placeholder='{% trans "e.g. 20" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="pct-of">{% trans "of (value)" %}</label>
+                    <label>{% trans "of (value)" %}</label>
                     <input type="number" id="pct-of" placeholder='{% trans "e.g. 150" %}' min="0" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
@@ -79,21 +79,21 @@
             <h2>{% trans "VAT calculator" %}</h2>
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola l'IVA da netto a lordo, oppure da lordo a netto.{% else %}Calculate VAT from net to gross amount, or from gross to net.{% endif %}</p>
             <div class="calc-group">
-                <label for="iva-country-trigger">{% trans "Country" %}</label>
+                <label>{% trans "Country" %}</label>
                 <div class="calc-custom-select" id="iva-country-wrap" data-value="IT">
-                    <button type="button" id="iva-country-trigger" class="calc-select-trigger">{% trans "Italy (IT)" %}</button>
+                    <button type="button" class="calc-select-trigger">{% trans "Italy (IT)" %}</button>
                     <ul class="calc-select-menu" id="iva-country-menu"></ul>
                 </div>
             </div>
             <div class="calc-group">
-                <label for="iva-rate-trigger">{% trans "VAT rate (%)" %}</label>
+                <label>{% trans "VAT rate (%)" %}</label>
                 <div class="calc-custom-select" id="iva-rate-wrap" data-value="22">
-                    <button type="button" id="iva-rate-trigger" class="calc-select-trigger">{% trans "22% (standard)" %}</button>
+                    <button type="button" class="calc-select-trigger">{% trans "22% (standard)" %}</button>
                     <ul class="calc-select-menu" id="iva-rate-menu"></ul>
                 </div>
             </div>
             <div class="calc-group">
-                <label for="iva-amount">{% trans "Amount (€)" %}</label>
+                <label>{% trans "Amount (€)" %}</label>
                 <input type="number" id="iva-amount" placeholder='{% trans "e.g. 100" %}' min="0" step="0.01" />
             </div>
             <div id="result-iva" class="calc-result"></div>
@@ -113,13 +113,13 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima indicativa: inserisci la retribuzione annua lorda.{% else %}Indicative estimate. Enter gross annual salary.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="salary-ral">{% trans "Gross annual salary (€)" %}</label>
+                    <label>{% trans "Gross annual salary (€)" %}</label>
                     <input type="number" id="salary-ral" placeholder='{% trans "e.g. 30000" %}' min="0" step="100" />
                 </div>
                 <div class="calc-group">
-                    <label for="salary-months-trigger">{% trans "Payments per year" %}</label>
+                    <label>{% trans "Payments per year" %}</label>
                     <div class="calc-custom-select" id="salary-months-wrap" data-value="12">
-                        <button type="button" id="salary-months-trigger" class="calc-select-trigger">12</button>
+                        <button type="button" class="calc-select-trigger">12</button>
                         <ul class="calc-select-menu">
                             <li data-value="12" class="selected">12</li>
                             <li data-value="13">13</li>
@@ -140,21 +140,21 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Confronta interessi semplici e composti nel tempo.{% else %}Compare simple and compound interest over time.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="int-principal">{% trans "Principal (€)" %}</label>
+                    <label>{% trans "Principal (€)" %}</label>
                     <input type="number" id="int-principal" placeholder='{% trans "e.g. 10000" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="int-rate">{% trans "Annual rate (%)" %}</label>
+                    <label>{% trans "Annual rate (%)" %}</label>
                     <input type="number" id="int-rate" placeholder='{% trans "e.g. 5" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="int-years">{% trans "Time (years)" %}</label>
+                    <label>{% trans "Time (years)" %}</label>
                     <input type="number" id="int-years" placeholder='{% trans "e.g. 3" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="int-type-trigger">{% trans "Type" %}</label>
+                    <label>{% trans "Type" %}</label>
                     <div class="calc-custom-select" id="int-type-wrap" data-value="simple">
-                        <button type="button" id="int-type-trigger" class="calc-select-trigger">{% trans "Simple" %}</button>
+                        <button type="button" class="calc-select-trigger">{% trans "Simple" %}</button>
                         <ul class="calc-select-menu">
                             <li data-value="simple" class="selected">{% trans "Simple" %}</li>
                             <li data-value="compound">{% trans "Compound" %}</li>
@@ -173,7 +173,7 @@
             <div class="calc-currency-wrap">
                 <div class="calc-row calc-currency-row">
                     <div class="calc-group">
-                        <label for="curr-amount">{% trans "Amount" %}</label>
+                        <label>{% trans "Amount" %}</label>
                         <div class="calc-currency-input-wrap">
                             <input type="number" id="curr-amount" placeholder='{% trans "e.g. 100" %}' min="0" step="0.01" autocomplete="off" />
                             <div class="calc-custom-select" id="curr-from-wrap" data-value="EUR">
@@ -189,9 +189,9 @@
                         </div>
                     </div>
                     <div class="calc-group calc-group-curr-to">
-                        <label for="curr-to-trigger">{% trans "Convert to" %}</label>
+                        <label>{% trans "Convert to" %}</label>
                         <div class="calc-custom-select" id="curr-to-wrap" data-value="USD">
-                            <button type="button" id="curr-to-trigger" class="calc-select-trigger">{% trans "USD" %}</button>
+                            <button type="button" class="calc-select-trigger">{% trans "USD" %}</button>
                             <ul class="calc-select-menu">
                                 <li data-value="EUR">{% trans "EUR" %}</li>
                                 <li data-value="USD" class="selected">{% trans "USD" %}</li>
@@ -215,15 +215,15 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima rata mensile e costo complessivo del finanziamento.{% else %}Estimate monthly payment and total loan cost.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="loan-principal">{% trans "Principal (€)" %}</label>
+                    <label>{% trans "Principal (€)" %}</label>
                     <input type="number" id="loan-principal" placeholder='{% trans "e.g. 200000" %}' min="0" step="100" />
                 </div>
                 <div class="calc-group">
-                    <label for="loan-rate">{% trans "Annual rate (%)" %}</label>
+                    <label>{% trans "Annual rate (%)" %}</label>
                     <input type="number" id="loan-rate" placeholder='{% trans "e.g. 3.5" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="loan-years">{% trans "Years" %}</label>
+                    <label>{% trans "Years" %}</label>
                     <input type="number" id="loan-years" placeholder="{% if CURRENT_LANGUAGE|slice:':2' == 'it' %}es. 2{% else %}e.g. 25{% endif %}" min="1" max="50" step="1" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
@@ -239,11 +239,11 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Calcola valore dello sconto e prezzo finale di vendita.{% else %}Calculate discount value and final sale price.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="disc-price">{% trans "Original price (€)" %}</label>
+                    <label>{% trans "Original price (€)" %}</label>
                     <input type="number" id="disc-price" placeholder='{% trans "e.g. 50" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="disc-pct">{% trans "Discount (%)" %}</label>
+                    <label>{% trans "Discount (%)" %}</label>
                     <input type="number" id="disc-pct" placeholder='{% trans "e.g. 20" %}' min="0" max="100" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
@@ -259,11 +259,11 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Stima il prezzo di vendita partendo da costo e margine obiettivo.{% else %}Estimate selling price from cost and target margin.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="margin-cost">{% trans "Cost (€)" %}</label>
+                    <label>{% trans "Cost (€)" %}</label>
                     <input type="number" id="margin-cost" placeholder='{% trans "e.g. 80" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="margin-pct">{% trans "Margin (%)" %}</label>
+                    <label>{% trans "Margin (%)" %}</label>
                     <input type="number" id="margin-pct" placeholder='{% trans "e.g. 25" %}' min="0" max="100" step="0.01" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->
@@ -279,15 +279,15 @@
             <p class="calc-subdesc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Dividi il conto tra piu persone con mancia opzionale.{% else %}Split a bill among people with optional tip.{% endif %}</p>
             <div class="calc-row">
                 <div class="calc-group">
-                    <label for="split-total">{% trans "Total amount (€)" %}</label>
+                    <label>{% trans "Total amount (€)" %}</label>
                     <input type="number" id="split-total" placeholder='{% trans "e.g. 120" %}' min="0" step="0.01" />
                 </div>
                 <div class="calc-group">
-                    <label for="split-people">{% trans "Number of people" %}</label>
+                    <label>{% trans "Number of people" %}</label>
                     <input type="number" id="split-people" placeholder='{% trans "e.g. 4" %}' min="1" step="1" />
                 </div>
                 <div class="calc-group">
-                    <label for="split-tip">{% trans "Tip (%)" %}</label>
+                    <label>{% trans "Tip (%)" %}</label>
                     <input type="number" id="split-tip" placeholder='{% trans "e.g. 10" %}' min="0" step="1" value="0" />
                 </div>
                 <!-- Mobile: errore/risultato sopra al bottone; Desktop: nascosto -->

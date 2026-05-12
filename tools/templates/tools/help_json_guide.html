@@ -5,7 +5,30 @@
 {% block title %}{% trans "JSON guide" %}{% endblock %}
 {% block body_class %}text-tool help-page help-json-guide{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
+<style>
+@media (max-width: 480px) {
+    body.help-json-guide.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.help-json-guide.help-page .site-main .container h1,
+    body.help-json-guide.help-page .site-main .container .tool-desc,
+    body.help-json-guide.help-page .site-main .container .help-section,
+    body.help-json-guide.help-page .site-main .container .help-section h2,
+    body.help-json-guide.help-page .site-main .container .help-section p,
+    body.help-json-guide.help-page .site-main .container .help-section ul,
+    body.help-json-guide.help-page .site-main .container .help-section li,
+    body.help-json-guide.help-page .site-main .container .help-section pre,
+    body.help-json-guide.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}

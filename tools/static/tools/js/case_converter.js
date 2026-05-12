@@ -55,6 +55,21 @@
     btnLower.addEventListener('click', doLower);
     btnTitle.addEventListener('click', doTitle);
 
+    if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
+        [btnUpper, btnLower, btnTitle, btnCopy].forEach(function (btn) {
+            if (!btn) return;
+            function clearFocus() {
+                requestAnimationFrame(function () {
+                    btn.blur();
+                    setTimeout(function () { btn.blur(); }, 0);
+                });
+            }
+            btn.addEventListener('touchend', clearFocus, { passive: true });
+            btn.addEventListener('pointerup', clearFocus);
+            btn.addEventListener('click', clearFocus);
+        });
+    }
+
     btnCopy.addEventListener('click', function () {
         var text = resultEl.textContent;
         if (!text || resultEl.classList.contains('hidden')) return;

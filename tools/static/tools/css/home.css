@@ -241,24 +241,20 @@ body.dark-mode .login-required-btn--close:hover {
     color: #e84c4c !important;
     border: 2px solid #e84c4c !important;
 }
-.homepage .shortcuts-btn:hover {
-    background: #e84c4c !important;
-    color: white !important;
-    border-color: #b01830 !important;
-}
-.shortcuts-grid .shortcuts-btn {
-    display: flex !important;
-    width: 100% !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-}
 
-.shortcuts-btn:hover {
-    background: #e84c4c;
-    color: white;
-    border-color: #b01830;
-    transform: scale(1.05);
+/* Hover scorciatoie solo con puntatore fine (evita stato evidenziato dopo il tap su touch) */
+@media (hover: hover) and (pointer: fine) {
+    .homepage .shortcuts-btn:hover {
+        background: #e84c4c !important;
+        color: white !important;
+        border-color: #b01830 !important;
+    }
+    .shortcuts-btn:hover {
+        background: #e84c4c;
+        color: white;
+        border-color: #b01830;
+        transform: scale(1.05);
+    }
 }
 
 .tool-btn-wrap {
@@ -411,9 +407,11 @@ body.dark-mode .login-required-btn--close:hover {
     transition: transform 0.2s, background 0.2s;
 }
 
-.homepage .tool-btn:hover {
-    background: #0056b3;
-    transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+    .homepage .tool-btn:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+    }
 }
 
 /* Tablet & Mobile: categorie come bottoni accordion, scritte blu scuro */
@@ -432,6 +430,7 @@ body.dark-mode .login-required-btn--close:hover {
     }
     .shortcuts-btn,
     .homepage .shortcuts-grid .shortcuts-btn {
+        display: flex !important;
         width: 100% !important;
         min-height: 52px !important;
         height: auto !important;
@@ -442,11 +441,13 @@ body.dark-mode .login-required-btn--close:hover {
         color: #e84c4c;
         border: 2px solid #e84c4c;
         border-radius: 12px !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        text-align: left !important;
     }
-    .shortcuts-btn:hover {
-        background: #e84c4c;
-        color: white;
-        border-color: #b01830;
+    .homepage .shortcuts-btn {
+        justify-content: flex-start !important;
+        text-align: left !important;
     }
     .homepage .container {
         margin: 16px;
@@ -497,10 +498,6 @@ body.dark-mode .login-required-btn--close:hover {
     .category-btn .category-btn-chevron {
         position: absolute;
         right: 16px;
-    }
-    .category-btn:hover {
-        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%);
-        border-color: #002d5c;
     }
     .category-btn-chevron {
         display: inline-block;
@@ -570,13 +567,6 @@ body.dark-mode .login-required-btn--close:hover {
         border-radius: 0;
         transform: translateY(-2px);
     }
-    .homepage .tool-btn:hover {
-        background: rgba(0, 63, 127, 0.08);
-        transform: none;
-    }
-    .homepage .tool-section .tool-grid .tool-btn:hover {
-        transform: translateY(-2px);
-    }
     .homepage .tool-btn-wrap .tool-fav {
         position: static;
         margin-right: 12px;
@@ -588,21 +578,79 @@ body.dark-mode .login-required-btn--close:hover {
         background: transparent;
         font-size: 1rem;
     }
-    .homepage .tool-btn-wrap .tool-fav:hover {
-        background: rgba(0, 63, 127, 0.08);
-    }
     .homepage .tool-btn-wrap .tool-fav.is-favorite {
         color: #dc3545;
     }
+
+    /* Touch: niente alone grigio iOS; focus visibile solo da tastiera */
+    .homepage .category-btn,
+    .homepage .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn,
+    .homepage .tool-fav {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .homepage .category-btn:focus:not(:focus-visible),
+    .homepage .shortcuts-btn:focus:not(:focus-visible),
+    .homepage .shortcuts-grid .shortcuts-btn:focus:not(:focus-visible),
+    .homepage .tool-fav:focus:not(:focus-visible) {
+        outline: none;
+    }
+    .homepage .category-btn:focus-visible,
+    .homepage .shortcuts-btn:focus-visible,
+    .homepage .shortcuts-grid .shortcuts-btn:focus-visible,
+    .homepage .tool-fav:focus-visible {
+        outline: 2px solid #003f7f;
+        outline-offset: 2px;
+    }
+    body.dark-mode .homepage .category-btn:focus-visible,
+    body.dark-mode .homepage .shortcuts-btn:focus-visible,
+    body.dark-mode .homepage .shortcuts-grid .shortcuts-btn:focus-visible,
+    body.dark-mode .homepage .tool-fav:focus-visible {
+        outline-color: #7eb8ff;
+    }
+}
+
+@media (max-width: 768px) and (hover: hover) and (pointer: fine) {
+    .category-btn:hover {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%);
+        border-color: #002d5c;
+    }
+    .homepage .tool-btn:hover {
+        background: rgba(0, 63, 127, 0.08);
+        transform: none;
+    }
+    .homepage .tool-section .tool-grid .tool-btn:hover {
+        transform: translateY(-2px);
+    }
+    .homepage .tool-btn-wrap .tool-fav:hover {
+        background: rgba(0, 63, 127, 0.08);
+    }
     .homepage .tool-btn-wrap .tool-fav.is-favorite:hover {
         color: #ff4d5a;
+    }
+    body.dark-mode .shortcuts-btn:hover,
+    body.dark-mode .homepage .shortcuts-grid .shortcuts-btn:hover {
+        background: #e84c4c;
+        color: white;
+        border-color: #b01830;
+    }
+    body.dark-mode .category-btn:hover {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%);
+        border-color: #003f7f;
+    }
+    body.dark-mode .homepage .tool-btn:hover {
+        background: rgba(0, 63, 127, 0.2);
+    }
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 }
 
 @media (max-width: 480px) {
     .homepage .container {
-        margin: 8px !important;
-        padding: 12px !important;
+        margin: 8px 6px !important;
+        padding: 16px 8px !important;
         background: transparent !important;
         box-shadow: none !important;
         border-radius: 0 !important;
@@ -635,6 +683,7 @@ body.dark-mode .login-required-btn--close:hover {
         margin-left: auto;
         margin-right: auto;
         display: block;
+        max-width: 100%;
     }
     .homepage .container.has-shortcuts .search-wrap {
         padding-bottom: 40px;
@@ -654,8 +703,24 @@ body.dark-mode .login-required-btn--close:hover {
 }
 
 @media (max-width: 480px) {
+    .homepage .home-categories-wrap,
+    .homepage .tool-section,
+    .homepage .category-btn,
+    .homepage .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn {
+        width: 100%;
+        max-width: 356px;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+    }
+
     .category-btn {
-        font-size: 0.95rem;
+        min-height: 52px;
+        padding: 12px 20px;
+        padding-right: 44px;
+        font-size: 1.05rem;
+        box-sizing: border-box;
     }
     .homepage .tool-section .tool-grid .tool-btn {
         font-size: 0.95rem !important;
@@ -664,7 +729,46 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .shortcuts-btn,
     .homepage .shortcuts-grid .shortcuts-btn,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
-        font-size: 0.95rem !important;
+        min-height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        box-sizing: border-box !important;
+    }
+
+    /* base.css centra i bottoni a ≤480px: solo sulla home, testo DENTRO i bottoni a sinistra + tap come Word Counter */
+    body.homepage .site-main .container .category-btn,
+    body.homepage .site-main .container .shortcuts-btn,
+    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn {
+        justify-content: flex-start !important;
+        text-align: left !important;
+        transition: transform 0.05s ease-out, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+    }
+    body.homepage .site-main .container .category-btn .category-btn-label,
+    body.homepage .site-main .container .category-btn .category-btn-label--desktop,
+    body.homepage .site-main .container .category-btn .category-btn-label--mobile {
+        flex: 1 1 auto;
+        min-width: 0;
+        text-align: left !important;
+    }
+    body.homepage .site-main .container .category-btn:focus,
+    body.homepage .site-main .container .shortcuts-btn:focus,
+    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus {
+        transform: scale(1) !important;
+    }
+    body.homepage .site-main .container .category-btn:active,
+    body.homepage .site-main .container .shortcuts-btn:active,
+    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active {
+        transform: scale(1.03) !important;
+    }
+    body.dark-mode.homepage .site-main .container .category-btn:focus,
+    body.dark-mode.homepage .site-main .container .shortcuts-btn:focus,
+    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus {
+        transform: scale(1) !important;
+    }
+    body.dark-mode.homepage .site-main .container .category-btn:active,
+    body.dark-mode.homepage .site-main .container .shortcuts-btn:active,
+    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active {
+        transform: scale(1.03) !important;
     }
 }
 
@@ -701,11 +805,6 @@ body.dark-mode .login-required-btn--close:hover {
         color: #e84c4c;
         border-color: rgba(232, 76, 76, 0.5);
     }
-    body.dark-mode .shortcuts-btn:hover {
-        background: #e84c4c;
-        color: white;
-        border-color: #b01830;
-    }
     body.dark-mode .category-btn {
         color: var(--text-secondary);
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
@@ -713,10 +812,6 @@ body.dark-mode .login-required-btn--close:hover {
     }
     body.dark-mode .category-btn .category-btn-chevron {
         color: var(--text-secondary);
-    }
-    body.dark-mode .category-btn:hover {
-        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%);
-        border-color: #003f7f;
     }
     body.dark-mode .tool-section .tool-grid {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
@@ -740,14 +835,8 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .homepage .tool-section .tool-grid {
         color: var(--text-secondary);
     }
-    body.dark-mode .homepage .tool-btn:hover {
-        background: rgba(0, 63, 127, 0.2);
-    }
     body.dark-mode .homepage .tool-btn-wrap .tool-fav {
         color: var(--text-secondary);
-    }
-    body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover {
-        background: rgba(255, 255, 255, 0.1);
     }
     body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite {
         color: #dc3545;

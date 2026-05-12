@@ -713,6 +713,25 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.help-password-gen.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
     }
+    /* Tutte le pagine help: contenuto a 338px e testo allineato a sinistra */
+    body.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    body.help-page .site-main .container h1,
+    body.help-page .site-main .container .tool-desc,
+    body.help-page .site-main .container .help-section,
+    body.help-page .site-main .container .help-section h2,
+    body.help-page .site-main .container .help-section p,
+    body.help-page .site-main .container .help-section ul,
+    body.help-page .site-main .container .help-section li,
+    body.help-page .site-main .container .help-section pre,
+    body.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
     /* JSON Formatter mobile: container stessa larghezza textarea Word Counter */
     body.json-formatter .site-main .container {
         margin: 8px 6px 24px 6px !important;
@@ -785,8 +804,17 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.json-formatter .site-main .container .json-result.error {
         margin-bottom: 12px !important;
     }
+    body.json-formatter .site-main .container .form-group label {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
     body.json-formatter .site-main .container .form-group textarea,
     body.json-formatter .site-main .container .form-group textarea:focus {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: 280px !important;
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
         color: #1a1a2e !important;
@@ -794,7 +822,8 @@ body.text-tool.bio-gen .result-area .caption-pick {
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
-        padding: 12px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
     }
     body.json-formatter .site-main .container .form-group textarea::placeholder {
         font-family: Arial, sans-serif !important;
@@ -883,12 +912,87 @@ body.text-tool.bio-gen .result-area .caption-pick {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border: 2px solid var(--text-secondary) !important;
     }
+    /* Remove Spaces mobile: Copy come Markdown Preview (tap scale + niente evidenziazione persistente) */
+    body.remove-spaces .site-main .container .button-group #btn-copy {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
+        outline: 2px solid #c00;
+        outline-offset: 2px;
+        box-shadow: none !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
+        outline-color: #e88;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied,
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: min(100%, var(--mobile-btn-width, 352px)) !important;
+        max-width: var(--mobile-btn-width, 352px) !important;
+        min-height: var(--mobile-btn-height, 52px) !important;
+        height: var(--mobile-btn-height, 52px) !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy:active,
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied:active,
+    body.remove-spaces .site-main .container .button-group #btn-copy:focus:active,
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied:focus:active {
+        transform: scale(1.03) !important;
+    }
     body.remove-spaces .site-main .container .remove-spaces-error:not(.hidden) {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
         text-align: center !important;
         margin-bottom: 12px !important;
+        margin-top: 0 !important;
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        font-weight: 600 !important;
+        white-space: normal !important;
+        word-break: normal !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .remove-spaces-error:not(.hidden) {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
     }
     body.remove-spaces .site-main .container .result-area:not(.hidden) {
         margin-top: 16px !important;
@@ -904,17 +1008,26 @@ body.text-tool.bio-gen .result-area .caption-pick {
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         background: rgba(240, 242, 245, 0.95) !important;
     }
-    body.remove-spaces .site-main .container .button-group button.copied {
+    body.remove-spaces .site-main .container .button-group button.copied:not(#btn-copy) {
         background: #fff5f5 !important;
         border: 2px solid #fcc !important;
         color: #c00 !important;
     }
-    body.dark-mode.remove-spaces .site-main .container .button-group button.copied {
+    body.dark-mode.remove-spaces .site-main .container .button-group button.copied:not(#btn-copy) {
         background: #fff5f5 !important;
         border: 2px solid #fcc !important;
         color: #c00 !important;
     }
     /* Markdown Preview: stessa larghezza e colori di Word Counter */
+    /* Mobile: “Anteprima” (.preview-title) = stesso colore della label “Markdown” (in dark la label è #b0c4de dal theme) */
+    body.markdown-preview .site-main .container .preview-panel label,
+    body.markdown-preview .site-main .container .preview-panel .preview-title {
+        color: #333 !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-panel label,
+    body.dark-mode.markdown-preview .site-main .container .preview-panel .preview-title {
+        color: #b0c4de !important;
+    }
     body.markdown-preview .site-main .container {
         margin: 8px 6px 24px 6px !important;
         padding: 16px 8px 24px 8px !important;
@@ -990,5 +1103,63 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.dark-mode.markdown-preview .preview-output pre,
     body.dark-mode.markdown-preview .preview-output code {
         background: rgba(220, 224, 230, 0.5) !important;
+    }
+
+    /* Copia: stesso ordine di Word Counter — :focus prima, :active dopo (altrimenti Safari con focus+active vince :focus e non scala). */
+    body.markdown-preview .site-main .container .preview-actions #btn-copy {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        appearance: none;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:focus-visible {
+        outline: 2px solid #c00;
+        outline-offset: 2px;
+        box-shadow: none !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:focus-visible {
+        outline-color: #e88;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:hover {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: min(100%, var(--mobile-btn-width, 352px)) !important;
+        max-width: var(--mobile-btn-width, 352px) !important;
+        min-height: var(--mobile-btn-height, 52px) !important;
+        height: var(--mobile-btn-height, 52px) !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy.copied,
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:focus:active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:focus:active {
+        transform: scale(1.03) !important;
     }
 }

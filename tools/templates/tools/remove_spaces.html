@@ -4,7 +4,7 @@
 {% block title %}{% trans "Remove Spaces" %}{% endblock %}
 {% block body_class %}text-tool remove-spaces{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426i">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428c">
 <style>
 .remove-spaces .text-tool-row {
     margin-bottom: 12px; /* 12px sopra l'errore */
@@ -17,6 +17,11 @@
 .remove-spaces .button-group button { min-width: 140px; }
 .remove-spaces .button-group .btn-copy-right {
     margin-left: auto;
+}
+@media (max-width: 480px) {
+    body.remove-spaces .site-main .container .button-group {
+        gap: 12px !important;
+    }
 }
 /* Stack: default = bottoni sopra, risultato sotto (testo corto). Lungo = column-reverse → risultato sopra i bottoni. */
 .remove-spaces .remove-spaces-outcome-stack {
@@ -73,6 +78,7 @@
             </div>
             <div class="button-group">
                 <button type="button" id="btn-transform">{% trans "Transform" %}</button>
+                <button type="button" id="btn-undo" hidden>{% trans "Undo" %}</button>
                 <button type="button" id="btn-copy" class="btn-copy-right">{% trans "Copy" %}</button>
             </div>
         </div>
@@ -84,5 +90,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/remove_spaces.js' %}?v=20260426e"></script>
+<script src="{% static 'tools/js/remove_spaces.js' %}?v=20260428e"></script>
 {% endblock %}

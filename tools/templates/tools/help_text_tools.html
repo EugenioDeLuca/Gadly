@@ -5,7 +5,29 @@
 {% block title %}{% trans "Text tools tips" %}{% endblock %}
 {% block body_class %}word-counter help-page{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=22">
+<style>
+@media (max-width: 480px) {
+    body.word-counter.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.word-counter.help-page .site-main .container h1,
+    body.word-counter.help-page .site-main .container .tool-desc,
+    body.word-counter.help-page .site-main .container .help-section,
+    body.word-counter.help-page .site-main .container .help-section h2,
+    body.word-counter.help-page .site-main .container .help-section p,
+    body.word-counter.help-page .site-main .container .help-section ul,
+    body.word-counter.help-page .site-main .container .help-section li,
+    body.word-counter.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -26,7 +48,7 @@
         </ul>
     </div>
 
-    <div class="home-link-wrap" style="text-align: center;">
+    <div class="home-link-wrap">
         <a href="{% url 'word_counter' %}" class="home-link">{% trans "Back to Word Counter" %}</a>
     </div>
 </div>

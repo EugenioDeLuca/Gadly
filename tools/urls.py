@@ -80,7 +80,6 @@ urlpatterns = [
     path('help/cover-letter/', views.help_cover_letter, name='help_cover_letter'),
     path('help/application-email/', views.help_application_email, name='help_application_email'),
     path('help/interview-simulator/', views.help_interview_simulator, name='help_interview_simulator'),
-    path('help/cron-explainer/', views.help_cron_explainer, name='help_cron_explainer'),
     path('api/interview-simulator-ai-reply/', views.interview_simulator_ai_reply, name='interview_simulator_ai_reply'),
 ]
 

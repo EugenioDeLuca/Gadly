@@ -19,7 +19,7 @@
 .hash-generator .text-tool-select-menu li:hover { background: #e8f4fd; }
 .hash-generator .text-tool-select-menu li.selected { background: #d0e8f9; font-weight: 600; }
 .hash-generator .text-tool-select.open .text-tool-select-menu li.selected { display: none; }
-.hash-generator .result-area { width: 100%; box-sizing: border-box; margin-top: 12px; margin-bottom: 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; background: #fff; border: 2px solid #d0e8f9; white-space: pre-wrap; word-break: break-word; font-size: 1rem; line-height: 1.5; font-family: inherit; font-weight: 600; color: #003f7f; }
+.hash-generator .result-area { width: 100%; box-sizing: border-box; margin-top: 12px; margin-bottom: 0; padding: 20px; min-height: 60px; border-radius: 12px; background: #f8fcff; border: 2px dashed #b8d4f0; white-space: pre-wrap; word-break: break-word; font-size: 0.9rem; line-height: 1.5; font-family: monospace; }
 .hash-generator .result-area.hidden { display: none; }
 .hash-generator .result-area.error { margin-bottom: 12px; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
 .hash-generator .button-group { margin-top: 12px; }
@@ -41,7 +41,7 @@ body.dark-mode .hash-generator .result-area.error { background: rgba(220,80,80,0
     <h1>{% trans "Hash Generator" %}</h1>
     <p class="tool-desc">{% trans "Generate MD5, SHA-1, SHA-256, or SHA-512 hash from text." %}</p>
     <div class="form-group">
-        <label for="hash-algo-trigger">{% trans "Algorithm" %}</label>
+        <label for="hash-algo-wrap">{% trans "Algorithm" %}</label>
         <div class="text-tool-select" id="hash-algo-wrap" data-value="SHA-256">
             <button type="button" class="text-tool-select-trigger" id="hash-algo-trigger">{% trans "SHA-256" %}</button>
             <ul class="text-tool-select-menu">

@@ -732,6 +732,15 @@ def word_counter(request):
             count_words = len(text.split())
         elif 'count_chars_btn' in request.POST:
             count_chars = len(text)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(
+                {
+                    'ok': True,
+                    'count_words': count_words,
+                    'count_chars': count_chars,
+                    'text': text,
+                }
+            )
 
     return render(request, 'tools/word_counter.html', {
         'count_words': count_words,

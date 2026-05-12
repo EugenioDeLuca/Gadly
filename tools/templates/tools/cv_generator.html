@@ -849,6 +849,136 @@ body.dark-mode.warm-tone .cv-preview-dock {
   color: #28a745;
 }
 @media (max-width: 768px) {
+  body.cv-generator .site-main .container #cv-target-role-wrap,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap {
+    line-height: normal !important;
+    z-index: 4000 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger {
+    line-height: 1.4 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    position: absolute !important;
+    z-index: 5000 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    border: 2px solid #003f7f !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open {
+    z-index: 6000 !important;
+    isolation: isolate !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li {
+    line-height: 1.35 !important;
+    min-height: 40px !important;
+    padding: 10px 12px !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover {
+    background: rgba(0, 63, 127, 0.08) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    border: 2px solid var(--text-secondary) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    isolation: isolate !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li {
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    color: var(--text-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover {
+    background: rgba(0, 63, 127, 0.2) !important;
+  }
+
+  /* Mobile: keep role arrow vertically centered */
+  body.cv-generator .site-main .container #cv-target-role-wrap .role-arrow {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 8px !important;
+    height: 26px !important;
+    width: 26px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Keep text color stable on blur for these fields */
+  body.cv-generator .site-main .container #cv-certifications,
+  body.cv-generator .site-main .container #cv-certifications:focus,
+  body.cv-generator .site-main .container #cv-certifications:not(:focus),
+  body.cv-generator .site-main .container #cv-projects,
+  body.cv-generator .site-main .container #cv-projects:focus,
+  body.cv-generator .site-main .container #cv-projects:not(:focus),
+  body.cv-generator .site-main .container #cv-achievements,
+  body.cv-generator .site-main .container #cv-achievements:focus,
+  body.cv-generator .site-main .container #cv-achievements:not(:focus) {
+    color: #0f2f55 !important;
+    -webkit-text-fill-color: #0f2f55 !important;
+    caret-color: #0f2f55 !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-certifications,
+  body.dark-mode.cv-generator .site-main .container #cv-certifications:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-certifications:not(:focus),
+  body.dark-mode.cv-generator .site-main .container #cv-projects,
+  body.dark-mode.cv-generator .site-main .container #cv-projects:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-projects:not(:focus),
+  body.dark-mode.cv-generator .site-main .container #cv-achievements,
+  body.dark-mode.cv-generator .site-main .container #cv-achievements:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-achievements:not(:focus) {
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    caret-color: #0d0d1a !important;
+    opacity: 1 !important;
+  }
+
+  body.cv-generator .site-main .container #cv-download.hidden {
+    display: none !important;
+  }
+
+  /* Mobile: keep error box spaced by 12px and readable */
+  body.cv-generator .site-main .container #cv-result.result-area.error,
+  body.cv-generator .site-main .container .result-area.error {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    min-height: 48px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
   .cv-generator .text-tool-grid { grid-template-columns: 1fr; }
   .cv-generator .repeat-grid { grid-template-columns: 1fr; }
   .cv-generator .button-group {
@@ -863,6 +993,1355 @@ body.dark-mode.warm-tone .cv-preview-dock {
   .cv-generator .export-controls {
     width: 100%;
     justify-content: flex-start;
+  }
+}
+@media (max-width: 480px) {
+  /* Hard kill iOS/Android blue highlight on tap/focus (CV mobile only) */
+  body.cv-generator .site-main .container,
+  body.cv-generator .site-main .container * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body.cv-generator .site-main .container *:focus,
+  body.cv-generator .site-main .container *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  body.cv-generator .site-main .container {
+    margin: 8px auto 24px auto !important;
+    padding: 16px 0 24px 0 !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    box-sizing: border-box !important;
+    overflow-x: visible !important;
+  }
+  body.cv-generator .site-main .container .text-tool-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.cv-generator .site-main .container .text-tool-grid > * {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.cv-generator .site-main .container .form-group,
+  body.cv-generator .site-main .container .panel-card,
+  body.cv-generator .site-main .container .file-upload-area,
+  body.cv-generator .site-main .container #cv-result,
+  body.cv-generator .site-main .container .button-group,
+  body.cv-generator .site-main .container .export-controls,
+  body.cv-generator .site-main .container .format-toggle-group,
+  body.cv-generator .site-main .container .panel-actions,
+  body.cv-generator .site-main .container .repeat-list,
+  body.cv-generator .site-main .container .repeat-item,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline {
+    width: 338px !important;
+    max-width: 338px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Mobile: rimuove i contenitori esterni per avere contenuto pieno a 338px */
+  body.cv-generator .site-main .container .panel-card,
+  body.cv-generator .site-main .container .file-upload-area,
+  body.cv-generator .site-main .container .repeat-item,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-group {
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-row,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.cv-generator .site-main .container .panel-title {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  /* Niente restringimenti interni: contenuto pieno a 338px */
+  body.cv-generator .site-main .container .form-group,
+  body.cv-generator .site-main .container .panel-card,
+  body.cv-generator .site-main .container .file-upload-area,
+  body.cv-generator .site-main .container .repeat-item,
+  body.cv-generator .site-main .container #cv-result,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-group,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline #cv-quality,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline #cv-preview {
+    width: 338px !important;
+    min-width: 338px !important;
+    max-width: 338px !important;
+    box-sizing: border-box !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: visible !important;
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline {
+    width: 338px !important;
+    min-width: 338px !important;
+    max-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    overflow: visible !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-row {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.cv-generator .site-main .container .form-group *,
+  body.cv-generator .site-main .container .panel-card * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-generator .site-main .container input[type="text"],
+  body.cv-generator .site-main .container input[type="email"],
+  body.cv-generator .site-main .container input[type="number"],
+  body.cv-generator .site-main .container textarea,
+  body.cv-generator .site-main .container select,
+  body.cv-generator .site-main .container .text-tool-select,
+  body.cv-generator .site-main .container .text-tool-select .text-tool-select-trigger {
+    width: 338px !important;
+    max-width: 338px !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Mobile: campi scrittura come Username Generator (grigio + stesso font/colore) */
+  body.cv-generator .site-main .container textarea,
+  body.cv-generator .site-main .container textarea:focus,
+  body.cv-generator .site-main .container textarea:not(:focus),
+  body.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]),
+  body.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]):focus,
+  body.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]):not(:focus),
+  body.cv-generator .site-main .container .text-tool-select .text-tool-select-trigger,
+  body.cv-generator .site-main .container .text-tool-select .text-tool-select-trigger:focus {
+    background: #f8f9fa !important;
+    border: 1px solid #ddd !important;
+    color: #0f2f55 !important;
+    -webkit-text-fill-color: #0f2f55 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    caret-color: #0f2f55 !important;
+    opacity: 1 !important;
+  }
+  body.cv-generator .site-main .container textarea::placeholder,
+  body.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: #444 !important;
+    font-family: Arial, sans-serif !important;
+  }
+  body.dark-mode.cv-generator .site-main .container textarea,
+  body.dark-mode.cv-generator .site-main .container textarea:focus,
+  body.dark-mode.cv-generator .site-main .container textarea:not(:focus),
+  body.dark-mode.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]),
+  body.dark-mode.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]):focus,
+  body.dark-mode.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"]):not(:focus),
+  body.dark-mode.cv-generator .site-main .container .text-tool-select .text-tool-select-trigger,
+  body.dark-mode.cv-generator .site-main .container .text-tool-select .text-tool-select-trigger:focus {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    caret-color: #0d0d1a !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container textarea::placeholder,
+  body.dark-mode.cv-generator .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: #333 !important;
+  }
+  /* Mobile: nessun bottone blu persistente dopo tap/focus */
+  body.cv-generator .site-main .container button,
+  body.cv-generator .site-main .container .choose-file-btn,
+  body.cv-generator .site-main .container .format-toggle,
+  body.cv-generator .site-main .container .role-arrow,
+  body.cv-generator .site-main .container .text-tool-select-menu li,
+  body.cv-generator .site-main .container button:hover,
+  body.cv-generator .site-main .container .choose-file-btn:hover,
+  body.cv-generator .site-main .container .format-toggle:hover,
+  body.cv-generator .site-main .container .text-tool-select-menu li:hover,
+  body.cv-generator .site-main .container button:focus,
+  body.cv-generator .site-main .container .choose-file-btn:focus,
+  body.cv-generator .site-main .container .format-toggle:focus,
+  body.cv-generator .site-main .container .role-arrow:focus,
+  body.cv-generator .site-main .container .text-tool-select-menu li:focus,
+  body.cv-generator .site-main .container button:focus-visible,
+  body.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.cv-generator .site-main .container .role-arrow:focus-visible,
+  body.cv-generator .site-main .container .text-tool-select-menu li:focus-visible,
+  body.cv-generator .site-main .container button:active {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    touch-action: manipulation !important;
+    transform: scale(1) !important;
+    transition: transform 0.05s ease-out !important;
+  }
+  body.cv-generator .site-main .container button:active {
+    transform: scale(1.03) !important;
+  }
+  body.cv-generator .site-main .container .tap-active {
+    transform: scale(1.03) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container button,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn,
+  body.dark-mode.cv-generator .site-main .container .format-toggle,
+  body.dark-mode.cv-generator .site-main .container .role-arrow,
+  body.dark-mode.cv-generator .site-main .container .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container button:hover,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:hover,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:hover,
+  body.dark-mode.cv-generator .site-main .container .text-tool-select-menu li:hover,
+  body.dark-mode.cv-generator .site-main .container button:focus,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:focus,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:focus,
+  body.dark-mode.cv-generator .site-main .container .role-arrow:focus,
+  body.dark-mode.cv-generator .site-main .container .text-tool-select-menu li:focus,
+  body.dark-mode.cv-generator .site-main .container button:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .role-arrow:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .text-tool-select-menu li:focus-visible,
+  body.dark-mode.cv-generator .site-main .container button:active {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container button:active {
+    transform: scale(1.03) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container .tap-active {
+    transform: scale(1.03) !important;
+  }
+  /* CV mobile: fixed colors across states (no tap color change) */
+  body.cv-generator .site-main .container button,
+  body.cv-generator .site-main .container .choose-file-btn,
+  body.cv-generator .site-main .container .format-toggle,
+  body.cv-generator .site-main .container .panel-actions button,
+  body.cv-generator .site-main .container .repeat-remove-btn,
+  body.cv-generator .site-main .container #cv-generate,
+  body.cv-generator .site-main .container [data-level],
+  body.cv-generator .site-main .container [data-template],
+  body.cv-generator .site-main .container [data-cv-lang] {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  body.cv-generator .site-main .container #cv-download,
+  body.cv-generator .site-main .container .format-toggle.active,
+  body.cv-generator .site-main .container .template-toggle button.active,
+  body.cv-generator .site-main .container .language-toggle button.active,
+  body.cv-generator .site-main .container .level-toggle button.active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off {
+    background: #dc3545 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  body.cv-generator .site-main .container button:hover,
+  body.cv-generator .site-main .container button:focus,
+  body.cv-generator .site-main .container button:focus-visible,
+  body.cv-generator .site-main .container button:active,
+  body.cv-generator .site-main .container .choose-file-btn:hover,
+  body.cv-generator .site-main .container .choose-file-btn:focus,
+  body.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.cv-generator .site-main .container .choose-file-btn:active,
+  body.cv-generator .site-main .container .format-toggle:hover,
+  body.cv-generator .site-main .container .format-toggle:focus,
+  body.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.cv-generator .site-main .container .format-toggle:active,
+  body.cv-generator .site-main .container .panel-actions button:hover,
+  body.cv-generator .site-main .container .panel-actions button:focus,
+  body.cv-generator .site-main .container .panel-actions button:focus-visible,
+  body.cv-generator .site-main .container .panel-actions button:active,
+  body.cv-generator .site-main .container .repeat-remove-btn:hover,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus-visible,
+  body.cv-generator .site-main .container .repeat-remove-btn:active,
+  body.cv-generator .site-main .container #cv-generate:hover,
+  body.cv-generator .site-main .container #cv-generate:focus,
+  body.cv-generator .site-main .container #cv-generate:focus-visible,
+  body.cv-generator .site-main .container #cv-generate:active,
+  body.cv-generator .site-main .container [data-level]:hover,
+  body.cv-generator .site-main .container [data-level]:focus,
+  body.cv-generator .site-main .container [data-level]:focus-visible,
+  body.cv-generator .site-main .container [data-level]:active,
+  body.cv-generator .site-main .container [data-template]:hover,
+  body.cv-generator .site-main .container [data-template]:focus,
+  body.cv-generator .site-main .container [data-template]:focus-visible,
+  body.cv-generator .site-main .container [data-template]:active,
+  body.cv-generator .site-main .container [data-cv-lang]:hover,
+  body.cv-generator .site-main .container [data-cv-lang]:focus,
+  body.cv-generator .site-main .container [data-cv-lang]:focus-visible,
+  body.cv-generator .site-main .container [data-cv-lang]:active {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  body.cv-generator .site-main .container #cv-download:hover,
+  body.cv-generator .site-main .container #cv-download:focus,
+  body.cv-generator .site-main .container #cv-download:focus-visible,
+  body.cv-generator .site-main .container #cv-download:active,
+  body.cv-generator .site-main .container .format-toggle.active:hover,
+  body.cv-generator .site-main .container .format-toggle.active:focus,
+  body.cv-generator .site-main .container .format-toggle.active:focus-visible,
+  body.cv-generator .site-main .container .format-toggle.active:active,
+  body.cv-generator .site-main .container .template-toggle button.active:hover,
+  body.cv-generator .site-main .container .template-toggle button.active:focus,
+  body.cv-generator .site-main .container .template-toggle button.active:focus-visible,
+  body.cv-generator .site-main .container .template-toggle button.active:active,
+  body.cv-generator .site-main .container .language-toggle button.active:hover,
+  body.cv-generator .site-main .container .language-toggle button.active:focus,
+  body.cv-generator .site-main .container .language-toggle button.active:focus-visible,
+  body.cv-generator .site-main .container .language-toggle button.active:active,
+  body.cv-generator .site-main .container .level-toggle button.active:hover,
+  body.cv-generator .site-main .container .level-toggle button.active:focus,
+  body.cv-generator .site-main .container .level-toggle button.active:focus-visible,
+  body.cv-generator .site-main .container .level-toggle button.active:active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus-visible,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:active {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus-visible,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:active {
+    background: #dc3545 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+
+  /* Final safety: on mobile, any hover that might stick after tap
+     must never paint the desktop blue (#0056b3). Only scale on :active. */
+  body.cv-generator button:hover,
+  body.cv-generator .choose-file-btn:hover,
+  body.cv-generator .format-toggle:hover,
+  body.cv-generator .panel-actions button:hover,
+  body.cv-generator .repeat-remove-btn:hover,
+  body.cv-generator #cv-generate:hover {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+  body.cv-generator #cv-download:hover {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+  body.cv-generator .format-toggle.active:hover,
+  body.cv-generator .template-toggle button.active:hover,
+  body.cv-generator .language-toggle button.active:hover,
+  body.cv-generator .level-toggle button.active:hover,
+  body.cv-generator #cv-toggle-ats.ats-on:hover {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+  body.cv-generator #cv-toggle-ats.ats-off:hover {
+    background: #dc3545 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+
+  /* Same safety for tap press (:active): never paint desktop blue */
+  body.cv-generator button:active,
+  body.cv-generator .choose-file-btn:active,
+  body.cv-generator .format-toggle:active,
+  body.cv-generator .panel-actions button:active,
+  body.cv-generator .repeat-remove-btn:active,
+  body.cv-generator #cv-generate:active,
+  body.cv-generator .text-tool-select-menu li:active {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  body.cv-generator #cv-download:active,
+  body.cv-generator .format-toggle.active:active,
+  body.cv-generator .template-toggle button.active:active,
+  body.cv-generator .language-toggle button.active:active,
+  body.cv-generator .level-toggle button.active:active,
+  body.cv-generator #cv-toggle-ats.ats-on:active {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  body.cv-generator #cv-toggle-ats.ats-off:active {
+    background: #dc3545 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+  body.cv-generator .site-main .container .button-group,
+  body.cv-generator .site-main .container .export-controls,
+  body.cv-generator .site-main .container .panel-actions,
+  body.cv-generator .site-main .container .format-toggle-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+  body.cv-generator .site-main .container .button-group button,
+  body.cv-generator .site-main .container .panel-actions button,
+  body.cv-generator .site-main .container .format-toggle,
+  body.cv-generator .site-main .container .repeat-remove-btn,
+  body.cv-generator .site-main .container .choose-file-btn,
+  body.cv-generator .site-main .container #cv-generate,
+  body.cv-generator .site-main .container #cv-download {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.cv-generator .site-main .container .repeat-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  body.cv-generator .site-main .container #cv-education-list,
+  body.cv-generator .site-main .container #cv-skill-list,
+  body.cv-generator .site-main .container #cv-language-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  body.cv-generator .site-main .container #cv-education-list .repeat-item,
+  body.cv-generator .site-main .container #cv-skill-list .repeat-item,
+  body.cv-generator .site-main .container #cv-language-list .repeat-item,
+  body.cv-generator .site-main .container #cv-education-list .repeat-item input,
+  body.cv-generator .site-main .container #cv-skill-list .repeat-item input,
+  body.cv-generator .site-main .container #cv-language-list .repeat-item input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-generator .site-main .container .language-toggle {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  body.cv-generator .site-main .container .language-toggle button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+  body.cv-generator .site-main .container .file-input-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-group,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline #cv-quality,
+  body.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline #cv-preview {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Touch-only (indipendente dalla larghezza): elimina qualsiasi highlight blu su tap */
+@media (hover: none) and (pointer: coarse) {
+  body.cv-generator .site-main .container button:hover,
+  body.cv-generator .site-main .container .choose-file-btn:hover,
+  body.cv-generator .site-main .container .format-toggle:hover,
+  body.cv-generator .site-main .container .panel-actions button:hover,
+  body.cv-generator .site-main .container .repeat-remove-btn:hover,
+  body.cv-generator .site-main .container #cv-generate:hover,
+  body.cv-generator .site-main .container #cv-import-draft:hover,
+  body.cv-generator .site-main .container #cv-export-draft:hover,
+  body.cv-generator .site-main .container #cv-add-experience:hover,
+  body.cv-generator .site-main .container #cv-add-education:hover,
+  body.cv-generator .site-main .container #cv-add-skill:hover,
+  body.cv-generator .site-main .container #cv-add-language:hover,
+  body.cv-generator .site-main .container [data-level]:hover,
+  body.cv-generator .site-main .container [data-template]:hover,
+  body.cv-generator .site-main .container [data-cv-lang]:hover {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+
+  body.cv-generator .site-main .container button:active,
+  body.cv-generator .site-main .container .choose-file-btn:active,
+  body.cv-generator .site-main .container .format-toggle:active,
+  body.cv-generator .site-main .container .panel-actions button:active,
+  body.cv-generator .site-main .container .repeat-remove-btn:active,
+  body.cv-generator .site-main .container #cv-generate:active,
+  body.cv-generator .site-main .container #cv-import-draft:active,
+  body.cv-generator .site-main .container #cv-export-draft:active,
+  body.cv-generator .site-main .container #cv-add-experience:active,
+  body.cv-generator .site-main .container #cv-add-education:active,
+  body.cv-generator .site-main .container #cv-add-skill:active,
+  body.cv-generator .site-main .container #cv-add-language:active,
+  body.cv-generator .site-main .container [data-level]:active,
+  body.cv-generator .site-main .container [data-template]:active,
+  body.cv-generator .site-main .container [data-cv-lang]:active {
+    background: #003f7f !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(1.03) !important;
+  }
+
+  /* Stati verdi (Download / toggle attivo) */
+  body.cv-generator .site-main .container #cv-download:hover,
+  body.cv-generator .site-main .container #cv-download:active,
+  body.cv-generator .site-main .container .format-toggle.active:hover,
+  body.cv-generator .site-main .container .format-toggle.active:active,
+  body.cv-generator .site-main .container .template-toggle button.active:hover,
+  body.cv-generator .site-main .container .template-toggle button.active:active,
+  body.cv-generator .site-main .container .language-toggle button.active:hover,
+  body.cv-generator .site-main .container .language-toggle button.active:active,
+  body.cv-generator .site-main .container .level-toggle button.active:hover,
+  body.cv-generator .site-main .container .level-toggle button.active:active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:active {
+    background: #28a745 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Stati rossi (ATS off) */
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:active {
+    background: #dc3545 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Menu dropdown (Ruolo target): sempre opaco, nessuna trasparenza al tap */
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:active,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:active {
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    opacity: 1 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:active,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:active {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:active,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:active {
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li:active,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li.selected:active {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+}
+
+/* FINAL OVERRIDE: mobile touch => never change button color on tap */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  body.cv-generator .site-main .container button,
+  body.cv-generator .site-main .container .choose-file-btn,
+  body.cv-generator .site-main .container .format-toggle,
+  body.cv-generator .site-main .container .panel-actions button,
+  body.cv-generator .site-main .container .repeat-remove-btn,
+  body.cv-generator .site-main .container #cv-generate,
+  body.cv-generator .site-main .container #cv-import-draft,
+  body.cv-generator .site-main .container #cv-export-draft,
+  body.cv-generator .site-main .container #cv-add-experience,
+  body.cv-generator .site-main .container #cv-add-education,
+  body.cv-generator .site-main .container #cv-add-skill,
+  body.cv-generator .site-main .container #cv-add-language,
+  body.cv-generator .site-main .container [data-level],
+  body.cv-generator .site-main .container [data-template],
+  body.cv-generator .site-main .container [data-cv-lang] {
+    --cv-static-bg: #003f7f;
+    background: var(--cv-static-bg) !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    border: none !important;
+  }
+
+  body.cv-generator .site-main .container #cv-download,
+  body.cv-generator .site-main .container .format-toggle.active,
+  body.cv-generator .site-main .container .template-toggle button.active,
+  body.cv-generator .site-main .container .language-toggle button.active,
+  body.cv-generator .site-main .container .level-toggle button.active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on {
+    --cv-static-bg: #28a745;
+  }
+
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off {
+    --cv-static-bg: #dc3545;
+  }
+
+  body.cv-generator .site-main .container button:hover,
+  body.cv-generator .site-main .container button:focus,
+  body.cv-generator .site-main .container button:focus-visible,
+  body.cv-generator .site-main .container button:active,
+  body.cv-generator .site-main .container .choose-file-btn:hover,
+  body.cv-generator .site-main .container .choose-file-btn:focus,
+  body.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.cv-generator .site-main .container .choose-file-btn:active,
+  body.cv-generator .site-main .container .format-toggle:hover,
+  body.cv-generator .site-main .container .format-toggle:focus,
+  body.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.cv-generator .site-main .container .format-toggle:active,
+  body.cv-generator .site-main .container .panel-actions button:hover,
+  body.cv-generator .site-main .container .panel-actions button:focus,
+  body.cv-generator .site-main .container .panel-actions button:focus-visible,
+  body.cv-generator .site-main .container .panel-actions button:active,
+  body.cv-generator .site-main .container .repeat-remove-btn:hover,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus-visible,
+  body.cv-generator .site-main .container .repeat-remove-btn:active,
+  body.cv-generator .site-main .container #cv-generate:hover,
+  body.cv-generator .site-main .container #cv-generate:focus,
+  body.cv-generator .site-main .container #cv-generate:focus-visible,
+  body.cv-generator .site-main .container #cv-generate:active,
+  body.cv-generator .site-main .container #cv-download:hover,
+  body.cv-generator .site-main .container #cv-download:focus,
+  body.cv-generator .site-main .container #cv-download:focus-visible,
+  body.cv-generator .site-main .container #cv-download:active,
+  body.cv-generator .site-main .container #cv-import-draft:hover,
+  body.cv-generator .site-main .container #cv-import-draft:active,
+  body.cv-generator .site-main .container #cv-export-draft:hover,
+  body.cv-generator .site-main .container #cv-export-draft:active,
+  body.cv-generator .site-main .container #cv-add-experience:hover,
+  body.cv-generator .site-main .container #cv-add-experience:active,
+  body.cv-generator .site-main .container #cv-add-education:hover,
+  body.cv-generator .site-main .container #cv-add-education:active,
+  body.cv-generator .site-main .container #cv-add-skill:hover,
+  body.cv-generator .site-main .container #cv-add-skill:active,
+  body.cv-generator .site-main .container #cv-add-language:hover,
+  body.cv-generator .site-main .container #cv-add-language:active,
+  body.cv-generator .site-main .container [data-level]:hover,
+  body.cv-generator .site-main .container [data-level]:focus,
+  body.cv-generator .site-main .container [data-level]:focus-visible,
+  body.cv-generator .site-main .container [data-level]:active,
+  body.cv-generator .site-main .container [data-template]:hover,
+  body.cv-generator .site-main .container [data-template]:focus,
+  body.cv-generator .site-main .container [data-template]:focus-visible,
+  body.cv-generator .site-main .container [data-template]:active,
+  body.cv-generator .site-main .container [data-cv-lang]:hover,
+  body.cv-generator .site-main .container [data-cv-lang]:focus,
+  body.cv-generator .site-main .container [data-cv-lang]:focus-visible,
+  body.cv-generator .site-main .container [data-cv-lang]:active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus-visible,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on:active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:hover,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus-visible,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off:active {
+    background: var(--cv-static-bg) !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Keep only the slight press scale, no color shift. */
+  body.cv-generator .site-main .container button:active,
+  body.cv-generator .site-main .container .choose-file-btn:active,
+  body.cv-generator .site-main .container .format-toggle:active,
+  body.cv-generator .site-main .container .panel-actions button:active,
+  body.cv-generator .site-main .container .repeat-remove-btn:active,
+  body.cv-generator .site-main .container [data-level]:active,
+  body.cv-generator .site-main .container [data-template]:active,
+  body.cv-generator .site-main .container [data-cv-lang]:active {
+    transform: scale(1.03) !important;
+  }
+}
+
+/* FINAL MOBILE LOCK (single source of truth) */
+@media (max-width: 768px) {
+  /* Default buttons: fixed blue on all states (no blue flash variants) */
+  body.cv-generator .site-main .container button,
+  body.cv-generator .site-main .container .choose-file-btn,
+  body.cv-generator .site-main .container .format-toggle,
+  body.cv-generator .site-main .container .panel-actions button,
+  body.cv-generator .site-main .container .repeat-remove-btn,
+  body.cv-generator .site-main .container [data-level],
+  body.cv-generator .site-main .container [data-template],
+  body.cv-generator .site-main .container [data-cv-lang] {
+    --cv-lock-bg: #003f7f;
+    --cv-lock-color: #fff;
+    background: var(--cv-lock-bg) !important;
+    color: var(--cv-lock-color) !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Dark mode mobile default must match Word Counter buttons */
+  body.dark-mode.cv-generator .site-main .container button,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn,
+  body.dark-mode.cv-generator .site-main .container .format-toggle,
+  body.dark-mode.cv-generator .site-main .container .panel-actions button,
+  body.dark-mode.cv-generator .site-main .container .repeat-remove-btn,
+  body.dark-mode.cv-generator .site-main .container [data-level],
+  body.dark-mode.cv-generator .site-main .container [data-template],
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang] {
+    --cv-lock-bg: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    --cv-lock-color: var(--text-secondary, #b0c4de);
+    background: var(--cv-lock-bg) !important;
+    color: var(--cv-lock-color) !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn * {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+
+  /* Template buttons: same layout as language buttons */
+  body.cv-generator .site-main .container .template-toggle button[data-template] {
+    border-radius: 12px !important;
+  }
+
+  /* Selected/active buttons: fixed green */
+  body.cv-generator .site-main .container #cv-download,
+  body.cv-generator .site-main .container .format-toggle.active,
+  body.cv-generator .site-main .container .template-toggle button.active,
+  body.cv-generator .site-main .container .language-toggle button.active,
+  body.cv-generator .site-main .container .level-toggle button.active,
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-on {
+    --cv-lock-bg: #28a745;
+    --cv-lock-color: #fff;
+    background: var(--cv-lock-bg) !important;
+    color: var(--cv-lock-color) !important;
+    -webkit-text-fill-color: var(--cv-lock-color) !important;
+    border: none !important;
+  }
+
+  /* ATS off fixed red */
+  body.cv-generator .site-main .container #cv-toggle-ats.ats-off {
+    --cv-lock-bg: #dc3545;
+    --cv-lock-color: #fff;
+    background: var(--cv-lock-bg) !important;
+    color: var(--cv-lock-color) !important;
+    border: none !important;
+  }
+
+  /* Hard-lock all interactive states to current locked color */
+  body.cv-generator .site-main .container button:hover,
+  body.cv-generator .site-main .container button:focus,
+  body.cv-generator .site-main .container button:focus-visible,
+  body.cv-generator .site-main .container button:active,
+  body.cv-generator .site-main .container .choose-file-btn:hover,
+  body.cv-generator .site-main .container .choose-file-btn:focus,
+  body.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.cv-generator .site-main .container .choose-file-btn:active,
+  body.cv-generator .site-main .container .format-toggle:hover,
+  body.cv-generator .site-main .container .format-toggle:focus,
+  body.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.cv-generator .site-main .container .format-toggle:active,
+  body.cv-generator .site-main .container .panel-actions button:hover,
+  body.cv-generator .site-main .container .panel-actions button:focus,
+  body.cv-generator .site-main .container .panel-actions button:focus-visible,
+  body.cv-generator .site-main .container .panel-actions button:active,
+  body.cv-generator .site-main .container .repeat-remove-btn:hover,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus,
+  body.cv-generator .site-main .container .repeat-remove-btn:focus-visible,
+  body.cv-generator .site-main .container .repeat-remove-btn:active,
+  body.cv-generator .site-main .container [data-level]:hover,
+  body.cv-generator .site-main .container [data-level]:focus,
+  body.cv-generator .site-main .container [data-level]:focus-visible,
+  body.cv-generator .site-main .container [data-level]:active,
+  body.cv-generator .site-main .container [data-template]:hover,
+  body.cv-generator .site-main .container [data-template]:focus,
+  body.cv-generator .site-main .container [data-template]:focus-visible,
+  body.cv-generator .site-main .container [data-template]:active,
+  body.cv-generator .site-main .container [data-cv-lang]:hover,
+  body.cv-generator .site-main .container [data-cv-lang]:focus,
+  body.cv-generator .site-main .container [data-cv-lang]:focus-visible,
+  body.cv-generator .site-main .container [data-cv-lang]:active {
+    background: var(--cv-lock-bg) !important;
+    color: var(--cv-lock-color) !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
+
+/* FINAL DARK MOBILE BUTTON LAYOUT LOCK */
+@media (max-width: 768px) {
+  body.dark-mode.cv-generator .site-main .container button,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn,
+  body.dark-mode.cv-generator .site-main .container .format-toggle,
+  body.dark-mode.cv-generator .site-main .container .panel-actions button,
+  body.dark-mode.cv-generator .site-main .container .repeat-remove-btn,
+  body.dark-mode.cv-generator .site-main .container [data-level],
+  body.dark-mode.cv-generator .site-main .container [data-template],
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang],
+  body.dark-mode.cv-generator .site-main .container button:hover,
+  body.dark-mode.cv-generator .site-main .container button:focus,
+  body.dark-mode.cv-generator .site-main .container button:focus-visible,
+  body.dark-mode.cv-generator .site-main .container button:active,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:hover,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:focus,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .choose-file-btn:active,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:hover,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:focus,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .format-toggle:active,
+  body.dark-mode.cv-generator .site-main .container [data-level]:hover,
+  body.dark-mode.cv-generator .site-main .container [data-level]:focus,
+  body.dark-mode.cv-generator .site-main .container [data-level]:focus-visible,
+  body.dark-mode.cv-generator .site-main .container [data-level]:active,
+  body.dark-mode.cv-generator .site-main .container [data-template]:hover,
+  body.dark-mode.cv-generator .site-main .container [data-template]:focus,
+  body.dark-mode.cv-generator .site-main .container [data-template]:focus-visible,
+  body.dark-mode.cv-generator .site-main .container [data-template]:active,
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang]:hover,
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang]:focus,
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang]:focus-visible,
+  body.dark-mode.cv-generator .site-main .container [data-cv-lang]:active {
+    background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    box-shadow: none !important;
+  }
+
+  /* Selected/active semantic colors: full background + white text */
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:hover,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:focus,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:active,
+  body.dark-mode.cv-generator .site-main .container #cv-download,
+  body.dark-mode.cv-generator .site-main .container #cv-download:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-download:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-download:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-download:active,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-on,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-on:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-on:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-on:active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+    box-shadow: none !important;
+  }
+
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:active {
+    border: 2px solid #fcc !important;
+    background: rgba(220, 80, 80, 0.15) !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+  }
+
+  /* CV configuration selection in dark mobile:
+     selected option uses error-like layout shape, green variant. */
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .template-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .language-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:hover,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:focus,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .level-toggle button.active:active,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:hover,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:focus,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:focus-visible,
+  body.dark-mode.cv-generator .site-main .container .format-toggle.active:active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    border: 2px solid #7ee2a0 !important;
+    border-radius: 12px !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Explicitly align these action buttons to the general dark layout */
+  body.dark-mode.cv-generator .site-main .container #cv-export-draft,
+  body.dark-mode.cv-generator .site-main .container #cv-import-draft,
+  body.dark-mode.cv-generator .site-main .container #cv-add-experience,
+  body.dark-mode.cv-generator .site-main .container #cv-add-education,
+  body.dark-mode.cv-generator .site-main .container #cv-add-skill,
+  body.dark-mode.cv-generator .site-main .container #cv-add-language,
+  body.dark-mode.cv-generator .site-main .container #cv-generate,
+  body.dark-mode.cv-generator .site-main .container #cv-export-draft:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-import-draft:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-add-experience:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-add-education:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-add-skill:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-add-language:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-generate:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-export-draft:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-import-draft:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-add-experience:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-add-education:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-add-skill:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-add-language:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-generate:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-export-draft:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-import-draft:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-add-experience:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-add-education:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-add-skill:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-add-language:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-generate:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-export-draft:active,
+  body.dark-mode.cv-generator .site-main .container #cv-import-draft:active,
+  body.dark-mode.cv-generator .site-main .container #cv-add-experience:active,
+  body.dark-mode.cv-generator .site-main .container #cv-add-education:active,
+  body.dark-mode.cv-generator .site-main .container #cv-add-skill:active,
+  body.dark-mode.cv-generator .site-main .container #cv-add-language:active,
+  body.dark-mode.cv-generator .site-main .container #cv-generate:active {
+    background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    box-shadow: none !important;
+  }
+
+  /* Preview alignment: Name/Surname and following content share same left start */
+  body.cv-generator .site-main .container .cv-preview-dock #cv-preview .preview-head > div:first-of-type,
+  body.cv-generator .site-main .container .cv-preview-dock #cv-preview .preview-section,
+  body.cv-generator .site-main .container .cv-preview-dock #cv-preview .preview-text {
+    margin-left: 0 !important;
+    padding-left: 6px !important;
+  }
+  body.cv-generator .site-main .container .cv-preview-dock #cv-preview .preview-modern .preview-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Dark mobile: keep heading/quality text color consistent with dark site text */
+  body.dark-mode.cv-generator .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-title,
+  body.dark-mode.cv-generator .site-main .container .cv-preview-dock .tool-quick-nav-title {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    padding-left: 0 !important;
+  }
+  /* Slight left spacing only for score/tips content */
+  body.dark-mode.cv-generator .site-main .container .cv-preview-dock #cv-quality {
+    padding-left: 6px !important;
+  }
+  body.dark-mode.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .tool-quick-nav-row {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  body.dark-mode.cv-generator .site-main .container .cv-preview-dock.cv-preview-dock--inline .cv-preview-dock-section-body {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+}
+
+/* FINAL FIX: dark mobile ATS OFF = exact error palette */
+@media (max-width: 768px) {
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:focus-visible,
+  body.dark-mode.cv-generator .site-main .container #cv-toggle-ats.ats-off:active {
+    background: rgba(220, 80, 80, 0.15) !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile fallback: use native select for role menu */
+  body.cv-generator .site-main .container #cv-target-role-wrap.use-native-mobile-select #cv-target-role,
+  body.cv-generator .site-main .container #cv-target-role-wrap.use-native-mobile-select .text-tool-select-menu {
+    display: none !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.use-native-mobile-select .role-arrow {
+    display: inline-flex !important;
+    pointer-events: none !important;
+    z-index: 3 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.use-native-mobile-select .role-arrow::before {
+    border-top-color: #003f7f !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native {
+    display: block !important;
+    width: 100% !important;
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    opacity: 1 !important;
+    padding-right: 36px !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-image: none !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
+    font-size: 0.95rem !important;
+    box-shadow: none !important;
+    transition: none !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:focus,
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native,
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native option,
+  body.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native optgroup {
+    border-radius: 12px !important;
+    background-color: #d0e8f9 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native {
+    background: rgb(30, 42, 58) !important;
+    background-color: rgb(30, 42, 58) !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:focus,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native:active {
+    background: #1e2a3a !important;
+    background-color: #1e2a3a !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native option,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .cv-target-role-native optgroup {
+    background-color: rgb(30, 42, 58) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.use-native-mobile-select .role-arrow::before {
+    border-top-color: var(--text-secondary, #b0c4de) !important;
+  }
+
+  /* Mobile only: choose file height lock */
+  body.cv-generator .site-main .container .file-input-wrapper .choose-file-btn {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Mobile only: role dropdown always above everything and fully opaque */
+  body.cv-generator.cv-role-menu-open .site-main,
+  body.cv-generator.cv-role-menu-open .site-main .container {
+    overflow: visible !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container .text-tool-grid,
+  body.cv-generator.cv-role-menu-open .site-main .container .form-group {
+    overflow: visible !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap {
+    position: relative !important;
+    z-index: 2147483000 !important;
+    isolation: isolate !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 2147483001 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    overflow: hidden !important;
+  }
+  body.dark-mode.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    background-color: #1e2a3a !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label {
+    background-color: #d0e8f9 !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.dark-mode.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label {
+    background-color: #1e2a3a !important;
+    opacity: 1 !important;
+  }
+
+  /* Mobile only: readable role menu colors */
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label {
+    background: #d0e8f9 !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-menu .role-group-label {
+    background: #1e2a3a !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* FINAL MOBILE: role menu must never be transparent */
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:active,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li.selected,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:active,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li.selected,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    opacity: 1 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu {
+    transform: none !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+}
+
+/* FINAL MOBILE ROLE MENU LOCK: same as Username Generator */
+@media (max-width: 768px) {
+  body.cv-generator .site-main .container #cv-target-role-wrap {
+    position: relative !important;
+    z-index: 9998 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open {
+    z-index: 9999 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu {
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 10000 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:active,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li.selected,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background: #d0e8f9 !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    opacity: 1 !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    font-size: 0.95rem !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu {
+    background: rgb(30, 42, 58) !important;
+    background-color: rgb(30, 42, 58) !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li:active,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li.selected,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background: rgb(30, 42, 58) !important;
+    background-color: rgb(30, 42, 58) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu *,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu *:before,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu *:after {
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+  }
+
+  /* Mobile stack fix: keep header unaffected */
+  body.cv-generator.cv-role-menu-open .site-main .container,
+  body.cv-generator.cv-role-menu-open .site-main .container .text-tool-grid,
+  body.cv-generator.cv-role-menu-open .site-main .container .form-group {
+    overflow: visible !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap {
+    position: relative !important;
+    z-index: 6000 !important;
+    isolation: isolate !important;
+  }
+  body.cv-generator.cv-role-menu-open .site-main .container #cv-target-role-wrap .text-tool-select-menu {
+    z-index: 6001 !important;
   }
 }
 </style>
@@ -1125,7 +2604,7 @@ body.dark-mode.warm-tone .cv-preview-dock {
     </div>
     <div class="form-group">
       <label for="cv-phone">{% trans "Phone" %}</label>
-      <input type="text" id="cv-phone" placeholder="{% trans 'e.g. +39 333 1234567' %}">
+      <input type="text" id="cv-phone" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}+39 333 1234567{% else %}+1 555 123 4567{% endif %}">
     </div>
     <div class="form-group">
       <label for="cv-citizenship">{% if LANGUAGE_CODE|slice:":2" == "it" %}Cittadinanza{% else %}{% trans "Citizenship" %}{% endif %}</label>
@@ -1293,7 +2772,7 @@ if (!window.docx) {
   document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
 }
 </script>
-<script src="{% static 'tools/js/cv_generator.js' %}?v=20260427a"></script>
+<script src="{% static 'tools/js/cv_generator.js' %}?v=20260430n"></script>
 <script>
 (function() {
   var BP = 1280;
@@ -1428,4 +2907,72 @@ if (!window.docx) {
   });
 })();
 </script>
+<style>
+@media (max-width: 768px) {
+  body.cv-generator .site-main .container,
+  body.cv-generator .site-main .container .text-tool-grid,
+  body.cv-generator .site-main .container .form-group {
+    overflow: visible !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap {
+    position: relative !important;
+    z-index: 240 !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:hover,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:active,
+  body.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:focus {
+    background: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu {
+    background: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 241 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background: #d0e8f9 !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    opacity: 1 !important;
+    font-size: 0.95rem !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:hover,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:active,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap .text-tool-select-trigger:focus {
+    background: #1e2a3a !important;
+    border: 2px solid var(--text-secondary) !important;
+    color: var(--text-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu {
+    background: #1e2a3a !important;
+    border: 2px solid var(--text-secondary) !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu li,
+  body.dark-mode.cv-generator .site-main .container #cv-target-role-wrap.open .text-tool-select-menu .role-group-label {
+    background: #1e2a3a !important;
+    color: var(--text-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
+    opacity: 1 !important;
+  }
+}
+</style>
 {% endblock %}

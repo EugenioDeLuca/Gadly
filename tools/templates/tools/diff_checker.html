@@ -194,6 +194,21 @@ body.dark-mode .diff-checker .button-group button.copied:hover {
         color: #e88 !important;
     }
 }
+@media (max-width: 480px) {
+    /* Link help come Word Counter mobile */
+    .diff-checker .tool-help {
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+    body.dark-mode.diff-checker .tool-help a {
+        color: #7eb8ff !important;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    body.dark-mode.diff-checker .tool-help a:hover {
+        color: #a8d4ff !important;
+    }
+}
 @media (min-width: 769px) {
     body.dark-mode .diff-checker .diff-result {
         background: rgba(255,255,255,0.05);

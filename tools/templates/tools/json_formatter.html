@@ -5,7 +5,7 @@
 {% block title %}{% trans "JSON Formatter" %}{% endblock %}
 {% block body_class %}text-tool json-formatter{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426j">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428e">
 <style>
 .json-formatter .form-group {
     margin-bottom: 12px; /* 12px tra textarea e messaggio errore/risultato */
@@ -100,6 +100,64 @@
     }
     .json-formatter .button-group #btn-copy {
         margin-left: 0;
+    }
+}
+@media (max-width: 480px) {
+    /* Link help come Word Counter mobile */
+    .json-formatter .tool-help {
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+    /* Mobile: label "JSON input" centrata sopra la textarea */
+    body.json-formatter .site-main .container .form-group label {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+    /* Mobile: textarea come Word Counter (larghezza/layout) */
+    body.json-formatter .site-main .container .form-group textarea,
+    body.json-formatter .site-main .container .form-group textarea:focus {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: 280px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    /* Mobile: bottoni stessa dimensione dei bottoni Word Counter */
+    body.json-formatter .site-main .container .button-group button {
+        flex: 1 1 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+    }
+    body.json-formatter .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+    body.dark-mode.json-formatter .tool-help a {
+        color: #7eb8ff !important;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    body.dark-mode.json-formatter .tool-help a:hover {
+        color: #a8d4ff !important;
     }
 }
 body.dark-mode .json-formatter .json-result {

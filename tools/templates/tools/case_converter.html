@@ -4,7 +4,7 @@
 {% block title %}{% trans "Case Converter" %}{% endblock %}
 {% block body_class %}text-tool case-converter{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428f">
 <style>
 .case-converter .form-group {
     margin-bottom: 12px; /* 12px tra textarea e messaggio di errore/risultato */
@@ -44,7 +44,7 @@
     padding: 20px;
     min-height: 100px;
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 12px;
     border-radius: 12px;
     background: #f8fcff;
     border: 2px dashed #b8d4f0;
@@ -95,6 +95,178 @@
         margin-left: 0;
     }
 }
+@media (max-width: 480px) {
+    /* Mobile: container come Word Counter, così la larghezza utile arriva a 338px */
+    body.case-converter .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
+    /* Mobile: textarea stessi colori di Word Counter */
+    body.case-converter .site-main .container .form-group textarea,
+    body.case-converter .site-main .container .form-group textarea:focus,
+    body.case-converter .site-main .container .form-group textarea:not(:focus) {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        width: 338px !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+    body.dark-mode.case-converter .site-main .container .form-group textarea,
+    body.dark-mode.case-converter .site-main .container .form-group textarea:focus,
+    body.dark-mode.case-converter .site-main .container .form-group textarea:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        width: 338px !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+    /* Fix hard: colore testo fisso in mobile anche dopo blur (override finale su id). */
+    body.case-converter #case-input,
+    body.case-converter #case-input:focus,
+    body.case-converter #case-input:not(:focus) {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        opacity: 1 !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    /* Mobile: niente evidenziazione blu persistente sui bottoni dopo tap */
+    body.case-converter .site-main .container .button-group button,
+    body.case-converter .site-main .container .button-group button:hover,
+    body.case-converter .site-main .container .button-group button:focus,
+    body.case-converter .site-main .container .button-group button:focus-visible,
+    body.case-converter .site-main .container .button-group button:active {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-appearance: none;
+        appearance: none;
+        touch-action: manipulation;
+        outline: none !important;
+        box-shadow: none !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        transform: scale(1) !important;
+    }
+    body.case-converter .site-main .container .button-group button:active { transform: scale(1.03) !important; }
+    /* Hard lock: niente blu persistente su touch (override finale specifico) */
+    body.case-converter .site-main .container .button-group #btn-upper,
+    body.case-converter .site-main .container .button-group #btn-upper:hover,
+    body.case-converter .site-main .container .button-group #btn-upper:focus,
+    body.case-converter .site-main .container .button-group #btn-upper:focus-visible,
+    body.case-converter .site-main .container .button-group #btn-upper:active,
+    body.case-converter .site-main .container .button-group #btn-lower,
+    body.case-converter .site-main .container .button-group #btn-lower:hover,
+    body.case-converter .site-main .container .button-group #btn-lower:focus,
+    body.case-converter .site-main .container .button-group #btn-lower:focus-visible,
+    body.case-converter .site-main .container .button-group #btn-lower:active,
+    body.case-converter .site-main .container .button-group #btn-title,
+    body.case-converter .site-main .container .button-group #btn-title:hover,
+    body.case-converter .site-main .container .button-group #btn-title:focus,
+    body.case-converter .site-main .container .button-group #btn-title:focus-visible,
+    body.case-converter .site-main .container .button-group #btn-title:active,
+    body.case-converter .site-main .container .button-group #btn-copy,
+    body.case-converter .site-main .container .button-group #btn-copy:hover,
+    body.case-converter .site-main .container .button-group #btn-copy:focus,
+    body.case-converter .site-main .container .button-group #btn-copy:focus-visible,
+    body.case-converter .site-main .container .button-group #btn-copy:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        outline: 0 !important;
+        outline-color: transparent !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        -webkit-focus-ring-color: transparent !important;
+    }
+    body.dark-mode.case-converter .site-main .container .button-group button,
+    body.dark-mode.case-converter .site-main .container .button-group button:hover,
+    body.dark-mode.case-converter .site-main .container .button-group button:focus,
+    body.dark-mode.case-converter .site-main .container .button-group button:focus-visible,
+    body.dark-mode.case-converter .site-main .container .button-group button:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.case-converter .site-main .container .button-group button:active { transform: scale(1.03) !important; }
+    body.dark-mode.case-converter .site-main .container .button-group #btn-upper,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-upper:hover,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-upper:focus,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-upper:focus-visible,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-upper:active,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-lower,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-lower:hover,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-lower:focus,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-lower:focus-visible,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-lower:active,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-title,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-title:hover,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-title:focus,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-title:focus-visible,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-title:active,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-copy,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-copy:hover,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-copy:focus,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-copy:focus-visible,
+    body.dark-mode.case-converter .site-main .container .button-group #btn-copy:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        outline: 0 !important;
+        outline-color: transparent !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        -webkit-focus-ring-color: transparent !important;
+    }
+    /* Evita hover "sticky" su touch: nessun cambio colore persistente dopo tap */
+    body.case-converter .site-main .container .button-group button:hover,
+    body.dark-mode.case-converter .site-main .container .button-group button:hover {
+        filter: none !important;
+    }
+    body.case-converter .site-main .container .button-group {
+        align-items: center !important;
+        gap: 12px !important;
+    }
+    body.case-converter .site-main .container .button-group button {
+        width: 338px !important;
+        max-width: 338px !important;
+    }
+
+    /* Mobile: risultato uguale a JSON Formatter */
+    body.case-converter .site-main .container .case-result:not(.hidden):not(.error) {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        padding: 16px !important;
+    }
+    body.dark-mode.case-converter .site-main .container .case-result:not(.hidden):not(.error) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+    }
+
+    /* Mobile: errore distanziato 12px dai bottoni */
+    body.case-converter .site-main .container .case-result.error {
+        margin-bottom: 12px !important;
+    }
+}
 body.dark-mode .case-converter .case-result {
     background: rgba(255,255,255,0.05);
     border-color: var(--border-color);
@@ -132,5 +304,5 @@ body.dark-mode .case-converter .case-result.error {
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/case_converter.js' %}"></script>
+<script src="{% static 'tools/js/case_converter.js' %}?v=20260428d"></script>
 {% endblock %}

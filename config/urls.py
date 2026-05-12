@@ -20,19 +20,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.i18n import JavaScriptCatalog
-from django.http import FileResponse, Http404
-from django.contrib.staticfiles import finders
 from tools import views as tools_views
 from tools.forms import VerifiedEmailAuthenticationForm
 
-def favicon_view(_request):
-    icon_path = finders.find('tools/images/favicon-main.ico')
-    if not icon_path:
-        raise Http404("favicon not found")
-    return FileResponse(open(icon_path, 'rb'), content_type='image/x-icon')
-
 urlpatterns = [
-    path('favicon.ico', favicon_view),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript_catalog'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),

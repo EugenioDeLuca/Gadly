@@ -201,6 +201,26 @@ document.addEventListener("DOMContentLoaded", function() {
     var btnGen = document.getElementById("btn-generate");
     var btnCopy = document.getElementById("btn-copy");
 
+    if (window.matchMedia && window.matchMedia("(max-width: 480px)").matches) {
+        [btnGen, btnCopy].forEach(function(btn) {
+            if (!btn) return;
+            function clearFocus() {
+                requestAnimationFrame(function() {
+                    btn.blur();
+                    setTimeout(function() { btn.blur(); }, 0);
+                });
+            }
+            btn.addEventListener("touchend", clearFocus, { passive: true });
+            btn.addEventListener("pointerup", clearFocus);
+            btn.addEventListener("click", clearFocus);
+        });
+    }
+    var lastGeneratedBios = [];
+
+    function isMobileViewport() {
+        return window.innerWidth <= 480;
+    }
+
     if (typeWrap) {
         var typeTrigger = typeWrap.querySelector(".text-tool-select-trigger");
         var typeMenu = typeWrap.querySelector(".text-tool-select-menu");
@@ -283,26 +303,50 @@ document.addEventListener("DOMContentLoaded", function() {
         var selAll = gt("Select all");
         var selNone = gt("Deselect all");
         var copyHint = gt("The Copy button copies only the bios you have selected.");
+        lastGeneratedBios = bios.slice();
         var html = '<div class="caption-results-header">';
         html += '<p class="caption-results-title">' + escapeHtml(title) + "</p>";
-        html += '<div class="caption-select-actions">';
-        html += '<button type="button" class="caption-select-action-btn" id="caption-select-all">' + escapeHtml(selAll) + "</button>";
-        html += '<button type="button" class="caption-select-action-btn" id="caption-select-none">' + escapeHtml(selNone) + "</button>";
-        html += "</div></div>";
+        if (!isMobileViewport()) {
+            html += '<div class="caption-select-actions">';
+            html += '<button type="button" class="caption-select-action-btn" id="caption-select-all">' + escapeHtml(selAll) + "</button>";
+            html += '<button type="button" class="caption-select-action-btn" id="caption-select-none">' + escapeHtml(selNone) + "</button>";
+            html += "</div>";
+        }
+        html += "</div>";
         html += '<ol class="caption-results-list">';
         bios.forEach(function(line) {
-            html += '<li class="caption-result-row"><label class="caption-select-label">';
-            html += '<input type="checkbox" class="caption-pick" />';
-            html += '<span class="caption-text">' + escapeHtml(line) + "</span>";
-            html += "</label></li>";
+            if (isMobileViewport()) {
+                html += '<li class="caption-result-row"><span class="caption-text">' + escapeHtml(line) + "</span></li>";
+            } else {
+                html += '<li class="caption-result-row"><label class="caption-select-label">';
+                html += '<input type="checkbox" class="caption-pick" />';
+                html += '<span class="caption-text">' + escapeHtml(line) + "</span>";
+                html += "</label></li>";
+            }
         });
         html += "</ol>";
-        html += '<p class="caption-copy-footnote">' + escapeHtml(copyHint) + "</p>";
+        if (!isMobileViewport()) {
+            html += '<p class="caption-copy-footnote">' + escapeHtml(copyHint) + "</p>";
+        }
         resultArea.innerHTML = html;
         resultArea.classList.remove("hidden");
     });
 
     btnCopy.addEventListener("click", function() {
+        if (isMobileViewport()) {
+            if (!lastGeneratedBios.length) return;
+            var mobileText = lastGeneratedBios.join("\n\n").trim();
+            if (!mobileText) return;
+            navigator.clipboard.writeText(mobileText).then(function() {
+                btnCopy.textContent = gt("Copied!");
+                btnCopy.classList.add("copied");
+                setTimeout(function() {
+                    btnCopy.textContent = gt("Copy");
+                    btnCopy.classList.remove("copied");
+                }, 1500);
+            });
+            return;
+        }
         var picked = resultArea.querySelectorAll(".caption-pick:checked");
         if (!picked.length) {
             if (resultArea.querySelector(".caption-pick")) {

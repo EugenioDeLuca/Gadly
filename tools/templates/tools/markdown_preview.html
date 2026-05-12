@@ -4,7 +4,7 @@
 {% block title %}{% trans "Markdown Preview" %}{% endblock %}
 {% block body_class %}text-tool markdown-preview{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426i">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260427k">
 <style>
 .text-tool.markdown-preview .container { max-width: 900px; }
 .text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
@@ -37,9 +37,9 @@
     margin-bottom: 0;
 }
 .text-tool.markdown-preview .preview-actions #btn-copy { min-width: 132px; }
+/* .copied: feedback rosso desktop; :active solo su mobile in text-tools (scale come Word Counter, no sfondo rosso al tap) */
 .text-tool.markdown-preview .preview-actions #btn-copy.copied,
-.text-tool.markdown-preview .preview-actions #btn-copy.copied:hover,
-.text-tool.markdown-preview .preview-actions #btn-copy:active {
+.text-tool.markdown-preview .preview-actions #btn-copy.copied:hover {
     background: #dc3545;
     border-color: #dc3545;
     color: #fff;
@@ -215,6 +215,11 @@ Write **bold** or *italic* text.
             function onCopied() {
                 copyBtn.textContent = MD_COPIED;
                 copyBtn.classList.add('copied');
+                /* Togli focus dopo copia (Safari/iOS: altrimenti resta alone o hover “incollato”) */
+                requestAnimationFrame(function() {
+                    copyBtn.blur();
+                    setTimeout(function() { copyBtn.blur(); }, 0);
+                });
                 setTimeout(function() { copyBtn.textContent = MD_COPY; }, 1500);
                 setTimeout(function() { copyBtn.classList.remove('copied'); }, 1500);
             }

@@ -66,6 +66,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var resultArea = document.getElementById("result-area");
     var btnGen = document.getElementById("btn-generate");
     var btnCopy = document.getElementById("btn-copy");
+    var lastGeneratedUsernames = [];
+
+    function isMobileViewport() {
+        return window.innerWidth <= 480;
+    }
 
     function escapeHtml(str) {
         return String(str)
@@ -156,26 +161,49 @@ document.addEventListener("DOMContentLoaded", function() {
         var selAll = gt("Select all");
         var selNone = gt("Deselect all");
         var copyHint = gt("The Copy button copies only the usernames you have selected.");
-        var html = '<div class="caption-results-header">';
-        html += '<p class="caption-results-title">' + escapeHtml(title) + "</p>";
-        html += '<div class="caption-select-actions">';
-        html += '<button type="button" class="caption-select-action-btn" id="caption-select-all">' + escapeHtml(selAll) + "</button>";
-        html += '<button type="button" class="caption-select-action-btn" id="caption-select-none">' + escapeHtml(selNone) + "</button>";
-        html += "</div></div>";
+        lastGeneratedUsernames = list.slice();
+        var html = '<div class="caption-results-header"><p class="caption-results-title">' + escapeHtml(title) + "</p>";
+        if (!isMobileViewport()) {
+            html += '<div class="caption-select-actions">';
+            html += '<button type="button" class="caption-select-action-btn" id="caption-select-all">' + escapeHtml(selAll) + "</button>";
+            html += '<button type="button" class="caption-select-action-btn" id="caption-select-none">' + escapeHtml(selNone) + "</button>";
+            html += "</div>";
+        }
+        html += "</div>";
         html += '<ol class="caption-results-list">';
         list.forEach(function(u) {
-            html += '<li class="caption-result-row"><label class="caption-select-label">';
-            html += '<input type="checkbox" class="caption-pick" />';
-            html += '<span class="caption-text">' + escapeHtml(u) + "</span>";
-            html += "</label></li>";
+            if (isMobileViewport()) {
+                html += '<li class="caption-result-row"><span class="caption-text">' + escapeHtml(u) + "</span></li>";
+            } else {
+                html += '<li class="caption-result-row"><label class="caption-select-label">';
+                html += '<input type="checkbox" class="caption-pick" />';
+                html += '<span class="caption-text">' + escapeHtml(u) + "</span>";
+                html += "</label></li>";
+            }
         });
         html += "</ol>";
-        html += '<p class="caption-copy-footnote">' + escapeHtml(copyHint) + "</p>";
+        if (!isMobileViewport()) {
+            html += '<p class="caption-copy-footnote">' + escapeHtml(copyHint) + "</p>";
+        }
         resultArea.innerHTML = html;
         resultArea.classList.remove("hidden");
     });
 
     btnCopy.addEventListener("click", function() {
+        if (isMobileViewport()) {
+            if (!lastGeneratedUsernames.length) return;
+            var mobileText = lastGeneratedUsernames.join("\n").trim();
+            if (!mobileText) return;
+            navigator.clipboard.writeText(mobileText).then(function() {
+                btnCopy.textContent = gt("Copied!");
+                btnCopy.classList.add("copied");
+                setTimeout(function() {
+                    btnCopy.textContent = gt("Copy");
+                    btnCopy.classList.remove("copied");
+                }, 1500);
+            });
+            return;
+        }
         var picked = resultArea.querySelectorAll(".caption-pick:checked");
         if (!picked.length) {
             if (resultArea.querySelector(".caption-pick")) {

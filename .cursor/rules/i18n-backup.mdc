@@ -12,23 +12,15 @@ Ogni volta che **aggiungi o modifichi** testi tradotti (file sotto `tools/locale
 - **Nome cartella** (come gli snapshot già presenti): `italian-language-YYYYMMDD-HHmmss`
 - **Struttura:** `locale/it/LC_MESSAGES/django.po`, `djangojs.po` e `locale/en/LC_MESSAGES/django.po` (copia dal progetto `Tools_Site`).
 
-**Retention:** nella cartella di backup tieni al massimo **5** snapshot `italian-language-*` (i più recenti). Elimina i più vecchi dopo ogni copia, così la cartella non cresce all’infinito.
-
 Esegui in PowerShell:
 
 ```powershell
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-$backupBase = "C:\Users\eugen\OneDrive\Documents\Tools_Site_i18n_backups"
-$root = "$backupBase\italian-language-$stamp"
+$root = "C:\Users\eugen\OneDrive\Documents\Tools_Site_i18n_backups\italian-language-$stamp"
 $src = "C:\Users\eugen\OneDrive\Documents\Tools_Site\tools\locale"
 New-Item -ItemType Directory -Path "$root\locale\it\LC_MESSAGES", "$root\locale\en\LC_MESSAGES" -Force | Out-Null
 Copy-Item "$src\it\LC_MESSAGES\django.po", "$src\it\LC_MESSAGES\djangojs.po" "$root\locale\it\LC_MESSAGES\" -Force
 Copy-Item "$src\en\LC_MESSAGES\django.po" "$root\locale\en\LC_MESSAGES\" -Force
-# Mantieni solo le 5 cartelle più recenti (nome con data/ora ordinabile lessicograficamente)
-Get-ChildItem $backupBase -Directory -Filter "italian-language-*" |
-    Sort-Object Name -Descending |
-    Select-Object -Skip 5 |
-    Remove-Item -Recurse -Force
 ```
 
 Se in un turno **non** tocchi file di traduzione, questo passo non serve.

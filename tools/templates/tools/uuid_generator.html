@@ -4,7 +4,7 @@
 {% block title %}{% trans "UUID Generator" %}{% endblock %}
 {% block body_class %}text-tool uuid-generator{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428g">
 <style>
 .uuid-generator .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
 .uuid-generator .form-group input[type="number"] { -moz-appearance: textfield; }
@@ -22,6 +22,108 @@
     .uuid-generator .button-group { justify-content: space-between; }
 }
 body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d0e8f9; color: #003f7f; }
+@media (max-width: 480px) {
+    /* Mobile: layout compatto */
+    body.uuid-generator .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+        display: flex;
+        flex-direction: column;
+    }
+    body.uuid-generator .site-main .container .form-group {
+        order: 2;
+        margin-bottom: 12px !important;
+    }
+    body.uuid-generator .site-main .container #uuid-result {
+        order: 3;
+        width: 338px !important;
+        max-width: 338px !important;
+        margin: 0 auto 12px auto !important; /* 12px dai bottoni */
+        padding: 16px !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        box-sizing: border-box !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-result {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+    }
+    body.uuid-generator .site-main .container .button-group {
+        order: 4;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+    body.uuid-generator .site-main .container .button-group button {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+    }
+    /* Input numero: stessi colori del campo username generator */
+    body.uuid-generator .site-main .container #uuid-count,
+    body.uuid-generator .site-main .container #uuid-count:focus {
+        width: 338px !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #0f2f55 !important;
+        -webkit-text-fill-color: #0f2f55 !important;
+    }
+    body.uuid-generator .site-main .container #uuid-count::placeholder {
+        color: #444 !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-count,
+    body.dark-mode.uuid-generator .site-main .container #uuid-count:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-count::placeholder {
+        color: #333 !important;
+    }
+    /* Generate: mai blu persistente, tap come Word Counter */
+    body.uuid-generator .site-main .container #btn-generate,
+    body.uuid-generator .site-main .container #btn-generate:hover,
+    body.uuid-generator .site-main .container #btn-generate:focus,
+    body.uuid-generator .site-main .container #btn-generate:focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transform: scale(1) !important;
+    }
+    body.uuid-generator .site-main .container #btn-generate:active {
+        transform: scale(1.03) !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #btn-generate,
+    body.dark-mode.uuid-generator .site-main .container #btn-generate:hover,
+    body.dark-mode.uuid-generator .site-main .container #btn-generate:focus,
+    body.dark-mode.uuid-generator .site-main .container #btn-generate:focus-visible {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #btn-generate:active {
+        transform: scale(1.03) !important;
+    }
+}
 </style>
 {% endblock %}
 {% get_current_language as CURRENT_LANGUAGE %}

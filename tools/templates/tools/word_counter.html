@@ -6,7 +6,7 @@
 {% block body_class %}word-counter{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=21">
 {% endblock %}
 
 {% block content %}
@@ -17,12 +17,15 @@
         <a href="{% url 'help_text_tools' %}">{% trans "Tips for preparing text for publishing or SEO" %}</a>
     </p>
 
-    <form method="post">
+    <form id="word-counter-form" method="post" action="{% url 'word_counter' %}">
         {% csrf_token %}
 
-        <textarea name="text" placeholder="{% trans 'Enter your text here...' %}" rows="10">{{ text }}</textarea>
+        <textarea id="word-counter-text" name="text" placeholder="{% trans 'Enter your text here...' %}" rows="10">{{ text }}</textarea>
 
-        <div class="result">
+        <div id="word-counter-result" class="result"
+            data-lbl-words="{% trans 'Words' %}"
+            data-lbl-chars="{% trans 'Characters' %}"
+            data-placeholder="{% trans 'Click a button below to count.' %}">
             {% if count_words is not None %}
                 <div class="result-item">
                     <span class="result-label">{% trans "Words" %}</span>
@@ -63,4 +66,75 @@
     </div>
 
 </div>
+<script>
+(function() {
+    if (!window.matchMedia('(max-width: 480px)').matches) return;
+    var form = document.getElementById('word-counter-form');
+    var resultEl = document.getElementById('word-counter-result');
+    var ta = document.getElementById('word-counter-text');
+    if (!form || !resultEl) return;
+
+    function esc(s) {
+        if (s === null || s === undefined) return '';
+        var d = document.createElement('div');
+        d.textContent = String(s);
+        return d.innerHTML;
+    }
+    function renderResult(d) {
+        var lblW = resultEl.getAttribute('data-lbl-words') || '';
+        var lblC = resultEl.getAttribute('data-lbl-chars') || '';
+        var ph = resultEl.getAttribute('data-placeholder') || '';
+        var html = '';
+        if (d.count_words !== null && d.count_words !== undefined) {
+            html += '<div class="result-item"><span class="result-label">' + esc(lblW) + '</span><span class="result-value">' + esc(d.count_words) + '</span></div>';
+        }
+        if (d.count_chars !== null && d.count_chars !== undefined) {
+            html += '<div class="result-item"><span class="result-label">' + esc(lblC) + '</span><span class="result-value">' + esc(d.count_chars) + '</span></div>';
+        }
+        if (!html) {
+            html = '<p class="result-placeholder">' + esc(ph) + '</p>';
+        }
+        resultEl.innerHTML = html;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var fd = new FormData(form);
+        /* Con preventDefault(), FormData(form) non include il submitter: Django non vede count_*_btn. */
+        var submitter = e.submitter;
+        if (!submitter && document.activeElement && form.contains(document.activeElement)) {
+            var ae = document.activeElement;
+            if (ae.getAttribute && ae.getAttribute('type') === 'submit' && ae.getAttribute('name')) {
+                submitter = ae;
+            }
+        }
+        if (submitter && submitter.getAttribute('name')) {
+            fd.append(submitter.getAttribute('name'), submitter.getAttribute('value') || '');
+        }
+        var csrfInput = form.querySelector('[name="csrfmiddlewaretoken"]');
+        var headers = { 'X-Requested-With': 'XMLHttpRequest' };
+        if (csrfInput && csrfInput.value) {
+            headers['X-CSRFToken'] = csrfInput.value;
+        }
+        fetch(form.action || window.location.pathname, {
+            method: 'POST',
+            body: fd,
+            headers: headers,
+            credentials: 'same-origin'
+        }).then(function(r) {
+            if (!r.ok) throw new Error('bad status');
+            return r.json();
+        }).then(function(data) {
+            if (!data || !data.ok) throw new Error('bad payload');
+            if (ta && typeof data.text === 'string') ta.value = data.text;
+            renderResult(data);
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
+        }).catch(function() {
+            form.submit();
+        });
+    });
+})();
+</script>
 {% endblock %}

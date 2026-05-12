@@ -13,7 +13,31 @@ document.addEventListener("DOMContentLoaded", function() {
     var resultArea = document.getElementById("result-area");
     var errorBox = document.getElementById("remove-spaces-error");
     var btnTransform = document.getElementById("btn-transform");
+    var btnUndo = document.getElementById("btn-undo");
     var btnCopy = document.getElementById("btn-copy");
+    var mobileUndoStack = [];
+    var optionsWrap = document.querySelector(".remove-spaces .text-tool-options");
+    var errorOriginalParent = errorBox ? errorBox.parentNode : null;
+    var errorOriginalNext = errorBox ? errorBox.nextSibling : null;
+
+    function placeErrorForViewport() {
+        if (!errorBox || !optionsWrap || !errorOriginalParent) return;
+        if (window.innerWidth <= 480) {
+            if (errorBox.parentNode !== optionsWrap.parentNode || errorBox.previousElementSibling !== optionsWrap) {
+                optionsWrap.insertAdjacentElement("afterend", errorBox);
+            }
+            return;
+        }
+        if (errorBox.parentNode !== errorOriginalParent) {
+            if (errorOriginalNext && errorOriginalNext.parentNode === errorOriginalParent) {
+                errorOriginalParent.insertBefore(errorBox, errorOriginalNext);
+            } else {
+                errorOriginalParent.appendChild(errorBox);
+            }
+        }
+    }
+    placeErrorForViewport();
+    window.addEventListener("resize", placeErrorForViewport);
 
     function showError(message) {
         if (!errorBox) return;
@@ -27,6 +51,15 @@ document.addEventListener("DOMContentLoaded", function() {
         errorBox.classList.add("hidden");
     }
 
+    function isMobileView() {
+        return window.innerWidth <= 480;
+    }
+
+    function setUndoVisible(visible) {
+        if (!btnUndo) return;
+        btnUndo.hidden = !visible;
+    }
+
     btnTransform.addEventListener("click", function() {
         var text = input.value;
         var mode = document.querySelector('input[name="mode"]:checked').value;
@@ -36,6 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
             resultArea.textContent = "";
             resultArea.classList.add("hidden");
             if (outcomeStack) outcomeStack.classList.remove("remove-spaces--result-first");
+            mobileUndoStack = [];
+            setUndoVisible(false);
             showError(tr("Please enter text to process", "Inserisci del testo"));
             return;
         }
@@ -48,8 +83,19 @@ document.addEventListener("DOMContentLoaded", function() {
             out = text.replace(/\s+/g, " ").trim();
         }
 
+        if (isMobileView()) {
+            mobileUndoStack.push(text);
+            input.value = out;
+            resultArea.textContent = "";
+            resultArea.classList.add("hidden");
+            if (outcomeStack) outcomeStack.classList.remove("remove-spaces--result-first");
+            setUndoVisible(true);
+            return;
+        }
+
         resultArea.textContent = out;
         resultArea.classList.remove("hidden");
+        setUndoVisible(false);
         if (outcomeStack) {
             if (out.length > LONG_OUTPUT_CHARS) {
                 outcomeStack.classList.add("remove-spaces--result-first");
@@ -59,16 +105,37 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    if (btnUndo) {
+        btnUndo.addEventListener("click", function() {
+            if (!mobileUndoStack.length) return;
+            input.value = mobileUndoStack.pop();
+            setUndoVisible(mobileUndoStack.length > 0);
+            clearError();
+        });
+    }
+
     btnCopy.addEventListener("click", function() {
-        var text = resultArea.textContent;
+        var text = isMobileView() ? (input.value || "") : (resultArea.textContent || "");
         if (!text || text === "(empty)") return;
         navigator.clipboard.writeText(text).then(function() {
             btnCopy.textContent = gettext('Copied!');
             btnCopy.classList.add("copied");
+            if (window.innerWidth <= 480) {
+                requestAnimationFrame(function() {
+                    btnCopy.blur();
+                    setTimeout(function() { btnCopy.blur(); }, 0);
+                });
+            }
             setTimeout(function() {
                 btnCopy.textContent = gettext('Copy');
                 btnCopy.classList.remove("copied");
             }, 1500);
         });
+    });
+
+    window.addEventListener("resize", function() {
+        if (!isMobileView()) {
+            setUndoVisible(false);
+        }
     });
 });

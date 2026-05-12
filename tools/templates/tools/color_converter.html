@@ -9,7 +9,6 @@
 .color-converter .color-preview { width: 100%; max-width: 280px; height: 80px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 16px; }
 .color-converter .form-group input[type="text"] { font-family: monospace; }
 .color-converter .form-group label { margin-top: 12px; }
-.color-converter .form-group .field-label { display: block; margin-top: 12px; font-weight: 600; color: #333; }
 .color-converter .color-copy-group { display: flex; flex-wrap: nowrap; gap: 12px; margin-top: 12px; margin-bottom: 0; }
 .color-converter .color-copy-group button { min-width: 140px; }
 /* Desktop: Copy HEX a sinistra, Copy RGB al CENTRO del container, Copy HSL a DESTRA del container */
@@ -57,7 +56,7 @@
     <h1>{% trans "Color Converter" %}</h1>
     <p class="tool-desc">{% trans "Convert between HEX, RGB, and HSL. Pick a color or enter a HEX code." %}</p>
     <div class="form-group">
-        <div class="field-label">{% trans "Preview" %}</div>
+        <label>{% trans "Preview" %}</label>
         <div id="color-preview" class="color-preview" style="background: #003f7f;"></div>
     </div>
     <div class="form-group">

@@ -4,7 +4,7 @@
 {% block title %}{% trans "Bio Generator" %}{% endblock %}
 {% block body_class %}text-tool bio-gen{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260426a">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428h">
 <style>
 .bio-gen .button-group button { min-width: 140px; }
 .bio-gen .result-area:not(.error) {
@@ -116,6 +116,162 @@ body.dark-mode.bio-gen .site-main .container .result-area .caption-select-action
     color: #0056b3 !important;
     -webkit-text-fill-color: #0056b3 !important;
 }
+@media (max-width: 480px) {
+    .bio-gen .text-tool-row {
+        margin-bottom: 0px !important;
+    }
+    body.bio-gen .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+        display: flex;
+        flex-direction: column;
+    }
+    /* Mobile: bottoni larghi 338px */
+    body.bio-gen .site-main .container .button-group {
+        order: 4;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    body.bio-gen .site-main .container .button-group button {
+        flex: 0 0 338px !important;
+        min-width: 338px !important;
+        width: 338px !important;
+        max-width: 338px !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+    }
+    /* Mobile: campo testo come Username Generator */
+    body.bio-gen .site-main .container #bio-niche,
+    body.bio-gen .site-main .container #bio-niche:focus {
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #0f2f55 !important;
+        -webkit-text-fill-color: #0f2f55 !important;
+    }
+    body.bio-gen .site-main .container #bio-niche::placeholder {
+        color: #444 !important;
+    }
+    body.dark-mode.bio-gen .site-main .container #bio-niche,
+    body.dark-mode.bio-gen .site-main .container #bio-niche:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+    }
+    body.dark-mode.bio-gen .site-main .container #bio-niche::placeholder {
+        color: #333 !important;
+    }
+    body.bio-gen .site-main .container #result-area {
+        order: 3;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+    }
+    /* Mobile: bottoni mai blu dopo tap/focus (come richiesto) */
+    body.bio-gen .site-main .container .button-group #btn-generate,
+    body.bio-gen .site-main .container .button-group #btn-generate:hover,
+    body.bio-gen .site-main .container .button-group #btn-generate:focus,
+    body.bio-gen .site-main .container .button-group #btn-generate:focus-visible,
+    body.bio-gen .site-main .container .button-group #btn-generate:active,
+    body.bio-gen .site-main .container .button-group #btn-copy,
+    body.bio-gen .site-main .container .button-group #btn-copy:hover,
+    body.bio-gen .site-main .container .button-group #btn-copy:focus,
+    body.bio-gen .site-main .container .button-group #btn-copy:focus-visible,
+    body.bio-gen .site-main .container .button-group #btn-copy:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        transform: scale(1) !important;
+    }
+    body.bio-gen .site-main .container .button-group #btn-generate:active,
+    body.bio-gen .site-main .container .button-group #btn-copy:active {
+        transform: scale(1.03) !important;
+    }
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:hover,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:focus,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:focus-visible,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:hover,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:focus,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:focus-visible,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:active {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:active {
+        transform: scale(1.03) !important;
+    }
+    /* Mobile: menu stesso colore di Username Generator */
+    body.bio-gen #bio-type-trigger,
+    body.bio-gen #bio-type-trigger:hover,
+    body.bio-gen #bio-type-trigger:active,
+    body.bio-gen #bio-type-trigger:focus,
+    body.bio-gen #bio-type-trigger:focus-visible,
+    body.bio-gen #bio-platform-trigger,
+    body.bio-gen #bio-platform-trigger:hover,
+    body.bio-gen #bio-platform-trigger:active,
+    body.bio-gen #bio-platform-trigger:focus,
+    body.bio-gen #bio-platform-trigger:focus-visible {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.bio-gen #bio-type-wrap .text-tool-select-menu,
+    body.bio-gen #bio-platform-wrap .text-tool-select-menu {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+    }
+    body.bio-gen #bio-type-wrap .text-tool-select-menu li,
+    body.bio-gen #bio-platform-wrap .text-tool-select-menu li {
+        color: #003f7f !important;
+    }
+    body.dark-mode.bio-gen #bio-type-trigger,
+    body.dark-mode.bio-gen #bio-type-trigger:hover,
+    body.dark-mode.bio-gen #bio-type-trigger:active,
+    body.dark-mode.bio-gen #bio-type-trigger:focus,
+    body.dark-mode.bio-gen #bio-type-trigger:focus-visible,
+    body.dark-mode.bio-gen #bio-platform-trigger,
+    body.dark-mode.bio-gen #bio-platform-trigger:hover,
+    body.dark-mode.bio-gen #bio-platform-trigger:active,
+    body.dark-mode.bio-gen #bio-platform-trigger:focus,
+    body.dark-mode.bio-gen #bio-platform-trigger:focus-visible {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.bio-gen #bio-type-wrap .text-tool-select-menu,
+    body.dark-mode.bio-gen #bio-platform-wrap .text-tool-select-menu {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
+    body.dark-mode.bio-gen #bio-type-wrap .text-tool-select-menu li,
+    body.dark-mode.bio-gen #bio-platform-wrap .text-tool-select-menu li {
+        color: var(--text-secondary) !important;
+    }
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -159,5 +315,5 @@ body.dark-mode.bio-gen .site-main .container .result-area .caption-select-action
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/bio_generator.js' %}?v=20260426d"></script>
+<script src="{% static 'tools/js/bio_generator.js' %}?v=20260428b"></script>
 {% endblock %}

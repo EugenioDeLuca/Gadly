@@ -85,11 +85,11 @@ h1, h2 {
 
 @media (min-width: 769px) {
     .header-logo-icon {
-        width: 46px;
-        height: 46px;
+        width: 50px;
+        height: 50px;
     }
     .header-logo-text {
-        font-size: 1.55rem;
+        font-size: 1.65rem;
     }
     .header-logo-icon {
         animation: logo-slow-rotate 22s linear infinite;
@@ -106,6 +106,13 @@ h1, h2 {
 
 .header-logo:hover .header-logo-text {
     color: #007BFF;
+}
+
+/* Desktop: forza dimensione logo text (evita override da regole base successive). */
+@media (min-width: 769px) {
+    .header-logo-text {
+        font-size: 1.65rem !important;
+    }
 }
 
 .header-actions {
@@ -412,6 +419,10 @@ body.dark-mode .header-dropdown-item:hover {
     color: #007BFF;
 }
 
+.header-link-mobile-only {
+    display: none !important;
+}
+
 .header-link.active {
     background: #003f7f;
     color: white;
@@ -621,12 +632,15 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         padding: 10px 20px;
         margin: 0;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 17px !important;
         transition: background 0.2s;
         text-align: center;
         justify-content: center;
         white-space: nowrap;
         flex-shrink: 0;
+    }
+    .header-nav .header-link-mobile-only {
+        display: inline-flex !important;
     }
     .header-nav .header-link:hover {
         background: transparent;
@@ -696,6 +710,42 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
 
 /* Mobile */
 @media (max-width: 480px) {
+    :root {
+        --mobile-btn-width: 352px;
+        --mobile-btn-height: 52px;
+    }
+
+    /* Global mobile button sizing baseline (single source of truth). Escluso Word Counter: stili dedicati in word-counter.css. */
+    body:not(.word-counter) .site-main .container button:not(.tool-fav):not(.tool-quick-nav-toggle):not(.mobile-home-fab-link),
+    body:not(.word-counter) .site-main .container .shortcuts-btn,
+    body:not(.word-counter) .site-main .container .category-btn,
+    body:not(.word-counter) .site-main .container input[type="button"],
+    body:not(.word-counter) .site-main .container input[type="submit"] {
+        width: min(100%, var(--mobile-btn-width)) !important;
+        max-width: var(--mobile-btn-width) !important;
+        min-height: var(--mobile-btn-height) !important;
+        height: var(--mobile-btn-height) !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        border-radius: 12px !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    body .site-main .container .button-group,
+    body .site-main .container .button-wrapper,
+    body .site-main .container .panel-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
     h1 {
         font-size: 1.5em !important;
         font-weight: 700 !important;
@@ -707,11 +757,13 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         padding: 14px 16px;
     }
     .header-logo-icon {
-        width: 42px;
-        height: 42px;
+        width: 48px;
+        height: 48px;
+        animation: logo-slow-rotate 22s linear infinite;
+        transform-origin: center;
     }
     .header-logo-text {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
     }
     .header-nav {
         top: 70px;
@@ -725,7 +777,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     }
     .header-link {
         padding: 10px 14px;
-        font-size: 1rem;
+        font-size: 1.08rem;
         min-height: 44px;
         display: inline-flex;
         align-items: center;
@@ -765,6 +817,20 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 38vw;
+    }
+    /* Mobile header: mostra solo la lingua alternativa (nasconde quella attiva). */
+    .header-lang-form {
+        gap: 0;
+    }
+    .header-lang-form .header-lang-btn.is-active {
+        display: none !important;
+    }
+    .header-lang-form .header-lang-btn:not(.is-active) {
+        width: 2.25rem;
+        min-width: 2.25rem;
+        background: rgba(0, 123, 255, 0.15);
+        border-color: rgba(0, 123, 255, 0.5);
+        color: #007BFF;
     }
 
     /* Mobile nav: allow scrolling if it overflows */
@@ -828,28 +894,52 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     }
 
     /* Mobile: bottoni come homepage (stile category-btn) */
-    body:not(.homepage):not(.image-editor) .site-main .container button,
-    body:not(.homepage):not(.image-editor) .site-main .container .button-group button,
-    body:not(.homepage):not(.image-editor) .site-main .faq-container button,
-    body:not(.homepage):not(.image-editor) .site-main .container input[type="submit"],
-    body:not(.homepage):not(.image-editor) .site-main .container input[type="button"],
-    body:not(.homepage):not(.image-editor) .site-main .container .btn {
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container .button-group button,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"],
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"],
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container .btn {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         border: 2px solid #003f7f !important;
         color: #003f7f !important;
         font-weight: 700 !important;
         min-height: 52px !important;
         border-radius: 12px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .container button:hover,
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .container .button-group button:hover,
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .faq-container button:hover,
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .container input[type="submit"]:hover,
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .container input[type="button"]:hover,
-    body:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter) .site-main .container .btn:hover {
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container button:hover,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container .button-group button:hover,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .faq-container button:hover,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container input[type="submit"]:hover,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container input[type="button"]:hover,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container .btn:hover {
         background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
         border-color: #002d5c !important;
         color: #003f7f !important;
+    }
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:focus,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:focus-visible,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:focus,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:focus-visible,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:focus,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:focus-visible,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:focus,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:active {
+        transform: scale(1.03) !important;
     }
 
     /* Mobile: layout errore come Translator (niente margin, stesso stile compatto) */
@@ -883,9 +973,102 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     body.dark-mode:not(.homepage) .site-main .container .calc-result.error,
     body.dark-mode:not(.homepage) .site-main .container #file-results.error,
     body.dark-mode:not(.homepage) .site-main .container .remove-spaces-error {
-        background: #fff5f5 !important;
+        background: rgba(220, 80, 80, 0.15) !important;
         border-color: #fcc !important;
+        color: #e88 !important;
+    }
+
+    /* Batch mobile text-tools: uniforma layout senza toccare desktop */
+    body.text-tool .site-main .container .tool-help {
+        margin-bottom: 20px !important;
+        font-size: 1rem !important;
+    }
+    body.dark-mode.text-tool .site-main .container .tool-help a {
+        color: #7eb8ff !important;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    body.dark-mode.text-tool .site-main .container .tool-help a:hover {
+        color: #a8d4ff !important;
+    }
+    body.text-tool .site-main .container .form-group label,
+    body.text-tool .site-main .container .diff-column label {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+    body.text-tool .site-main .container textarea,
+    body.text-tool .site-main .container textarea:focus {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-height: 280px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    body.text-tool .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+    body.text-tool .site-main .container .button-group button {
+        flex: 1 1 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        height: 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+    }
+
+    /* Mobile globale: tutti i bottoni Copy con stesso layout/colori di Remove Spaces */
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    }
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy:focus,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy:focus {
+        transform: scale(1) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied,
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:hover,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover {
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
         color: #c00 !important;
+    }
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:hover,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover {
+        border-color: #fcc !important;
+        background: rgba(220, 80, 80, 0.15) !important;
+        color: #e88 !important;
+    }
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy:active,
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:active,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy:active,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:active {
+        transform: scale(1.03) !important;
     }
 
     /* Pagine help: mostra bottone "Back to tool" in basso a sinistra */
@@ -939,7 +1122,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         background: #003f7f;
         color: white;
         box-shadow: none;
-        border: none;
+        border: 2px solid #dc2626;
         text-decoration: none;
         transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -962,9 +1145,53 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     }
 
     body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
-    body.homepage .site-main .container { flex: 1; margin: 8px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
+    /* Stessi margini orizzontali di Word Counter (6px) così la fascia utile e --mobile-btn-width coincidono. */
+    body.homepage .site-main .container { flex: 1; margin: 8px 6px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 16px auto 28px !important; min-height: 0; }
+
+    /* Tutte le pagine help: mobile-only, contenuto 338px e testo a sinistra */
+    body.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.help-page .site-main .container h1,
+    body.help-page .site-main .container .tool-desc,
+    body.help-page .site-main .container .help-section,
+    body.help-page .site-main .container .help-section h2,
+    body.help-page .site-main .container .help-section p,
+    body.help-page .site-main .container .help-section ul,
+    body.help-page .site-main .container .help-section li,
+    body.help-page .site-main .container .help-section pre,
+    body.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+
+    /* CV Generator mobile: larghezza reale 338px (override finale) */
+    body.cv-generator .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+        box-sizing: border-box !important;
+    }
+    body.cv-generator .site-main .container .text-tool-grid,
+    body.cv-generator .site-main .container .form-group,
+    body.cv-generator .site-main .container .panel-card,
+    body.cv-generator .site-main .container .button-group,
+    body.cv-generator .site-main .container .export-controls {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 }
 
 /* Small mobile */
@@ -976,18 +1203,23 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         top: 66px;
     }
     .header-logo-icon {
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
+        animation: logo-slow-rotate 22s linear infinite;
+        transform-origin: center;
     }
     .header-logo-text {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
     }
     .header-logo-text {
         max-width: 34vw;
     }
     .header-link {
         padding: 10px 12px;
-        font-size: 0.95rem;
+        font-size: 1.02rem;
+    }
+    .header-nav .header-link {
+        font-size: 17px !important;
     }
     .header-actions .theme-toggle {
         padding: 10px 12px;
@@ -1002,7 +1234,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         padding-bottom: 28px;
     }
     body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
-    body.homepage .site-main .container { flex: 1; margin: 8px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
+    body.homepage .site-main .container { flex: 1; margin: 8px 6px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 12px auto 28px !important; min-height: 0; }
 }

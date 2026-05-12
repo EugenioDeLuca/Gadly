@@ -206,32 +206,32 @@ body {
     }
 
     /* Dark mode mobile: bottoni tool come homepage (stile category-btn) */
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container .button-group button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .faq-container button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container input[type="submit"],
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container input[type="button"],
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator) .site-main .container .btn {
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container .button-group button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .faq-container button,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container input[type="submit"],
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container input[type="button"],
+    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container .btn {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border: 2px solid #b0c4de !important;
         color: #b0c4de !important;
     }
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container .button-group button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .faq-container button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container input[type="submit"]:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container input[type="button"]:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator) .site-main .container .btn:hover {
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container .button-group button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .faq-container button:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container input[type="submit"]:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container input[type="button"]:hover,
+    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container .btn:hover {
         background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
         border-color: #003f7f !important;
         color: #b0c4de !important;
     }
 
-    /* Dark mode mobile: FAB Back to Home - sfondo azzurrino, casetta blu scuro, bordino bianco */
+    /* Dark mode mobile: FAB Back to Home - sfondo azzurrino, casetta blu scuro, bordo rosso */
     body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
         background: #b0c4de !important;
         color: #002d5c !important;
-        border: 2px solid rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid #dc2626 !important;
     }
     body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         fill: #002d5c !important;
@@ -526,10 +526,12 @@ body.dark-mode .shortcuts-btn {
     border-color: #e84c4c;
 }
 
-body.dark-mode .shortcuts-btn:hover {
-    background: #e84c4c;
-    color: white;
-    border-color: #b01830;
+@media (hover: hover) and (pointer: fine) {
+    body.dark-mode .shortcuts-btn:hover {
+        background: #e84c4c;
+        color: white;
+        border-color: #b01830;
+    }
 }
 
 /* Theme toggle – stesso effetto e stessa dimensione evidenziamento di header-link (Home, FAQ, About) */

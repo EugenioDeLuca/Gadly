@@ -107,6 +107,10 @@
 .word-counter .result-placeholder {
     color: #94a3b8;
     margin: 0;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 body.dark-mode .word-counter .result-value {
@@ -167,6 +171,11 @@ body.dark-mode .word-counter .result-value {
 /* Desktop: Back to Home - 12px come gli altri tool */
 .word-counter .home-link-wrap {
     margin-top: 12px;
+    text-align: center;
+}
+
+/* Help testi: link “torna al tool” allineato a sinistra (pagina tips) */
+body.word-counter.help-page .home-link-wrap {
     text-align: center;
 }
 
@@ -241,6 +250,8 @@ body.dark-mode .word-counter .result-value {
     }
     .word-counter .result-placeholder {
         color: #999;
+        text-align: center;
+        width: 100%;
     }
     .word-counter .tool-desc {
         margin-bottom: 8px;
@@ -274,30 +285,37 @@ body.dark-mode .word-counter .result-value {
         -webkit-appearance: none;
         appearance: none;
         transition: transform 0.05s ease-out;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
     body.word-counter .site-main .container .button-group button:focus {
         transform: scale(1) !important;
     }
-    body.word-counter .site-main .container .button-group button:hover,
-    body.word-counter .site-main .container .button-group button:active {
-        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-        border-color: #003f7f !important;
-        transition: transform 0.05s ease-out !important;
+    /* Touch: sul tap non cambiare sfondo (evita lampo); hover gradient solo con mouse */
+    @media (hover: hover) and (pointer: fine) {
+        body.word-counter .site-main .container .button-group button:hover {
+            background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+            border: 2px solid #003f7f !important;
+            color: #003f7f !important;
+            transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+        }
     }
     body.word-counter .site-main .container .button-group button:active {
-        transform: scale(1.05) !important;
+        transform: scale(1.03) !important;
     }
     body.dark-mode.word-counter .site-main .container .button-group button:focus {
         transform: scale(1) !important;
     }
-    body.dark-mode.word-counter .site-main .container .button-group button:hover,
-    body.dark-mode.word-counter .site-main .container .button-group button:active {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border-color: var(--text-secondary) !important;
-        transition: transform 0.05s ease-out !important;
+    @media (hover: hover) and (pointer: fine) {
+        body.dark-mode.word-counter .site-main .container .button-group button:hover {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+            border: 2px solid var(--text-secondary) !important;
+            color: var(--text-secondary) !important;
+            transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+        }
     }
     body.dark-mode.word-counter .site-main .container .button-group button:active {
-        transform: scale(1.05) !important;
+        transform: scale(1.03) !important;
     }
     /* Desktop text su mobile - nascondi versione corta se presente */
     .word-counter .button-group .btn-text-mobile {
@@ -305,6 +323,16 @@ body.dark-mode .word-counter .result-value {
     }
     .word-counter .button-group .btn-text-desktop {
         display: inline;
+    }
+
+    /* Dark mobile: theme imposta link container = #b0c4de come il testo — link “tips” più visibile */
+    body.dark-mode.word-counter .tool-help a {
+        color: #7eb8ff !important;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    body.dark-mode.word-counter .tool-help a:hover {
+        color: #a8d4ff !important;
     }
 }
 

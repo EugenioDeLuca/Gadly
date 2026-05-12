@@ -124,8 +124,67 @@ body.faq-page .site-main .faq-container {
 }
 
 @media (max-width: 480px) {
+    body.faq-page .site-main .container {
+        margin: 8px 6px 24px 6px !important;
+        padding: 16px 8px 24px 8px !important;
+    }
     .faq-page .faq-container {
-        margin: 0 10px;
-        padding: 20px 16px;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 auto !important;
+        padding: 20px 0 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .faq-page .faq-container > * {
+        width: 338px !important;
+        max-width: 338px !important;
+        box-sizing: border-box;
+    }
+    .faq-page .faq-container .faq-section,
+    .faq-page .faq-container .faq-intro,
+    .faq-page .faq-container .faq-footer {
+        width: 338px !important;
+        max-width: 338px !important;
+    }
+    .faq-page .faq-container .faq-section h2,
+    .faq-page .faq-container .faq-item h3,
+    .faq-page .faq-container .faq-item p {
+        text-align: center !important;
+    }
+    /* Link più visibili in mobile (stile help/json formatter) */
+    .faq-page .faq-container .faq-item p a,
+    .faq-page .faq-container .faq-item p a:visited {
+        color: #0056b3 !important;
+        font-weight: 700 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 2px;
+    }
+    .faq-page .faq-container .faq-item p a:hover,
+    .faq-page .faq-container .faq-item p a:focus,
+    .faq-page .faq-container .faq-item p a:focus-visible,
+    .faq-page .faq-container .faq-item p a:active {
+        color: #007bff !important;
+        text-decoration: underline !important;
+    }
+    body.dark-mode.faq-page .faq-container .faq-item p a,
+    body.dark-mode.faq-page .faq-container .faq-item p a:visited {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        font-weight: 700 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 2px;
+    }
+    body.dark-mode.faq-page .faq-container .faq-item p a:hover,
+    body.dark-mode.faq-page .faq-container .faq-item p a:focus,
+    body.dark-mode.faq-page .faq-container .faq-item p a:focus-visible,
+    body.dark-mode.faq-page .faq-container .faq-item p a:active {
+        color: #a9d1ff !important;
+        -webkit-text-fill-color: #a9d1ff !important;
+        text-decoration: underline !important;
     }
 }

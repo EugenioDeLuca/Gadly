@@ -15,15 +15,6 @@
         fab.style.display = "block";
 
         var link = fab.querySelector(".mobile-home-fab-link");
-        function applyFixedTone() {
-            // Fixed style by request: always light FAB with red border.
-            fab.style.setProperty("--home-fab-bg", "#d6e5f5");
-            fab.style.setProperty("--home-fab-icon", "#002d5c");
-            fab.style.setProperty("--home-fab-border", "#dc2626");
-            fab.style.setProperty("--home-fab-icon-stroke", "rgba(0, 45, 92, 0.22)");
-        }
-        applyFixedTone();
-
         var dragging = false;
         var mouseDragging = false;
         var pausedOutside = false;
@@ -63,6 +54,7 @@
             fab.style.right = "auto";
             fab.style.bottom = "auto";
             fab.style.transform = "none";
+            updateAdaptiveTone(left, top, size);
             return { left: left, top: top };
         }
 
@@ -81,109 +73,52 @@
             }).join("");
         }
 
-        function parseRgbColor(color) {
-            if (!color || typeof color !== "string") return null;
-            var m = color.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i);
-            if (!m) return null;
-            return {
-                r: clamp(Math.round(parseFloat(m[1])), 0, 255),
-                g: clamp(Math.round(parseFloat(m[2])), 0, 255),
-                b: clamp(Math.round(parseFloat(m[3])), 0, 255),
-                a: (m[4] == null ? 1 : clamp(parseFloat(m[4]), 0, 1))
-            };
-        }
+        function updateAdaptiveTone(left, top, size) {
+            if (document.body.classList.contains("dark-mode")) {
+                fab.style.removeProperty("--home-fab-bg");
+                fab.style.removeProperty("--home-fab-icon");
+                fab.style.removeProperty("--home-fab-border");
+                fab.style.removeProperty("--home-fab-icon-stroke");
+                return;
+            }
+            var w = window.innerWidth || 1;
+            var h = window.innerHeight || 1;
+            var cx = left + (size / 2);
+            var cy = top + (size / 2);
+            var xNorm = clamp(cx / w, 0, 1);
+            var yNorm = clamp(cy / h, 0, 1);
+            // Keep lower-left area dark in light mode.
+            // The background gets darker mostly toward the right side,
+            // so horizontal position should drive the blend more than vertical.
+            var t = clamp((xNorm * 0.88) + (yNorm * 0.12), 0, 1);
+            // Start adapting earlier so icon darkens sooner in colored area.
+            var baseBlend = clamp((t - 0.30) / 0.58, 0, 1);
+            var blend = Math.pow(baseBlend, 0.72);
+            // Icon should become dark already around center area.
+            var iconBlend = clamp((t - 0.22) / 0.34, 0, 1);
 
-        function parseColorFromBackgroundImage(bgImage) {
-            if (!bgImage || typeof bgImage !== "string" || bgImage === "none") return null;
-            var matches = bgImage.match(/rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+(?:\s*,\s*[\d.]+)?\s*\)/ig);
-            if (!matches || !matches.length) return null;
-            var sumR = 0, sumG = 0, sumB = 0, sumA = 0, count = 0;
-            for (var i = 0; i < matches.length; i++) {
-                var m = matches[i].match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i);
-                if (!m) continue;
-                sumR += clamp(Math.round(parseFloat(m[1])), 0, 255);
-                sumG += clamp(Math.round(parseFloat(m[2])), 0, 255);
-                sumB += clamp(Math.round(parseFloat(m[3])), 0, 255);
-                sumA += (m[4] == null ? 1 : clamp(parseFloat(m[4]), 0, 1));
-                count += 1;
-            }
-            if (!count) return null;
-            return {
-                r: Math.round(sumR / count),
-                g: Math.round(sumG / count),
-                b: Math.round(sumB / count),
-                a: sumA / count
-            };
-        }
-
-        function relativeLuminance(rgb) {
-            function channel(v) {
-                var c = v / 255;
-                return c <= 0.03928 ? (c / 12.92) : Math.pow((c + 0.055) / 1.055, 2.4);
-            }
-            return (0.2126 * channel(rgb.r)) + (0.7152 * channel(rgb.g)) + (0.0722 * channel(rgb.b));
-        }
-
-        function resolveBackgroundAtPoint(x, y) {
-            var stack = [];
-            try {
-                stack = document.elementsFromPoint(Math.round(x), Math.round(y)) || [];
-            } catch (e) {
-                stack = [];
-            }
-            for (var i = 0; i < stack.length; i++) {
-                var candidate = stack[i];
-                if (!candidate) continue;
-                if (fab.contains(candidate)) continue; // Ignore FAB itself to avoid feedback flicker.
-                if (
-                    candidate.closest &&
-                    candidate.closest(".site-header, .header-nav, .tool-quick-nav, .tool-popular-nav, .cv-preview-dock, .cv-preview-modal")
-                ) {
-                    continue;
-                }
-                var cs = window.getComputedStyle(candidate);
-                var bg = parseRgbColor(cs.backgroundColor);
-                if (bg && bg.a > 0.01) return bg;
-            }
-            var bodyCs = window.getComputedStyle(document.body);
-            var bodyBg = parseRgbColor(bodyCs.backgroundColor);
-            if (bodyBg && bodyBg.a > 0.01) return bodyBg;
-            return { r: 248, g: 252, b: 255, a: 1 };
-        }
-
-        function averageBackgroundAround(x, y, size) {
-            var s = Math.max(18, Math.round((size || 58) * 0.28));
-            var points = [
-                { x: x, y: y },
-                { x: x - s, y: y },
-                { x: x + s, y: y },
-                { x: x, y: y - s },
-                { x: x, y: y + s },
-                { x: x - s, y: y - s },
-                { x: x + s, y: y - s },
-                { x: x - s, y: y + s },
-                { x: x + s, y: y + s }
-            ];
-            var sumR = 0, sumG = 0, sumB = 0, sumW = 0;
-            for (var i = 0; i < points.length; i++) {
-                var p = points[i];
-                var rx = clamp(Math.round(p.x), 0, Math.max(0, (window.innerWidth || 1) - 1));
-                var ry = clamp(Math.round(p.y), 0, Math.max(0, (window.innerHeight || 1) - 1));
-                var c = resolveBackgroundAtPoint(rx, ry);
-                if (!c) continue;
-                var w = (i === 0) ? 7 : 1; // center point dominates perceived background
-                sumR += c.r * w;
-                sumG += c.g * w;
-                sumB += c.b * w;
-                sumW += w;
-            }
-            if (!sumW) return { r: 255, g: 255, b: 255, a: 1 };
-            return {
-                r: Math.round(sumR / sumW),
-                g: Math.round(sumG / sumW),
-                b: Math.round(sumB / sumW),
-                a: 1
-            };
+            // Light mode adaptive shade: dark in bright area, lighter in darker area.
+            var dark = { r: 0, g: 63, b: 127 };
+            // Match dark-mode FAB background in lower-right zone.
+            var light = { r: 176, g: 196, b: 222 };
+            var bg = rgbToHex(
+                lerp(dark.r, light.r, blend),
+                lerp(dark.g, light.g, blend),
+                lerp(dark.b, light.b, blend)
+            );
+            var iconDark = { r: 214, g: 229, b: 245 };
+            // Match dark-mode icon color in lower-right zone.
+            var iconLight = { r: 0, g: 45, b: 92 };
+            var icon = rgbToHex(
+                lerp(iconDark.r, iconLight.r, iconBlend),
+                lerp(iconDark.g, iconLight.g, iconBlend),
+                lerp(iconDark.b, iconLight.b, iconBlend)
+            );
+            var strokeAlpha = 0.42 - (0.24 * iconBlend);
+            fab.style.setProperty("--home-fab-bg", bg);
+            fab.style.setProperty("--home-fab-icon", icon);
+            fab.style.setProperty("--home-fab-border", "rgba(255, 255, 255, 0.9)");
+            fab.style.setProperty("--home-fab-icon-stroke", "rgba(0, 45, 92, " + strokeAlpha.toFixed(2) + ")");
         }
 
         function getCoords(e) {
@@ -201,6 +136,10 @@
             fab.style.bottom = FAB_DEFAULT_BOTTOM;
             fab.style.left = "auto";
             fab.style.top = "auto";
+            setTimeout(function() {
+                var rect = fab.getBoundingClientRect();
+                updateAdaptiveTone(rect.left, rect.top, rect.width || 58);
+            }, 0);
         }
 
         function onStart(e) {
@@ -333,7 +272,16 @@
             draggedAt = 0;
             syncFabToViewport();
         });
-        // No color recompute listeners: fixed FAB style should remain stable.
+
+        // Recompute adaptive FAB colors when theme changes (dark <-> light).
+        var lastDarkMode = document.body.classList.contains("dark-mode");
+        var themeObserver = new MutationObserver(function() {
+            var nowDarkMode = document.body.classList.contains("dark-mode");
+            if (nowDarkMode === lastDarkMode) return;
+            lastDarkMode = nowDarkMode;
+            syncFabToViewport();
+        });
+        themeObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
     }
 
     if (document.readyState === "loading") {

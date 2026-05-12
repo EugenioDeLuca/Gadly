@@ -8,6 +8,9 @@
 <style>
 .username-gen .form-hint { display: block; font-size: 0.85rem; color: #7f8c8d; margin-top: 4px; }
 .username-gen .button-group button { min-width: 140px; }
+.text-tool .text-tool-row {
+    margin-bottom: 0px;
+}
 /* Solo desktop: input fino in fondo al container, Copy tutto a destra */
 @media (min-width: 769px) {
     .username-gen .form-group input,
@@ -203,6 +206,29 @@ body.dark-mode.username-gen .site-main .container .result-area .caption-select-a
     color: #0056b3 !important;
     -webkit-text-fill-color: #0056b3 !important;
 }
+@media (max-width: 480px) {
+    body.username-gen .site-main .container {
+        display: flex;
+        flex-direction: column;
+    }
+    body.username-gen .site-main .container .form-hint {
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        text-align: center !important;
+    }
+    body.username-gen .site-main .container #result-area {
+        order: 3;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+    }
+    body.username-gen .site-main .container .button-group {
+        order: 4;
+        gap: 12px !important;
+    }
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -246,5 +272,5 @@ body.dark-mode.username-gen .site-main .container .result-area .caption-select-a
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/username_generator.js' %}?v=20260419e"></script>
+<script src="{% static 'tools/js/username_generator.js' %}?v=20260428a"></script>
 {% endblock %}

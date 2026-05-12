@@ -21,16 +21,12 @@
 .lorem-ipsum .text-tool-select-menu li:hover { background: #e8f4fd; }
 .lorem-ipsum .text-tool-select-menu li.selected { background: #d0e8f9; font-weight: 600; }
 .lorem-ipsum .text-tool-select.open .text-tool-select-menu li.selected { display: none; }
-.lorem-ipsum .form-group input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+.lorem-ipsum .form-group input[type="number"] { -moz-appearance: textfield; }
 .lorem-ipsum .form-group input[type="number"]::-webkit-outer-spin-button,
 .lorem-ipsum .form-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .lorem-ipsum .result-area { white-space: pre-wrap; }
 .lorem-ipsum .button-group { width: 100%; justify-content: space-between; gap: 12px; }
 .lorem-ipsum .button-group button { min-width: 140px; }
-@media (min-width: 769px) {
-    body.lorem-ipsum .site-main { padding-bottom: 24px !important; }
-    body.lorem-ipsum .site-main .container { margin-top: 24px !important; margin-bottom: 24px !important; }
-}
 @media (max-width: 768px) { .lorem-ipsum .form-group input, .lorem-ipsum .form-group .text-tool-select { max-width: 100%; } .lorem-ipsum .text-tool-select-trigger { max-width: 100%; } }
 </style>
 {% endblock %}
@@ -39,9 +35,9 @@
     <h1>{% trans "Lorem Ipsum Generator" %}</h1>
     <p class="tool-desc">{% trans "Generate placeholder text for mockups and drafts." %}</p>
     <div class="form-group">
-        <label for="lorem-type-trigger">{% trans "Type" %}</label>
+        <label>{% trans "Type" %}</label>
         <div class="text-tool-select" id="lorem-type-wrap" data-value="paragraphs">
-            <button type="button" id="lorem-type-trigger" class="text-tool-select-trigger">{% trans "Paragraphs" %}</button>
+            <button type="button" class="text-tool-select-trigger">{% trans "Paragraphs" %}</button>
             <ul class="text-tool-select-menu">
                 <li data-value="paragraphs" class="selected">{% trans "Paragraphs" %}</li>
                 <li data-value="sentences">{% trans "Sentences" %}</li>
