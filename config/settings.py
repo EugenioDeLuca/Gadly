@@ -51,6 +51,14 @@ if _render_hostname:
     _render_origin = f"https://{_render_hostname}"
     if _render_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(_render_origin)
+# Custom domains in ALLOWED_HOSTS must be trusted for POST (login/admin) over HTTPS.
+for _host in ALLOWED_HOSTS:
+    _host = (_host or "").strip()
+    if not _host or _host.startswith("."):
+        continue
+    _origin = f"https://{_host}"
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
 
 
 # Application definition
