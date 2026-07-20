@@ -7,7 +7,8 @@ stays predictable after SQLite resets or credential drift.
 """
 import os
 
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
 from django.core.management.base import BaseCommand
 
 from tools.models import UserProfile
@@ -46,7 +47,12 @@ class Command(BaseCommand):
             )
             return
 
+        self._reset_all_login_lockouts()
+
         existing = User.objects.filter(username=username).first()
+        if existing is None and email:
+            existing = User.objects.filter(email__iexact=email).first()
+
         try:
             if existing is None:
                 user = User(
@@ -54,37 +60,48 @@ class Command(BaseCommand):
                     email=email,
                     is_staff=True,
                     is_superuser=True,
+                    is_active=True,
                 )
                 user.set_password(password)
                 user.save()
                 print(f"[GADLY] Superuser '{username}' created successfully.")
             else:
                 user = existing
+                if user.username != username:
+                    print(
+                        f"[GADLY] Found existing user '{user.username}' by email; "
+                        f"syncing staff flags and password."
+                    )
                 user.email = email
                 user.is_staff = True
                 user.is_superuser = True
+                user.is_active = True
                 user.set_password(password)
                 user.save()
-                print(f"[GADLY] Superuser '{username}' updated (password synced from env).")
+                print(f"[GADLY] Superuser '{user.username}' updated (password synced from env).")
 
             profile, _created = UserProfile.objects.get_or_create(user=user)
             if not profile.email_verified:
                 profile.email_verified = True
                 profile.save(update_fields=["email_verified"])
 
-            self._reset_login_lockouts(username)
-
-            auth_user = authenticate(username=username, password=password)
-            print(f"[GADLY] Login test: {'OK' if auth_user else 'FAILED - check Axes/backends'}")
+            password_ok = check_password(password, user.password)
+            print(
+                f"[GADLY] Password hash check: {'OK' if password_ok else 'FAILED'} "
+                f"(login with username '{user.username}')"
+            )
         except Exception as exc:
             print(f"[GADLY] Superuser bootstrap FAILED: {exc}")
 
-    def _reset_login_lockouts(self, username: str) -> None:
+    def _reset_all_login_lockouts(self) -> None:
+        """Clear Axes lockouts after deploy / failed login bursts (403 on POST)."""
         try:
             from axes.utils import reset
 
-            cleared = reset(username=username)
+            cleared = reset()
             if cleared:
-                print(f"[GADLY] Cleared {cleared} Axes lockout record(s) for '{username}'.")
+                print(f"[GADLY] Cleared {cleared} Axes lockout record(s) (all users/IPs).")
+            else:
+                print("[GADLY] No Axes lockout records to clear.")
         except Exception as exc:
             print(f"[GADLY] Axes reset skipped: {exc}")

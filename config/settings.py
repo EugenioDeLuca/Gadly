@@ -38,27 +38,53 @@ else:
     DEBUG = _debug_raw.strip().lower() in ('1', 'true', 'yes', 'on')
 
 # In produzione: imposta ALLOWED_HOSTS (es. ALLOWED_HOSTS=gadly.it,www.gadly.it)
-_allowed = os.environ.get('ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()] if _allowed else []
+_PRODUCTION_HOSTS = ("gadly.it", "www.gadly.it")
+
+
+def _normalize_host(entry: str) -> str:
+    """Strip scheme/trailing slash so env typos do not break CSRF origins."""
+    host = (entry or "").strip()
+    if host.startswith("https://"):
+        host = host[8:]
+    elif host.startswith("http://"):
+        host = host[7:]
+    return host.rstrip("/")
+
+
+_allowed = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = (
+    [_normalize_host(h) for h in _allowed.split(",") if _normalize_host(h)] if _allowed else []
+)
 # Render: aggiunge automaticamente l'hostname del servizio
 if _render_hostname and _render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_render_hostname)
+# Always allow the public custom domains in production (login POST needs matching CSRF).
+if not DEBUG:
+    for _prod_host in _PRODUCTION_HOSTS:
+        if _prod_host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_prod_host)
 
 # CSRF trusted origins (comma-separated), with Render hostname auto-added.
-_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()] if _csrf_trusted else []
+_csrf_trusted = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(",") if o.strip()] if _csrf_trusted else []
+
+
+def _add_csrf_origin(host: str) -> None:
+    host = _normalize_host(host)
+    if not host or host.startswith("."):
+        return
+    origin = f"https://{host}"
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
+
 if _render_hostname:
-    _render_origin = f"https://{_render_hostname}"
-    if _render_origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(_render_origin)
-# Custom domains in ALLOWED_HOSTS must be trusted for POST (login/admin) over HTTPS.
+    _add_csrf_origin(_render_hostname)
 for _host in ALLOWED_HOSTS:
-    _host = (_host or "").strip()
-    if not _host or _host.startswith("."):
-        continue
-    _origin = f"https://{_host}"
-    if _origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(_origin)
+    _add_csrf_origin(_host)
+if not DEBUG:
+    for _prod_host in _PRODUCTION_HOSTS:
+        _add_csrf_origin(_prod_host)
 
 
 # Application definition
@@ -94,6 +120,12 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Login brute-force protection (django-axes)
+_axes_enabled_raw = os.environ.get("AXES_ENABLED")
+AXES_ENABLED = (
+    _axes_enabled_raw.strip().lower() not in ("0", "false", "no", "off")
+    if _axes_enabled_raw is not None
+    else True
+)
 AXES_FAILURE_LIMIT_DEFAULT = 5
 AXES_FAILURE_LIMIT_STAFF = 3
 AXES_FAILURE_LIMIT = "tools.auth_throttle.axes_failure_limit"
@@ -290,3 +322,6 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    # Share session/CSRF across gadly.it and www.gadly.it
+    SESSION_COOKIE_DOMAIN = ".gadly.it"
+    CSRF_COOKIE_DOMAIN = ".gadly.it"
