@@ -34,18 +34,15 @@ class Command(BaseCommand):
                 "Add it in Render Environment."
             )
             return
-        if not email:
-            print(
-                "[GADLY] Superuser NOT created: DJANGO_SUPERUSER_EMAIL is empty. "
-                "Add it in Render Environment."
-            )
-            return
         if not password:
             print(
                 "[GADLY] Superuser NOT created: DJANGO_SUPERUSER_PASSWORD is empty. "
                 "Add it in Render Environment."
             )
             return
+        if not email:
+            email = f"{username}@gadly.it"
+            print(f"[GADLY] EMAIL missing; using placeholder {email}")
 
         self._reset_all_login_lockouts()
 
@@ -90,6 +87,10 @@ class Command(BaseCommand):
                 f"[GADLY] Password hash check: {'OK' if password_ok else 'FAILED'} "
                 f"(login with username '{user.username}')"
             )
+            print("[GADLY] === ADMIN LOGIN (copy username exactly) ===")
+            print(f"[GADLY] URL: https://www.gadly.it/admin/")
+            print(f"[GADLY] Username: {user.username}")
+            print(f"[GADLY] Password: value of DJANGO_SUPERUSER_PASSWORD (len={len(password)})")
         except Exception as exc:
             print(f"[GADLY] Superuser bootstrap FAILED: {exc}")
 
