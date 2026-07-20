@@ -1,12 +1,15 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% get_current_language as CURRENT_LANGUAGE %}
 {% block title %}{% trans "JSON Formatter" %}{% endblock %}
 {% block body_class %}text-tool json-formatter{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Format, minify, and validate JSON online: paste objects or arrays, fix syntax errors, and copy the result. Handy for APIs, configs, and logs—processed in your browser.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428e">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520f">
 <style>
+.text-tool.json-formatter .tool-desc { color: #555; line-height: 1.55; }
 .json-formatter .form-group {
     margin-bottom: 12px; /* 12px tra textarea e messaggio errore/risultato */
 }
@@ -84,6 +87,32 @@
     word-break: normal;
 }
 @media (max-width: 768px) {
+    /* Mobile: focus textarea come Word Counter (bordo grigio + alone blu) */
+    body.json-formatter.text-tool .site-main .container .form-group textarea {
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.json-formatter.text-tool .site-main .container .form-group textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.json-formatter.text-tool .site-main .container .form-group textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    /* Mobile: 12px tra textarea e errore (base.css azzera i margin degli errori) */
+    body.json-formatter.text-tool .site-main .container .form-group textarea,
+    body.json-formatter.text-tool .site-main .container .form-group textarea:focus {
+        margin-bottom: 0 !important;
+    }
+    body.json-formatter.json-formatter-has-error.text-tool .site-main .container .form-group {
+        margin-bottom: 0 !important;
+    }
+    body.json-formatter.text-tool .site-main .container #json-result.json-result.error {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+    }
     .json-formatter .button-group {
         justify-content: flex-start;
         width: 100%;
@@ -115,17 +144,38 @@
         text-align: center !important;
     }
     /* Mobile: textarea come Word Counter (larghezza/layout) */
-    body.json-formatter .site-main .container .form-group textarea,
-    body.json-formatter .site-main .container .form-group textarea:focus {
+    body.json-formatter .site-main .container .form-group textarea {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
         min-height: 280px !important;
         padding: 16px !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 0 !important;
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.json-formatter .site-main .container .form-group textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .form-group textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.json-formatter.json-formatter-has-error.text-tool .site-main .container .form-group {
+        margin-bottom: 0 !important;
+    }
+    body.json-formatter.text-tool .site-main .container #json-result.json-result.error {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
     }
     /* Mobile: bottoni stessa dimensione dei bottoni Word Counter */
     body.json-formatter .site-main .container .button-group button {
@@ -173,7 +223,7 @@ body.dark-mode .json-formatter .json-result.error {
 {% block content %}
 <div class="container">
     <h1>{% trans "JSON Formatter" %}</h1>
-    <p class="tool-desc">{% trans "Format, minify, or validate JSON. Paste your JSON below." %}</p>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Rendi il JSON leggibile con indentazione, ottieni una versione su una riga e controlla la sintassi prima di copiare. Utile per risposte API, file di configurazione e log.{% else %}Pretty-print JSON, minify to one line, and validate syntax before you copy. Handy for API responses, config files, and logs.{% endif %}</p>
     <p class="tool-help">
         <a href="{% url 'help_json_guide' %}">{% trans "What is JSON and how to fix common errors" %}</a>
     </p>
@@ -197,5 +247,5 @@ body.dark-mode .json-formatter .json-result.error {
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/json_formatter.js' %}"></script>
+<script src="{% static 'tools/js/json_formatter.js' %}?v=20260520a"></script>
 {% endblock %}

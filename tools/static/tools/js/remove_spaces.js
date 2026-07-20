@@ -16,28 +16,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var btnUndo = document.getElementById("btn-undo");
     var btnCopy = document.getElementById("btn-copy");
     var mobileUndoStack = [];
-    var optionsWrap = document.querySelector(".remove-spaces .text-tool-options");
-    var errorOriginalParent = errorBox ? errorBox.parentNode : null;
-    var errorOriginalNext = errorBox ? errorBox.nextSibling : null;
-
-    function placeErrorForViewport() {
-        if (!errorBox || !optionsWrap || !errorOriginalParent) return;
-        if (window.innerWidth <= 480) {
-            if (errorBox.parentNode !== optionsWrap.parentNode || errorBox.previousElementSibling !== optionsWrap) {
-                optionsWrap.insertAdjacentElement("afterend", errorBox);
-            }
-            return;
-        }
-        if (errorBox.parentNode !== errorOriginalParent) {
-            if (errorOriginalNext && errorOriginalNext.parentNode === errorOriginalParent) {
-                errorOriginalParent.insertBefore(errorBox, errorOriginalNext);
-            } else {
-                errorOriginalParent.appendChild(errorBox);
-            }
-        }
-    }
-    placeErrorForViewport();
-    window.addEventListener("resize", placeErrorForViewport);
 
     function showError(message) {
         if (!errorBox) return;
@@ -52,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function isMobileView() {
-        return window.innerWidth <= 480;
+        return window.matchMedia("(max-width: 480px)").matches;
     }
 
     function setUndoVisible(visible) {
@@ -120,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
         navigator.clipboard.writeText(text).then(function() {
             btnCopy.textContent = gettext('Copied!');
             btnCopy.classList.add("copied");
-            if (window.innerWidth <= 480) {
+            if (isMobileView()) {
                 requestAnimationFrame(function() {
                     btnCopy.blur();
                     setTimeout(function() { btnCopy.blur(); }, 0);
@@ -133,9 +111,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    window.addEventListener("resize", function() {
-        if (!isMobileView()) {
+    var mobileViewMq = window.matchMedia("(max-width: 480px)");
+    function onMobileViewChange() {
+        if (!mobileViewMq.matches) {
             setUndoVisible(false);
         }
-    });
+    }
+    if (mobileViewMq.addEventListener) {
+        mobileViewMq.addEventListener("change", onMobileViewChange);
+    } else if (mobileViewMq.addListener) {
+        mobileViewMq.addListener(onMobileViewChange);
+    }
 });

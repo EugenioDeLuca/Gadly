@@ -13,11 +13,6 @@
         return window.innerWidth >= 769;
     }
 
-    function syncCopyButtonWidth() {
-        if (!btnCompare || !btnCopy) return;
-        btnCopy.style.minWidth = btnCompare.offsetWidth + 'px';
-    }
-
     function syncTextareaHeights() {
         if (!text1 || !text2) return;
         if (!isDesktop()) {
@@ -41,6 +36,12 @@
         text2.style.overflowY = useScroll ? 'auto' : 'hidden';
     }
 
+    function syncErrorLayoutState() {
+        var showError = diffResult.classList.contains('error') &&
+            !diffResult.classList.contains('hidden');
+        document.body.classList.toggle('diff-checker-has-error', showError);
+    }
+
     function runDiff() {
         var oldStr = text1.value;
         var newStr = text2.value;
@@ -49,12 +50,14 @@
         if (!oldStr && !newStr) {
             diffResult.classList.add('error');
             diffResult.textContent = gettext('Enter or paste text in both boxes');
+            syncErrorLayoutState();
             return;
         }
 
         if (typeof Diff === 'undefined') {
             diffResult.classList.add('error');
             diffResult.textContent = gettext('Diff library not loaded');
+            syncErrorLayoutState();
             return;
         }
 
@@ -75,18 +78,15 @@
 
         diffResult.innerHTML = '';
         diffResult.appendChild(fragment);
+        syncErrorLayoutState();
     }
 
     btnCompare.addEventListener('click', runDiff);
+    syncErrorLayoutState();
     text1.addEventListener('input', syncTextareaHeights);
     text2.addEventListener('input', syncTextareaHeights);
     window.addEventListener('resize', syncTextareaHeights);
-    window.addEventListener('resize', syncCopyButtonWidth);
     syncTextareaHeights();
-    syncCopyButtonWidth();
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(syncCopyButtonWidth);
-    }
 
     btnCopy.addEventListener('click', function () {
         var text = diffResult.textContent;
@@ -94,11 +94,9 @@
         navigator.clipboard.writeText(text).then(function () {
             btnCopy.textContent = gettext('Copied!');
             btnCopy.classList.add('copied');
-            syncCopyButtonWidth();
             setTimeout(function () {
                 btnCopy.textContent = gettext('Copy');
                 btnCopy.classList.remove('copied');
-                syncCopyButtonWidth();
             }, 1500);
         });
     });

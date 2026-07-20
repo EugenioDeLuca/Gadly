@@ -1,45 +1,85 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% get_current_language as CURRENT_LANGUAGE %}
-{% block title %}{% trans "Career & CV Tools" %}{% endblock %}
-{% block body_class %}web-seo text-tools-page{% endblock %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{% trans "Application kit - Career & CV - Gadly" %}{% endblock %}
+{% block body_class %}web-seo text-tools-page career-kit-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Apply for jobs step by step: CV builder, ATS optimizer, cover letter, application email, and interview practice — free on Gadly.' %}">
+{% endblock %}
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260515b">
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
-<style>
-.text-tools-page .container { max-width: 900px; }
-.text-tools-page-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-top:16px; }
-.text-tools-page .tool-btn-wrap { width:180px; display:flex; justify-content:center; }
-.text-tools-page .tool-btn { width:180px; height:56px; display:flex; align-items:center; justify-content:center; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:#003f7f; color:#fff; font-weight:600; font-size:1em; text-decoration:none; border-radius:12px; transition:transform .2s, background .2s; padding:10px 14px; box-sizing:border-box; }
-.text-tools-page .tool-btn:hover { background:#0056b3; transform:scale(1.04); }
-.text-tools-page-top { margin-top:26px; padding-top:20px; border-top:1px solid rgba(0, 63, 127, 0.15); text-align:center; }
-.text-tools-page-top-title { margin:0 0 8px; font-size:1rem; font-weight:700; color:#003f7f; }
-.text-tools-page-top-desc { margin:0 auto 14px; max-width:32rem; font-size:.92rem; line-height:1.45; color:#555; }
-.text-tools-page-top-links { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
-.text-tools-page-top-links a { display:flex; align-items:center; justify-content:center; width:180px; height:50px; padding:0 12px; border-radius:12px; text-decoration:none; font-size:.95rem; font-weight:600; color:#003f7f; background:#e8f4fd; border:2px solid #003f7f; transition:background .2s,border-color .2s,color .2s,transform .16s ease,box-shadow .16s ease; }
-.text-tools-page-top-links a:hover { background:#d0e8f9; border-color:#002d5c; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,63,127,.12); }
-@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } .text-tools-page-top { margin-top:20px; padding-top:16px; } }
-</style>
+<link rel="stylesheet" href="{% static 'tools/css/career-kit.css' %}?v=45">
 {% endblock %}
 {% block content %}
 <div class="container">
-  <h1>{% trans "Career & CV Tools" %}</h1>
-  <p class="tool-desc">{% trans "Create and improve CVs and job application content quickly." %}</p>
-  <div class="text-tools-page-grid">
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cv_generator' %}">{% trans "CV Generator" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cv_optimizer' %}">{% trans "CV Optimizer" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cover_letter_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'application_email_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a></div>
-  </div>
-  <section class="text-tools-page-top" aria-label="{% trans 'Top career tools' %}">
-    <h2 class="text-tools-page-top-title">{% trans "Top tools" %}</h2>
-    <p class="text-tools-page-top-desc">{% trans "Handy entry points if you are not sure where to start." %}</p>
-    <div class="text-tools-page-top-links">
-      <a href="{% url 'cv_generator' %}">{% trans "CV Generator" %}</a>
-      <a href="{% url 'cv_optimizer' %}">{% trans "CV Optimizer" %}</a>
-      <a href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a>
+    <h1>{% trans "Application kit" %}</h1>
+    <p class="career-kit-lead tool-desc">{% trans "Everything you need to apply for a job — step by step with Gadly's free Career & CV tools." %}</p>
+
+    <p class="career-kit-path-heading">{% trans "Recommended application path" %}</p>
+    <ol class="career-kit-path" aria-label="{% trans 'Recommended application path' %}">
+        <li class="career-kit-step">
+            <span class="career-kit-step__num" aria-hidden="true">1</span>
+            <div class="career-kit-step__body">
+                <h2 class="career-kit-step__title">{% trans "Create your CV" %}</h2>
+                <p class="career-kit-step__desc">{% trans "Build a clear, professional resume with structured sections you can export when ready." %}</p>
+            </div>
+            <div class="career-kit-step__actions">
+                <a class="career-kit-step__tool" href="{% url 'cv_generator' %}?from=kit">CV</a>
+                <a class="career-kit-step__help" href="{% url 'help_cv_generator' %}?from=kit">{% trans "Guide" %}</a>
+            </div>
+        </li>
+        <li class="career-kit-step">
+            <span class="career-kit-step__num" aria-hidden="true">2</span>
+            <div class="career-kit-step__body">
+                <h2 class="career-kit-step__title">{% trans "Optimize for the job ad" %}</h2>
+                <p class="career-kit-step__desc">{% trans "Upload your CV and compare it with the posting to improve keywords and ATS readability." %}</p>
+            </div>
+            <div class="career-kit-step__actions">
+                <a class="career-kit-step__tool" href="{% url 'cv_optimizer' %}?from=kit">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ottimizza{% else %}{% trans "CV Optimizer" %}{% endif %}</a>
+                <a class="career-kit-step__help" href="{% url 'help_cv_optimizer' %}?from=kit">{% trans "Guide" %}</a>
+            </div>
+        </li>
+        <li class="career-kit-step">
+            <span class="career-kit-step__num" aria-hidden="true">3</span>
+            <div class="career-kit-step__body">
+                <h2 class="career-kit-step__title">{% trans "Write your cover letter" %}</h2>
+                <p class="career-kit-step__desc">{% trans "Draft a cover letter aligned with your profile and the role you are targeting." %}</p>
+            </div>
+            <div class="career-kit-step__actions">
+                <a class="career-kit-step__tool" href="{% url 'cover_letter_generator' %}?from=kit">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}{% trans "Cover Letter" %}{% endif %}</a>
+                <a class="career-kit-step__help" href="{% url 'help_cover_letter' %}?from=kit">{% trans "Guide" %}</a>
+            </div>
+        </li>
+        <li class="career-kit-step">
+            <span class="career-kit-step__num" aria-hidden="true">4</span>
+            <div class="career-kit-step__body">
+                <h2 class="career-kit-step__title">{% trans "Draft the application email" %}</h2>
+                <p class="career-kit-step__desc">{% trans "Prepare a concise email to send your CV and letter to HR or the hiring manager." %}</p>
+            </div>
+            <div class="career-kit-step__actions">
+                <a class="career-kit-step__tool" href="{% url 'application_email_generator' %}?from=kit">{% trans "Email" %}</a>
+                <a class="career-kit-step__help" href="{% url 'help_application_email' %}?from=kit">{% trans "Guide" %}</a>
+            </div>
+        </li>
+        <li class="career-kit-step career-kit-step--optional">
+            <span class="career-kit-step__num" aria-hidden="true">5</span>
+            <div class="career-kit-step__body">
+                <h2 class="career-kit-step__title">{% trans "Practice the interview" %}</h2>
+                <p class="career-kit-step__desc">{% trans "Simulate common interview questions and refine your answers before the real meeting." %}</p>
+            </div>
+            <div class="career-kit-step__actions">
+                <a class="career-kit-step__tool" href="{% url 'interview_simulator' %}?from=kit">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}Interview{% endif %}</a>
+                <a class="career-kit-step__help" href="{% url 'help_interview_simulator' %}?from=kit">{% trans "Guide" %}</a>
+            </div>
+        </li>
+    </ol>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF" aria-hidden="true"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
+        </a>
     </div>
-  </section>
 </div>
 {% endblock %}

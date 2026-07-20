@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Web / SEO Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly web tools: meta tags, sitemap URLs, robots.txt, speed check, regex, cron explainer, and Lorem Ipsum.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -23,7 +26,7 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Web / SEO Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to web and SEO tools." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Accedi a tutti i tool Web e SEO per analizzare meta tag, robots.txt, sitemap, velocita del sito e pattern regex, utili per migliorare visibilita organica e performance.{% else %}Access all Web and SEO tools to analyze meta tags, robots.txt, sitemaps, site speed, and regex patterns to improve organic visibility and technical performance.{% endif %}</p>
   <div class="text-tools-page-grid">
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'meta_tag_checker' %}">{% trans "Meta Tag Checker" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'sitemap_extractor' %}">{% trans "Sitemap Extractor" %}</a></div>

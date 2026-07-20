@@ -2,8 +2,11 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Diff Checker help" %}{% endblock %}
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida "Confronta testi"{% else %}Diff Checker help{% endif %}{% endblock %}
 {% block body_class %}text-tool diff-checker help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Understand Gadly’s diff checker: what the colors mean and how changes are detected.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
 <style>
@@ -32,8 +35,8 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% trans "How the Diff Checker works" %}</h1>
-    <p class="tool-desc">{% trans "Understand the meaning of colors and how changes are detected." %}</p>
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Come funziona "Confronta testi"{% else %}How "Diff Checker" works{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Capisci il significato dei colori in "Confronta testi" e come vengono rilevate le modifiche.{% else %}Understand what the colors mean in "Diff Checker" and how changes are detected.{% endif %}</p>
 
     <div class="help-section">
         <h2>{% trans "Colors" %}</h2>
@@ -49,7 +52,7 @@
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'diff_checker' %}" class="home-link">{% trans "Back to Diff Checker" %}</a>
+        <a href="{% url 'diff_checker' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Confronta testi"{% else %}Back to "Diff Checker"{% endif %}</a>
     </div>
 </div>
 {% endblock %}

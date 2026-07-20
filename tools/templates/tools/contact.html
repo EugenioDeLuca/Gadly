@@ -3,15 +3,18 @@
 {% load i18n %}
 {% block title %}{% trans "Contact - Gadly" %}{% endblock %}
 {% block body_class %}static-page contact-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Contact Gadly for questions, feedback, or support—email and typical response times.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260428c">
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260529i">
 {% endblock %}
 {% block content %}
 <div class="static-container">
     <h1>{% trans "Contact" %}</h1>
 
     <p>{% trans "For questions, feedback, collaborations, partnership proposals, or technical support requests, please write to us at the address below and include as many useful details as possible." %}</p>
-    <p><strong>gadly.contact@proton.me</strong></p>
+    <p>{% trans "Email:" %} <a href="mailto:gadly.contact@proton.me">gadly.contact@proton.me</a></p>
 
     <p>{% trans "We usually reply within 1–2 business days, Monday to Friday. For bug reports, please include the tool name, your device/browser, and a short description of what happened so we can help you faster." %}</p>
 

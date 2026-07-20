@@ -20,7 +20,7 @@
 
 .qr-generator .tool-desc {
     text-align: center;
-    color: #666;
+    color: #555;
     margin: 0 0 24px 0;
     font-size: 1rem;
     line-height: 1.5;
@@ -38,6 +38,144 @@
     font-size: 0.95rem;
     font-weight: 600;
     color: #333;
+}
+
+.qr-content-type {
+    width: 100%;
+}
+
+.qr-type-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto 16px;
+}
+
+.qr-type-tab {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.qr-type-tab:not(.active):hover {
+    border-color: #007BFF;
+    background: #f8fcff;
+    transform: scale(1.03);
+}
+
+.qr-type-tab.active {
+    border-color: #003f7f;
+    background: #003f7f;
+    color: white;
+    cursor: default;
+}
+
+.qr-panel {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.qr-panel--active {
+    display: flex;
+}
+
+.qr-panel textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.qr-panel textarea::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+.qr-panel textarea:focus,
+.qr-field-input:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+
+.qr-field-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.qr-field-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 16px;
+    width: 100%;
+}
+
+.qr-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.qr-field--checkbox {
+    justify-content: flex-end;
+}
+
+.qr-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+}
+
+.qr-field-hint {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.qr-live-hint {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+.qr-custom-select--field .qr-select-trigger {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Errore sopra textarea e Load from file (stesso stile degli altri tool) */
@@ -82,11 +220,37 @@
     text-align: center;
 }
 
-.qr-input-row {
+.qr-error-slot {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0; /* spacing gestito da margin per avere 12px reali sopra/sotto l'errore */
+}
+
+.qr-error-slot--actions {
+    display: none;
+}
+
+.qr-panel[data-panel="text"] {
+    gap: 0;
+}
+
+.qr-panel[data-panel="text"] > label {
+    margin-bottom: 8px;
+}
+
+.qr-controls .qr-panel[data-panel="text"] textarea {
+    margin-bottom: 0;
+}
+
+.qr-generator .qr-panel[data-panel="text"] .result-area.error {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.qr-panel[data-panel="text"] .file-upload-area {
+    margin-top: 12px;
+}
+
+.qr-panel[data-panel="text"] .qr-error-slot:has(.result-area.error) + .file-upload-area {
+    margin-top: 0;
 }
 
 .qr-controls textarea {
@@ -109,6 +273,58 @@
     line-height: 1.5;
     color: #999;
     opacity: 1;
+}
+
+.qr-loaded-file:not(.hidden) {
+    margin-top: 12px;
+}
+
+.qr-loaded-file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border: 2px solid #b8d4f0;
+    border-radius: 12px;
+    background: #f8fcff;
+    font-size: 0.9rem;
+    color: #003f7f;
+}
+
+.qr-loaded-file.hidden {
+    display: none !important;
+}
+
+.qr-loaded-file-label {
+    font-weight: 600;
+}
+
+.qr-loaded-file-name {
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.qr-loaded-file-remove {
+    margin-left: 4px;
+    padding: 0 8px;
+    min-width: 32px;
+    min-height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #666;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.qr-loaded-file-remove:hover {
+    background: #ffe6e6;
+    color: #c82333;
 }
 
 .file-upload-area {
@@ -296,7 +512,7 @@
     font-size: 1rem;
     font-weight: 600;
     background: white;
-    color: #666;
+    color: #000;
     border: 2px solid #ddd;
     border-radius: 12px;
     cursor: pointer;
@@ -308,6 +524,7 @@
     border-color: #e8a5a5;
     background: #ffe6e6;
     color: #c82333;
+    -webkit-text-fill-color: #c82333;
 }
 
 .qr-controls textarea:focus {
@@ -338,8 +555,8 @@
     display: none;
     justify-content: center;
     align-items: center;
-    background: #f8fcff;
-    border: 2px dashed #b8d4f0;
+    background: #e8f4fd;
+    border: 2px dashed #9ec5e8;
     border-radius: 16px;
     min-height: 200px;
 }
@@ -350,11 +567,25 @@
     gap: 16px;
 }
 
+body.dark-mode.qr-generator .qr-result,
+body.dark-mode.qr-generator .qr-result.show {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 2px dashed #b0c4de !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode.qr-generator #qr-output {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
 .download-qr-btn {
     padding: 10px 24px;
     font-size: 0.95rem;
     font-weight: 600;
-    background: #28a745;
+    background: #003f7f;
     color: white;
     border: none;
     border-radius: 12px;
@@ -363,7 +594,116 @@
 }
 
 .download-qr-btn:hover {
-    background: #34c759;
+    background: #0056b3;
+    transform: scale(1.03);
+}
+
+@media (min-width: 769px) {
+    .qr-generator .qr-export-actions #copy-qr-image.copied,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:hover,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:active,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:focus,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:focus-visible {
+        background: #dc3545 !important;
+        background-image: none !important;
+        border: none !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(1) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:hover,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:active,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:focus,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:focus-visible {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    .qr-generator .qr-export-actions .download-qr-btn.downloaded,
+    .qr-generator .qr-export-actions .download-qr-btn.downloaded:hover,
+    .qr-generator .qr-export-actions .download-qr-btn.downloaded:active,
+    .qr-generator .qr-export-actions .download-qr-btn.downloaded:focus,
+    .qr-generator .qr-export-actions .download-qr-btn.downloaded:focus-visible {
+        background: #28a745 !important;
+        background-image: none !important;
+        border: none !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(1) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:active,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:focus-visible {
+        background: #28a745 !important;
+        border-color: #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded,
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded:hover,
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded:active,
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded:focus,
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    .qr-generator:not(.dark-mode) .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        transform: scale(1) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:active,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(126, 226, 160, 0.2) !important;
+        background-color: rgba(126, 226, 160, 0.2) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        font-weight: 600 !important;
+        transform: scale(1) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+}
+
+.qr-export-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.qr-export-actions .download-qr-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
 }
 
 #qr-output {
@@ -382,32 +722,1775 @@
     display: block;
 }
 
-@media (max-width: 768px) {
-    .qr-generator .container {
-        margin: 20px 16px;
-        padding: 28px 24px;
+@media (min-width: 769px) {
+    .qr-mobile-type-picker,
+    .qr-mobile-back {
+        display: none !important;
     }
+
+    .qr-presets-label--mobile {
+        display: none !important;
+    }
+
+    .qr-generator .tool-desc--mobile {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    html.qr-gen-mobile-boot body.qr-generator:not(.qr-mobile--form),
+    body.qr-generator.qr-mobile--pick-type {
+        overflow: hidden;
+        height: 100dvh;
+        overscroll-behavior: none;
+    }
+
+    html.qr-gen-mobile-boot body.qr-generator:not(.qr-mobile--form) .site-main,
+    body.qr-generator.qr-mobile--pick-type .site-main {
+        overflow: hidden;
+        overscroll-behavior: none;
+        max-height: calc(100dvh - var(--site-header-height));
+    }
+
+    body.qr-generator:not(.qr-mobile--form) .qr-controls,
+    body.qr-generator:not(.qr-mobile--form) .qr-result,
+    body.qr-generator:not(.qr-mobile--form) .tool-desc {
+        display: none !important;
+    }
+
+    /* Boot inline: form ripristinato prima che JS esterno aggiunga qr-mobile--form */
+    html.qr-gen-mobile-form-pending body.qr-generator .qr-controls {
+        display: flex !important;
+    }
+
+    html.qr-gen-mobile-form-pending body.qr-generator .qr-mobile-type-picker,
+    html.qr-gen-mobile-form-pending body.qr-generator .tool-desc--desktop {
+        display: none !important;
+    }
+
+    html.qr-gen-mobile-form-pending body.qr-generator .tool-desc--mobile:not([hidden]) {
+        display: block !important;
+    }
+
+    html.qr-gen-mobile-form-pending body.qr-generator .qr-panel {
+        display: none !important;
+    }
+
+    html.qr-gen-mobile-form-pending[data-qr-mobile-type="text"] body.qr-generator .qr-panel[data-panel="text"],
+    html.qr-gen-mobile-form-pending[data-qr-mobile-type="url"] body.qr-generator .qr-panel[data-panel="url"],
+    html.qr-gen-mobile-form-pending[data-qr-mobile-type="wifi"] body.qr-generator .qr-panel[data-panel="wifi"],
+    html.qr-gen-mobile-form-pending[data-qr-mobile-type="vcard"] body.qr-generator .qr-panel[data-panel="vcard"] {
+        display: flex !important;
+    }
+
+    body.qr-generator.qr-mobile--form .qr-controls {
+        display: flex !important;
+    }
+
+    .qr-mobile-type-picker {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .qr-mobile-type-picker__title {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #003f7f;
+        text-align: center;
+        line-height: 1.35;
+    }
+
+    .qr-mobile-type-picker__desc {
+        margin: 0 0 32px;
+        padding: 0 4px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #555;
+        text-align: center;
+        line-height: 1.5;
+    }
+
+    .qr-mobile-type-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        width: 100%;
+    }
+
+    .qr-mobile-type-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        min-height: 108px;
+        padding: 14px 10px;
+        border: 2px solid #003f7f;
+        border-radius: 14px;
+        background: #f8fcff;
+        color: #003f7f;
+        cursor: pointer;
+        box-sizing: border-box;
+        text-align: center;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    .qr-mobile-type-card:active,
+    .qr-mobile-type-card.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    .qr-mobile-type-card__label {
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .qr-mobile-type-card__hint {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #555;
+        line-height: 1.25;
+    }
+
+    .qr-mobile-back {
+        display: none !important;
+        align-items: center;
+        justify-content: center;
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        min-height: 44px;
+        margin: 0 0 28px;
+        padding: 10px 14px;
+        border: 2px solid #003f7f;
+        border-radius: 12px;
+        background: #fff;
+        color: #003f7f;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    .qr-mobile-back:active,
+    .qr-mobile-back.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    html.qr-gen-mobile-boot:not(.qr-gen-mobile-form-pending) body.qr-generator .qr-mobile-type-picker,
+    body.qr-generator.qr-mobile--pick-type .qr-mobile-type-picker {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 0;
+    }
+
+    html.qr-gen-mobile-boot:not(.qr-gen-mobile-form-pending) body.qr-generator .site-main .qr-generator > .container,
+    body.qr-generator.qr-mobile--pick-type .site-main .qr-generator > .container {
+        min-height: calc(100dvh - var(--site-header-height) - 52px);
+    }
+
+    html.qr-gen-mobile-boot:not(.qr-gen-mobile-form-pending) body.qr-generator .qr-mobile-type-picker__title,
+    html.qr-gen-mobile-boot:not(.qr-gen-mobile-form-pending) body.qr-generator .qr-mobile-type-picker__desc,
+    body.qr-generator.qr-mobile--pick-type .qr-mobile-type-picker__title,
+    body.qr-generator.qr-mobile--pick-type .qr-mobile-type-picker__desc {
+        flex-shrink: 0;
+    }
+
+    html.qr-gen-mobile-boot:not(.qr-gen-mobile-form-pending) body.qr-generator .qr-mobile-type-grid,
+    body.qr-generator.qr-mobile--pick-type .qr-mobile-type-grid {
+        flex: 1 1 auto;
+        justify-content: center;
+        min-height: 0;
+    }
+
+    body.qr-generator.qr-mobile--form .qr-mobile-type-picker {
+        display: none !important;
+    }
+
+    body.qr-generator.qr-mobile--form .qr-type-tabs {
+        display: none !important;
+    }
+
+    body.qr-generator.qr-mobile--form .qr-mobile-back {
+        display: inline-flex !important;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-picker__title {
+        color: #ffffff;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-picker__desc {
+        color: #ffffff;
+    }
+
+    body.dark-mode.qr-generator .site-main .qr-generator > .container > h1,
+    body.dark-mode.qr-generator .site-main .qr-generator > .container > .tool-desc--mobile {
+        color: #b0c4de !important;
+    }
+
+    body.qr-generator .tool-desc--desktop {
+        display: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        background-color: transparent;
+        border-color: #7eb8ff;
+        color: #7eb8ff;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-card:active,
+    body.dark-mode.qr-generator .qr-mobile-type-card.tap-active,
+    body.dark-mode.qr-generator .qr-mobile-back:active,
+    body.dark-mode.qr-generator .qr-mobile-back.tap-active,
+    body.dark-mode.qr-generator .qr-actions #generate-qr:active,
+    body.dark-mode.qr-generator .qr-actions #generate-qr.tap-active,
+    body.dark-mode.qr-generator .qr-actions .reset-qr-btn:active,
+    body.dark-mode.qr-generator .qr-actions .reset-qr-btn.tap-active,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn:active,
+    body.dark-mode.qr-generator .qr-export-actions .download-qr-btn.tap-active,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image:active,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.tap-active,
+    body.dark-mode.qr-generator .file-upload-btn:active,
+    body.dark-mode.qr-generator .file-upload-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-card__hint {
+        color: #b0c4de;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-back {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        background-color: transparent;
+        border-color: #7eb8ff;
+        color: #7eb8ff;
+    }
+
+    body.qr-generator .site-main {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    body.qr-generator .site-main .qr-generator {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.qr-generator .site-main .qr-generator > .container,
+    body.dark-mode.qr-generator .site-main .qr-generator > .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 16px auto 24px !important;
+        padding: 16px 8px 24px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+
+    body.qr-generator .site-main .qr-generator > .container > h1,
+    body.qr-generator .site-main .qr-generator > .container > .tool-desc,
+    body.qr-generator .site-main .qr-generator > .container > .qr-mobile-type-picker,
+    body.qr-generator .site-main .qr-generator > .container > .qr-controls,
+    body.qr-generator .site-main .qr-generator > .container > #qr-result,
+    body.qr-generator .site-main .qr-generator > .container > .home-link-wrap {
+        width: 100% !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        box-sizing: border-box !important;
+    }
+
+    .qr-generator .tool-desc {
+        font-size: 0.95rem;
+    }
+
+    .qr-field-input,
+    .qr-panel textarea {
+        font-size: 16px;
+    }
+
+    .qr-panel[data-panel="text"] {
+        align-items: center;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-panel[data-panel="text"] > label {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    /* Light mobile: textarea Text / input URL — focus #007BFF come Word Counter / Translator */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="text"] textarea,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-input,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="url"] .qr-field-input,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-url-input {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="text"] textarea:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="text"] textarea:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-input:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-input:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="url"] .qr-field-input:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-panel[data-panel="url"] .qr-field-input:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-url-input:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-url-input:focus-visible {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    /* Dark mobile: URL / Wi‑Fi / vCard — stesso schema textarea Text (theme.css) */
+    body.dark-mode.qr-generator .site-main .container .qr-controls .qr-field-input,
+    body.dark-mode.qr-generator .site-main .container .qr-controls .qr-field-input:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-controls .qr-field-input:focus-visible {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-controls .qr-field-input::placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        font-family: Arial, sans-serif !important;
+    }
+
+    .qr-panel[data-panel="url"] {
+        align-items: center;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-panel[data-panel="url"] > label {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    /* Mobile: campo URL — 47.5px come dropdown Size / Quiet zone / Error correction */
+    .qr-panel[data-panel="url"] .qr-field-input,
+    .qr-panel[data-panel="url"] #qr-url-input {
+        width: 100% !important;
+        max-width: 338px !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        resize: none !important;
+    }
+
+    .qr-field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .qr-panel[data-panel="wifi"] {
+        align-items: center;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-panel[data-panel="wifi"] .qr-field-grid {
+        width: 100%;
+    }
+
+    .qr-panel[data-panel="wifi"] .qr-field:not(.qr-field--checkbox) > label {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    body.qr-generator .qr-panel[data-panel="wifi"] #qr-wifi-password:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    body.dark-mode.qr-generator .qr-panel[data-panel="wifi"] #qr-wifi-password:disabled {
+        opacity: 0.45;
+    }
+
+    .qr-panel[data-panel="vcard"] {
+        align-items: center;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-panel[data-panel="vcard"] .qr-field-grid {
+        width: 100%;
+    }
+
+    .qr-panel[data-panel="vcard"] .qr-field > label {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    .qr-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 12px;
+        justify-items: stretch;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-option-group {
+        width: 100%;
+        align-items: center;
+    }
+
+    .qr-options .qr-option-group > label {
+        width: 100%;
+        text-align: center;
+    }
+
+    .qr-options .qr-option-group:has(input[type="color"]) {
+        min-width: 0;
+        align-items: stretch;
+        grid-column: 1 / -1;
+    }
+
+    .qr-options .qr-option-group input[type="color"].qr-color-input--proxy-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+    }
+
+    .qr-options .qr-option-group:has(input[type="color"]) > label {
+        font-size: 13px;
+    }
+
+    .qr-options .qr-option-group input[type="color"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 3px !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        display: block !important;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .qr-options .qr-option-group input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    .qr-options .qr-option-group input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: 5px;
+    }
+
+    .qr-options .qr-option-group input[type="color"]::-moz-color-swatch {
+        border: none;
+        border-radius: 5px;
+    }
+
+    .qr-option-group:has(.qr-custom-select) {
+        grid-column: 1 / -1;
+        width: 338px !important;
+        max-width: 338px !important;
+        justify-self: center;
+    }
+
+    .qr-options .qr-option-group:has(.qr-custom-select) > label {
+        font-size: 13px;
+    }
+
+    .qr-custom-select,
+    .qr-custom-select--field {
+        width: 100%;
+    }
+
+    .qr-options .qr-custom-select {
+        width: 338px !important;
+        max-width: 338px !important;
+    }
+
+    .qr-select-trigger {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .qr-options .qr-custom-select .qr-select-trigger {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        transform: scale(1) !important;
+    }
+
+    .qr-options .qr-custom-select .qr-select-trigger:active,
+    .qr-options .qr-custom-select .qr-select-trigger.tap-active,
+    .qr-options .qr-custom-select .qr-select-trigger:hover,
+    .qr-options .qr-custom-select .qr-select-trigger:focus,
+    .qr-options .qr-custom-select .qr-select-trigger:focus-visible {
+        transform: scale(1) !important;
+    }
+
+    .qr-presets-label--desktop {
+        display: none !important;
+    }
+
+    .qr-presets-label--mobile {
+        display: block;
+        flex: 0 0 100%;
+        width: 100%;
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        margin: 0 0 -8px;
+    }
+
+    body.dark-mode.qr-generator .qr-presets-label--mobile {
+        color: #b0c4de;
+    }
+
+    .qr-presets {
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 12px 8px;
+    }
+
+    .qr-preset {
+        padding: 8px 10px !important;
+        font-size: 0.92rem !important;
+        line-height: 1.2 !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+        min-width: 56px !important;
+        box-sizing: border-box !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        background-clip: border-box !important;
+        overflow: hidden !important;
+    }
+
+    body.qr-generator .site-main .container .qr-presets .qr-preset:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-presets .qr-preset:not(.selected),
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-presets .qr-preset:not(.selected):hover,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-presets .qr-preset:not(.selected):active,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-presets .qr-preset:not(.selected).tap-active {
+        font-weight: 400 !important;
+    }
+
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-option-group:has(.qr-custom-select) > label,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-menu li,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-menu li.selected {
+        font-weight: 400 !important;
+    }
+
+    /* 47.5px: specificità alta per battere base.css min-height 52px !important sui button mobile */
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.qr-generator:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.dark-mode.qr-generator:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    body.qr-generator .file-upload-btn {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+
+    body.qr-generator .file-upload-btn {
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .file-upload-btn:active,
+    body.qr-generator .file-upload-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    .qr-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 24px;
+        margin-top: 8px;
+    }
+
+    .qr-actions #generate-qr,
+    .qr-actions .reset-qr-btn {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        min-height: 48px;
+        box-sizing: border-box;
+    }
+
+    .qr-actions #generate-qr:not(:active):not(.tap-active),
+    .qr-actions .reset-qr-btn:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    .qr-export-actions .download-qr-btn:not(.downloaded):not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+    }
+
+    .qr-error-slot--actions {
+        display: none;
+        width: 100%;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .qr-error-slot--actions:has(.result-area.error) {
+        display: block;
+        /* .qr-controls gap 16px + (-4px) = 12px dai preset */
+        margin-top: -4px;
+    }
+
+    .qr-error-slot--actions .result-area.error {
+        margin: 0 !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .qr-error-slot--actions:has(.result-area.error) + .qr-actions {
+        /* .qr-controls gap 16px + (-4px) = 12px sopra Genera codice QR */
+        margin-top: -4px;
+    }
+
+    .qr-panel .qr-error-slot:not(.qr-error-slot--actions):empty {
+        display: none;
+    }
+
+    .qr-export-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 22px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin-top: 8px;
+        box-sizing: border-box;
+    }
+
+    .qr-export-actions .download-qr-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: normal;
+        line-height: 1.25;
+    }
+
+    .file-upload-area {
+        width: 100%;
+    }
+
+    .file-upload-btn {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .qr-generator .qr-export-actions #copy-qr-image.copied,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:hover,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:active,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:focus,
+    .qr-generator .qr-export-actions #copy-qr-image.copied:focus-visible,
+    .qr-generator .qr-export-actions #copy-qr-image.copied.tap-active {
+        background: #fff5f5 !important;
+        background-color: #fff5f5 !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:hover,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:active,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:focus,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied:focus-visible,
+    body.dark-mode.qr-generator .qr-export-actions #copy-qr-image.copied.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+    }
+
     .qr-controls textarea,
     .qr-controls textarea::placeholder {
         font-size: 16px;
     }
+
+    body.qr-generator .site-main .container .qr-controls textarea,
+    body.qr-generator .site-main .container .qr-controls textarea:focus,
+    body.qr-generator .site-main .container .qr-panel textarea,
+    body.qr-generator .site-main .container .qr-panel textarea:focus,
+    body.qr-generator .site-main .container .qr-field-input,
+    body.qr-generator .site-main .container .qr-field-input:focus {
+        border-radius: 12px !important;
+    }
+
+    /* Mobile light: bottoni QR (esclusi da base.css — stesso schema CV Generator) */
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:active,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected),
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected):hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected):focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected):focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected):active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:not(.selected).tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.tap-active {
+        background: #ffe6e6 !important;
+        background-color: #ffe6e6 !important;
+        background-image: none !important;
+        border: 2px solid #e8a5a5 !important;
+        border-color: #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:not(:hover):not(:active):not(.tap-active) {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible {
+        transform: scale(1) !important;
+    }
+
+    /* Preset selezionato: verde LED come CV Generator */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-color: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:not(:active):not(.tap-active) {
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container #generate-qr,
+    body.dark-mode.qr-generator .site-main .container #generate-qr:hover,
+    body.dark-mode.qr-generator .site-main .container #generate-qr:focus,
+    body.dark-mode.qr-generator .site-main .container #generate-qr:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #generate-qr:active,
+    body.dark-mode.qr-generator .site-main .container #generate-qr.tap-active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected),
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected):hover,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected):focus,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected):focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected):active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:not(.selected).tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        background-color: transparent !important;
+        background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    /* Dark mobile: Size / Quiet zone / Error correction — sfondo = menu (#1e2a3a), bordo = testo (#b0c4de) */
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid #b0c4de !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn,
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn:hover,
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn:focus,
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn:active,
+    body.dark-mode.qr-generator .site-main .container .file-upload-btn.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        background-color: transparent !important;
+        background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px dashed #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:not(:hover):not(:active):not(.tap-active) {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:hover,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:focus,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:active,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        background-image: none !important;
+        border: 2px solid #e8a5a5 !important;
+        border-color: #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:focus-visible {
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green:active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected.tap-active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.qr-export-tap-green.tap-active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(126, 226, 160, 0.2) !important;
+        background-color: rgba(126, 226, 160, 0.2) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:not(:active):not(.tap-active) {
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .file-upload-btn,
+    body.qr-generator:not(.dark-mode) .file-upload-btn:hover,
+    body.qr-generator:not(.dark-mode) .file-upload-btn:focus,
+    body.qr-generator:not(.dark-mode) .file-upload-btn:focus-visible,
+    body.qr-generator:not(.dark-mode) .file-upload-btn:active,
+    body.qr-generator:not(.dark-mode) .file-upload-btn.tap-active {
+        background: #e8f4fd !important;
+        border: 2px dashed #b8d4f0 !important;
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card:hover,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card:focus,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card:focus-visible,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card:active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card.tap-active {
+        background: #f8fcff !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .qr-mobile-back,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back:hover,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back:focus,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back:focus-visible,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back:active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back.tap-active {
+        background: #fff !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-type-card,
+    body.dark-mode.qr-generator .qr-mobile-type-card:hover,
+    body.dark-mode.qr-generator .qr-mobile-type-card:focus,
+    body.dark-mode.qr-generator .qr-mobile-type-card:focus-visible,
+    body.dark-mode.qr-generator .qr-mobile-type-card:active,
+    body.dark-mode.qr-generator .qr-mobile-type-card.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        background-color: transparent !important;
+        background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #7eb8ff !important;
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.qr-generator .qr-mobile-back,
+    body.dark-mode.qr-generator .qr-mobile-back:hover,
+    body.dark-mode.qr-generator .qr-mobile-back:focus,
+    body.dark-mode.qr-generator .qr-mobile-back:focus-visible,
+    body.dark-mode.qr-generator .qr-mobile-back:active,
+    body.dark-mode.qr-generator .qr-mobile-back.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        background-color: transparent !important;
+        background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #7eb8ff !important;
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+    }
+
+    body.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:hover,
+    body.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger:active,
+    body.qr-generator .site-main .container .qr-options .qr-custom-select .qr-select-trigger.tap-active {
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .qr-mobile-type-card,
+    body.qr-generator .qr-mobile-back,
+    body.qr-generator .site-main .container #generate-qr,
+    body.qr-generator .site-main .container .reset-qr-btn,
+    body.qr-generator .site-main .container .qr-export-actions .download-qr-btn,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image {
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+
+    body.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active),
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-png:not(.downloaded):not(:active):not(.tap-active),
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-svg:not(.downloaded):not(:active):not(.tap-active),
+    body.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):active,
+    body.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied).tap-active,
+    body.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):active.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-png:not(.downloaded):active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-png:not(.downloaded).tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-png:not(.downloaded):active.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-svg:not(.downloaded):active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-svg:not(.downloaded).tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-svg:not(.downloaded):active.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:active,
+    body.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:active.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:active,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied.tap-active,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:active.tap-active {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(0.96) !important;
+    }
+
+    body.qr-generator .site-main .container #generate-qr:not(:active):not(.tap-active),
+    body.qr-generator .site-main .container .reset-qr-btn:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .site-main .container #generate-qr:active,
+    body.qr-generator .site-main .container #generate-qr.tap-active,
+    body.qr-generator .site-main .container .reset-qr-btn:active,
+    body.qr-generator .site-main .container .reset-qr-btn.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:active,
+    body.qr-generator:not(.dark-mode) .site-main .container #generate-qr.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.tap-active,
+    body.dark-mode.qr-generator .site-main .container #generate-qr:active,
+    body.dark-mode.qr-generator .site-main .container #generate-qr.tap-active,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:active,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.tap-active {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(0.96) !important;
+    }
+
+    /* Preset tap: stesso schema CV Generator (template-toggle / language-toggle) */
+    body.qr-generator .site-main .container .qr-presets .qr-preset:active,
+    body.qr-generator .site-main .container .qr-presets .qr-preset.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.tap-active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset:active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-presets .qr-preset.selected.tap-active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected:active,
+    body.dark-mode.qr-generator .site-main .container .qr-presets .qr-preset.selected.tap-active {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(0.96) !important;
+    }
+
+    /* Type picker: tap scale visibile prima del cambio schermata (stesso schema Generate) */
+    body.qr-generator .qr-mobile-type-card:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .qr-mobile-type-card:active,
+    body.qr-generator .qr-mobile-type-card.tap-active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card:active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-type-card.tap-active,
+    body.dark-mode.qr-generator .qr-mobile-type-card:active,
+    body.dark-mode.qr-generator .qr-mobile-type-card.tap-active {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(0.96) !important;
+    }
+
+    /* Cambia tipo: tap scale visibile prima del cambio schermata */
+    body.qr-generator .qr-mobile-back:not(:active):not(.tap-active) {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(1) !important;
+    }
+
+    body.qr-generator .qr-mobile-back:active,
+    body.qr-generator .qr-mobile-back.tap-active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back:active,
+    body.qr-generator:not(.dark-mode) .qr-mobile-back.tap-active,
+    body.dark-mode.qr-generator .qr-mobile-back:active,
+    body.dark-mode.qr-generator .qr-mobile-back.tap-active {
+        transition: transform 0.05s ease-out !important;
+        transform: scale(0.96) !important;
+    }
+
+    /* Mobile: stesso arrotondamento (12px) su controlli principali */
+    .qr-mobile-type-card {
+        border-radius: 12px;
+    }
+
+    .qr-mobile-back,
+    .qr-controls textarea,
+    .qr-field-input,
+    .qr-panel textarea,
+    .qr-controls .result-area,
+    .file-upload-btn,
+    .qr-options .qr-custom-select .qr-select-trigger,
+    .qr-actions #generate-qr,
+    .qr-actions .reset-qr-btn,
+    .qr-export-actions .download-qr-btn,
+    #qr-output,
+    .qr-result {
+        border-radius: 12px !important;
+    }
+
+    .qr-presets .qr-preset {
+        border-radius: 12px !important;
+    }
+
+    .qr-options .qr-custom-select .qr-select-menu {
+        border-radius: 12px !important;
+    }
+
+    .qr-options .qr-custom-select .qr-select-menu li:first-child {
+        border-radius: 10px 10px 0 0;
+    }
+
+    .qr-options .qr-custom-select .qr-select-menu li:last-child {
+        border-radius: 0 0 10px 10px;
+    }
+
+    /* Dark mobile: forza 47.5px su Size / Quiet zone / Error correction (batte base.css button 52px) */
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger.tap-active,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger.tap-active,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger.tap-active {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Dark mobile: menu dropdown leggibili (stesso schema Lorem / Username) */
+    body.dark-mode.qr-generator .site-main .container .qr-custom-select .qr-select-menu {
+        background: #1e2a3a !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-custom-select .qr-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-custom-select .qr-select-menu li:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-custom-select .qr-select-menu li.selected {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* Light mobile: freccia dropdown = colore testo bottone (#003f7f) */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    /* Dark mobile: forza sfondo trigger = menu su Size / Quiet zone / Error correction */
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-size-wrap > .qr-select-trigger.tap-active,
+    body.dark-mode.qr-generator .site-main .container #qr-margin-wrap > .qr-select-trigger.tap-active,
+    body.dark-mode.qr-generator .site-main .container #qr-ec-wrap > .qr-select-trigger.tap-active {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+    }
+
+    /* Mobile: forza 47.5px su URL (batte base.css / blocco ≤480px padding 12px) */
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] .qr-field-input,
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] #qr-url-input,
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] .qr-field-input:focus,
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] .qr-field-input:focus-visible,
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] #qr-url-input:focus,
+    body.qr-generator .site-main .container .qr-panel[data-panel="url"] #qr-url-input:focus-visible {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+
+    /* Mobile: Wi‑Fi Sicurezza — 47.5px + stessi colori dropdown Size (light/dark) */
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger,
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:hover,
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus,
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus-visible,
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:active,
+    body.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger.tap-active {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        width: 100% !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: flex !important;
+        align-items: center !important;
+        transform: scale(1) !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:active,
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger.tap-active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-wifi-security-wrap > .qr-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger,
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:hover,
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus,
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:focus-visible,
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger:active,
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger.tap-active {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid #b0c4de !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container #qr-wifi-security-wrap > .qr-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+
+    /* Mobile: area risultato — solo tratteggio (light e dark, no sfondo azzurro) */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-result,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-result.show {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 2px dashed #9ec5e8 !important;
+        box-shadow: none !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container #qr-output {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-result,
+    body.dark-mode.qr-generator .site-main .container .qr-result.show {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 2px dashed #b0c4de !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container #qr-output {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.qr-generator .site-main .container #qr-output canvas,
+    body.qr-generator .site-main .container #qr-output img {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Mobile export: layout 52px */
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copy-qr-export-btn:not(.copied),
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-png.download-qr-btn:not(.downloaded),
+    body.qr-generator .site-main .container .qr-export-actions #download-qr-svg.download-qr-btn:not(.downloaded) {
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border-style: solid !important;
+        border-width: 2px !important;
+    }
+
+    /* Scarica: riposo = Genera (esclude tap) */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active),
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active),
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active),
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active),
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-png.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#download-qr-svg.download-qr-btn:not(.downloaded):not(.qr-export-tap-green):not(:active):not(.tap-active):focus-visible {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid #b0c4de !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:hover,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:focus,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:focus-visible,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:active,
+    body.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied.tap-active {
+        background: #fff5f5 !important;
+        background-color: #fff5f5 !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied:active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions #copy-qr-image.copied.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+    }
+
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-color: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        border-color: #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded:active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions .download-qr-btn.downloaded.tap-active {
+        background: rgba(126, 226, 160, 0.2) !important;
+        background-color: rgba(126, 226, 160, 0.2) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        border-color: #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+    }
+
+    body.qr-generator .site-main .container .qr-result .qr-export-actions {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Copia a riposo = Scarica (esclude tap mobile) */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active),
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active),
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn:not(.copied):not(.qr-copy-tap-reset):not(:active):not(.tap-active):focus-visible {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid #b0c4de !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Copia al tap (solo ≤768px): stesso aspetto di Reset */
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset.tap-active {
+        background: #fff5f5 !important;
+        background-color: #fff5f5 !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:hover,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset:active,
+    body.dark-mode.qr-generator .site-main .container .qr-export-actions button#copy-qr-image.copy-qr-export-btn.qr-copy-tap-reset.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
 }
+
 
 @media (max-width: 600px) {
     .qr-generator .container {
         margin: 12px 10px;
         padding: 24px 18px;
     }
+
     .qr-generator h1 {
         font-size: 1.5em;
     }
-    /* Mobile: rimuove il gap tra textarea/errore/file upload.
-       Lo spacing di 12px sopra/sotto l'errore è gestito da margin. */
-    .qr-input-row {
-        gap: 0;
-    }
+
     .qr-controls textarea {
-        margin-bottom: 12px; /* 12px sopra l'errore */
+        margin-bottom: 12px;
     }
 }
 
@@ -416,7 +2499,7 @@
         margin: 8px 8px;
         padding: 20px 14px;
     }
-    /* Stessa tipografia textarea Markdown / text-tool su mobile */
+
     .qr-controls textarea,
     .qr-controls textarea:focus {
         font-family: Arial, sans-serif !important;
@@ -424,11 +2507,62 @@
         line-height: 1.5 !important;
         padding: 12px !important;
     }
-    .qr-controls textarea::placeholder {
+
+    .qr-field-input:not(#qr-url-input),
+    .qr-field-input:not(#qr-url-input):focus {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+    }
+
+    .qr-panel[data-panel="url"] #qr-url-input,
+    .qr-panel[data-panel="url"] #qr-url-input:focus {
+        font-family: Arial, sans-serif !important;
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+        padding: 0 14px !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+
+    .qr-controls textarea::placeholder,
+    .qr-field-input::placeholder {
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
         color: #999 !important;
         opacity: 1 !important;
+    }
+
+    .qr-field-hint {
+        font-size: 0.82rem;
+        padding: 0 4px;
+    }
+
+    body.qr-generator .site-main .container .qr-result,
+    body.qr-generator .site-main .container .qr-result.show {
+        align-items: stretch !important;
+        box-sizing: border-box !important;
+        overflow: hidden;
+    }
+
+    .qr-result {
+        padding: 16px 12px;
+    }
+
+    #qr-output {
+        padding: 12px;
+        width: fit-content;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        align-self: center !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
     }
 }

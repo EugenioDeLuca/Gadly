@@ -1,0 +1,121 @@
+/* Portfolio gallery/manage: critical layout in <head> to prevent flash on refresh. */
+body.drose-works-page .drose-landing__container {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 40px 32px 36px !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2) !important;
+    box-sizing: border-box !important;
+}
+
+/* Stesse soglie ultrawide di Gadly (.site-main .container in theme.css). */
+@media (min-width: 2200px) {
+    body.drose-works-page .drose-landing__container {
+        max-width: 1040px !important;
+        width: min(1040px, 100%) !important;
+    }
+}
+
+@media (min-width: 3400px) {
+    body.drose-works-page .drose-landing__container {
+        max-width: 1120px !important;
+        width: min(1120px, 100%) !important;
+    }
+}
+
+body.drose-works-page .drose-card-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+}
+
+body.drose-works-page .drose-card.drose-works-slot {
+    padding: 0 !important;
+    min-height: 0 !important;
+    aspect-ratio: 4 / 3 !important;
+    background: rgba(0, 63, 127, 0.04) !important;
+    overflow: hidden !important;
+    display: block !important;
+    height: auto !important;
+    flex-direction: unset !important;
+    align-items: unset !important;
+    justify-content: unset !important;
+    text-align: unset !important;
+}
+
+body.drose-works-page .drose-works-slot--filled {
+    position: relative !important;
+    background-color: rgba(0, 63, 127, 0.04) !important;
+}
+
+body.drose-works-page .drose-works-open {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background-color: rgba(0, 63, 127, 0.04) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+}
+
+body.drose-works-page:not(.drose-works-manage-page) .drose-works-open--photo .drose-works-media {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    pointer-events: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    pointer-events: none !important;
+    background: rgba(0, 63, 127, 0.04) !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+@media (min-width: 769px) {
+    body.drose-works-page .drose-works-grid--photos,
+    body.drose-works-page .drose-works-grid--videos {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body.drose-works-page .drose-card-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+

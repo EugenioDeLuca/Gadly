@@ -3,16 +3,65 @@
 {% load i18n %}
 {% block title %}{% trans "Markdown Preview" %}{% endblock %}
 {% block body_class %}text-tool markdown-preview{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Live Markdown preview with HTML rendering—headings, lists, links, code, bold, and italics. Handy for READMEs, articles, and technical notes; no file upload to our servers.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260427k">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520j">
 <style>
 .text-tool.markdown-preview .container { max-width: 900px; }
+.text-tool.markdown-preview .tool-desc { color: #555; line-height: 1.55; }
 .text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
 .text-tool.markdown-preview .preview-panel { flex: 1; min-width: 280px; }
+/* Desktop: una sola riga per i due box — stessa altezza senza JS (niente salto al refresh). */
+@media (min-width: 481px) {
+    .text-tool.markdown-preview .preview-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto minmax(280px, auto) auto;
+        column-gap: 24px;
+        row-gap: 8px;
+        align-items: stretch;
+    }
+    .text-tool.markdown-preview .preview-panel {
+        display: contents;
+    }
+    .text-tool.markdown-preview .preview-layout label[for="md-input"] {
+        grid-column: 1;
+        grid-row: 1;
+        margin-bottom: 0;
+    }
+    .text-tool.markdown-preview .preview-layout .preview-title {
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: 0;
+    }
+    .text-tool.markdown-preview #md-input {
+        grid-column: 1;
+        grid-row: 2;
+        height: 100%;
+        min-height: 280px;
+        align-self: stretch;
+    }
+    .text-tool.markdown-preview #md-preview {
+        grid-column: 2;
+        grid-row: 2;
+        height: 100%;
+        min-height: 0;
+        align-self: stretch;
+    }
+    .text-tool.markdown-preview .preview-actions {
+        grid-column: 2;
+        grid-row: 3;
+        margin-top: 0;
+    }
+}
 .text-tool.markdown-preview .preview-panel label,
 .text-tool.markdown-preview .preview-panel .preview-title { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
 .text-tool.markdown-preview .preview-panel textarea,
 .text-tool.markdown-preview #md-input {
+    width: 100%;
+    box-sizing: border-box;
     min-height: 280px;
     height: auto;
     resize: none;
@@ -37,6 +86,20 @@
     margin-bottom: 0;
 }
 .text-tool.markdown-preview .preview-actions #btn-copy { min-width: 132px; }
+@media (max-width: 768px) {
+  body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied) {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied) {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+}
 /* .copied: feedback rosso desktop; :active solo su mobile in text-tools (scale come Word Counter, no sfondo rosso al tap) */
 .text-tool.markdown-preview .preview-actions #btn-copy.copied,
 .text-tool.markdown-preview .preview-actions #btn-copy.copied:hover {
@@ -80,21 +143,27 @@ body.dark-mode.markdown-preview .preview-panel textarea { color: #1a1a2e !import
 .text-tool.markdown-preview .preview-output ul, .text-tool.markdown-preview .preview-output ol { margin: 0.5em 0; padding-left: 1.5em; }
 .text-tool.markdown-preview .preview-output p { margin: 0.5em 0; }
 .text-tool.markdown-preview .preview-output .placeholder { color: #999; }
+/* Dopo le regole comuni su #md-input (height: auto): su desktop il grid deve vincere. */
+@media (min-width: 481px) {
+    .text-tool.markdown-preview #md-input {
+        height: 100%;
+    }
+    .text-tool.markdown-preview #md-preview {
+        height: 100%;
+        min-height: 0;
+        contain: layout;
+    }
+}
 </style>
 {% endblock %}
 {% block content %}
 {% trans "Preview will appear here." as md_preview_empty %}
 {% trans "Error rendering preview." as md_preview_error %}
-{% if LANGUAGE_CODE|slice:":2" == "it" %}
-{% trans "Copiato!" as md_copied %}
-{% trans "Copia" as md_copy %}
-{% else %}
 {% trans "Copied!" as md_copied %}
 {% trans "Copy" as md_copy %}
-{% endif %}
 <div class="container">
     <h1>{% trans "Markdown Preview" %}</h1>
-    <p class="tool-desc">{% trans "Write Markdown on the left and see the rendered result on the right." %}</p>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scrivi Markdown a sinistra e vedi l’anteprima aggiornata a destra: titoli, elenchi, grassetto, corsivo, link e codice. Comodo per README, articoli e note tecniche.{% else %}Type Markdown on the left and see a live preview on the right—headings, lists, bold, italics, links, and code blocks. Handy for READMEs, articles, and technical notes.{% endif %}</p>
     <div class="text-tool-row preview-layout">
         <div class="preview-panel">
             <label for="md-input">{% trans "Markdown" %}</label>
@@ -109,7 +178,7 @@ Write **bold** or *italic* text.
         </div>
         <div class="preview-panel">
             <div class="preview-title">{% trans "Preview" %}</div>
-            <div id="md-preview" class="preview-output placeholder">{{ md_preview_empty }}</div>
+            <div id="md-preview" class="preview-output"></div>
             <div class="preview-actions">
                 <div class="button-group">
                     <button type="button" id="btn-copy">{{ md_copy }}</button>
@@ -133,22 +202,21 @@ Write **bold** or *italic* text.
     var input = document.getElementById('md-input');
     var preview = document.getElementById('md-preview');
     var copyBtn = document.getElementById('btn-copy');
-    function getMinH() { return window.innerWidth <= 480 ? 250 : 280; }
     function isMobile() { return window.innerWidth <= 480; }
 
-    function resizeTextarea() {
-        if (isMobile()) {
-            var h = 250;
-            input.style.height = h + 'px';
-            preview.style.minHeight = h + 'px';
-            preview.style.height = h + 'px';
-        } else {
-            input.style.height = 'auto';
-            var h = Math.max(getMinH(), input.scrollHeight);
-            input.style.height = h + 'px';
-            preview.style.minHeight = h + 'px';
-            preview.style.height = h + 'px';
-        }
+    function applyMobilePanelHeights() {
+        if (!isMobile()) return;
+        var h = 250;
+        input.style.height = h + 'px';
+        preview.style.removeProperty('height');
+        preview.style.removeProperty('min-height');
+        preview.style.minHeight = h + 'px';
+        preview.style.height = h + 'px';
+    }
+
+    function scheduleSyncAfterLayout() {
+        applyMobilePanelHeights();
+        syncScroll();
     }
 
     function syncScroll() {
@@ -160,10 +228,11 @@ Write **bold** or *italic* text.
 
     function update() {
         var raw = input.value || '';
-        resizeTextarea();
+        applyMobilePanelHeights();
         if (!raw) {
             preview.textContent = MD_PREVIEW_EMPTY;
             preview.classList.add('placeholder');
+            scheduleSyncAfterLayout();
             return;
         }
         preview.classList.remove('placeholder');
@@ -176,7 +245,7 @@ Write **bold** or *italic* text.
         } catch (e) {
             preview.textContent = MD_PREVIEW_ERROR;
         }
-        requestAnimationFrame(syncScroll);
+        scheduleSyncAfterLayout();
     }
 
     function fallbackCopy(text) {
@@ -200,13 +269,41 @@ Write **bold** or *italic* text.
             input.style.removeProperty('-webkit-text-fill-color');
         }
     }
-    setTextareaColor();
-    var obs = new MutationObserver(setTextareaColor);
-    obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    window.addEventListener('resize', setTextareaColor);
-    input.addEventListener('input', update);
-    input.addEventListener('change', update);
-    input.addEventListener('scroll', syncScroll);
+    function bootPreview() {
+        setTextareaColor();
+        update();
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function() {
+                if (!isMobile()) syncScroll();
+            });
+        }
+    }
+
+    function attachMarkdownPreviewUI() {
+        var obs = new MutationObserver(setTextareaColor);
+        obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        window.addEventListener('resize', function() {
+            setTextareaColor();
+            if (isMobile()) {
+                applyMobilePanelHeights();
+            } else {
+                input.style.removeProperty('height');
+                preview.style.removeProperty('height');
+                preview.style.removeProperty('min-height');
+            }
+            syncScroll();
+        });
+        input.addEventListener('input', update);
+        input.addEventListener('change', update);
+        input.addEventListener('scroll', syncScroll);
+        requestAnimationFrame(bootPreview);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachMarkdownPreviewUI);
+    } else {
+        attachMarkdownPreviewUI();
+    }
 
     if (copyBtn) {
         copyBtn.addEventListener('click', function() {
@@ -234,7 +331,6 @@ Write **bold** or *italic* text.
             }
         });
     }
-    update();
 })();
 </script>
 {% endblock %}

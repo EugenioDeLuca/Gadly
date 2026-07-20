@@ -1,0 +1,25 @@
+Drose home service card photos — internal license notes
+=======================================================
+
+- drose-service-aerial.jpg
+  Source: https://unsplash.com/photos/photo-1473968512647-3e447244af8f
+  License: Unsplash License (https://unsplash.com/license)
+  Theme: drone / aerial photography
+
+- drose-service-inspection.jpg
+  Source: https://unsplash.com/photos/photo-1509391366360-2e959784a276
+  License: Unsplash License
+  Theme: solar / site inspection context
+
+- drose-service-mapping.jpg
+  Source: https://commons.wikimedia.org/wiki/File:Precision_Farming_in_Minnesota_-_Natural_Colour.jpg
+  Author: NASA Earth Observatory (Jesse Allen); Landsat / USGS data
+  License: Public Domain (NASA / U.S. Government work) — free for commercial use
+    (compatible with Creative Commons public-domain / CC0-style reuse)
+  Note: cropped to field patchwork only (urban area removed)
+  Theme: top-down orthophoto / aerial survey of farmland
+
+- drose-service-events.jpg
+  Source: https://unsplash.com/photos/photo-1470229722913-7c0e2dbbafd3
+  License: Unsplash License
+  Theme: outdoor concert / event coverage

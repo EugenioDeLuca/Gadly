@@ -1,0 +1,852 @@
+/* Application kit — /career-cv-tools/ */
+.career-kit-page.text-tools-page .container,
+.career-kit-page.web-seo .container {
+    max-width: 900px;
+}
+
+.career-kit-page .site-main .container .career-kit-lead.tool-desc {
+    display: block;
+    max-width: 42rem;
+    margin: 0 auto 24px;
+    text-align: center !important;
+    -webkit-text-fill-color: #555;
+}
+
+.career-kit-path-heading {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #003f7f;
+}
+
+.career-kit-path {
+    list-style: none;
+    margin: 0;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #d0e8f9 0%, #e0f0fb 55%, #e8f4fd 100%);
+    border: 1px solid rgba(0, 63, 127, 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 6px 20px rgba(0, 63, 127, 0.08);
+}
+
+.career-kit-step {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 14px 16px;
+    align-items: center;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 63, 127, 0.16);
+    border-left: 4px solid #003f7f;
+    background: linear-gradient(145deg, #f8fcff 0%, #ffffff 72%);
+    box-shadow: 0 8px 22px rgba(0, 63, 127, 0.08);
+    box-sizing: border-box;
+}
+
+.career-kit-step__num {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #fff;
+    background: #003f7f;
+    flex-shrink: 0;
+}
+
+.career-kit-step__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.career-kit-step__title {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #003f7f;
+    line-height: 1.3;
+}
+
+.career-kit-step__desc {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #555;
+}
+
+.career-kit-step__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    min-width: 118px;
+    align-self: center;
+}
+
+.career-kit-step__tool,
+.career-kit-step__help {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.career-kit-step__tool {
+    color: #fff;
+    background: #003f7f;
+    border: 2px solid #003f7f;
+}
+
+.career-kit-step__tool:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 63, 127, 0.18);
+}
+
+.career-kit-step__help {
+    color: #003f7f;
+    background: #e8f4fd;
+    border: 2px solid rgba(0, 63, 127, 0.25);
+}
+
+.career-kit-step__help:hover {
+    background: #d0e8f9;
+    border-color: #003f7f;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 63, 127, 0.12);
+}
+
+.career-kit-page .home-link-wrap {
+    margin-top: 28px;
+    text-align: center;
+}
+
+/* Kit flow nav — bottom of each career tool */
+.career-kit-flow {
+    margin-top: 28px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 63, 127, 0.14);
+    background: linear-gradient(180deg, rgba(232, 244, 253, 0.45) 0%, rgba(248, 252, 255, 0.2) 100%);
+    box-sizing: border-box;
+}
+
+.career-kit-flow__progress {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #003f7f;
+}
+
+.career-kit-flow__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.career-kit-flow__kit,
+.career-kit-flow__next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    transition: background 0.2s, border-color 0.2s, transform 0.16s ease, box-shadow 0.16s ease;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+.career-kit-flow__kit {
+    color: #003f7f;
+    background: #e8f4fd;
+    border: 2px solid rgba(0, 63, 127, 0.25);
+}
+
+.career-kit-flow__kit:hover {
+    background: #d0e8f9;
+    border-color: #003f7f;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 63, 127, 0.12);
+}
+
+.career-kit-flow__next {
+    color: #fff;
+    background: #003f7f;
+    border: 2px solid #003f7f;
+}
+
+.career-kit-flow__next:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 63, 127, 0.18);
+}
+
+.career-kit-flow__actions--last {
+    justify-content: center;
+}
+
+/* Career tools: kit flow nav inside tool .container */
+@media (min-width: 769px) {
+    body.text-tool .site-main .container .career-kit-flow__actions {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    body.text-tool .site-main .container .career-kit-flow__actions--last {
+        justify-content: center;
+    }
+
+    body.text-tool .site-main .container .career-kit-flow__kit,
+    body.text-tool .site-main .container .career-kit-flow__next {
+        width: 14.5rem;
+        min-width: 14.5rem;
+        max-width: 14.5rem;
+        height: 44px;
+        min-height: 44px;
+        max-height: 44px;
+        padding: 0 14px;
+        flex: 0 0 auto;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 768px) {
+    body.text-tool .site-main .container .career-kit-flow {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin-top: 20px;
+        padding: 14px 12px;
+        box-sizing: border-box;
+    }
+
+    body.text-tool .site-main .container .career-kit-flow__actions {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    body.text-tool .site-main .container .career-kit-flow__kit,
+    body.text-tool .site-main .container .career-kit-flow__next {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        flex: 0 0 auto;
+        min-height: 52px;
+        height: 52px;
+        max-height: 52px;
+        padding: 12px 16px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        border-radius: 12px;
+        white-space: nowrap;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: transform 0.05s ease-out;
+        outline: none;
+        box-shadow: none;
+    }
+
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__kit,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__kit:hover,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__kit:focus,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__kit:focus-visible,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__kit:focus:hover {
+        background: #e8f4fd !important;
+        background-color: #e8f4fd !important;
+        border: 2px solid rgba(0, 63, 127, 0.25) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        transform: scale(1);
+    }
+
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__next,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__next:hover,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__next:focus,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__next:focus-visible,
+    body.text-tool:not(.dark-mode) .site-main .container .career-kit-flow__next:focus:hover {
+        background: #003f7f !important;
+        background-color: #003f7f !important;
+        border: 2px solid #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(1);
+    }
+
+    /* Dark mobile: solo Prossimo step = stessi token dei link tool kit (#7eb8ff) */
+    body.dark-mode.text-tool {
+        --ck-dark-next-fill: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        --ck-dark-next-border: #7eb8ff;
+        --ck-dark-next-text: #7eb8ff;
+    }
+
+    /* Dark mobile: Kit candidatura = stessi colori del desktop (.career-kit-flow__kit) */
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:hover,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:focus,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:focus-visible,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:focus:hover,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit.tap-active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:active:focus {
+        background: #e8f4fd !important;
+        background-color: #e8f4fd !important;
+        background-image: none !important;
+        border: 2px solid rgba(0, 63, 127, 0.25) !important;
+        border-color: rgba(0, 63, 127, 0.25) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        outline: none !important;
+        filter: none !important;
+        transform: scale(1);
+    }
+
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:hover,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:focus,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:focus-visible,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:focus:hover,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next.tap-active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:active:focus {
+        background: var(--ck-dark-next-fill) !important;
+        background-color: transparent !important;
+        background-image: var(--ck-dark-next-fill) !important;
+        border: 2px solid var(--ck-dark-next-border) !important;
+        border-color: var(--ck-dark-next-border) !important;
+        color: var(--ck-dark-next-text) !important;
+        -webkit-text-fill-color: var(--ck-dark-next-text) !important;
+        box-shadow: none !important;
+        outline: none !important;
+        filter: none !important;
+        transform: scale(1);
+    }
+
+    body.text-tool .site-main .container .career-kit-flow__kit:active,
+    body.text-tool .site-main .container .career-kit-flow__kit.tap-active,
+    body.text-tool .site-main .container .career-kit-flow__next:active,
+    body.text-tool .site-main .container .career-kit-flow__next.tap-active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit.tap-active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__kit:active:focus,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next.tap-active,
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__next:active:focus {
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.text-tool .site-main .container .career-kit-flow__progress {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.text-tool .site-main .container .career-kit-flow {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: var(--border-color, rgba(176, 196, 222, 0.25)) !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .career-kit-flow__actions {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .career-kit-flow__actions--last {
+        justify-content: center;
+    }
+
+    .career-kit-flow__kit,
+    .career-kit-flow__next {
+        width: 14.5rem;
+        min-width: 14.5rem;
+        max-width: 14.5rem;
+        height: 44px;
+        padding: 0 14px;
+    }
+}
+
+@media (min-width: 769px) {
+    .career-kit-page .site-main .container .career-kit-lead.tool-desc {
+        margin-bottom: 28px;
+    }
+
+    .career-kit-path-heading {
+        margin-bottom: 14px;
+        font-size: 0.85rem;
+    }
+
+    .career-kit-path {
+        gap: 16px;
+        padding: 22px 20px;
+    }
+
+    .career-kit-page .site-main .container .career-kit-path > .career-kit-step {
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        gap: 20px 24px;
+        align-items: center;
+        padding: 16px 24px;
+        height: 136px;
+        min-height: 136px;
+        max-height: 136px;
+        box-sizing: border-box;
+    }
+
+    .career-kit-step__num {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        font-size: 1.1rem;
+        align-self: center;
+    }
+
+    .career-kit-step__title {
+        font-size: 1.12rem;
+        margin-bottom: 6px;
+    }
+
+    .career-kit-step__desc {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .career-kit-step__actions {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 10px;
+        min-width: 0;
+        align-self: center;
+    }
+
+    .career-kit-step__tool {
+        width: 10.5rem;
+        min-width: 10.5rem;
+        max-width: 10.5rem;
+        flex: 0 0 10.5rem;
+        min-height: 46px;
+        padding: 10px 12px;
+        font-size: 1rem;
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+
+    .career-kit-step__help {
+        width: 10.5rem;
+        min-width: 10.5rem;
+        max-width: 10.5rem;
+        flex: 0 0 10.5rem;
+        min-height: 46px;
+        padding: 10px 12px;
+        font-size: 1rem;
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 768px) {
+    body.career-kit-page.web-seo .site-main .container,
+    body.career-kit-page.text-tools-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        margin: 0 auto 0 !important;
+        padding: 16px 0 24px !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    body.career-kit-page .site-main .container h1 {
+        font-size: 1.45em;
+        line-height: 1.2;
+        margin-bottom: 8px;
+    }
+
+    body.career-kit-page:not(.dark-mode) .site-main .container h1 {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.career-kit-page .site-main .container h1 {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.career-kit-page .site-main .container .career-kit-lead.tool-desc {
+        max-width: none;
+        margin: 0 0 16px;
+        padding: 0;
+        font-size: 15.2px;
+        line-height: 1.55;
+    }
+
+    body.career-kit-page:not(.dark-mode) .site-main .container .career-kit-lead.tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+
+    body.dark-mode.career-kit-page .site-main .container .career-kit-lead.tool-desc {
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    }
+
+    body.career-kit-page .career-kit-path-heading {
+        margin-bottom: 10px;
+        font-size: 0.78rem;
+    }
+
+    body.career-kit-page:not(.dark-mode) .career-kit-path-heading {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-path-heading {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* Mobile: niente box esterno sul percorso — solo le card step */
+    body.career-kit-page .career-kit-path,
+    body.dark-mode.career-kit-page .career-kit-path {
+        gap: 12px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    body.career-kit-page .site-main .container .career-kit-path > .career-kit-step,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-path > .career-kit-step {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        gap: 10px 12px;
+        align-items: start;
+        align-content: start;
+        padding: 14px 12px 16px;
+        height: 240px;
+        min-height: 240px;
+        max-height: 240px;
+        box-sizing: border-box;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-step {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(176, 196, 222, 0.22) !important;
+        border-left-color: #b0c4de !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-step__title {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-step__desc {
+        color: rgba(176, 196, 222, 0.92) !important;
+        -webkit-text-fill-color: rgba(176, 196, 222, 0.92) !important;
+    }
+
+    body.career-kit-page .career-kit-step__num {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 0.95rem;
+        margin-top: 1px;
+        box-sizing: border-box;
+    }
+
+    body.career-kit-page .career-kit-step__body,
+    body.dark-mode.career-kit-page .career-kit-step__body {
+        justify-content: flex-start;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    body.career-kit-page .career-kit-step__title,
+    body.dark-mode.career-kit-page .career-kit-step__title {
+        font-size: 1rem;
+        margin: 0;
+        line-height: 1.25;
+    }
+
+    body.career-kit-page .career-kit-step__desc,
+    body.dark-mode.career-kit-page .career-kit-step__desc {
+        margin: 0;
+        font-size: 15.2px;
+        line-height: 1.4;
+        overflow: visible;
+    }
+
+    body.career-kit-page .career-kit-step__actions {
+        grid-column: 1 / -1;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+        width: 100%;
+        align-self: stretch;
+    }
+
+    body.career-kit-page .career-kit-step__tool,
+    body.career-kit-page .career-kit-step__help {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        flex: 0 0 auto;
+        min-height: 52px;
+        height: 52px;
+        max-height: 52px;
+        padding: 12px 16px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        border-radius: 12px;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: transform 0.05s ease-out;
+        outline: none;
+        box-shadow: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    body.career-kit-page:not(.dark-mode) .career-kit-step__tool,
+    body.career-kit-page:not(.dark-mode) .career-kit-step__tool:hover,
+    body.career-kit-page:not(.dark-mode) .career-kit-step__tool:focus,
+    body.career-kit-page:not(.dark-mode) .career-kit-step__tool:focus-visible,
+    body.career-kit-page:not(.dark-mode) .career-kit-step__tool:focus:hover {
+        background: #003f7f !important;
+        background-color: #003f7f !important;
+        border: 2px solid #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(1);
+    }
+
+    /* Guida: stesso aspetto light/dark su mobile */
+    body.career-kit-page .career-kit-step__help,
+    body.career-kit-page .career-kit-step__help:hover,
+    body.career-kit-page .career-kit-step__help:focus,
+    body.career-kit-page .career-kit-step__help:focus-visible,
+    body.career-kit-page .career-kit-step__help:focus:hover,
+    body.dark-mode.career-kit-page .career-kit-step__help,
+    body.dark-mode.career-kit-page .career-kit-step__help:hover,
+    body.dark-mode.career-kit-page .career-kit-step__help:focus,
+    body.dark-mode.career-kit-page .career-kit-step__help:focus-visible,
+    body.dark-mode.career-kit-page .career-kit-step__help:focus:hover,
+    body.career-kit-page .career-kit-step__help:active,
+    body.career-kit-page .career-kit-step__help.tap-active,
+    body.dark-mode.career-kit-page .career-kit-step__help:active,
+    body.dark-mode.career-kit-page .career-kit-step__help.tap-active,
+    body.dark-mode.career-kit-page .career-kit-step__help:active:focus,
+    body.dark-mode.career-kit-page .career-kit-step__help.tap-active:focus {
+        background: #e8f4fd !important;
+        background-color: #e8f4fd !important;
+        background-image: none !important;
+        border: 2px solid rgba(0, 63, 127, 0.25) !important;
+        border-color: rgba(0, 63, 127, 0.25) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        outline: none !important;
+        filter: none !important;
+        transform: scale(1);
+    }
+
+    /* Dark mobile: link tool e cerchio — stesso fill dei bottoni sito (0.1 / 0.05, non 0.12 / 0.06) */
+    body.dark-mode.career-kit-page {
+        --ck-dark-link-fill: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        --ck-dark-link-border: #7eb8ff;
+        --ck-dark-link-text: #7eb8ff;
+    }
+
+    body.dark-mode.career-kit-page .site-main .container .career-kit-step__tool,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-step__tool:hover,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-step__tool:focus,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-step__tool:focus-visible,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-step__tool:focus:hover,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-path > .career-kit-step > .career-kit-step__num {
+        background: var(--ck-dark-link-fill) !important;
+        background-color: transparent !important;
+        background-image: var(--ck-dark-link-fill) !important;
+        border: 2px solid var(--ck-dark-link-border) !important;
+        border-color: var(--ck-dark-link-border) !important;
+        color: var(--ck-dark-link-text) !important;
+        -webkit-text-fill-color: var(--ck-dark-link-text) !important;
+        box-shadow: none !important;
+        outline: none !important;
+        filter: none !important;
+        transform: scale(1);
+    }
+
+    body.dark-mode.career-kit-page .site-main .container .career-kit-path > .career-kit-step > .career-kit-step__num {
+        border-radius: 50% !important;
+    }
+
+    body.career-kit-page .career-kit-step__tool:active,
+    body.career-kit-page .career-kit-step__tool.tap-active,
+    body.career-kit-page .career-kit-step__help:active,
+    body.career-kit-page .career-kit-step__help.tap-active,
+    body.dark-mode.career-kit-page .career-kit-step__help:active,
+    body.dark-mode.career-kit-page .career-kit-step__help.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.career-kit-page .home-link-wrap {
+        margin-top: 20px;
+    }
+
+    body.dark-mode.career-kit-page .home-link-wrap .home-link {
+        color: var(--text-secondary, #b0c4de) !important;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border-color: var(--text-secondary, #b0c4de) !important;
+    }
+
+    body.career-kit-page .career-kit-flow {
+        margin-top: 20px;
+        padding: 14px 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-flow {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: var(--border-color, rgba(176, 196, 222, 0.25)) !important;
+    }
+
+    body.career-kit-page .career-kit-flow__progress {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    body.dark-mode.career-kit-page .career-kit-flow__progress {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* Dark mobile: cerchio numero — stesso stack sfondo dei bottoni tool */
+    body.dark-mode.career-kit-page.web-seo.text-tools-page .site-main .container .career-kit-path > .career-kit-step > .career-kit-step__num {
+        background: var(--ck-dark-link-fill) !important;
+        background-color: transparent !important;
+        background-image: var(--ck-dark-link-fill) !important;
+        border: 2px solid #7eb8ff !important;
+        border-color: #7eb8ff !important;
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        box-shadow: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.career-kit-page .site-main .container h1 {
+        font-size: 1.35em;
+    }
+
+    body.career-kit-page .site-main .container .career-kit-lead.tool-desc,
+    body.career-kit-page .career-kit-step__desc,
+    body.dark-mode.career-kit-page .career-kit-step__desc {
+        font-size: 15.2px;
+    }
+
+    body.career-kit-page .site-main .container .career-kit-path > .career-kit-step,
+    body.dark-mode.career-kit-page .site-main .container .career-kit-path > .career-kit-step {
+        padding: 14px 10px 16px;
+    }
+}
+
+/* Contenitore si allunga fino a pareggiare distanza header/footer */
+body.career-kit-page .site-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: calc(100dvh - 82px);
+    box-sizing: border-box;
+}
+
+body.career-kit-page .site-main > .container {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+    body.career-kit-page .site-main {
+        padding-bottom: 24px !important;
+    }
+
+    body.career-kit-page.web-seo .site-main > .container,
+    body.career-kit-page.text-tools-page .site-main > .container {
+        margin-top: 24px !important;
+        margin-bottom: 24px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body.career-kit-page .site-main {
+        padding-bottom: 20px !important;
+    }
+
+    body.career-kit-page.web-seo .site-main > .container,
+    body.career-kit-page.text-tools-page .site-main > .container {
+        margin: 0 auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.career-kit-page .site-main {
+        min-height: 100dvh;
+    }
+}

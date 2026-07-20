@@ -1,12 +1,54 @@
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+    function restoreCoverLetterScroll() {
+        var root = document.documentElement;
+        function notifyScrollSettled() {
+            if (window.__gadlyScrollRestoreSettled) return;
+            window.__gadlyScrollRestoreSettled = true;
+            try {
+                document.dispatchEvent(new CustomEvent("gadly-scroll-restore-settled"));
+            } catch (eSettled) { /* ignore */ }
+        }
+        function releaseDone(target) {
+            var body = document.body;
+            var maxY = Math.max(0, Math.max(
+                root.scrollHeight || 0,
+                body ? body.scrollHeight : 0
+            ) - window.innerHeight);
+            target = Math.max(0, Math.min(target, maxY));
+            if (target > 0) {
+                window.scrollTo(0, target);
+                root.scrollTop = target;
+                if (body) body.scrollTop = target;
+            }
+            root.classList.remove("gadly-cl-scroll-pending");
+            root.style.removeProperty("--gadly-cl-restore-y");
+            notifyScrollSettled();
+            if (target > 0) {
+                requestAnimationFrame(function () {
+                    if (Math.abs(window.scrollY - target) > 2) {
+                        window.scrollTo(0, target);
+                    }
+                });
+            }
+        }
+        var y = parseInt(root.style.getPropertyValue("--gadly-cl-restore-y"), 10);
+        if (!root.classList.contains("gadly-cl-scroll-pending") || isNaN(y) || y < 1) {
+            releaseDone(0);
+            return;
+        }
+        releaseDone(y);
+    }
+
+    restoreCoverLetterScroll();
+
+    function boot() {
     var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
     function t(it, en) { return isItalian ? it : en; }
 
     var btnGenerate = document.getElementById("cl-generate");
     var btnCopy = document.getElementById("cl-copy");
-    var btnExportPdf = document.getElementById("cl-export-pdf");
-    var btnExportDocx = document.getElementById("cl-export-docx");
-    var btnExportTxt = document.getElementById("cl-export-txt");
+    var exportFormatInput = document.getElementById("cl-export-format");
+    var formatToggleButtons = Array.prototype.slice.call(document.querySelectorAll(".cover-letter-generator .format-toggle"));
     var exportControls = document.getElementById("cl-export-controls");
     var buttonGroup = btnGenerate ? btnGenerate.closest(".button-group") : null;
     var result = document.getElementById("cl-result");
@@ -17,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var templateButtons = Array.prototype.slice.call(document.querySelectorAll("#cl-template-actions button[data-template]"));
     var latestOutput = "";
     var selectedTemplate = "standard";
-    var selectedTone = "professional";
+    var selectedTone = "";
     var selectedHookIndex = 0;
     var generationCount = 0;
 
@@ -54,25 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
         latestOutput = "";
         if (exportControls) exportControls.classList.add("hidden");
         if (buttonGroup) buttonGroup.classList.remove("has-export");
+        clearExportActive();
         try { result.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
-    }
-    function setToneFromButton(toneKey) {
-        selectedTone = toneKey;
-        if (!toneInput) return;
-        var labelMap = {
-            professional: t("Professionale", "Professional"),
-            direct: t("Diretto", "Direct"),
-            informal: t("Informale", "Informal"),
-            formal: t("Formale", "Formal"),
-            concise: t("Sintetico", "Concise")
-        };
-        toneInput.value = labelMap[toneKey] || labelMap.professional;
-        if (toneWrap) {
-            var options = Array.prototype.slice.call(toneWrap.querySelectorAll(".text-tool-select-menu li[data-value]"));
-            options.forEach(function (li) {
-                li.classList.toggle("selected", li.getAttribute("data-value") === toneInput.value);
-            });
-        }
     }
     function setTemplate(valueTemplate) {
         selectedTemplate = valueTemplate || "standard";
@@ -89,19 +114,49 @@ document.addEventListener("DOMContentLoaded", function () {
         wordMeter.textContent = t("Parole highlight", "Highlight words") + ": " + wc + " (180-260 " + status + ")";
     }
 
+    function updateToneAria() {
+        if (!toneInput || !toneWrap) return;
+        toneInput.setAttribute("aria-expanded", toneWrap.classList.contains("open") ? "true" : "false");
+    }
+
+    function setToneTriggerDisplay(text, isPlaceholder) {
+        if (!toneInput) return;
+        toneInput.textContent = text;
+        toneInput.classList.toggle("is-placeholder", !!isPlaceholder);
+    }
+
+    function applyToneMenuOpenState(isOpen) {
+        if (!toneWrap) return;
+        var options = Array.prototype.slice.call(toneWrap.querySelectorAll(".text-tool-select-menu li[data-value]"));
+        options.forEach(function (li) {
+            li.classList.remove("selected");
+            var hideCurrent = isOpen && selectedTone && li.getAttribute("data-tone-key") === selectedTone;
+            li.classList.toggle("cl-tone-menu-hidden", hideCurrent);
+        });
+        if (isOpen) toneWrap.classList.add("open");
+        else toneWrap.classList.remove("open");
+        updateToneAria();
+    }
+
     function initToneSelect() {
         if (!toneWrap || !toneInput) return;
-        var arrow = toneWrap.querySelector(".role-arrow");
+        var tonePlaceholderText = toneInput.getAttribute("data-placeholder") || toneInput.textContent.trim();
         var options = Array.prototype.slice.call(toneWrap.querySelectorAll(".text-tool-select-menu li[data-value]"));
-        function openMenu() { toneWrap.classList.add("open"); }
-        function closeMenu() { toneWrap.classList.remove("open"); }
-        function toggleMenu() { toneWrap.classList.toggle("open"); }
+        function openMenu() {
+            applyToneMenuOpenState(true);
+        }
+        function closeMenu() {
+            applyToneMenuOpenState(false);
+        }
+        function toggleMenu() {
+            if (toneWrap.classList.contains("open")) closeMenu();
+            else openMenu();
+        }
         function selectToneOption(li) {
             if (!li) return;
             selectedTone = li.getAttribute("data-tone-key") || "professional";
-            toneInput.value = li.getAttribute("data-value") || "";
-            options.forEach(function (opt) { opt.classList.remove("selected"); });
-            li.classList.add("selected");
+            setToneTriggerDisplay(li.getAttribute("data-value") || "", false);
+            toneWrap.setAttribute("data-value", selectedTone);
             closeMenu();
         }
         toneInput.addEventListener("click", function (e) {
@@ -109,14 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
             e.stopPropagation();
             toggleMenu();
         });
-        if (arrow) {
-            function handleArrowOpen(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleMenu();
-            }
-            arrow.addEventListener("click", handleArrowOpen);
-        }
         options.forEach(function (li) {
             li.addEventListener("click", function (e) {
                 e.preventDefault();
@@ -135,9 +182,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 closeMenu();
             }
         });
-        // Sync selected option with initial value.
-        var initial = options.find(function (li) { return li.getAttribute("data-tone-key") === selectedTone; }) || options[0];
-        selectToneOption(initial);
+        setToneTriggerDisplay(tonePlaceholderText, true);
+        if (toneWrap) toneWrap.setAttribute("data-value", "");
+        updateToneAria();
     }
 
     function buildHooks(name, role, company) {
@@ -197,6 +244,11 @@ document.addEventListener("DOMContentLoaded", function () {
         result.innerHTML = meta + '<div>' + escapeHtml(letterText).replace(/\n/g, "<br>") + "</div>";
         if (exportControls) exportControls.classList.remove("hidden");
         if (buttonGroup) buttonGroup.classList.add("has-export");
+        /* Nessun formato pre-selezionato: verde solo dopo tap su PDF/DOCX/TXT */
+        clearExportActive();
+        window.requestAnimationFrame(function () {
+            clearExportActive();
+        });
     }
 
     function buildLetter(variantIndex) {
@@ -212,7 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
             formal: t("Formale", "Formal"),
             concise: t("Sintetico", "Concise")
         };
-        var toneLabel = toneLabelMap[selectedTone] || toneLabelMap.professional;
+        var toneKey = selectedTone || "professional";
+        var toneLabel = toneLabelMap[toneKey] || toneLabelMap.professional;
 
         if (!name || !role || !company) {
             return { error: t("Compila nome, ruolo target e azienda.", "Please fill in name, target role, and company.") };
@@ -229,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var hooks = buildHooks(name, role, company);
         var hook = hooks[(selectedHookIndex + variantIndex) % hooks.length] || hooks[0];
-        var tonePhrases = buildTonePhrases()[selectedTone] || buildTonePhrases().professional;
+        var tonePhrases = buildTonePhrases()[toneKey] || buildTonePhrases().professional;
         var bridgeLines = [
             t("Nel corso delle mie esperienze ho lavorato su progetti con obiettivi chiari e tempi serrati, mantenendo sempre attenzione alla qualità.", "Across my experience, I worked on projects with clear goals and tight timelines, while consistently maintaining quality."),
             t("Nel mio percorso ho costruito un metodo di lavoro pratico e collaborativo, con forte orientamento all'esecuzione.", "In my background, I built a practical and collaborative way of working, with strong execution focus."),
@@ -288,6 +341,38 @@ document.addEventListener("DOMContentLoaded", function () {
         return { text: letter, matched: matched, missing: missing, warnings: warnings };
     }
 
+    function setExportFormat(format) {
+        var fmt = format || "pdf";
+        if (exportFormatInput) exportFormatInput.value = fmt;
+        var match = null;
+        formatToggleButtons.forEach(function (button) {
+            if ((button.getAttribute("data-format") || "") === fmt) match = button;
+        });
+        setExportActive(match);
+    }
+    function getFormatToggleButtons() {
+        return Array.prototype.slice.call(
+            document.querySelectorAll(".cover-letter-generator .format-toggle")
+        );
+    }
+    function clearExportActive() {
+        getFormatToggleButtons().forEach(function (button) {
+            button.classList.remove("export-active");
+            button.blur();
+        });
+    }
+    function setExportActive(btn) {
+        getFormatToggleButtons().forEach(function (button) {
+            button.classList.remove("export-active");
+        });
+        if (btn) btn.classList.add("export-active");
+    }
+    function exportByFormat(format) {
+        if (!latestOutput) return;
+        if (format === "docx") return exportDocx();
+        if (format === "txt") return exportTxt();
+        return exportPdf();
+    }
     function downloadBlob(blob, fileName) {
         var link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
@@ -403,9 +488,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    if (btnExportPdf) btnExportPdf.addEventListener("click", exportPdf);
-    if (btnExportDocx) btnExportDocx.addEventListener("click", function () { exportDocx(); });
-    if (btnExportTxt) btnExportTxt.addEventListener("click", exportTxt);
+    formatToggleButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            var format = button.getAttribute("data-format") || "pdf";
+            setExportFormat(format);
+            exportByFormat(format);
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) {
+                button.blur();
+            }
+        });
+    });
+    if (exportFormatInput) exportFormatInput.value = "pdf";
+    clearExportActive();
 
     templateButtons.forEach(function (button) {
         button.addEventListener("click", function () {
@@ -427,11 +521,16 @@ document.addEventListener("DOMContentLoaded", function () {
             button.classList.add("active");
         });
     });
-
     var highlightsInput = document.getElementById("cl-highlights");
     if (highlightsInput) highlightsInput.addEventListener("input", updateWordMeter);
     initToneSelect();
     setTemplate("standard");
-    setToneFromButton("professional");
     updateWordMeter();
-});
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", boot);
+    } else {
+        boot();
+    }
+})();

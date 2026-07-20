@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Text Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly text tools: word counter, translator, Markdown, spaces, JSON, diff checker, and more—all from one hub.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -109,7 +112,7 @@
 {% block content %}
 <div class="container">
     <h1>{% trans "Text Tools" %}</h1>
-    <p class="tool-desc">{% trans "Quick access to all text-related tools." %}</p>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scopri tutti i text tools per contare parole, tradurre testi, formattare JSON, confrontare contenuti e ottimizzare la scrittura online con risultati rapidi e precisi.{% else %}Explore all text tools to count words, translate content, format JSON, compare texts, and improve your writing workflow with fast and accurate results.{% endif %}</p>
     <div class="text-tools-page-grid">
         <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a></div>
         <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'translator' %}">{% trans "Translator" %}</a></div>

@@ -91,6 +91,7 @@ body.single-calc .calc-panel h2 {
     text-align: center;
     max-width: 720px;
     margin: 0 auto 24px auto;
+    color: #555;
 }
 
 .calc-group {
@@ -182,6 +183,37 @@ body.single-calc .calc-panel h2 {
 #panel-iva .calc-select-menu {
     max-height: 240px;
     overflow-y: auto;
+}
+
+/* Desktop IVA: dropdown Paese + Aliquota = stessa larghezza del trigger, scroll senza barra */
+@media (min-width: 769px) {
+    #panel-iva .calc-custom-select {
+        width: 100%;
+        max-width: 100%;
+    }
+    #panel-iva .calc-select-menu,
+    #panel-iva #iva-country-menu,
+    #panel-iva #iva-rate-menu {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0;
+        left: 0;
+        right: auto;
+        box-sizing: border-box;
+    }
+    #panel-iva #iva-country-menu,
+    #panel-iva #iva-rate-menu {
+        max-height: 240px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    #panel-iva #iva-country-menu::-webkit-scrollbar,
+    #panel-iva #iva-rate-menu::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
 }
 
 /* Interest Type: nel menu mostra solo l’opzione non selezionata (Simple/Compound) */
@@ -294,6 +326,11 @@ body.single-calc .calc-panel h2 {
 }
 
 @media (min-width: 769px) {
+    body.calculators:not(.dark-mode) .site-main .calculators .container > .calc-main-subdesc,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-subdesc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
     /* Desktop: stesse modifiche degli input come in mobile (altezza 44px, allineamento al bottone) */
     .calc-group input,
     .calc-group select,
@@ -305,44 +342,61 @@ body.single-calc .calc-panel h2 {
     .calc-group select {
         height: 44px;
     }
-    /* Percentage: riga unica, bottone leggermente più corto per entrare */
+    /* Percentage: tre colonne uguali (due input + Calcola), nessun bottone più largo */
+    #panel-percent .calc-row.calc-row-percent {
+        flex-wrap: nowrap;
+    }
     #panel-percent .calc-row .calc-group {
-        width: 260px;
-        max-width: 260px;
-        flex: 0 0 260px;
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
     }
     #panel-percent .calc-row .calc-group input {
+        width: 100%;
         max-width: 100%;
     }
     #panel-percent .calc-row .calc-btn {
         padding: 10px 14px;
-        flex: 1 1 160px;
-        min-width: 160px;
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
         height: 44px;
         min-height: 44px;
         box-sizing: border-box;
         border: 2px solid transparent;
         line-height: 1.2;
     }
-    /* Net Salary: desktop – tutti gli elementi su una riga, bottone allineato in altezza agli input */
-    #panel-salary .calc-row {
+    /* Net Salary: tre colonne uguali (due campi + Calcola), nessun bottone più largo */
+    #panel-salary .calc-row.calc-row-salary {
+        flex-wrap: nowrap;
         align-items: flex-start;
     }
-    #panel-salary .calc-row .calc-group {
-        width: 260px;
-        max-width: 260px;
-        flex: 0 0 260px;
+    #panel-salary .calc-row.calc-row-salary .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
     }
-    #panel-salary .calc-row .calc-group input,
-    #panel-salary .calc-row .calc-group .calc-custom-select,
-    #panel-salary .calc-row .calc-group .calc-select-trigger {
+    #panel-salary .calc-row.calc-row-salary .calc-group input,
+    #panel-salary .calc-row.calc-row-salary .calc-group .calc-custom-select,
+    #panel-salary .calc-row.calc-row-salary .calc-group .calc-select-trigger {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    #panel-salary .calc-row.calc-row-salary .calc-custom-select,
+    #panel-salary .calc-row.calc-row-salary .calc-select-menu {
         max-width: 100%;
     }
     /* Allineamento: label è .9rem + 6px, così il bottone parte alla stessa altezza dell’input */
-    #panel-salary .calc-row .calc-btn {
+    #panel-salary .calc-row.calc-row-salary .calc-btn {
         padding: 10px 14px;
-        flex: 1 1 160px;
-        min-width: 160px;
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
         height: 44px;
         min-height: 44px;
         margin-top: calc(0.85em + 6px);
@@ -400,29 +454,34 @@ body.single-calc .calc-panel h2 {
         margin-top: calc(1.2em + 6px); /* stessa altezza di partenza degli input */
         box-sizing: border-box;
     }
-    #panel-split .calc-row {
-        flex-direction: row;
-        flex-wrap: wrap;
+    /* Loan desktop: quattro colonne uguali (Principal, Rate, Years, Calcola) */
+    #panel-loan .calc-row.calc-row-loan {
+        flex-wrap: nowrap;
         align-items: flex-end;
     }
-    #panel-split .calc-row .calc-group {
-        flex: 0 0 auto;
+    #panel-loan .calc-row.calc-row-loan .calc-group {
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
     }
-    #panel-split .calc-row .calc-group input {
-        width: 160px;
-        max-width: 160px;
+    #panel-loan .calc-row.calc-row-loan .calc-group input {
+        width: 100%;
+        max-width: 100%;
         box-sizing: border-box;
     }
-    #panel-split .calc-row .calc-btn {
-        width: 160px;
-        min-width: 160px;
-        max-width: 160px;
+    #panel-loan .calc-row.calc-row-loan .calc-btn {
+        padding: 10px 14px;
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+        max-width: none;
+        height: 44px;
+        min-height: 44px;
         box-sizing: border-box;
-    }
-    /* Loan desktop: bottone Calculate in fondo al contenitore, allineato agli input */
-    #panel-loan .calc-row .calc-btn {
-        margin-left: auto;
-        min-width: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     /* Discount desktop: Original price, Discount %, Calculate stessa larghezza sulla stessa riga */
     #panel-discount .calc-row {
@@ -460,23 +519,34 @@ body.single-calc .calc-panel h2 {
         min-height: 44px;
         box-sizing: border-box;
     }
-    /* Split bill desktop: Total, People, Tip %, Split stessa larghezza sulla stessa riga */
-    #panel-split .calc-row {
+    /* Split bill desktop: quattro colonne uguali (Totale, Persone, Mancia %, Split) */
+    #panel-split .calc-row.calc-row-split {
         flex-wrap: nowrap;
+        align-items: flex-end;
     }
-    #panel-split .calc-row .calc-group {
+    #panel-split .calc-row.calc-row-split .calc-group {
         flex: 1 1 0;
         min-width: 0;
+        width: auto;
+        max-width: none;
     }
-    #panel-split .calc-row .calc-group input {
+    #panel-split .calc-row.calc-row-split .calc-group input {
+        width: 100%;
         max-width: 100%;
+        box-sizing: border-box;
     }
-    #panel-split .calc-row .calc-btn {
+    #panel-split .calc-row.calc-row-split .calc-btn {
+        padding: 10px 14px;
         flex: 1 1 0;
         min-width: 0;
+        width: auto;
+        max-width: none;
         height: 44px;
         min-height: 44px;
         box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     /* IVA (VAT): input a tutta larghezza container, bottoni Net/Gross allineati a destra */
     #panel-iva .calc-group input,
@@ -549,9 +619,11 @@ body.single-calc .calc-panel h2 {
     transform: translateY(-1px);
 }
 
-.calc-btn:hover {
-    background: #0056b3;
-    transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+    .calc-btn:hover {
+        background: #0056b3;
+        transform: scale(1.03);
+    }
 }
 
 #panel-salary .calc-btn {
@@ -583,6 +655,7 @@ body.single-calc .calc-panel h2 {
 @media (max-width: 768px) {
     #result-pct,
     #result-salary,
+    #result-interest,
     #result-currency,
     #result-loan,
     #result-discount,
@@ -601,6 +674,27 @@ body.single-calc .calc-panel h2 {
     #panel-percent .calc-row .calc-btn {
         order: 2;
     }
+    /* Percentage mobile: errore largo come Calcola, 12px sotto l’ultimo input */
+    body.calculators #panel-percent .calc-row.calc-row-percent {
+        align-items: stretch !important;
+    }
+    #panel-percent .calc-row.calc-row-percent .calc-group:nth-of-type(2) {
+        margin-bottom: 12px;
+    }
+    #panel-percent .calc-row #result-pct-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-percent .calc-row.calc-row-percent .calc-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        box-sizing: border-box !important;
+    }
     /* Ordine esplicito in Net Salary: input -> risultato -> bottone */
     #panel-salary .calc-row .calc-group {
         order: 0;
@@ -610,6 +704,40 @@ body.single-calc .calc-panel h2 {
     }
     #panel-salary .calc-row .calc-btn {
         order: 2;
+    }
+    /* Net Salary mobile: errore stessa larghezza del bottone Calcola */
+    body.calculators #panel-salary .calc-row.calc-row-salary {
+        align-items: stretch !important;
+    }
+    #panel-salary .calc-row #result-salary-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-salary .calc-row.calc-row-salary .calc-btn,
+    #panel-salary .calc-row #btn-salary {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+        margin-top: 12px !important;
+    }
+    /* Net Salary mobile: 12px tra menu Payments per year e box errore */
+    #panel-salary .calc-row .calc-group:first-of-type {
+        margin-bottom: 12px !important;
+    }
+    #panel-salary .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0 !important;
+    }
+    #panel-salary #salary-months-wrap {
+        margin-bottom: 12px !important;
+    }
+    #panel-salary .calc-row #result-salary-mobile {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
     }
     /* Ordine esplicito in Currency: input -> risultato -> bottone */
     #panel-currency .calc-currency-row .calc-group {
@@ -631,6 +759,30 @@ body.single-calc .calc-panel h2 {
     #panel-loan .calc-row .calc-btn {
         order: 2;
     }
+    /* Loan mobile: risultato stessa larghezza del bottone Calcola */
+    body.calculators #panel-loan .calc-row.calc-row-loan {
+        align-items: stretch !important;
+    }
+    #panel-loan .calc-row #result-loan-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-loan .calc-row .calc-group:nth-of-type(3) {
+        margin-bottom: 0 !important;
+    }
+    #panel-loan .calc-row.calc-row-loan .calc-btn,
+    #panel-loan .calc-row #btn-loan {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
     /* Ordine esplicito in Discount: input -> risultato -> bottone */
     #panel-discount .calc-row .calc-group {
         order: 0;
@@ -640,6 +792,31 @@ body.single-calc .calc-panel h2 {
     }
     #panel-discount .calc-row .calc-btn {
         order: 2;
+    }
+    /* Discount mobile: risultato = larghezza Calcola, 12px sotto Sconto (%) */
+    body.calculators #panel-discount .calc-row {
+        align-items: stretch !important;
+    }
+    #panel-discount .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0 !important;
+    }
+    #panel-discount .calc-row #result-discount-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-discount .calc-row .calc-btn,
+    #panel-discount .calc-row #btn-discount {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
     }
     /* Ordine esplicito in Margin: input -> risultato -> bottone */
     #panel-margin .calc-row .calc-group {
@@ -651,6 +828,31 @@ body.single-calc .calc-panel h2 {
     #panel-margin .calc-row .calc-btn {
         order: 2;
     }
+    /* Margin mobile: risultato = larghezza Calcola, 12px sotto Margine (%) */
+    body.calculators #panel-margin .calc-row {
+        align-items: stretch !important;
+    }
+    #panel-margin .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0 !important;
+    }
+    #panel-margin .calc-row #result-margin-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-margin .calc-row .calc-btn,
+    #panel-margin .calc-row #btn-margin {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
     /* Ordine esplicito in Split bill: input -> risultato -> bottone */
     #panel-split .calc-row .calc-group {
         order: 0;
@@ -661,19 +863,73 @@ body.single-calc .calc-panel h2 {
     #panel-split .calc-row .calc-btn {
         order: 2;
     }
-    /* Net Salary mobile: distanza 12px fra Payments per year, errore e bottone */
-    #panel-salary .calc-row .calc-group:not(:last-of-type) {
-        margin-bottom: 12px;
+    /* Split mobile: risultato = larghezza Split, 12px sotto Mancia (%) */
+    body.calculators #panel-split .calc-row.calc-row-split {
+        align-items: stretch !important;
     }
-    #panel-salary #result-salary-mobile {
-        margin-top: 0;        /* distanza sopra gestita dal margin-bottom dell'ultimo input (12px) */
-        margin-bottom: 12px;  /* 12px tra errore e bottone */
+    #panel-split .calc-row.calc-row-split .calc-group:nth-of-type(3) {
+        margin-bottom: 0 !important;
+    }
+    #panel-split .calc-row #result-split-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    #panel-split .calc-row.calc-row-split .calc-btn,
+    #panel-split .calc-row #btn-split {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+    /* Interest mobile: input -> errore/risultato -> Calcola (tra Type e bottone) */
+    #panel-interest .calc-row .calc-group {
+        order: 0;
+    }
+    #panel-interest .calc-row #result-interest-mobile {
+        order: 1;
+    }
+    #panel-interest .calc-row .calc-btn {
+        order: 2;
+    }
+    body.calculators #panel-interest .calc-row {
+        align-items: stretch !important;
+        gap: 0;
+    }
+    #panel-interest .calc-row #result-interest-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+    }
+    #panel-interest .calc-row .calc-group:last-of-type {
+        margin-bottom: 0 !important;
+    }
+    #panel-interest #int-type-wrap {
+        margin-bottom: 0 !important;
+    }
+    #panel-interest .calc-row #btn-interest {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        box-sizing: border-box !important;
     }
 }
 
 /* Desktop: nascondi sempre il box mobile anche quando ha .show */
 @media (min-width: 769px) {
     #result-salary-mobile,
+    #result-interest-mobile,
     #result-pct-mobile,
     #result-currency-mobile,
     #result-loan-mobile,
@@ -686,6 +942,19 @@ body.single-calc .calc-panel h2 {
 
 .calc-result.show {
     display: block;
+}
+
+#panel-currency .calc-result.is-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #003f7f;
+}
+
+#panel-currency #btn-currency {
+    min-width: 160px;
+    box-sizing: border-box;
 }
 
 .calc-result.error {
@@ -708,6 +977,302 @@ body.single-calc .calc-panel h2 {
 }
 
 @media (max-width: 768px) {
+    /* Mobile: contenuto centrato a 338px (come Data Viz / File Analyzer) */
+    body.calculators .site-main {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    body.calculators .site-main .calculators {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+    }
+    body.calculators .site-main .calculators > .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 16px auto 24px !important;
+        padding: 16px 8px 24px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    body.calculators .site-main .calculators .container > h1,
+    body.calculators .site-main .calculators .container > .calc-main-subdesc,
+    body.calculators .site-main .calculators .calc-tabs,
+    body.calculators .site-main .calculators .calc-panel {
+        width: 100% !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Mobile light: descrizioni #555 */
+    body.calculators:not(.dark-mode) .site-main .calculators .container > .calc-main-subdesc,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-subdesc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+        text-align: center !important;
+    }
+
+    /* Mobile: centra contenuto (light e dark) */
+    body.calculators .site-main .calculators > .container {
+        text-align: center;
+    }
+    body.calculators:not(.dark-mode) .site-main .calculators > .container {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    body.calculators .calculators .calc-tabs,
+    body.calculators .calculators .calc-tabs-row {
+        align-items: center;
+        justify-content: center;
+    }
+    body.calculators .calculators .calc-panel {
+        text-align: center;
+    }
+    body.calculators .calculators .calc-panel .calc-subdesc,
+    body.calculators .calculators .calc-panel h2 {
+        text-align: center;
+    }
+    body.calculators .calculators .calc-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    body.calculators .calculators .calc-group label {
+        text-align: center;
+        width: 100%;
+    }
+    body.calculators .calculators .calc-custom-select {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    body.calculators #panel-percent,
+    body.calculators #panel-percent .calc-row,
+    body.calculators #panel-salary .calc-row,
+    body.calculators #panel-interest .calc-row,
+    body.calculators #panel-loan .calc-row,
+    body.calculators #panel-currency .calc-currency-wrap,
+    body.calculators #panel-currency .calc-currency-row {
+        text-align: center;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    /* Sconto / Margine / Dividi conto mobile: stretch (risultato = larghezza bottone) */
+    body.calculators #panel-discount .calc-row,
+    body.calculators #panel-margin .calc-row,
+    body.calculators #panel-split .calc-row.calc-row-split {
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+    }
+    body.calculators #panel-currency .calc-group-curr-to {
+        align-items: center !important;
+    }
+    body.calculators #panel-currency .calc-group-curr-to label {
+        text-align: center !important;
+    }
+    body.calculators #panel-iva .calc-row {
+        justify-content: center !important;
+    }
+
+    /* Mobile: input/select altezza 47.5px (come altri tool) */
+    body.calculators .site-main .calculators .container .calc-panel .calc-group input,
+    body.calculators .site-main .calculators .container .calc-panel .calc-select-trigger {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+    body.calculators .site-main .calculators .container .calc-panel .calc-custom-select {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    body.calculators .site-main .calculators .container .calc-panel .calc-result:not(.error) {
+        min-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+    /* Dividi conto mobile light: risultato stessa larghezza del bottone Split */
+    body.calculators:not(.dark-mode) #panel-split .calc-row.calc-row-split {
+        align-items: stretch !important;
+    }
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile,
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile.show,
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile.error {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    body.calculators:not(.dark-mode) #panel-split .calc-row #btn-split {
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Light mobile: bordo sottile (1px), focus senza ingrossamento */
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-group input,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-select-trigger {
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-group input:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-select-trigger:hover {
+        border: 1px solid #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    /* Dark mobile: niente card bianca esterna — resta solo .calc-panel */
+    body.dark-mode.calculators .site-main .calculators > .container {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container > h1,
+    body.dark-mode.calculators .site-main .calculators .container > .calc-main-subdesc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.dark-mode.calculators .calculators .calc-panel {
+        background: transparent !important;
+        border: 2px dashed #b0c4de !important;
+    }
+    /* .calc-panel: solo tratteggio; testi su sfondo scuro #b0c4de */
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel h2,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-subdesc,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group label {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    /* Mobile: disclaimer nel box risultato più scuro (leggibile su sfondo chiaro del risultato) */
+    body.calculators .site-main .calculators .container .calc-panel .calc-result .calc-result-note {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-result .calc-result-note {
+        color: #444 !important;
+        -webkit-text-fill-color: #444 !important;
+    }
+    /* Input / select / risultato: stesso schema textarea dark (Data Viz, theme.css) */
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group input,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-trigger {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group input:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-trigger:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+        outline: none !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-trigger:hover {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border-color: rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-trigger::after {
+        border-top-color: #555 !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-custom-select {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-menu {
+        background: rgba(240, 242, 245, 0.98) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-menu li {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-menu li:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-select-menu li.selected {
+        background: rgba(220, 224, 230, 0.45) !important;
+    }
+    /* VAT mobile dark: menu Paese / aliquota (no sfondo bianco né griglia chiara) */
+    body.dark-mode.calculators #panel-iva .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+        max-width: 100% !important;
+    }
+    body.dark-mode.calculators #panel-iva .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.dark-mode.calculators #panel-iva .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-iva .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    /* VAT: trigger sempre come menu scuro (non grigio input al tap/focus) */
+    body.dark-mode.calculators #panel-iva .calc-select-trigger,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-iva .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.calculators #panel-iva .calc-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-result:not(.error) {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        text-align: center;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-tab {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-tab.active {
+        background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
+        border-color: #003f7f !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #panel-iva .calc-row .calc-btn {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
     .calculators .container {
         margin: 20px 16px;
         padding: 28px 22px;
@@ -731,6 +1296,92 @@ body.single-calc .calc-panel h2 {
     #panel-iva .calc-row {
         justify-content: space-between;
     }
+    /* VAT mobile: trigger e voci menu 47.5px; scroll paese senza barra visibile */
+    #panel-iva .calc-select-trigger {
+        min-height: 47.5px;
+        height: 47.5px;
+        padding-top: 0;
+        padding-bottom: 0;
+        box-sizing: border-box;
+    }
+    #panel-iva .calc-select-menu {
+        padding: 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    #panel-iva .calc-select-menu::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    #panel-iva .calc-select-menu li {
+        min-height: 47.5px;
+        height: 47.5px;
+        display: flex;
+        align-items: center;
+        padding-top: 0;
+        padding-bottom: 0;
+        box-sizing: border-box;
+    }
+    /* VAT mobile: menu Paese — trigger e voci 47.5px (vince su padding globale li) */
+    #panel-iva #iva-country-wrap .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #panel-iva #iva-country-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2;
+    }
+    /* VAT mobile light: menu e trigger come bottoni Net → Gross / Gross → Net */
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        max-width: 100% !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-iva .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
     /* Net Salary: mobile – input/select e bottone stessa larghezza (100%) */
     #panel-salary .calc-group input,
     #panel-salary .calc-custom-select,
@@ -739,6 +1390,123 @@ body.single-calc .calc-panel h2 {
         max-width: 100%;
         box-sizing: border-box;
     }
+    #panel-salary #salary-months-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    #panel-salary .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        box-sizing: border-box !important;
+    }
+    #panel-salary .calc-select-trigger::after {
+        position: absolute;
+        right: 14px;
+    }
+    #panel-salary .calc-select-menu {
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    #panel-salary .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2;
+        font-weight: normal !important;
+    }
+    /* Net Salary mobile light: Payments per year + menu come bottone Calcola */
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-salary .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+    /* Net Salary mobile dark: menu Payments per year */
+    body.dark-mode.calculators #panel-salary .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-salary .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-trigger,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-salary .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
     #panel-salary .calc-btn {
         width: 100%;
         max-width: 100%;
@@ -746,7 +1514,17 @@ body.single-calc .calc-panel h2 {
     #panel-interest .calc-row {
         flex-direction: column;
         align-items: stretch;
-        gap: 16px;
+        gap: 0;
+    }
+    #panel-interest .calc-row .calc-group {
+        margin-bottom: 12px;
+    }
+    #panel-interest .calc-row .calc-group:last-of-type {
+        margin-bottom: 0 !important;
+    }
+    #panel-interest .calc-row #result-interest-mobile {
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
     }
     #panel-interest .calc-row .calc-group input,
     #panel-interest .calc-row .calc-group .calc-custom-select,
@@ -755,6 +1533,115 @@ body.single-calc .calc-panel h2 {
         width: 100%;
         max-width: 100%;
         min-width: 0;
+    }
+    /* Interest mobile: Type 47.5px */
+    #panel-interest #int-type-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    #panel-interest .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #panel-interest .calc-select-menu {
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    #panel-interest .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2;
+        font-weight: normal !important;
+    }
+    /* Interest mobile dark: Type (menu + trigger, no sfondo bianco input) */
+    body.dark-mode.calculators #panel-interest .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-interest .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-trigger,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-interest .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    /* Interest mobile light: Type + menu come bottone Calcola */
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-interest .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
     }
     /* Currency: mobile – stesso layout degli altri, input EUR dentro il container */
     #panel-currency .calc-currency-wrap {
@@ -767,7 +1654,7 @@ body.single-calc .calc-panel h2 {
     #panel-currency .calc-currency-wrap .calc-btn {
         width: 100%;
         max-width: 100%;
-        min-height: 44px;
+        min-height: 47.5px;
         box-sizing: border-box;
     }
     #panel-currency .calc-currency-row {
@@ -791,7 +1678,7 @@ body.single-calc .calc-panel h2 {
     #panel-currency .calc-currency-input-wrap input {
         width: 100%;
         max-width: 100%;
-        min-height: 44px;
+        min-height: 47.5px;
         box-sizing: border-box;
     }
     #panel-currency .calc-currency-input-wrap .calc-custom-select,
@@ -800,7 +1687,7 @@ body.single-calc .calc-panel h2 {
         max-width: 100%;
     }
     #panel-currency .calc-currency-input-wrap .calc-select-trigger {
-        min-height: 44px;
+        min-height: 47.5px;
         box-sizing: border-box;
     }
     #panel-currency #curr-to-wrap {
@@ -813,11 +1700,171 @@ body.single-calc .calc-panel h2 {
     #panel-currency .calc-group-curr-to .calc-select-trigger {
         width: 100%;
         max-width: 100%;
-        min-height: 44px;
+        min-height: 47.5px;
         box-sizing: border-box;
     }
     #panel-currency .calc-group-curr-to label {
         text-align: left;
+    }
+    /* Currency mobile: EUR / USD trigger 47.5px (vince su padding globale) */
+    #panel-currency #curr-from-wrap,
+    #panel-currency #curr-to-wrap {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+    }
+    #panel-currency #curr-from-trigger,
+    #panel-currency #curr-to-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2;
+        box-sizing: border-box !important;
+    }
+    /* Currency mobile: 47.5px, no grassetto, colori come altri tool */
+    #panel-currency .calc-currency-wrap {
+        gap: 0;
+    }
+    #panel-currency .calc-currency-row {
+        gap: 0;
+    }
+    body.calculators #panel-currency .calc-currency-row {
+        align-items: stretch !important;
+    }
+    #panel-currency .calc-currency-input-wrap {
+        gap: 12px;
+    }
+    #panel-currency .calc-currency-input-wrap input {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+    #panel-currency .calc-currency-input-wrap .calc-select-trigger,
+    #panel-currency .calc-group-curr-to .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+        font-weight: normal !important;
+        justify-content: center;
+        text-align: center;
+    }
+    #panel-currency .calc-select-menu {
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    #panel-currency .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2;
+        font-weight: normal !important;
+    }
+    #panel-currency .calc-currency-row #result-currency-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+    }
+    #panel-currency .calc-currency-row .calc-group-curr-to {
+        margin-bottom: 0 !important;
+    }
+    #panel-currency #curr-to-wrap {
+        margin-bottom: 0 !important;
+    }
+    #panel-currency .calc-currency-wrap .calc-btn,
+    #panel-currency .calc-currency-row .calc-btn {
+        min-height: 47.5px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    /* Currency mobile light: EUR / USD e menu */
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-currency .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    /* Currency mobile dark: EUR / USD e menu */
+    body.dark-mode.calculators #panel-currency .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-currency .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-trigger,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-currency .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
     }
     #panel-percent .calc-row,
     #panel-salary .calc-row {
@@ -891,7 +1938,7 @@ body.single-calc .calc-panel h2 {
     #panel-split .calc-row {
         flex-direction: column;
         align-items: stretch;
-        gap: 16px;
+        gap: 0;
     }
     #panel-split .calc-row .calc-group input {
         width: 100%;
@@ -911,15 +1958,18 @@ body.single-calc .calc-panel h2 {
     }
     #panel-currency .calc-currency-input-wrap input {
         font-size: 16px;
-        min-height: 48px;
+        min-height: 47.5px;
+        height: 47.5px;
     }
     #panel-currency .calc-currency-input-wrap .calc-custom-select,
     #panel-currency .calc-currency-input-wrap .calc-select-trigger {
-        min-height: 48px;
+        min-height: 47.5px;
+        height: 47.5px;
     }
     #panel-currency .calc-group-curr-to .calc-custom-select,
     #panel-currency .calc-group-curr-to .calc-select-trigger {
-        min-height: 48px;
+        min-height: 47.5px;
+        height: 47.5px;
     }
     .calculators h1 {
         font-size: 1.4em;
@@ -953,9 +2003,13 @@ body.single-calc .calc-panel h2 {
         font-size: 16px;
     }
     #panel-interest .calc-group input,
-    #panel-interest .calc-row .calc-group input,
-    #panel-interest .calc-select-trigger {
+    #panel-interest .calc-row .calc-group input {
         min-height: 48px;
+        font-size: 16px;
+    }
+    #panel-interest .calc-select-trigger {
+        min-height: 47.5px;
+        height: 47.5px;
         font-size: 16px;
     }
     #panel-discount .calc-row .calc-group input {
@@ -1001,10 +2055,10 @@ body.single-calc .calc-panel h2 {
     #panel-discount .calc-row .calc-btn,
     #panel-margin .calc-row .calc-btn,
     #panel-split .calc-row .calc-btn {
-        min-height: 48px;
+        min-height: 52px;
     }
     .calc-btn {
-        min-height: 48px;
+        min-height: 52px;
         width: 100%;
     }
     #panel-iva .calc-row .calc-btn {
@@ -1025,18 +2079,20 @@ body.single-calc .calc-panel h2 {
     #panel-salary .calc-row .calc-group:first-of-type {
         margin-bottom: 12px;
     }
-    /* Payments per year: nessun margine sotto (assicurato esplicitamente) */
+    /* Payments per year: 12px sotto il contenitore menu, non sul calc-group */
     #panel-salary .calc-row .calc-group:nth-of-type(2) {
         margin-bottom: 0;
     }
-    /* 12px tra Payments per year e l'errore (sopra), spazio sotto gestito dal bottone */
-    #panel-salary #result-salary-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+    #panel-salary #salary-months-wrap {
+        margin-bottom: 12px !important;
     }
-    /* Net Salary mobile: distanzia il bottone dall'errore/input sopra */
+    #panel-salary #result-salary-mobile {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    /* Net Salary mobile: 12px tra errore e bottone */
     #panel-salary .calc-row .calc-btn {
-        margin-top: 12px;
+        margin-top: 12px !important;
     }
 
     /* Currency mobile: stessa logica di spazi di Net Salary */
@@ -1050,15 +2106,19 @@ body.single-calc .calc-panel h2 {
     }
     /* 12px tra Amount e Convert to */
     #panel-currency .calc-currency-row .calc-group:first-of-type {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
-    /* 12px tra Convert to e errore, e 12px tra errore e bottone */
+    /* 12px tra USD (Convert to) e errore */
+    #panel-currency .calc-currency-row .calc-group-curr-to {
+        margin-bottom: 0 !important;
+    }
     #panel-currency #result-currency-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
     }
+    /* 12px tra errore e bottone Convert */
     #panel-currency .calc-currency-row .calc-btn {
-        margin-top: 12px;
+        margin-top: 12px !important;
     }
 
     /* Loan mobile: stessa logica di spazi puliti */
@@ -1076,15 +2136,27 @@ body.single-calc .calc-panel h2 {
     }
     /* 12px tra Annual rate e Years */
     #panel-loan .calc-row .calc-group:nth-of-type(2) {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
-    /* 12px tra Years e errore, e 12px tra errore e bottone */
+    /* Years: nessun margine sotto il gruppo (12px solo sopra l'errore) */
+    #panel-loan .calc-row .calc-group:nth-of-type(3) {
+        margin-bottom: 0 !important;
+    }
+    /* 12px tra Anni e errore; stessa larghezza del bottone Calcola */
     #panel-loan #result-loan-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
     }
-    #panel-loan .calc-row .calc-btn {
-        margin-top: 12px;
+    #panel-loan .calc-row .calc-btn,
+    #panel-loan .calc-row #btn-loan {
+        margin-top: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Discount mobile: stessa logica di spazi puliti */
@@ -1098,15 +2170,27 @@ body.single-calc .calc-panel h2 {
     }
     /* 12px tra Original price e Discount (%) */
     #panel-discount .calc-row .calc-group:first-of-type {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
-    /* 12px tra Discount (%) e errore, e 12px tra errore e bottone */
+    /* Sconto (%): nessun margine sotto il gruppo */
+    #panel-discount .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0 !important;
+    }
+    /* 12px tra Sconto (%) e errore; stessa larghezza del bottone Calcola */
     #panel-discount #result-discount-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
     }
-    #panel-discount .calc-row .calc-btn {
-        margin-top: 12px;
+    #panel-discount .calc-row .calc-btn,
+    #panel-discount .calc-row #btn-discount {
+        margin-top: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Margin mobile: stessa logica di spazi puliti */
@@ -1120,15 +2204,27 @@ body.single-calc .calc-panel h2 {
     }
     /* 12px tra Cost e Margin (%) */
     #panel-margin .calc-row .calc-group:first-of-type {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
-    /* 12px tra Margin (%) e errore, e 12px tra errore e bottone */
+    /* Margine (%): nessun margine sotto il gruppo */
+    #panel-margin .calc-row .calc-group:nth-of-type(2) {
+        margin-bottom: 0 !important;
+    }
+    /* 12px tra Margine (%) e errore; stessa larghezza del bottone Calcola */
     #panel-margin #result-margin-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
     }
-    #panel-margin .calc-row .calc-btn {
-        margin-top: 12px;
+    #panel-margin .calc-row .calc-btn,
+    #panel-margin .calc-row #btn-margin {
+        margin-top: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Split bill mobile: stessa logica di spazi puliti */
@@ -1142,27 +2238,35 @@ body.single-calc .calc-panel h2 {
     }
     /* 12px tra Total amount e Number of people */
     #panel-split .calc-row .calc-group:first-of-type {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
     /* 12px tra Number of people e Tip (%) */
     #panel-split .calc-row .calc-group:nth-of-type(2) {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
     }
-    /* 12px tra Tip (%) e errore, e 12px tra errore e bottone */
+    /* Mancia (%): nessun margine sotto il gruppo */
+    #panel-split .calc-row .calc-group:nth-of-type(3) {
+        margin-bottom: 0 !important;
+    }
+    /* 12px tra Mancia (%) e errore; stessa larghezza del bottone Split */
     #panel-split #result-split-mobile {
-        margin-top: 12px;
-        margin-bottom: 0;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
     }
-    #panel-split .calc-row .calc-btn {
-        margin-top: 12px;
+    #panel-split .calc-row .calc-btn,
+    #panel-split .calc-row #btn-split {
+        margin-top: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     /* Percentage mobile: spazio extra solo tra Percentage (%) e of (value) */
     #panel-percent .calc-row.calc-row-percent .calc-group:first-of-type {
         margin-bottom: 18px; /* un po' più distanti rispetto al default (14px) */
-    }
-    /* Percentage mobile: distanzia il bottone dall'input / errore sopra */
-    #panel-percent .calc-row.calc-row-percent .calc-btn {
-        margin-top: 12px;
     }
 }
 
@@ -1170,8 +2274,8 @@ body.single-calc .calc-panel h2 {
 @media (max-width: 768px) and (min-width: 601px) {
     #panel-percent .calc-row.calc-row-percent {
         flex-direction: column;
-        align-items: stretch;
-        gap: 12px; /* spazio uniforme tra Percentage, of (value), risultato mobile e bottone */
+        align-items: stretch !important;
+        gap: 0;
     }
     #panel-percent .calc-row.calc-row-percent .calc-group,
     #panel-percent .calc-row.calc-row-percent .calc-btn {
@@ -1183,6 +2287,702 @@ body.single-calc .calc-panel h2 {
     #panel-percent .calc-row.calc-row-percent .calc-group input {
         width: 100%;
         max-width: 100%;
+    }
+}
+
+/* Mobile ≤768px: esempi come CV Generator; calc-subdesc dark #b0c4de */
+@media (max-width: 768px) {
+    /* Mobile light: esempi = CV Generator (solo ::placeholder, come cv_generator.html) */
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"]::placeholder,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"]::-webkit-input-placeholder,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"]::-moz-placeholder {
+        color: rgba(15, 47, 85, 0.7) !important;
+        opacity: 1 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"] {
+        color: #0f2f55 !important;
+        -webkit-text-fill-color: #0f2f55 !important;
+    }
+
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group input::placeholder,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group input::-webkit-input-placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        opacity: 1 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-subdesc,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel p.calc-subdesc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /*
+     * Mobile Calcola: stesso sfondo degli altri bottoni (base.css).
+     * Solo blocca hover/focus blu; scale(0.96) da base.css + mobile-tap.js (niente transform qui).
+     */
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-btn:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-btn:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-btn:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-btn:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-btn.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-pct:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-pct:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-pct:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-pct:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-pct.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-net:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-net:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-net:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-net:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-net.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-gross:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-gross:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-gross:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-gross:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-iva-gross.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-salary:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-salary:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-salary:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-salary:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-salary.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-interest:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-interest:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-interest:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-interest:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-interest.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-currency:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-currency:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-currency:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-currency:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-currency.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-loan:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-loan:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-loan:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-loan:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-loan.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-discount:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-discount:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-discount:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-discount:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-discount.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-margin:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-margin:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-margin:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-margin:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-margin.tap-active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-split:hover,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-split:focus,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-split:focus-visible,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-split:active,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel #btn-split.tap-active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-btn.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-pct:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-pct:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-pct:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-pct:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-pct.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-net:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-net:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-net:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-net:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-net.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-gross:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-gross:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-gross:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-gross:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-iva-gross.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-salary:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-salary:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-salary:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-salary:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-salary.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-interest:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-interest:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-interest:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-interest:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-interest.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-currency:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-currency:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-currency:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-currency:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-currency.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-loan:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-loan:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-loan:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-loan:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-loan.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-discount:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-discount:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-discount:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-discount:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-discount.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-margin:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-margin:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-margin:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-margin:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-margin.tap-active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-split:hover,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-split:focus,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-split:focus-visible,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-split:active,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel #btn-split.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* Scale al tap: vince su base.css transform:scale(1) sui button */
+    body.calculators .site-main .calculators .container .calc-panel .calc-btn.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel .calc-btn:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-pct.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-pct:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-iva-net.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-iva-net:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-iva-gross.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-iva-gross:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-salary.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-salary:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-interest.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-interest:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-currency.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-currency:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-loan.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-loan:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-discount.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-discount:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-margin.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-margin:active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-split.tap-active,
+    body.calculators .site-main .calculators .container .calc-panel #btn-split:active {
+        transform: scale(0.96) !important;
+    }
+
+    /* Mobile light: placeholder CV — ripetuto in coda per vincere su altre regole */
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"]::placeholder,
+    body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel input[type="number"]::-webkit-input-placeholder {
+        color: rgba(15, 47, 85, 0.7) !important;
+        opacity: 1 !important;
+    }
+
+    /* VAT mobile dark (coda): vince su .calc-select-menu { background: white } */
+    body.dark-mode.calculators #panel-iva .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+    }
+    body.dark-mode.calculators #panel-iva .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        background: transparent !important;
+    }
+    body.dark-mode.calculators #panel-iva .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-iva .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* VAT mobile dark (coda): trigger mai grigio chiaro al tap */
+    body.dark-mode.calculators #panel-iva .calc-select-trigger,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-iva .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-iva .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+    }
+
+    /* VAT mobile (coda): altezza 47.5px + scrollbar nascosta */
+    #panel-iva .calc-select-trigger {
+        min-height: 47.5px;
+        height: 47.5px;
+    }
+    #panel-iva .calc-select-menu {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    #panel-iva .calc-select-menu::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    #panel-iva .calc-select-menu li {
+        min-height: 47.5px;
+        height: 47.5px;
+    }
+    #panel-iva #iva-country-wrap .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #panel-iva #iva-country-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2;
+    }
+
+    /* VAT mobile light (coda): come #btn-iva-net / #btn-iva-gross, vince su input bianchi */
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-iva .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-iva .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    /* Interest mobile light (coda): Type + menu, vince su input bianchi */
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-interest .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-interest .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    /* Interest mobile dark (coda): Type — vince su menu bianco globale */
+    body.dark-mode.calculators #panel-interest .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-interest .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-trigger,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-interest .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-interest .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.calculators #panel-interest .calc-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    #panel-interest .calc-select-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+    }
+    #panel-interest .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+    }
+
+    /* Currency mobile light (coda): EUR / USD, vince su input bianchi */
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-currency .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-currency .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    /* Currency mobile dark (coda) */
+    body.dark-mode.calculators #panel-currency .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-menu li {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-currency .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-currency .calc-select-trigger,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-currency .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-currency .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    #panel-currency .calc-currency-input-wrap .calc-select-trigger,
+    #panel-currency .calc-group-curr-to .calc-select-trigger,
+    #panel-currency #curr-from-trigger,
+    #panel-currency #curr-to-trigger {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-weight: normal !important;
+        box-sizing: border-box !important;
+    }
+    #panel-currency #curr-from-wrap,
+    #panel-currency #curr-to-wrap {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+    }
+    #panel-currency .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        font-weight: normal !important;
+    }
+    #panel-currency #result-currency-mobile {
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+    }
+    #panel-currency .calc-currency-row .calc-btn {
+        margin-top: 12px !important;
+    }
+    body.calculators #panel-loan .calc-row.calc-row-loan {
+        align-items: stretch !important;
+    }
+    #panel-loan .calc-row #result-loan-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    #panel-loan .calc-row #btn-loan {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+    }
+    body.calculators #panel-discount .calc-row {
+        align-items: stretch !important;
+    }
+    #panel-discount .calc-row #result-discount-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    #panel-discount .calc-row #btn-discount {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+    }
+    body.calculators #panel-margin .calc-row {
+        align-items: stretch !important;
+    }
+    #panel-margin .calc-row #result-margin-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    #panel-margin .calc-row #btn-margin {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
+    }
+    body.calculators #panel-margin .calc-row {
+        align-items: stretch !important;
+    }
+    #panel-margin .calc-row #result-margin-mobile,
+    #panel-margin .calc-row #result-margin-mobile.show {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    #panel-margin .calc-row .calc-btn,
+    #panel-margin .calc-row #btn-margin {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        align-self: stretch !important;
+    }
+    body.calculators #panel-split .calc-row.calc-row-split {
+        align-items: stretch !important;
+    }
+    #panel-split .calc-row #result-split-mobile,
+    #panel-split .calc-row #result-split-mobile.show,
+    #panel-split .calc-row #result-split-mobile.error {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    #panel-split .calc-row .calc-btn,
+    #panel-split .calc-row #btn-split {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin-top: 12px !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+    }
+    /* Dividi conto mobile light (coda): risultato = larghezza Split */
+    body.calculators:not(.dark-mode) #panel-split .calc-row.calc-row-split {
+        align-items: stretch !important;
+    }
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile,
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile.show,
+    body.calculators:not(.dark-mode) #panel-split .calc-row #result-split-mobile.error {
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+    }
+    body.calculators:not(.dark-mode) #panel-split .calc-row #btn-split {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Net Salary mobile light (coda): Payments per year + menu, vince su input bianchi */
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 8px 22px rgba(0, 63, 127, 0.12) !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li:hover,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-menu li.selected {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:hover,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:focus,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:focus-visible,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger:active,
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger.tap-active,
+    body.calculators:not(.dark-mode) #panel-salary .calc-custom-select.open .calc-select-trigger {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-radius: 12px !important;
+    }
+    body.calculators:not(.dark-mode) #panel-salary .calc-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    /* Net Salary mobile dark (coda) */
+    body.dark-mode.calculators #panel-salary .calc-select-menu {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-menu li {
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-menu li:hover,
+    body.dark-mode.calculators #panel-salary .calc-select-menu li.selected {
+        background: rgba(176, 196, 222, 0.14) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-trigger,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:hover,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:focus,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:focus-visible,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger:active,
+    body.dark-mode.calculators #panel-salary .calc-select-trigger.tap-active,
+    body.dark-mode.calculators #panel-salary .calc-custom-select.open .calc-select-trigger {
+        background: #1a2332 !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: normal !important;
+    }
+    body.dark-mode.calculators #panel-salary .calc-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    #panel-salary .calc-select-menu {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    #panel-salary .calc-select-menu li {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        justify-content: center;
+        text-align: center;
+    }
+    #panel-salary .calc-row #result-salary-mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        align-self: stretch !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    #panel-salary #salary-months-wrap {
+        margin-bottom: 12px !important;
+    }
+    #panel-salary .calc-row #btn-salary {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 12px !important;
     }
 }
 

@@ -1,7 +1,8 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Check your email - Gadly" %}{% endblock %}
+{% load auth_brand_tags %}
+{% block title %}{% if is_drose_site %}{% trans "Check your email - Drose" %}{% else %}{% trans "Check your email - Gadly" %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
@@ -10,6 +11,11 @@
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Check your email" %}</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <p class="login-error-inline" role="alert" style="margin: 14px 0 18px;">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
     {% if already_verified %}
     <p style="margin: 14px 0 18px; color: #dc2626; font-weight: 700; line-height: 1.5;">
         {% if LANGUAGE_CODE|slice:":2" == "it" %}
@@ -41,6 +47,8 @@
             {% else %}
             No email was sent successfully. Please try requesting a verification email again.
             {% endif %}
+        {% elif email_change %}
+            {% trans "We sent a confirmation link to your new email address. Open it to confirm the change. Until then, your account keeps the previous address." %}
         {% else %}
             {% if LANGUAGE_CODE|slice:":2" == "it" %}
             Abbiamo inviato un link di verifica al tuo indirizzo email. Clicca il link per verificare la tua email.
@@ -51,7 +59,7 @@
     </p>
     <p style="margin: 20px 0;">
         {% if already_verified %}
-        <a href="{% url 'login' %}" class="login-hint" style="display:inline-block;margin:0;">{% trans "Sign in to your account" %}</a>
+        <a href="{% auth_link 'login' %}" class="login-hint" style="display:inline-block;margin:0;">{% trans "Sign in to your account" %}</a>
         {% elif verify_url %}
         <a href="{{ verify_url }}" class="login-btn login-btn--white-text login-btn--accounts-like" style="display: inline-block; text-decoration: none; padding: 12px 24px;">{% trans "Verify email now" %}</a>
         {% else %}
@@ -61,8 +69,8 @@
     <p style="font-size: 0.9rem; color: #666;">
         {% trans "If you don't see the email, check your spam folder." %}
     </p>
-    <p style="font-size: 0.9rem; color: #666; margin-top: 12px;">
-        <a href="{% url 'request_verification_email_page' %}" style="color:#003f7f; font-weight:400;">{% trans "Link not working? Request a new one" %}</a>
+    <p class="login-hint">
+        <a href="{% url 'request_verification_email_page' %}">{% trans "Link not working? Request a new one" %}</a>
     </p>
 </div>
 {% endblock %}

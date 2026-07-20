@@ -337,10 +337,10 @@ document.addEventListener("DOMContentLoaded", function() {
     btnGen.addEventListener("click", function() {
         var topicVal = (topicInput.value || "").trim();
         var captions = buildCaptionList(topicVal);
-        var title = gt("Suggested captions");
-        var selAll = gt("Select all");
-        var selNone = gt("Deselect all");
-        var copyHint = gt("The Copy button copies only the captions you have selected.");
+        var title = gettext("Suggested captions");
+        var selAll = gettext("Select all");
+        var selNone = gettext("Deselect all");
+        var copyHint = gettext("The Copy button copies only the captions you have selected.");
         lastGeneratedCaptions = captions.slice();
         var html = '<div class="caption-results-header">';
         html += '<p class="caption-results-title">' + escapeHtml(title) + "</p>";
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var picked = resultArea.querySelectorAll(".caption-pick:checked");
         if (!picked.length) {
             if (resultArea.querySelector(".caption-pick")) {
-                showTextToolInlineError(resultArea, gt("Select at least one caption to copy."));
+                showTextToolInlineError(resultArea, gettext("Select at least one caption to copy."));
             }
             return;
         }

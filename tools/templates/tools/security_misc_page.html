@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Security & Misc Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly security and misc tools: password generator, hash, Base64, UUID, and more in one place.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -23,7 +26,7 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Security & Misc Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to security and utility tools." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Accedi a tutti i tool Security & Misc per generare password sicure, creare e leggere QR code, codificare Base64 e calcolare hash per verifiche rapide e affidabili.{% else %}Access all Security & Misc tools to generate secure passwords, create and scan QR codes, encode Base64, and generate hashes for fast and reliable checks.{% endif %}</p>
   <div class="text-tools-page-grid">
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'qr_generator' %}">{% trans "QR Generator" %}</a></div>

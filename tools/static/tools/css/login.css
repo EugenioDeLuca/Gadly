@@ -16,6 +16,10 @@
     margin-bottom: 12px;
 }
 
+.login-page .login-form .form-group {
+    margin-bottom: 10px;
+}
+
 .login-form label {
     display: block;
     font-size: 0.95rem;
@@ -215,19 +219,65 @@ body.dark-mode .login-hint a:hover {
     transform: scale(1.01);
 }
 
-.verify-done-success {
-    color: #16a34a;
-    font-weight: 700;
-    line-height: 1.6;
-    display: inline-flex;
+.login-email-changed-msg {
+    margin: 0 0 16px;
+    padding: 0;
+    color: #555 !important;
+    font-size: 15.2px;
+    line-height: 1.5;
+    text-align: center;
+    font-weight: 400;
+}
+
+body.dark-mode.login-page .login-email-changed-msg,
+body.dark-mode .login-page .login-email-changed-msg {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+}
+
+.verify-done-check-wrap {
+    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
+    width: 100%;
+    margin: 24px 0 16px;
     animation: verifyDoneFadeIn 0.4s ease-out;
 }
 
 .verify-done-check {
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    font-size: 2.25rem;
+    font-weight: 700;
     line-height: 1;
+    color: #16a34a;
+}
+
+.verify-done-message {
+    margin: 0 0 18px;
+    padding: 0;
+    color: #555 !important;
+    font-weight: 400 !important;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    -webkit-text-fill-color: #555 !important;
+}
+
+body.dark-mode.login-page .site-main .static-container p.verify-done-message,
+body.dark-mode.login-page .static-container .verify-done-message,
+body.dark-mode .login-page .site-main .static-container p.verify-done-message,
+body.dark-mode .login-page .static-container .verify-done-message {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+}
+
+body.dark-mode.login-page .verify-done-check,
+body.dark-mode .login-page .verify-done-check {
+    color: #22c55e;
 }
 
 @keyframes verifyDoneFadeIn {

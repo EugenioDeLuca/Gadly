@@ -3,9 +3,34 @@
 {% load i18n %}
 
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Email candidatura{% else %}Application Email Help{% endif %}{% endblock %}
-{% block body_class %}text-tool help-page help-application-email{% endblock %}
+{% block body_class %}text-tool application-email-generator help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Tips for writing a short professional application email with Gadly.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
+<style>
+@media (max-width: 480px) {
+    body.application-email-generator.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.application-email-generator.help-page .site-main .container h1,
+    body.application-email-generator.help-page .site-main .container .tool-desc,
+    body.application-email-generator.help-page .site-main .container .help-section,
+    body.application-email-generator.help-page .site-main .container .help-section h2,
+    body.application-email-generator.help-page .site-main .container .help-section p,
+    body.application-email-generator.help-page .site-main .container .help-section ul,
+    body.application-email-generator.help-page .site-main .container .help-section li,
+    body.application-email-generator.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -22,9 +47,6 @@
         </ul>
     </div>
 
-    <div class="home-link-wrap">
-        <a href="{% url 'application_email_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Email candidatura"{% else %}Back to "Application Email Generator"{% endif %}</a>
-    </div>
+    {% include "tools/includes/help_career_back_link.html" with tool_url="application_email_generator" tool_it="Email candidatura" tool_en="Application Email Generator" %}
 </div>
 {% endblock %}
-

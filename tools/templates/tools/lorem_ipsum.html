@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "Lorem Ipsum Generator" %}{% endblock %}
 {% block body_class %}web-seo lorem-ipsum{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Generate Lorem Ipsum placeholder text for mockups and drafts with Gadly’s free generator.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=102">
 <style>
 .lorem-ipsum .form-group input { width: 100%; max-width: 100%; min-height: 44px; box-sizing: border-box; }
 .lorem-ipsum .form-group .text-tool-select { width: 100%; max-width: 100%; }
@@ -27,7 +30,6 @@
 .lorem-ipsum .result-area { white-space: pre-wrap; }
 .lorem-ipsum .button-group { width: 100%; justify-content: space-between; gap: 12px; }
 .lorem-ipsum .button-group button { min-width: 140px; }
-@media (max-width: 768px) { .lorem-ipsum .form-group input, .lorem-ipsum .form-group .text-tool-select { max-width: 100%; } .lorem-ipsum .text-tool-select-trigger { max-width: 100%; } }
 </style>
 {% endblock %}
 {% block content %}

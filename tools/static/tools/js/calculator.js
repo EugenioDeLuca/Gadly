@@ -47,6 +47,35 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    function scrollCalcSelectMenuToTop(wrap) {
+        var menu = wrap.querySelector(".calc-select-menu");
+        if (!menu) return;
+        var selected = menu.querySelector("li.selected");
+        if (!selected) return;
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                menu.scrollTop = Math.max(0, selected.offsetTop);
+            });
+        });
+    }
+
+    function scrollCalcSelectMenuToSelected(wrap) {
+        if (!window.matchMedia("(max-width: 768px)").matches) return;
+        var menu = wrap.querySelector(".calc-select-menu");
+        if (!menu) return;
+        var selected = menu.querySelector("li.selected");
+        if (!selected) return;
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                var menuHeight = menu.clientHeight;
+                if (menuHeight <= 0) return;
+                var itemTop = selected.offsetTop;
+                var itemHeight = selected.offsetHeight;
+                menu.scrollTop = Math.max(0, itemTop - menuHeight / 2 + itemHeight / 2);
+            });
+        });
+    }
+
     // Custom select init (all calc-custom-select)
     document.querySelectorAll(".calc-custom-select").forEach(function(wrap) {
         var trigger = wrap.querySelector(".calc-select-trigger");
@@ -64,7 +93,15 @@ document.addEventListener("DOMContentLoaded", function() {
         trigger.addEventListener("click", function(e) {
             e.stopPropagation();
             document.querySelectorAll(".calc-custom-select.open").forEach(function(s) { s.classList.remove("open"); });
+            var opening = !wrap.classList.contains("open");
             wrap.classList.toggle("open");
+            if (opening) {
+                if ((wrap.id === "iva-country-wrap" || wrap.id === "iva-rate-wrap") && window.innerWidth >= 769) {
+                    scrollCalcSelectMenuToTop(wrap);
+                } else {
+                    scrollCalcSelectMenuToSelected(wrap);
+                }
+            }
         });
         menu.addEventListener("click", function(e) { e.stopPropagation(); });
     });
@@ -83,14 +120,24 @@ document.addEventListener("DOMContentLoaded", function() {
     function buildIvaCountryMenu(rates) {
         var menu = document.getElementById("iva-country-menu");
         if (!menu) return;
+        var current = ivaCountryWrap ? (ivaCountryWrap.dataset.value || "IT") : "IT";
         menu.innerHTML = "";
         rates.forEach(function(r) {
             var li = document.createElement("li");
             li.dataset.value = r.country_code;
             li.textContent = r.country + " (" + r.country_code + ")";
-            if (r.country_code === "IT") li.classList.add("selected");
+            if (r.country_code === current) li.classList.add("selected");
             menu.appendChild(li);
         });
+    }
+
+    function ivaRateStdSuffix() {
+        if (ivaRateWrap && ivaRateWrap.dataset.stdSuffix) return ivaRateWrap.dataset.stdSuffix;
+        return gettext("(standard)");
+    }
+    function ivaRateRedSuffix() {
+        if (ivaRateWrap && ivaRateWrap.dataset.redSuffix) return ivaRateWrap.dataset.redSuffix;
+        return gettext("(reduced)");
     }
 
     function buildIvaRateMenu(rates, countryCode) {
@@ -98,24 +145,41 @@ document.addEventListener("DOMContentLoaded", function() {
         var menu = document.getElementById("iva-rate-menu");
         if (!menu || !r) return;
         menu.innerHTML = "";
-        var std = gettext("(standard)");
-        var red = gettext("(reduced)");
+        var std = ivaRateStdSuffix();
+        var red = ivaRateRedSuffix();
         var items = [{ value: r.standard_rate, label: r.standard_rate + "% " + std }];
         (r.reduced_rates || []).forEach(function(v) {
             items.push({ value: v, label: v + "% " + red });
         });
         items.sort(function(a, b) { return b.value - a.value; });
+        var currentRate = ivaRateWrap ? ivaRateWrap.dataset.value : null;
+        if (currentRate !== null && currentRate !== "" &&
+            !items.some(function(item) { return String(item.value) === String(currentRate); })) {
+            currentRate = null;
+        }
+        var picked = items[0];
         items.forEach(function(item, i) {
             var li = document.createElement("li");
             li.dataset.value = String(item.value);
             li.textContent = item.label;
-            if (i === 0) li.classList.add("selected");
+            if (currentRate !== null && currentRate !== "" && String(item.value) === String(currentRate)) {
+                li.classList.add("selected");
+                picked = item;
+            } else if ((currentRate === null || currentRate === "") && i === 0) {
+                li.classList.add("selected");
+            }
             menu.appendChild(li);
         });
         if (ivaRateWrap) {
-            ivaRateWrap.dataset.value = String(items[0].value);
+            ivaRateWrap.dataset.value = String(picked.value);
             var trigger = ivaRateWrap.querySelector(".calc-select-trigger");
-            if (trigger) trigger.textContent = items[0].label;
+            if (trigger) {
+                var rateUnchanged = currentRate !== null && currentRate !== "" &&
+                    String(picked.value) === String(currentRate);
+                if (!rateUnchanged || !trigger.textContent.trim()) {
+                    trigger.textContent = picked.label;
+                }
+            }
         }
     }
 
@@ -132,13 +196,30 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         var controller = new AbortController();
         var timeoutId = setTimeout(function() { controller.abort(); }, 8000);
-        fetch("https://vat-api.eu/api/v1/rates", { signal: controller.signal })
-            .then(function(res) { return res.json(); })
+        var vatRatesUrl;
+        if (typeof window !== "undefined" && window.GADLY_VAT_RATES_URL) {
+            vatRatesUrl = window.GADLY_VAT_RATES_URL;
+        } else if (typeof window !== "undefined" && window.location && window.location.origin) {
+            /* Stesso origin del sito: niente CORS (proxy Django). */
+            vatRatesUrl = window.location.origin + "/api/vat-rates/";
+        } else {
+            vatRatesUrl = "https://vat-api.eu/api/v1/rates";
+        }
+        fetch(vatRatesUrl, { signal: controller.signal })
+            .then(function(res) {
+                if (!res.ok) {
+                    throw new Error("vat_rates_http_" + res.status);
+                }
+                return res.json();
+            })
             .then(function(rates) {
+                if (!Array.isArray(rates) || rates.length === 0) {
+                    throw new Error("vat_rates_shape");
+                }
                 clearTimeout(timeoutId);
                 vatRatesCache = rates;
                 buildIvaCountryMenu(rates);
-                buildIvaRateMenu(rates, "IT");
+                buildIvaRateMenu(rates, ivaCountryWrap ? (ivaCountryWrap.dataset.value || "IT") : "IT");
                 var trigger = ivaCountryWrap ? ivaCountryWrap.querySelector(".calc-select-trigger") : null;
                 if (trigger) trigger.textContent = gettext("Italy (IT)");
             })
@@ -307,42 +388,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // === Interest (simple / compound) ===
     var intTypeWrap = document.getElementById("int-type-wrap");
-    document.getElementById("btn-interest").addEventListener("click", function() {
-        var p = parseFloat(document.getElementById("int-principal").value);
-        var r = parseFloat(document.getElementById("int-rate").value) / 100;
-        var t = parseFloat(document.getElementById("int-years").value);
-        var type = intTypeWrap ? intTypeWrap.dataset.value : "simple";
-        var res = document.getElementById("result-interest");
+    var resultInterest = document.getElementById("result-interest");
+    var resultInterestMobile = document.getElementById("result-interest-mobile");
 
-        if (isNaN(p) || isNaN(r) || isNaN(t) || p <= 0) {
-            res.textContent = gettext("Please enter valid values.");
-            res.classList.add("error");
-        } else {
-            res.classList.remove("error");
-            var interest, total;
-            if (type === "simple") {
-                interest = p * r * t;
-                total = p + interest;
-            } else {
-                total = p * Math.pow(1 + r, t);
-                interest = total - p;
-            }
-            res.innerHTML =
-                gettext("Principal:") + " " + p.toFixed(2) + " €<br>" +
-                gettext("Interest:") + " " + interest.toFixed(2) + " €<br>" +
-                "<strong>" + gettext("Total:") + " " + total.toFixed(2) + " €</strong>";
-        }
-        res.classList.add("show");
-    });
-
-    // === Currency (Frankfurter API - ECB rates, no API key) ===
-    var currFromWrap = document.getElementById("curr-from-wrap");
-    var currToWrap = document.getElementById("curr-to-wrap");
-    var resultCurrency = document.getElementById("result-currency");
-    var resultCurrencyMobile = document.getElementById("result-currency-mobile");
-
-    function setCurrencyResult(text, isError) {
-        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
+    function setInterestResult(text, isError) {
+        [resultInterest, resultInterestMobile].forEach(function(el) {
             if (!el) return;
             el.classList.add("show");
             if (isError) {
@@ -355,12 +405,85 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    document.getElementById("btn-interest").addEventListener("click", function() {
+        var p = parseFloat(document.getElementById("int-principal").value);
+        var r = parseFloat(document.getElementById("int-rate").value) / 100;
+        var t = parseFloat(document.getElementById("int-years").value);
+        var type = intTypeWrap ? intTypeWrap.dataset.value : "simple";
+
+        if (isNaN(p) || isNaN(r) || isNaN(t) || p <= 0) {
+            setInterestResult(gettext("Please enter valid values."), true);
+        } else {
+            var interest, total;
+            if (type === "simple") {
+                interest = p * r * t;
+                total = p + interest;
+            } else {
+                total = p * Math.pow(1 + r, t);
+                interest = total - p;
+            }
+            var html =
+                gettext("Principal:") + " " + p.toFixed(2) + " €<br>" +
+                gettext("Interest:") + " " + interest.toFixed(2) + " €<br>" +
+                "<strong>" + gettext("Total:") + " " + total.toFixed(2) + " €</strong>";
+            setInterestResult(html, false);
+        }
+    });
+
+    // === Currency (Frankfurter API - ECB rates, no API key) ===
+    var currFromWrap = document.getElementById("curr-from-wrap");
+    var currToWrap = document.getElementById("curr-to-wrap");
+    var resultCurrency = document.getElementById("result-currency");
+    var resultCurrencyMobile = document.getElementById("result-currency-mobile");
+
+    function setCurrencyResult(text, isError) {
+        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
+            if (!el) return;
+            el.classList.remove("is-loading");
+            el.style.minHeight = "";
+            el.classList.add("show");
+            if (isError) {
+                el.classList.add("error");
+                el.textContent = text;
+            } else {
+                el.classList.remove("error");
+                el.innerHTML = text;
+            }
+        });
+    }
+
+    function setCurrencyLoading() {
+        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
+            if (!el) return;
+            if (el.classList.contains("show") && el.offsetHeight > 0) {
+                el.style.minHeight = el.offsetHeight + "px";
+            }
+            el.classList.add("show", "is-loading");
+            el.classList.remove("error");
+            el.textContent = gettext("Loading…");
+        });
+    }
+
+    var CURRENCY_LOADING_MIN_MS = 650;
+
+    function currencyLoadingDelay(startMs) {
+        var wait = Math.max(0, CURRENCY_LOADING_MIN_MS - (Date.now() - startMs));
+        return new Promise(function(resolve) {
+            setTimeout(resolve, wait);
+        });
+    }
+
+    function finishCurrencyRequest(startMs, text, isError) {
+        return currencyLoadingDelay(startMs).then(function() {
+            setCurrencyResult(text, isError);
+        });
+    }
+
     document.getElementById("btn-currency").addEventListener("click", function() {
         var amt = parseFloat(document.getElementById("curr-amount").value);
         var fromCurr = currFromWrap ? currFromWrap.dataset.value : "EUR";
         var toCurr = currToWrap ? currToWrap.dataset.value : "USD";
         var btn = document.getElementById("btn-currency");
-        var btnLabelConvert = btn ? btn.textContent.trim() : gettext("Convert");
 
         if (isNaN(amt) || amt < 0) {
             setCurrencyResult(gettext("Please enter a valid amount."), true);
@@ -372,48 +495,41 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         btn.disabled = true;
-        btn.textContent = gettext("Loading…");
-        [resultCurrency, resultCurrencyMobile].forEach(function(el) {
-            if (!el) return;
-            el.classList.remove("show");
-            el.classList.remove("error");
-        });
+        var loadingStart = Date.now();
+        setCurrencyLoading();
 
-        var url = "https://api.frankfurter.app/latest?amount=" + amt + "&from=" + fromCurr + "&to=" + toCurr;
-        var fallbackUrl = "https://open.er-api.com/v6/latest/" + fromCurr;
+        var apiBase = (typeof window.GADLY_CURRENCY_URL === "string" && window.GADLY_CURRENCY_URL)
+            ? window.GADLY_CURRENCY_URL
+            : "/api/currency-convert/";
+        var url = apiBase
+            + "?amount=" + encodeURIComponent(String(amt))
+            + "&from=" + encodeURIComponent(fromCurr)
+            + "&to=" + encodeURIComponent(toCurr);
 
         fetch(url)
-            .then(function(r) { return r.json(); })
+            .then(function(r) {
+                if (!r.ok) throw new Error("bad_status");
+                return r.json();
+            })
             .then(function(data) {
-                var converted = data.rates && data.rates[toCurr] != null ? data.rates[toCurr] : null;
-                var date = data.date || "";
-                if (converted === null) throw new Error("no_rate");
-                var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
-                if (date) {
+                if (data.converted == null || isNaN(Number(data.converted))) throw new Error("no_rate");
+                var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(data.converted).toFixed(2) + " " + toCurr + "</strong>";
+                if (data.date) {
                     html += '<div class="calc-result-note">' +
-                        interpolate(gettext("Exchange rate as of %(date)s (ECB)."), { date: date }, true) +
+                        interpolate(gettext("Exchange rate as of %(date)s (ECB)."), { date: data.date }, true) +
                         "</div>";
                 }
-                setCurrencyResult(html, false);
+                return finishCurrencyRequest(loadingStart, html, false);
             })
             .catch(function() {
-                // Fallback source when primary exchange API is unavailable.
-                return fetch(fallbackUrl)
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) {
-                        var rate = data && data.rates ? data.rates[toCurr] : null;
-                        if (rate == null) throw new Error("no_rate");
-                        var converted = amt * Number(rate);
-                        var html = amt.toFixed(2) + " " + fromCurr + " = <strong>" + Number(converted).toFixed(2) + " " + toCurr + "</strong>";
-                        setCurrencyResult(html, false);
-                    });
-            })
-            .catch(function() {
-                setCurrencyResult(gettext("Error fetching rates. Check your connection."), true);
+                return finishCurrencyRequest(
+                    loadingStart,
+                    gettext("Error fetching rates. Check your connection."),
+                    true
+                );
             })
             .finally(function() {
                 btn.disabled = false;
-                btn.textContent = btnLabelConvert;
             });
     });
 
@@ -556,7 +672,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var withTip = total * (1 + tipPct / 100);
             var perPerson = withTip / people;
             var html = gettext("Total:") + " " + total.toFixed(2) + " €<br>" +
-                (tipPct > 0 ? interpolate(gettext("With %(tip)s%% tip:"), { tip: String(tipPct) }, true) + " " + withTip.toFixed(2) + " €<br>" : "") +
+                (tipPct > 0 ? interpolate(gettext("With %(tip)s tip:"), { tip: String(tipPct) + "%" }, true) + " " + withTip.toFixed(2) + " €<br>" : "") +
                 "<strong>" + interpolate(gettext("Per person (%(n)s):"), { n: String(people) }, true) + " " + perPerson.toFixed(2) + " €</strong>";
             setSplitResult(html, false);
         }

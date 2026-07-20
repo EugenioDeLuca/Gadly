@@ -4,8 +4,11 @@
 
 {% block title %}{% trans "Text tools tips" %}{% endblock %}
 {% block body_class %}word-counter help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Quick tips for Gadly text tools: word counter, formatting, and preparing text for publishing.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=22">
+<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=38">
 <style>
 @media (max-width: 480px) {
     body.word-counter.help-page .site-main .container {
@@ -49,7 +52,7 @@
     </div>
 
     <div class="home-link-wrap">
-        <a href="{% url 'word_counter' %}" class="home-link">{% trans "Back to Word Counter" %}</a>
+        <a href="{% url 'word_counter' %}" class="home-link">{% trans 'Back to "Word Counter"' %}</a>
     </div>
 </div>
 {% endblock %}

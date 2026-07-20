@@ -1,0 +1,104 @@
+<svg class="drose-hero__logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="112" height="112" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="droseHeroHexFillLight" x1="256" y1="70" x2="256" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="droseHeroHexFillDark" x1="256" y1="70" x2="256" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <radialGradient id="droseHeroSkyFillLight" cx="256" cy="256" r="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f3faff"/>
+      <stop offset="18%" stop-color="#e2f3ff"/>
+      <stop offset="36%" stop-color="#b8dcf5"/>
+      <stop offset="58%" stop-color="#2a6a9e"/>
+      <stop offset="82%" stop-color="#0a1e38"/>
+      <stop offset="100%" stop-color="#020812"/>
+    </radialGradient>
+    <radialGradient id="droseHeroSkyGlowLight" cx="256" cy="256" r="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="28%" stop-color="#d8f0ff" stop-opacity="0.7"/>
+      <stop offset="52%" stop-color="#93c5fd" stop-opacity="0.34"/>
+      <stop offset="78%" stop-color="#1e4a78" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#071a33" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="droseHeroSkyFillDark" cx="256" cy="256" r="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eef8ff"/>
+      <stop offset="18%" stop-color="#d4eeff"/>
+      <stop offset="36%" stop-color="#9fd0f5"/>
+      <stop offset="58%" stop-color="#2a6a9e"/>
+      <stop offset="82%" stop-color="#0a1e38"/>
+      <stop offset="100%" stop-color="#020812"/>
+    </radialGradient>
+    <radialGradient id="droseHeroSkyGlowDark" cx="256" cy="256" r="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88"/>
+      <stop offset="28%" stop-color="#d8f0ff" stop-opacity="0.62"/>
+      <stop offset="52%" stop-color="#93c5fd" stop-opacity="0.28"/>
+      <stop offset="78%" stop-color="#1e4a78" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#071a33" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="droseHeroLensGlass" cx="256" cy="256" r="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="42%" stop-color="#1a2f4d"/>
+      <stop offset="100%" stop-color="#3d4f66"/>
+    </radialGradient>
+    <clipPath id="droseHeroRightClip" clipPathUnits="userSpaceOnUse">
+      <polygon points="336,118 416,166 416,346 256,442 176,394"/>
+    </clipPath>
+    <clipPath id="droseHeroLeftClip" clipPathUnits="userSpaceOnUse">
+      <polygon points="336,118 256,70 96,166 96,346 256,442 176,394"/>
+    </clipPath>
+  </defs>
+  <g class="drose-hex-ghost-layer" opacity="1">
+    <path class="drose-hex-ghost" d="M336 118 L256 70 L96 166 L96 346 L256 442 L176 394" fill="none" stroke="#003f7f" stroke-width="8" stroke-dasharray="14 11" stroke-linejoin="round" stroke-linecap="round"/>
+    <path class="drose-hex-inner-ghost" d="M256 92 L392 176 L392 336 L256 420 L120 336 L120 176 Z" fill="none" stroke="#003f7f" stroke-width="8" stroke-dasharray="14 11" stroke-linejoin="round" clip-path="url(#droseHeroLeftClip)"/>
+  </g>
+  <g clip-path="url(#droseHeroRightClip)">
+    <path class="drose-hex-fill" fill-rule="evenodd" d="M256 70 L416 166 L416 346 L256 442 L96 346 L96 166 Z M256 92 L392 176 L392 336 L256 420 L120 336 L120 176 Z" fill="url(#droseHeroHexFillLight)"/>
+    <path class="drose-hex-sky" d="M256 92 L392 176 L392 336 L256 420 L120 336 L120 176 Z" fill="url(#droseHeroSkyFillLight)"/>
+    <path class="drose-hex-sky-glow" d="M256 92 L392 176 L392 336 L256 420 L120 336 L120 176 Z" fill="url(#droseHeroSkyGlowLight)"/>
+    <g class="drose-hex-stars">
+      <circle class="drose-star" cx="318" cy="168" r="2.0" fill="#ffffff"/>
+      <circle class="drose-star" cx="348" cy="198" r="1.5" fill="#dbeafe"/>
+      <circle class="drose-star" cx="372" cy="248" r="2.2" fill="#ffffff"/>
+      <circle class="drose-star" cx="358" cy="298" r="1.6" fill="#93c5fd"/>
+      <circle class="drose-star" cx="330" cy="348" r="2.0" fill="#ffffff"/>
+      <circle class="drose-star" cx="300" cy="220" r="1.4" fill="#e0f2fe"/>
+      <circle class="drose-star" cx="340" cy="280" r="1.8" fill="#ffffff"/>
+      <circle class="drose-star" cx="310" cy="130" r="1.5" fill="#f8fafc"/>
+      <circle class="drose-star" cx="380" cy="220" r="1.7" fill="#ffffff"/>
+      <circle class="drose-star" cx="350" cy="360" r="2.1" fill="#bfdbfe"/>
+      <circle class="drose-star" cx="288" cy="280" r="1.3" fill="#ffffff"/>
+      <circle class="drose-star" cx="365" cy="168" r="1.6" fill="#dbeafe"/>
+    </g>
+    <path class="drose-hex-inner-visible" d="M256 92 L392 176 L392 336 L256 420 L120 336 L120 176 Z" fill="none" stroke="#003f7f" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+  <path class="drose-hex-visible-border" d="M336 118 L416 166 L416 346 L256 442 L176 394" fill="none" stroke="#003f7f" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+  <line class="drose-hex-cut" x1="336" y1="118" x2="176" y2="394" stroke="#003f7f" stroke-width="8" stroke-dasharray="14 11" stroke-linecap="round"/>
+  <g class="drose-lens-look">
+    <g class="drose-lens-rest" clip-path="url(#droseHeroRightClip)">
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--outer" cx="256" cy="256" r="64" fill="none" stroke="#243049" stroke-width="5"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--glass" cx="256" cy="256" r="56" fill="url(#droseHeroLensGlass)"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--barrel" cx="256" cy="256" r="56" fill="none" stroke="#1a2f4d" stroke-width="3" opacity="0.55"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--inner" cx="256" cy="256" r="38" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.38"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--pupil" cx="256" cy="256" r="22" fill="none" stroke="#003f7f" stroke-width="2.5" opacity="0.45"/>
+      <path class="drose-lens-focus-ring drose-lens-focus-ring--glint" d="M 256 222 A 34 34 0 0 1 290 256" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--hotspot" cx="270" cy="242" r="6.5" fill="#ffffff" opacity="0.62"/>
+    </g>
+    <g class="drose-lens-ghost-layer" clip-path="url(#droseHeroLeftClip)">
+      <circle cx="256" cy="256" r="64" fill="none" stroke="#003f7f" stroke-width="5" stroke-dasharray="12 9"/>
+      <circle cx="256" cy="256" r="56" fill="none" stroke="#003f7f" stroke-width="3" stroke-dasharray="12 9"/>
+      <circle cx="256" cy="256" r="38" fill="none" stroke="#003f7f" stroke-width="2" stroke-dasharray="10 8"/>
+    </g>
+    <g class="drose-lens-focused">
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--outer" cx="256" cy="256" r="64" fill="none" stroke="#243049" stroke-width="5"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--glass" cx="256" cy="256" r="56" fill="url(#droseHeroLensGlass)"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--barrel" cx="256" cy="256" r="56" fill="none" stroke="#1a2f4d" stroke-width="3" opacity="0.55"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--inner" cx="256" cy="256" r="38" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.38"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--pupil" cx="256" cy="256" r="22" fill="none" stroke="#003f7f" stroke-width="2.5" opacity="0.45"/>
+      <path class="drose-lens-focus-ring drose-lens-focus-ring--glint" d="M 256 222 A 34 34 0 0 1 290 256" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+      <circle class="drose-lens-focus-ring drose-lens-focus-ring--hotspot" cx="270" cy="242" r="6.5" fill="#ffffff" opacity="0.62"/>
+    </g>
+  </g>
+</svg>

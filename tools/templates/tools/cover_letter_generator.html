@@ -1,45 +1,79 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
+{% load career_kit_tags %}
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera di presentazione{% else %}{% trans "Cover Letter Generator" %}{% endif %}{% endblock %}
 {% block body_class %}text-tool cover-letter-generator{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Create a tailored cover letter draft for your job application with Gadly’s cover letter generator.' %}">
+<script>
+(function () {
+  try {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  } catch (e) { /* ignore */ }
+})();
+</script>
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520c">
+<link rel="stylesheet" href="{% static 'tools/css/career-kit.css' %}?v=35">
 <style>
+/* Descrizione sotto titolo: desktop sempre #555; mobile dark #b0c4de */
+body.text-tool.cover-letter-generator:not(.dark-mode) .site-main .container > h1 + p.tool-desc,
+body.text-tool.cover-letter-generator:not(.dark-mode) .site-main .container .tool-desc,
+.cover-letter-generator:not(.dark-mode) .site-main .container .tool-desc {
+  color: #555 !important;
+  -webkit-text-fill-color: #555 !important;
+  line-height: 1.55;
+}
+@media (min-width: 769px) {
+  body.text-tool.cover-letter-generator .site-main .container > h1 + p.tool-desc,
+  body.text-tool.cover-letter-generator .site-main .container .tool-desc {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+    line-height: 1.55;
+  }
+}
 .cover-letter-generator .text-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .cover-letter-generator .text-tool-grid .form-group.full { grid-column: 1 / -1; }
 .cover-letter-generator .form-group textarea, .cover-letter-generator .form-group input, .cover-letter-generator .text-tool-select { width: 100%; max-width: 100%; box-sizing: border-box; }
 .cover-letter-generator .form-group { margin-bottom: 0px; }
 .cover-letter-generator .text-tool-select { max-width: 100%; }
-.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger { cursor: pointer; border-radius: 12px; padding-right: 36px; }
-.cover-letter-generator #cl-tone-wrap .text-tool-select-menu { border-radius: 12px; max-height: 260px; overflow-y: auto; z-index: 3000; }
-.cover-letter-generator #cl-tone-wrap.open .text-tool-select-menu,
-.cover-letter-generator #cl-tone-wrap:focus-within .text-tool-select-menu { display: block; }
-.cover-letter-generator #cl-tone-wrap { position: relative; }
-.cover-letter-generator #cl-tone-wrap .role-arrow {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 26px;
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger {
   cursor: pointer;
-  z-index: 5;
-  pointer-events: auto;
-  border: none;
-  background: transparent;
-  padding: 0;
+  border-radius: 12px;
+  padding-right: 36px;
+  position: relative;
+  justify-content: flex-start;
 }
-.cover-letter-generator #cl-tone-wrap .role-arrow::before {
-  content: "";
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid #003f7f;
+.cover-letter-generator #cl-tone-wrap .text-tool-select-menu { border-radius: 12px; max-height: 260px; overflow-y: auto; z-index: 900; }
+.cover-letter-generator #cl-tone-wrap.open .text-tool-select-menu { display: block; }
+/* Tono già scelto: non compare nel menu aperto (senza stile .selected / grassetto) */
+.cover-letter-generator #cl-tone-wrap.open .text-tool-select-menu li.cl-tone-menu-hidden {
+  display: none !important;
+}
+.cover-letter-generator #cl-tone-wrap { position: relative; }
+.cover-letter-generator #cl-tone-wrap button.text-tool-select-trigger {
+  font: inherit;
+  font-weight: normal;
+  line-height: 1.3;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.cover-letter-generator .form-group input::placeholder {
+  text-align: left;
+}
+.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger.is-placeholder {
+  color: #777;
+  text-align: left;
+}
+.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger::after {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  margin-left: 0;
+  transform: translateY(-25%);
+  border-top-color: #003f7f;
 }
 .cover-letter-generator .panel-card {
   border: 2px dashed #b8d4f0;
@@ -93,9 +127,11 @@
   line-height: 1 !important;
   vertical-align: middle;
 }
-.cover-letter-generator .panel-actions button:hover {
-  background: #0056b3;
-  transform: scale(1.03);
+@media (min-width: 769px) {
+  .cover-letter-generator .panel-actions button:hover {
+    background: #0056b3;
+    transform: scale(1.03);
+  }
 }
 .cover-letter-generator .panel-actions button.active {
   background: #28a745 !important;
@@ -111,7 +147,11 @@
 .cover-letter-generator .word-meter {
   margin-top: 8px;
   font-size: 0.92rem;
+  line-height: 1.35;
+  min-height: 2.7em;
   color: #4b6178;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .cover-letter-generator .field-hint {
   margin-top: 6px;
@@ -153,8 +193,7 @@
   margin-top: 12px;
 }
 .cover-letter-generator .button-group #cl-generate,
-.cover-letter-generator .button-group #cl-copy,
-.cover-letter-generator .button-group .cl-export-btn {
+.cover-letter-generator .button-group #cl-copy {
   width: 160px;
   min-width: 160px;
   height: 44px;
@@ -174,21 +213,1129 @@
   margin-left: 8px;
 }
 .cover-letter-generator .export-controls {
-  display: inline-flex;
-  gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
   order: 2;
   margin-left: auto;
 }
-.cover-letter-generator .export-controls.hidden { display: none; }
-.cover-letter-generator .button-group .cl-export-btn {
+.cover-letter-generator .export-controls.hidden { display: none !important; }
+.cover-letter-generator .format-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.cover-letter-generator .format-toggle {
   width: 76px;
   min-width: 76px;
-  font-size: 0.9rem;
-  font-weight: 400;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #003f7f;
+  color: #fff;
+  font-weight: 400 !important;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex: 0 0 76px;
+  white-space: nowrap;
+  line-height: 1.2;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+/* Desktop (≥769px): PDF/DOCX/TXT — layout come CV Generator */
+@media (min-width: 769px) {
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle {
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 10px !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    position: relative;
+    z-index: 0;
+    overflow: visible;
+    background: transparent !important;
+    transform: none !important;
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: #003f7f;
+    transition: transform 0.2s, background 0.2s;
+    z-index: -1;
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active::before {
+    background: #28a745;
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):hover::before {
+    background: #0056b3;
+    transform: scale(1.03);
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:hover::before {
+    background: #28a745;
+    transform: scale(1.03);
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle:hover,
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:hover,
+  body.text-tool.cover-letter-generator .button-group button.format-toggle.export-active:hover {
+    background: transparent !important;
+    transform: none !important;
+  }
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active,
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:hover,
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:focus,
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:focus-visible,
+  body.text-tool.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:active {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.cover-letter-generator .site-main .container .career-kit-flow__kit,
+  body.cover-letter-generator .site-main .container .career-kit-flow__next {
+    width: 14.5rem;
+    min-width: 14.5rem;
+    max-width: 14.5rem;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+}
+.cover-letter-generator .export-format-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  pointer-events: none;
 }
 .cover-letter-generator .result-area { white-space: pre-wrap; }
 .cover-letter-generator .result-area.error { margin-top: 12px; }
-@media (max-width: 768px) { .cover-letter-generator .text-tool-grid { grid-template-columns: 1fr; } }
+
+/* Dark mode: risultati / chip (Setup lettera desktop → blocco min-width 769 sotto) */
+body.dark-mode.cover-letter-generator .result-meta {
+  border-color: rgba(176, 196, 222, 0.25) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+body.dark-mode.cover-letter-generator .kw-chip.good {
+  background: rgba(126, 226, 160, 0.2) !important;
+  color: #7ee2a0 !important;
+  border-color: rgba(126, 226, 160, 0.45) !important;
+}
+body.dark-mode.cover-letter-generator .kw-chip.bad {
+  background: rgba(220, 80, 80, 0.15) !important;
+  color: #e88 !important;
+  border-color: #fcc !important;
+}
+body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied,
+body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:hover,
+body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:focus,
+body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:focus-visible,
+body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:active {
+  background: rgba(220, 80, 80, 0.15) !important;
+  background-color: rgba(220, 80, 80, 0.15) !important;
+  border: 2px solid #fcc !important;
+  color: #e88 !important;
+  -webkit-text-fill-color: #e88 !important;
+}
+/* Desktop (≥769px): Setup lettera — stile originale (titolo blu, bottoni #003f7f / verde pieno) */
+@media (min-width: 769px) {
+  body.cover-letter-generator .panel-card,
+  body.cover-letter-generator .letter-setup-panel.panel-card {
+    border: 2px dashed #b8d4f0 !important;
+    background: #f8fcff !important;
+    padding: 12px !important;
+    box-shadow: none !important;
+  }
+  body.cover-letter-generator .panel-title,
+  body.cover-letter-generator .letter-setup-panel .panel-title,
+  body.cover-letter-generator .site-main .container h3.panel-title {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.cover-letter-generator .ats-note,
+  body.cover-letter-generator .field-hint,
+  body.cover-letter-generator .word-meter,
+  body.cover-letter-generator #cl-word-meter {
+    color: #4b6178 !important;
+    -webkit-text-fill-color: #4b6178 !important;
+  }
+  /* Desktop: meno spazio tra contatore parole e Setup lettera */
+  body.cover-letter-generator .site-main .container .word-meter,
+  body.cover-letter-generator .site-main .container #cl-word-meter {
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+    min-height: 1.35em !important;
+  }
+  body.cover-letter-generator .site-main .container .form-group.full:has(#cl-highlights) + .letter-setup-panel {
+    margin-top: -6px !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-template-actions button,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button,
+  body.cover-letter-generator .panel-actions button {
+    background: #003f7f !important;
+    background-color: #003f7f !important;
+    background-image: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    border: none !important;
+    font-weight: 400 !important;
+    font-size: 0.95rem !important;
+    width: 190px !important;
+    min-width: 190px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-template-actions button:hover,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:hover,
+  body.cover-letter-generator .panel-actions button:hover {
+    background: #0056b3 !important;
+    background-color: #0056b3 !important;
+    background-image: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    border: none !important;
+    transform: scale(1.03) !important;
+  }
+  body.cover-letter-generator .panel-actions button.active,
+  body.cover-letter-generator .site-main .container #cl-template-actions button.active,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button.active,
+  body.cover-letter-generator #cl-template-actions[data-active-template="standard"] button[data-template="standard"],
+  body.cover-letter-generator #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"],
+  body.cover-letter-generator #cl-template-actions[data-active-template="ats"] button[data-template="ats"] {
+    background: #28a745 !important;
+    background-color: #28a745 !important;
+    background-image: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    border: none !important;
+  }
+  body.cover-letter-generator .panel-actions button.active:hover,
+  body.cover-letter-generator .site-main .container #cl-template-actions button.active:hover,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button.active:hover,
+  body.cover-letter-generator #cl-template-actions[data-active-template="standard"] button[data-template="standard"]:hover,
+  body.cover-letter-generator #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"]:hover,
+  body.cover-letter-generator #cl-template-actions[data-active-template="ats"] button[data-template="ats"]:hover {
+    background: #28a745 !important;
+    background-color: #28a745 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    transform: scale(1.03) !important;
+  }
+  /* Desktop: messaggio errore — come text-tools.css (non alterare) */
+  body.cover-letter-generator .site-main .container #cl-result.result-area.error,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-result.result-area.error {
+    background: #fff5f5 !important;
+    background-color: #fff5f5 !important;
+    border: 2px solid #fcc !important;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+  }
+}
+@media (max-width: 480px) {
+  body.dark-mode.cover-letter-generator .tool-help a {
+    color: #7eb8ff !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  body.dark-mode.cover-letter-generator .tool-help a:hover {
+    color: #a8d4ff !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .cover-letter-generator .text-tool-grid { grid-template-columns: 1fr; }
+  /* Solo mobile: tutti i contenitori a 338px centrati */
+  body.cover-letter-generator .site-main .container {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 16px 0 24px 0 !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  body.cover-letter-generator .site-main .container .text-tool-grid,
+  body.cover-letter-generator .site-main .container .form-group,
+  body.cover-letter-generator .site-main .container .panel-card,
+  body.cover-letter-generator .site-main .container #cl-result,
+  body.cover-letter-generator .site-main .container .button-group,
+  body.cover-letter-generator .site-main .container .export-controls,
+  body.cover-letter-generator .site-main .container .career-kit-flow {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.cover-letter-generator .site-main .container .form-group input,
+  body.cover-letter-generator .site-main .container .form-group textarea,
+  body.cover-letter-generator .site-main .container .text-tool-select,
+  body.cover-letter-generator .site-main .container .text-tool-select-trigger {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  body.cover-letter-generator .site-main .container .field-hint,
+  body.cover-letter-generator .site-main .container .word-meter,
+  body.cover-letter-generator .site-main .container #cl-word-meter {
+    text-align: center !important;
+    font-size: 0.85rem !important;
+    line-height: 1.35 !important;
+    min-height: 2.7em !important;
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+  body.cover-letter-generator .site-main .container .panel-actions {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-tone-wrap {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    box-sizing: border-box !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger,
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:hover,
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:active,
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:focus {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    margin: 0 !important;
+    padding: 10px 40px 10px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    transform: none !important;
+    text-align: center !important;
+    position: relative !important;
+  }
+  body.cover-letter-generator .site-main .container textarea::placeholder,
+  body.cover-letter-generator .site-main .container .form-group input::placeholder {
+    color: #444 !important;
+    font-family: Arial, sans-serif !important;
+    opacity: 1 !important;
+    text-align: left !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap .text-tool-select-trigger.is-placeholder {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+  }
+  /* Light mobile: Tono + campi testata — 47.5px (come Ruolo target CV) */
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap .text-tool-select-trigger,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap .text-tool-select-trigger:hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap .text-tool-select-trigger:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-tone-wrap .text-tool-select-trigger:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-name,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-role,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-company,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-name:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-role:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-company:focus {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    box-sizing: border-box !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger.is-placeholder {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container textarea::placeholder,
+  body.dark-mode.cover-letter-generator .site-main .container .form-group input::placeholder {
+    color: #555 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    opacity: 1 !important;
+  }
+  /* Dark mobile: testo campi scuro su sfondo chiaro (come Diff Checker / Remove Spaces) */
+  body.dark-mode.cover-letter-generator .site-main .container .form-group textarea,
+  body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:focus,
+  body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:not(:focus),
+  body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]),
+  body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):focus,
+  body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):not(:focus) {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    padding: 12px !important;
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+  }
+  /* Mobile: Nome, Ruolo target, Azienda — 47.5px (come Tono) */
+  body.cover-letter-generator .site-main .container #cl-name,
+  body.cover-letter-generator .site-main .container #cl-role,
+  body.cover-letter-generator .site-main .container #cl-company,
+  body.cover-letter-generator .site-main .container #cl-name:focus,
+  body.cover-letter-generator .site-main .container #cl-role:focus,
+  body.cover-letter-generator .site-main .container #cl-company:focus,
+  body.cover-letter-generator .site-main .container #cl-name:not(:focus),
+  body.cover-letter-generator .site-main .container #cl-role:not(:focus),
+  body.cover-letter-generator .site-main .container #cl-company:not(:focus),
+  body.dark-mode.cover-letter-generator .site-main .container #cl-name,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-role,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-company,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-name:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-role:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-company:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-name:not(:focus),
+  body.dark-mode.cover-letter-generator .site-main .container #cl-role:not(:focus),
+  body.dark-mode.cover-letter-generator .site-main .container #cl-company:not(:focus) {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px !important;
+    line-height: 1.3 !important;
+  }
+  /* Mobile: area risultato — stesse dimensioni tipografiche light e dark */
+  body.cover-letter-generator .site-main .container #cl-result.result-area:not(.error),
+  body.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) .result-meta,
+  body.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) > div {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) {
+    padding: 12px !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-result.result-area:not(.error) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+  }
+  body.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger::after {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    margin: 0 !important;
+    transform: translateY(-25%) !important;
+    border-top-color: #003f7f !important;
+  }
+  body.cover-letter-generator #cl-tone-wrap .text-tool-select-menu {
+    background: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+  }
+  body.cover-letter-generator #cl-tone-wrap .text-tool-select-menu li {
+    color: #003f7f !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:hover,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:focus {
+    background: #1e2a3a !important;
+    border: 2px solid var(--text-secondary) !important;
+    color: var(--text-secondary) !important;
+    -webkit-text-fill-color: var(--text-secondary) !important;
+    font-weight: 400 !important;
+  }
+  body.dark-mode.cover-letter-generator #cl-tone-wrap .text-tool-select-trigger::after {
+    border-top-color: var(--text-secondary) !important;
+  }
+  body.dark-mode.cover-letter-generator #cl-tone-wrap .text-tool-select-menu {
+    background: #1e2a3a !important;
+    border: 2px solid var(--text-secondary) !important;
+  }
+  body.dark-mode.cover-letter-generator #cl-tone-wrap .text-tool-select-menu li {
+    color: var(--text-secondary) !important;
+  }
+  /* Mobile: menu Tono sotto cookie-banner (1000), sopra ai campi sotto */
+  body.cover-letter-generator .site-main .container .form-group:has(#cl-tone-wrap.open) {
+    position: relative !important;
+    z-index: 50 !important;
+    isolation: isolate !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-tone-wrap.open {
+    z-index: 51 !important;
+  }
+  body.cover-letter-generator #cl-tone-wrap .text-tool-select-menu,
+  body.cover-letter-generator #cl-tone-wrap.open .text-tool-select-menu {
+    z-index: 52 !important;
+  }
+  /* Mobile: descrizione sotto titolo — stessi margini/tipografia in light e dark */
+  body.text-tool.cover-letter-generator .site-main .container > h1 + p.tool-desc,
+  body.text-tool.cover-letter-generator .site-main .container p.tool-desc,
+  body.text-tool.cover-letter-generator .site-main .container .tool-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    margin: 0 0 8px 0 !important;
+  }
+  body.text-tool.cover-letter-generator:not(.dark-mode) .site-main .container > h1 + p.tool-desc,
+  body.text-tool.cover-letter-generator:not(.dark-mode) .site-main .container p.tool-desc,
+  body.text-tool.cover-letter-generator:not(.dark-mode) .site-main .container .tool-desc {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+  }
+  body.dark-mode.text-tool.cover-letter-generator .site-main .container > h1 + p.tool-desc,
+  body.dark-mode.text-tool.cover-letter-generator .site-main .container p.tool-desc,
+  body.dark-mode.text-tool.cover-letter-generator .site-main .container .tool-desc {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+  /* Mobile: griglia campi — gap uniforme light/dark (niente margin doppio sulle textarea) */
+  body.cover-letter-generator .site-main .container .text-tool-grid {
+    gap: 16px !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group textarea,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group textarea:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group textarea:not(:focus),
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group input:not([type="submit"]):not([type="button"]),
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group input:not([type="submit"]):not([type="button"]):focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .form-group input:not([type="submit"]):not([type="button"]):not(:focus) {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    padding: 12px !important;
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    box-sizing: border-box !important;
+  }
+  body.cover-letter-generator.text-tool .site-main .container textarea#cl-job-description,
+  body.cover-letter-generator.text-tool .site-main .container textarea#cl-highlights,
+  body.cover-letter-generator.text-tool .site-main .container #cl-job-description:focus,
+  body.cover-letter-generator.text-tool .site-main .container #cl-highlights:focus {
+    min-height: 280px !important;
+    margin-bottom: 0 !important;
+    padding: 12px 16px !important;
+    box-sizing: border-box !important;
+  }
+  body.cover-letter-generator .site-main .container .form-group.full:has(#cl-job-description) {
+    margin-bottom: 0 !important;
+  }
+  /* Mobile dark: testi Setup / hint (desktop usa blocco min-width 769) */
+  body.dark-mode.cover-letter-generator .panel-title,
+  body.dark-mode.cover-letter-generator .field-hint,
+  body.dark-mode.cover-letter-generator .word-meter,
+  body.dark-mode.cover-letter-generator .ats-note {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+  /* Mobile: Setup lettera senza contenitore panel-card (bordo/sfondo) */
+  body.cover-letter-generator .site-main .container .letter-setup-panel.panel-card {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container .letter-setup-panel.panel-card {
+    border: none !important;
+    background: transparent !important;
+  }
+  /* Mobile dark: Setup lettera — bottoni come CV / resto sito */
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 20px !important;
+    box-sizing: border-box !important;
+    font-size: 16.8px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button:not(.active),
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button:not(.active) {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    border: 2px solid var(--text-secondary, #b0c4de) !important;
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button.active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button.active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"],
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"],
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"] {
+    background: rgba(126, 226, 160, 0.2) !important;
+    background-color: rgba(126, 226, 160, 0.2) !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button.active:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button.active.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button.active:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button.active.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"]:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"].tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"]:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"].tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"]:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"].tap-active {
+    transition: transform 0.05s ease-out !important;
+    transform: scale(0.96) !important;
+  }
+  /* Mobile light: Setup lettera — layout/colori bottoni come sito (schema CV mobile light) */
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 20px !important;
+    box-sizing: border-box !important;
+    font-size: 16.8px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button:not(.active),
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button:not(.active) {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button.active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button.active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"],
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"],
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"] {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .panel-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .panel-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button.active:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button.active.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button.active:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button.active.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"]:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="standard"] button[data-template="standard"].tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"]:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="motivational"] button[data-template="motivational"].tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"]:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions[data-active-template="ats"] button[data-template="ats"].tap-active {
+    transition: transform 0.05s ease-out !important;
+    transform: scale(0.96) !important;
+  }
+  body.cover-letter-generator .site-main .container .button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    flex-wrap: nowrap !important;
+  }
+  body.cover-letter-generator .site-main .container .export-controls.hidden {
+    display: none !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-generate {
+    order: 1 !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-copy {
+    order: 2 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.cover-letter-generator .site-main .container .export-controls:not(.hidden) {
+    order: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+  body.cover-letter-generator .site-main .container .format-toggle-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+  body.cover-letter-generator .site-main .container .button-group #cl-generate,
+  body.cover-letter-generator .site-main .container .button-group #cl-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    font-size: 16.8px !important;
+  }
+  body.cover-letter-generator .site-main .container .format-toggle {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-weight: 400 !important;
+    font-size: 0.92rem !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 8px 10px !important;
+    min-height: unset !important;
+    height: auto !important;
+    max-height: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+  body.cover-letter-generator .site-main .container .career-kit-flow__kit,
+  body.cover-letter-generator .site-main .container .career-kit-flow__next {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    font-size: 16.8px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-result.result-area.error {
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+  }
+  @keyframes cl-mobile-btn-press {
+    from { transform: scale(1); }
+    to { transform: scale(0.96); }
+  }
+  body.cover-letter-generator .site-main .container .cl-press-pulse {
+    animation: cl-mobile-btn-press 0.12s ease-out forwards !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-generate:focus,
+  body.cover-letter-generator .site-main .container #cl-copy:focus,
+  body.cover-letter-generator .site-main .container #cl-template-actions button:focus,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:focus,
+  body.cover-letter-generator .site-main .container #cl-tone:focus,
+  body.cover-letter-generator .site-main .container .format-toggle:focus,
+  body.cover-letter-generator .site-main .container .format-toggle:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  /* Mobile: tap come altri tool (scale 0.96), :hover non annulla il press */
+  body.cover-letter-generator .site-main .container #cl-generate,
+  body.cover-letter-generator .site-main .container #cl-copy,
+  body.cover-letter-generator .site-main .container #cl-template-actions button,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button,
+  body.cover-letter-generator .site-main .container #cl-tone,
+  body.cover-letter-generator .site-main .container .format-toggle {
+    transition: transform 0.05s ease-out !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+  /* Tap: regole in fondo così vincono su :hover fantasma e focus da base.css */
+  body.cover-letter-generator .site-main .container #cl-template-actions button:focus,
+  body.cover-letter-generator .site-main .container #cl-template-actions button:focus-visible,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:focus,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:focus-visible,
+  body.cover-letter-generator .site-main .container .panel-actions button:focus,
+  body.cover-letter-generator .site-main .container .panel-actions button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-generate:active,
+  body.cover-letter-generator .site-main .container #cl-copy:active,
+  body.cover-letter-generator .site-main .container #cl-tone:active,
+  body.cover-letter-generator .site-main .container .format-toggle:active,
+  body.cover-letter-generator .site-main .container .format-toggle.tap-active,
+  body.cover-letter-generator .site-main .container .panel-actions button:active,
+  body.cover-letter-generator .site-main .container .panel-actions button.tap-active,
+  body.cover-letter-generator .site-main .container #cl-template-actions button:active,
+  body.cover-letter-generator .site-main .container #cl-template-actions button.tap-active,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:active,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button.tap-active,
+  body.cover-letter-generator .site-main .container .tap-active {
+    transform: scale(0.96) !important;
+  }
+  /* Mobile: Genera/Copia — stesso aspetto a riposo; niente blu/evidenza dopo tap (:hover/:focus fantasma) */
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate:hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate:focus-visible,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy:hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy:focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group #cl-generate:hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group #cl-copy:hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy:focus-visible {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #e8f4fd !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate:hover,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate:focus-visible,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy:hover,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy:focus-visible,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group #cl-generate:hover,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group #cl-copy:hover {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  /* Dopo blocco colori: tap Genera/Copia deve vincere su :hover con scale(1) */
+  body.cover-letter-generator .site-main .container #cl-generate:active,
+  body.cover-letter-generator .site-main .container #cl-generate.tap-active,
+  body.cover-letter-generator .site-main .container #cl-copy:active,
+  body.cover-letter-generator .site-main .container #cl-copy.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-generate.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-copy.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-generate.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.tap-active {
+    transform: scale(0.96) !important;
+  }
+  /* Dark mobile: Copia premuto = stessi colori dell’area errore */
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:hover,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:focus,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:focus-visible,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:active,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group #cl-copy.copied:hover {
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  /* Mobile export PDF/DOCX/TXT: colori CV Generator (batte text-tools.css + theme.css) */
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    transform: scale(1) !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:hover,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus,
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus-visible {
+    transform: scale(1) !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  body.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:active {
+    transform: scale(0.96) !important;
+  }
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:hover,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus-visible,
+  body.cover-letter-generator:not(.dark-mode).text-tool:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:active {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+  }
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:hover,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:focus-visible,
+  body.dark-mode.text-tool.cover-letter-generator:not(.homepage):not(.image-editor) .site-main .container .button-group button.format-toggle.export-active:active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    background-color: rgba(126, 226, 160, 0.20) !important;
+    background-image: none !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+  }
+  /* Mobile export: niente blu #003f7f / gradiente base.css finché non .export-active */
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(1) !important;
+  }
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active),
+  body.dark-mode.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):hover,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):focus,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):focus-visible,
+  body.dark-mode.cover-letter-generator .site-main .container .button-group button.format-toggle:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active:active,
+  body.cover-letter-generator .site-main .container .button-group button.format-toggle.export-active.tap-active {
+    transform: scale(0.96) !important;
+  }
+}
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-template-actions button.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button:active,
+  body.dark-mode.cover-letter-generator .site-main .container #cl-hook-actions button.tap-active,
+  body.dark-mode.cover-letter-generator .site-main .container .panel-actions button:active,
+  body.dark-mode.cover-letter-generator .site-main .container .panel-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-template-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container #cl-hook-actions button.tap-active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .panel-actions button:active,
+  body.cover-letter-generator:not(.dark-mode) .site-main .container .panel-actions button.tap-active,
+  body.cover-letter-generator .site-main .container #cl-template-actions button:active,
+  body.cover-letter-generator .site-main .container #cl-template-actions button.tap-active,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button:active,
+  body.cover-letter-generator .site-main .container #cl-hook-actions button.tap-active,
+  body.cover-letter-generator .site-main .container .panel-actions button:active,
+  body.cover-letter-generator .site-main .container .panel-actions button.tap-active,
+  body.cover-letter-generator .site-main .container .format-toggle:active,
+  body.cover-letter-generator .site-main .container .format-toggle.tap-active {
+    transition: transform 0.05s ease-out !important;
+    transform: scale(0.96) !important;
+  }
+}
+</style>
+<!-- Dopo base.css/theme.css/text-tools: fix export mobile (batte #003f7f globale) -->
+<style id="cl-export-mobile-fix">
+@media (max-width: 768px) {
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle,
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle:hover,
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle:focus,
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle:focus-visible,
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle:active {
+    background-image: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+    transform: scale(1) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle:not(.export-active),
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle:not(.export-active):hover,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle:not(.export-active):focus,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle:not(.export-active):focus-visible,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle:not(.export-active):active {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #e8f4fd !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle:not(.export-active),
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle:not(.export-active):hover,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle:not(.export-active):focus,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle:not(.export-active):focus-visible,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle:not(.export-active):active,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle:not(.export-active),
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle:not(.export-active):hover,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle:not(.export-active):focus,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle.export-active,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle.export-active:hover,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle.export-active:focus,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle.export-active:focus-visible,
+  body.text-tool.cover-letter-generator:not(.dark-mode) #cl-export-controls .format-toggle.export-active:active {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+  }
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle.export-active,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle.export-active:hover,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle.export-active:focus,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle.export-active:focus-visible,
+  body.text-tool.cover-letter-generator.dark-mode #cl-export-controls .format-toggle.export-active:active,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active:hover,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active:focus,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active:focus-visible,
+  body.dark-mode.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active:active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    background-color: rgba(126, 226, 160, 0.20) !important;
+    background-image: none !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+  }
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active:active,
+  body.text-tool.cover-letter-generator #cl-export-controls .format-toggle.export-active.tap-active {
+    transform: scale(0.96) !important;
+  }
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -215,8 +1362,7 @@
     <div class="form-group">
       <label for="cl-tone">{% if LANGUAGE_CODE|slice:":2" == "it" %}Tono{% else %}{% trans "Tone" %}{% endif %}</label>
       <div class="text-tool-select" id="cl-tone-wrap" data-value="">
-        <input type="text" id="cl-tone" class="text-tool-select-trigger" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Professionale{% else %}{% trans 'e.g. Professional' %}{% endif %}" autocomplete="off" readonly>
-        <button type="button" class="role-arrow" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Apri menu tono{% else %}{% trans 'Open tone menu' %}{% endif %}"></button>
+        <button type="button" id="cl-tone" class="text-tool-select-trigger is-placeholder" data-placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Professionale{% else %}{% trans 'e.g. Professional' %}{% endif %}" aria-haspopup="listbox" aria-expanded="false">{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. Professionale{% else %}{% trans 'e.g. Professional' %}{% endif %}</button>
         <ul class="text-tool-select-menu">
           <li data-tone-key="professional" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Professionale{% else %}Professional{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Professionale{% else %}Professional{% endif %}</li>
           <li data-tone-key="direct" data-value="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Diretto{% else %}Direct{% endif %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Diretto{% else %}Direct{% endif %}</li>
@@ -234,7 +1380,7 @@
       <label for="cl-highlights">{% if LANGUAGE_CODE|slice:":2" == "it" %}Punti chiave{% else %}{% trans "Key highlights" %}{% endif %}</label>
       <textarea id="cl-highlights" rows="5" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Scrivi risultati e punti di forza (uno per riga), es. +25% conversioni{% else %}Write achievements and strengths (one per line), e.g. +25% conversion rate{% endif %}"></textarea>
       <p class="field-hint">{% if LANGUAGE_CODE|slice:":2" == "it" %}Suggerimento: inserisci almeno 1 risultato misurabile con numeri o percentuali (es. +20%, 50 clienti, -30% tempi).{% else %}Tip: include at least 1 measurable result with numbers or percentages (e.g. +20%, 50 clients, -30% time).{% endif %}</p>
-      <div id="cl-word-meter" class="word-meter"></div>
+      <div id="cl-word-meter" class="word-meter" aria-live="polite">{% if LANGUAGE_CODE|slice:":2" == "it" %}Parole highlight: 0 (180-260 sotto target){% else %}Highlight words: 0 (180-260 below target){% endif %}</div>
     </div>
     <div class="form-group full panel-card letter-setup-panel">
       <h3 class="panel-title">{% if LANGUAGE_CODE|slice:":2" == "it" %}Setup lettera{% else %}Letter setup{% endif %}</h3>
@@ -256,18 +1402,17 @@
   <div class="button-group">
     <button type="button" id="cl-generate">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera{% else %}{% trans "Generate" %}{% endif %}</button>
     <button type="button" id="cl-copy">{% if LANGUAGE_CODE|slice:":2" == "it" %}Copia{% else %}{% trans "Copy" %}{% endif %}</button>
-    <div id="cl-export-controls" class="export-controls hidden">
-      <button type="button" id="cl-export-pdf" class="cl-export-btn">PDF</button>
-      <button type="button" id="cl-export-docx" class="cl-export-btn">DOCX</button>
-      <button type="button" id="cl-export-txt" class="cl-export-btn">TXT</button>
+    <div id="cl-export-controls" class="export-controls hidden" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Esportazione lettera{% else %}Letter export{% endif %}">
+      <input type="hidden" id="cl-export-format" class="export-format-input" value="pdf">
+      <div class="format-toggle-group" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Formato esportazione{% else %}Export format{% endif %}">
+        <button type="button" class="format-toggle" data-format="pdf">PDF</button>
+        <button type="button" class="format-toggle" data-format="docx">DOCX</button>
+        <button type="button" class="format-toggle" data-format="txt">TXT</button>
+      </div>
     </div>
   </div>
 
-  <div class="home-link-wrap">
-    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-    </a>
-  </div>
+  {% career_kit_flow_nav "cover_letter_generator" %}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -281,5 +1426,5 @@ if (!window.docx) {
   document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
 }
 </script>
-<script src="{% static 'tools/js/cover_letter_generator.js' %}?v=20260417i"></script>
+<script src="{% static 'tools/js/cover_letter_generator.js' %}?v=20260601a"></script>
 {% endblock %}

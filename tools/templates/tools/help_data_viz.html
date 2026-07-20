@@ -1,0 +1,90 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Data Visualizer guide" %}{% endblock %}
+{% block body_class %}text-tool help-page help-data-viz{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'How to format CSV data, load Excel files, and create charts with Gadly’s Data Visualizer.' %}">
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260531b">
+<style>
+@media (max-width: 480px) {
+    body.help-data-viz.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.help-data-viz.help-page .site-main .container h1,
+    body.help-data-viz.help-page .site-main .container .tool-desc,
+    body.help-data-viz.help-page .site-main .container .help-section,
+    body.help-data-viz.help-page .site-main .container .help-section h2,
+    body.help-data-viz.help-page .site-main .container .help-section p,
+    body.help-data-viz.help-page .site-main .container .help-section ul,
+    body.help-data-viz.help-page .site-main .container .help-section li,
+    body.help-data-viz.help-page .site-main .container .help-section pre,
+    body.help-data-viz.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Data Visualizer guide" %}</h1>
+    <p class="tool-desc">{% trans "Format your data, pick a chart type, and export images — all in your browser." %}</p>
+
+    <div class="help-section">
+        <h2>{% trans "CSV format" %}</h2>
+        <p>{% trans "One row per item. Use a comma, semicolon, or tab between columns." %}</p>
+        <pre><code>Label,Value
+January,120
+February,190</code></pre>
+        <p>{% trans "For multiple series, add more value columns:" %}</p>
+        <pre><code>Category,Planned,Actual
+Marketing,5000,4800
+R&amp;D,12000,12500</code></pre>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Excel files" %}</h2>
+        <p>{% trans "Load .xlsx or .xls directly, or download a template, edit in Excel/LibreOffice, and reload. Files never leave your device." %}</p>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Chart options" %}</h2>
+        <ul>
+            <li>{% trans "Chart title — shown on the chart and included in exports." %}</li>
+            <li>{% trans "Color palette — Gadly, pastel, high contrast, or blue mono." %}</li>
+            <li>{% trans "Sort data — by label or total value before drawing." %}</li>
+            <li>{% trans "Top N — for pie charts, group smaller slices into “Other”." %}</li>
+            <li>{% trans "Show values — display numbers on bars or pie slices." %}</li>
+            <li>{% trans "Horizontal bars — useful for long category names." %}</li>
+            <li>{% trans "Suggest chart type — auto-picks bar, line, or pie from your data." %}</li>
+        </ul>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Export & share" %}</h2>
+        <p>{% trans "Download PNG, SVG, or PDF after generating a chart. Use “Copy link” to save your dataset and settings in the URL (best for small datasets)." %}</p>
+    </div>
+
+    <div class="help-section">
+        <h2>{% trans "Common issues" %}</h2>
+        <ul>
+            <li>{% trans "Use numbers with a dot or comma decimal separator (e.g. 1.234,56 or 1234.56)." %}</li>
+            <li>{% trans "Remove empty rows and extra columns you do not need." %}</li>
+            <li>{% trans "If Excel shows dates as numbers, format cells as text or export as CSV." %}</li>
+        </ul>
+    </div>
+
+    <div class="home-link-wrap">
+        <a href="{% url 'data_viz' %}" class="home-link">{% trans 'Back to "Data Visualizer"' %}</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,25 +1,777 @@
 {% load static %}
 {% load i18n %}
+{% load user_extras %}
+{% load auth_brand_tags %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script>
+    (function () {
+        if (!('serviceWorker' in navigator)) return;
+        navigator.serviceWorker.getRegistrations().then(function (regs) {
+            return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
+        }).then(function () {
+            if (!window.caches) return;
+            return caches.keys().then(function (keys) {
+                return Promise.all(keys.map(function (key) { return caches.delete(key); }));
+            });
+        }).catch(function () {});
+    })();
+    </script>
+    <script>
+    (function() {
+        var root = document.documentElement;
+        try {
+            if (localStorage.getItem("gadly-cookies-accepted") === "1") {
+                root.classList.add("gadly-cookie-accepted");
+            } else {
+                root.classList.add("gadly-cookie-prompt");
+            }
+        } catch (err) {
+            root.classList.add("gadly-cookie-prompt");
+        }
+    })();
+    </script>
+    <script>
+    (function () {
+        try {
+            var nav = performance.getEntriesByType("navigation")[0];
+            if (nav && nav.type === "back_forward") {
+                document.documentElement.classList.add("gadly-back-nav");
+            }
+        } catch (eBack) { /* ignore */ }
+        window.addEventListener("unload", function () {});
+    })();
+    </script>
+    {% if not is_drose_site %}
+    <script>
+    (function () {
+        var KEY = "gadly-logo-rotate-anchor-v1";
+        var DURATION = 22;
+        try {
+            if (!sessionStorage.getItem(KEY)) {
+                sessionStorage.setItem(KEY, String(Date.now()));
+            }
+            var start = parseInt(sessionStorage.getItem(KEY), 10);
+            if (isNaN(start)) return;
+            window.__gadlyLogoRotatePhase = ((Date.now() - start) / 1000) % DURATION;
+        } catch (eLogoHead) { /* ignore */ }
+    })();
+    </script>
+    {% endif %}
+    <style id="gadly-back-nav-shield">
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-link,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-nav .header-link,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .theme-toggle,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-link:hover,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-nav .header-link:hover,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-link:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-nav .header-link:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-link:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-nav .header-link:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-link:focus-visible,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-nav .header-link:focus-visible,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .theme-toggle:hover,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .theme-toggle:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .theme-toggle:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .theme-toggle:focus-visible {
+        background: transparent !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn:not(.is-active),
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn:not(.is-active):hover,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn:not(.is-active):active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn:not(.is-active):focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn:not(.is-active):focus-visible {
+        background: transparent !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn.is-active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn.is-active:hover,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn.is-active:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn.is-active:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .header-lang-btn.is-active:focus-visible {
+        background: rgba(100, 180, 255, 0.2) !important;
+        border-color: rgba(100, 180, 255, 0.45) !important;
+        color: #4a8ec2 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    html.gadly-back-nav .header-lang-btn {
+        transition: none !important;
+    }
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main a:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main a:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main button:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main button:active,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main input[type="submit"]:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main input[type="button"]:focus,
+    html.gadly-back-nav body.dark-mode:not(.drose-page):not(.is-drose-brand) .site-main .tap-active {
+        outline: none !important;
+        transform: none !important;
+        filter: none !important;
+    }
+    </style>
+    <script>
+    (function () {
+        var p = location.pathname || "/";
+        if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+        var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+        if (p === "/cover-letter-generator") {
+            var isReloadCl = false;
+            try {
+                var navCl = performance.getEntriesByType("navigation")[0];
+                isReloadCl = !!(navCl && navCl.type === "reload");
+            } catch (eCl0) { /* ignore */ }
+            if (isReloadCl) {
+                var scrollKeyCl = "gadly-page-scroll-y-v1:" + p;
+                var legacyKeyCl = "gadly-tool-scroll-y-v1:" + p;
+                var yCl = 0;
+                try {
+                    var rawCl = sessionStorage.getItem(scrollKeyCl);
+                    if (rawCl === null || rawCl === "") {
+                        rawCl = sessionStorage.getItem(legacyKeyCl);
+                    }
+                    if (rawCl !== null && rawCl !== "") {
+                        yCl = parseInt(rawCl, 10);
+                    }
+                } catch (eCl1) { /* ignore */ }
+                if (!isNaN(yCl) && yCl >= 1) {
+                    var rootCl = document.documentElement;
+                    rootCl.classList.add("gadly-cl-scroll-pending");
+                    rootCl.style.setProperty("--gadly-cl-restore-y", yCl + "px");
+                    try {
+                        window.scrollTo(0, yCl);
+                        rootCl.scrollTop = yCl;
+                    } catch (eClScroll) { /* ignore */ }
+                    (function pinClScroll() {
+                        if (!rootCl.classList.contains("gadly-cl-scroll-pending")) return;
+                        var holdYCl = parseInt(rootCl.style.getPropertyValue("--gadly-cl-restore-y"), 10);
+                        if (isNaN(holdYCl) || holdYCl < 1) return;
+                        try {
+                            if (Math.abs(window.scrollY - holdYCl) > 2) {
+                                window.scrollTo(0, holdYCl);
+                                rootCl.scrollTop = holdYCl;
+                            }
+                        } catch (ePinCl) { /* ignore */ }
+                        requestAnimationFrame(pinClScroll);
+                    })();
+                }
+            }
+        }
+    })();
+    </script>
+    <script>
+    window.GADLY_USER_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};
+    window.GADLY_USER_STORAGE_KEY = "{% if user.is_authenticated %}{{ user.id }}{% else %}anon{% endif %}";
+    window.GADLY_HIDDEN_TOOLS_URL = "{% url 'hidden_tools' %}";
+    window.GADLY_HOME_HIDDEN_TOOLS_API = "{% if user.is_authenticated %}{% url 'api_home_hidden_tools' %}{% endif %}";
+    </script>
+    {% if user.is_authenticated %}
+    {{ user_home_hidden_tools|json_script:"gadly-server-hidden-tools" }}
+    {% endif %}
+    <script>
+    (function() {
+        var KEY_PREFIX = "gadly-page-scroll-y-v1:";
+        var root = document.documentElement;
+        var path = location.pathname || "/";
+        var scrollKey = KEY_PREFIX + normalizePath(path);
+        var LEGACY_TOOL_KEY_PREFIX = "gadly-tool-scroll-y-v1:";
+        var saveTimer = null;
+        var restoreAttempts = 0;
+        var maxRestoreAttempts = 96;
+        var restoreCommitted = false;
+
+        function normalizePath(p) {
+            p = p || "/";
+            if (p.length > 1 && p.charAt(p.length - 1) === "/") {
+                p = p.slice(0, -1);
+            }
+            return p || "/";
+        }
+
+        function isHomeScrollRestorePath(p) {
+            return normalizePath(p || path) === "/";
+        }
+
+        function isToolScrollRestorePath(p) {
+            p = normalizePath(p || path);
+            return p === "/cover-letter-generator";
+        }
+
+        function usesScrollRestorePending(p) {
+            p = normalizePath(p || path);
+            return isHomeScrollRestorePath(p);
+        }
+
+        function isScrollRestorePath(p) {
+            return isHomeScrollRestorePath(p) || isToolScrollRestorePath(p);
+        }
+
+        function isHiddenToolsPath(p) {
+            return normalizePath(p || path) === "/hidden-tools";
+        }
+
+        function isAccountProfilePath(p) {
+            return normalizePath(p || path) === "/accounts/profile";
+        }
+
+        function clearPathScrollStorage(p) {
+            p = normalizePath(p || path);
+            var key = KEY_PREFIX + p;
+            try {
+                sessionStorage.removeItem(key);
+                sessionStorage.removeItem(key + "/");
+                sessionStorage.removeItem(KEY_PREFIX + p + "/");
+            } catch (clearErr) { /* ignore */ }
+        }
+
+        if (isHiddenToolsPath(path) || isAccountProfilePath(path)) {
+            try {
+                if ("scrollRestoration" in history) {
+                    history.scrollRestoration = "manual";
+                }
+                clearPathScrollStorage(path);
+            } catch (hiddenToolsScrollErr) {}
+            window.scrollTo(0, 0);
+            root.scrollTop = 0;
+        }
+
+        function persistScroll(y) {
+            try {
+                var rounded = Math.max(0, Math.round(y));
+                sessionStorage.setItem(scrollKey, String(rounded));
+                if (isToolScrollRestorePath() && rounded < 1) {
+                    sessionStorage.removeItem(LEGACY_TOOL_KEY_PREFIX + normalizePath(path));
+                }
+            } catch (e) {}
+        }
+
+        function readSavedScroll() {
+            try {
+                var raw = sessionStorage.getItem(scrollKey);
+                if ((raw === null || raw === "") && isToolScrollRestorePath()) {
+                    raw = sessionStorage.getItem(LEGACY_TOOL_KEY_PREFIX + normalizePath(path));
+                }
+                if (raw === null || raw === "") return 0;
+                var y = parseInt(raw, 10);
+                return !isNaN(y) && y > 0 ? y : 0;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function isRestorePending() {
+            return root.classList.contains("gadly-scroll-restore-pending");
+        }
+
+        function isCoverLetterScrollHold() {
+            return root.classList.contains("gadly-cl-scroll-pending");
+        }
+
+        function pendingCoverLetterScrollY() {
+            var fromVar = parseInt(root.style.getPropertyValue("--gadly-cl-restore-y"), 10);
+            if (!isNaN(fromVar) && fromVar > 0) return fromVar;
+            return readSavedScroll();
+        }
+
+        function isScrollSaveBlocked() {
+            return isRestorePending() || isCoverLetterScrollHold();
+        }
+
+        function pendingScrollY() {
+            var fromVar = parseInt(root.style.getPropertyValue("--gadly-restore-y"), 10);
+            if (!isNaN(fromVar) && fromVar > 0) return fromVar;
+            return readSavedScroll();
+        }
+
+        function measureMaxScrollY() {
+            var body = document.body;
+            var h = Math.max(
+                root.scrollHeight || 0,
+                root.offsetHeight || 0,
+                body ? body.scrollHeight : 0,
+                body ? body.offsetHeight : 0
+            );
+            return Math.max(0, h - window.innerHeight);
+        }
+
+        function flushSaveScroll() {
+            if (saveTimer) {
+                clearTimeout(saveTimer);
+                saveTimer = null;
+            }
+            saveScrollOnExit();
+        }
+
+        function isHomeLayoutReady() {
+            if (!isHomeScrollRestorePath()) return true;
+            if (!root.classList.contains("gadly-has-hidden-tools")) return true;
+            return root.classList.contains("gadly-home-hidden-tools-ready");
+        }
+
+        function saveScroll() {
+            if (isScrollSaveBlocked()) return;
+            if (!isScrollRestorePath() || isHiddenToolsPath()) return;
+            var y = Math.max(0, Math.round(window.scrollY));
+            if (y <= 2) {
+                if (saveTimer) {
+                    clearTimeout(saveTimer);
+                    saveTimer = null;
+                }
+                persistScroll(0);
+                return;
+            }
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(function() {
+                persistScroll(Math.max(0, Math.round(window.scrollY)));
+            }, 120);
+        }
+
+        function saveScrollOnExit() {
+            if (!isScrollRestorePath() || isHiddenToolsPath()) return;
+            if (isRestorePending()) {
+                var p = pendingScrollY();
+                if (p > 0) persistScroll(p);
+                return;
+            }
+            if (isCoverLetterScrollHold()) {
+                var clY = pendingCoverLetterScrollY();
+                if (clY > 0) persistScroll(clY);
+                return;
+            }
+            persistScroll(Math.max(0, Math.round(window.scrollY)));
+        }
+
+        function isToolLayoutReady() {
+            if (!isToolScrollRestorePath()) return true;
+            if (normalizePath(path) === "/cv-generator") {
+                return true;
+            }
+            return document.readyState === "complete";
+        }
+
+        function beginScrollRestorePending() {
+            if (restoreCommitted) return;
+            var saved = readSavedScroll();
+            if (saved < 1) return;
+            try {
+                if ("scrollRestoration" in history) {
+                    history.scrollRestoration = "manual";
+                }
+            } catch (e0) {}
+            root.classList.add("gadly-scroll-restore-pending");
+            root.style.setProperty("--gadly-restore-y", saved + "px");
+            root.style.minHeight = "calc(" + saved + "px + 100vh)";
+        }
+
+        function shouldRestoreScrollOnLoad() {
+            try {
+                var nav = performance.getEntriesByType("navigation")[0];
+                return !!(nav && nav.type === "reload");
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function releaseScrollRestorePending() {
+            if (!root.classList.contains("gadly-scroll-restore-pending")) return;
+            root.classList.remove("gadly-scroll-restore-pending");
+            root.style.removeProperty("--gadly-restore-y");
+            root.style.removeProperty("min-height");
+        }
+
+        function dispatchScrollRestoreDone() {
+            try {
+                document.dispatchEvent(new CustomEvent("gadly-scroll-restore-done"));
+            } catch (evErr) {
+                if (typeof document.createEvent === "function") {
+                    var ev = document.createEvent("Event");
+                    ev.initEvent("gadly-scroll-restore-done", true, true);
+                    document.dispatchEvent(ev);
+                }
+            }
+        }
+
+        function markScrollRestoreCommitted() {
+            if (restoreCommitted) return;
+            restoreCommitted = true;
+            dispatchScrollRestoreDone();
+        }
+
+        function finishScrollRestore() {
+            releaseScrollRestorePending();
+            markScrollRestoreCommitted();
+        }
+
+        function runAfterScrollSettled(fn) {
+            requestAnimationFrame(function() {
+                requestAnimationFrame(fn);
+            });
+        }
+
+        function notifyScrollRestoreSettled() {
+            if (window.__gadlyScrollRestoreSettled) return;
+            runAfterScrollSettled(function() {
+                if (window.__gadlyScrollRestoreSettled) return;
+                window.__gadlyScrollRestoreSettled = true;
+                try {
+                    document.dispatchEvent(new CustomEvent("gadly-scroll-restore-settled"));
+                } catch (evErr2) {
+                    if (typeof document.createEvent === "function") {
+                        var ev2 = document.createEvent("Event");
+                        ev2.initEvent("gadly-scroll-restore-settled", true, true);
+                        document.dispatchEvent(ev2);
+                    }
+                }
+            });
+        }
+
+        function applyScrollTarget(y) {
+            var maxY = measureMaxScrollY();
+            var target = Math.min(y, maxY);
+            if (target < 1 && y > 80) {
+                target = maxY > 0 ? Math.min(y, maxY) : y;
+            }
+
+            var cvPending = !!(
+                document.body &&
+                document.body.classList.contains("cv-generator") &&
+                root.classList.contains("gadly-scroll-restore-pending")
+            );
+
+            if (cvPending && target > 0) {
+                window.scrollTo(0, target);
+                document.documentElement.scrollTop = target;
+                if (document.body) {
+                    document.body.scrollTop = target;
+                }
+            }
+
+            releaseScrollRestorePending();
+
+            if (Math.abs(window.scrollY - target) > 2) {
+                window.scrollTo(0, target);
+            }
+
+            if (target > 0) {
+                persistScroll(target);
+            }
+
+            markScrollRestoreCommitted();
+            notifyScrollRestoreSettled();
+            return target;
+        }
+
+        function commitScrollRestore(force) {
+            var y = pendingScrollY();
+            if (!y) {
+                finishScrollRestore();
+                notifyScrollRestoreSettled();
+                return true;
+            }
+            if (!force && restoreCommitted) {
+                return true;
+            }
+            if (!force && !isHomeLayoutReady()) {
+                return false;
+            }
+            if (!force && isToolScrollRestorePath() && !isToolLayoutReady()) {
+                return false;
+            }
+            if (!force && document.readyState !== "complete") {
+                return false;
+            }
+            var maxY = measureMaxScrollY();
+            if (!force && maxY < y - 40) {
+                return false;
+            }
+            applyScrollTarget(y);
+            return true;
+        }
+
+        window.__gadlyHomeScrollAfterLayout = function() {
+            if (!document.body || !document.body.classList.contains("homepage")) return;
+            if (isRestorePending()) return;
+            if (!restoreCommitted) return;
+            var maxY = measureMaxScrollY();
+            if (window.scrollY > maxY + 2) {
+                window.scrollTo(0, maxY);
+                persistScroll(maxY);
+            }
+        };
+
+        function runCommitLoop() {
+            restoreAttempts += 1;
+            if (commitScrollRestore(false)) {
+                return;
+            }
+            if (restoreAttempts >= maxRestoreAttempts) {
+                var y = pendingScrollY();
+                if (y > 0) {
+                    applyScrollTarget(y);
+                } else {
+                    finishScrollRestore();
+                    notifyScrollRestoreSettled();
+                }
+                return;
+            }
+            requestAnimationFrame(runCommitLoop);
+        }
+
+        var savedScrollOnLoad = readSavedScroll();
+        var restoreScrollOnLoad = savedScrollOnLoad > 0 && shouldRestoreScrollOnLoad() && usesScrollRestorePending();
+
+        if (restoreScrollOnLoad) {
+            beginScrollRestorePending();
+        } else {
+            restoreCommitted = true;
+            function maybeNotifyScrollRestoreSettled() {
+                if (isCoverLetterScrollHold()) return;
+                notifyScrollRestoreSettled();
+            }
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", maybeNotifyScrollRestoreSettled, { once: true });
+            } else {
+                maybeNotifyScrollRestoreSettled();
+            }
+        }
+
+        window.addEventListener("scroll", function() {
+            if (isScrollSaveBlocked()) return;
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveScroll, 120);
+        }, { passive: true });
+        window.addEventListener("pagehide", flushSaveScroll);
+        window.addEventListener("beforeunload", flushSaveScroll);
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "hidden") flushSaveScroll();
+        });
+
+        function scheduleCommitPasses() {
+            runCommitLoop();
+            window.addEventListener("load", function() {
+                restoreAttempts = 0;
+                runCommitLoop();
+            }, { once: true });
+        }
+
+        if (restoreScrollOnLoad) {
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", scheduleCommitPasses, { once: true });
+            } else {
+                scheduleCommitPasses();
+            }
+        }
+
+        window.addEventListener("pageshow", function(ev) {
+            if (!ev.persisted) return;
+            var saved = readSavedScroll();
+            if (saved < 1) return;
+            releaseScrollRestorePending();
+            requestAnimationFrame(function() {
+                var maxY = measureMaxScrollY();
+                var target = Math.min(saved, maxY);
+                if (Math.abs(window.scrollY - target) > 2) {
+                    window.scrollTo(0, target);
+                }
+                if (target > 0) {
+                    persistScroll(target);
+                }
+                markScrollRestoreCommitted();
+                notifyScrollRestoreSettled();
+            });
+        });
+
+        window.__gadlySyncScrollIfNeeded = function() {
+            if (document.body && document.body.classList.contains("cv-generator")) {
+                return;
+            }
+            if (!shouldRestoreScrollOnLoad()) return;
+            if (!isScrollRestorePath()) return;
+            var saved = readSavedScroll();
+            if (!saved) return;
+            if (restoreCommitted) {
+                if (window.scrollY < 50 && saved > 80) {
+                    var maxY = measureMaxScrollY();
+                    var target = Math.min(saved, maxY);
+                    if (target > 0 && Math.abs(window.scrollY - target) > 2) {
+                        window.scrollTo(0, target);
+                        persistScroll(target);
+                    }
+                }
+                return;
+            }
+            restoreAttempts = 0;
+            if (document.readyState === "complete") {
+                applyScrollTarget(saved);
+            } else {
+                runCommitLoop();
+            }
+        };
+
+        window.gadlyWhenScrollRestoreDone = function(fn) {
+            if (typeof fn !== "function") return;
+            if (window.__gadlyScrollRestoreSettled) {
+                runAfterScrollSettled(fn);
+                return;
+            }
+            document.addEventListener("gadly-scroll-restore-settled", fn, { once: true });
+        };
+    })();
+    </script>
+    <style id="gadly-scroll-restore-pending-style">
+    html.gadly-scroll-restore-pending {
+        overflow: hidden;
+    }
+    html.gadly-scroll-restore-pending body {
+        position: fixed;
+        top: calc(-1 * var(--gadly-restore-y, 0px));
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+    html.gadly-cl-scroll-pending {
+        overflow: hidden;
+    }
+    </style>
+    <style id="gadly-home-trash-ui-shield">
+    @media (min-width: 769px) {
+        html.gadly-home-trash-onboarding-dismissed body.homepage #gadly-trash-onboarding-slot,
+        html.gadly-home-trash-onboarding-dismissed body.homepage .gadly-trash-onboarding-slot {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        html.gadly-home-trash-onboarding-active body.homepage #gadly-trash-onboarding-slot,
+        html.gadly-home-trash-onboarding-active body.homepage .gadly-trash-onboarding-slot {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: auto !important;
+            height: auto !important;
+            overflow: visible !important;
+            pointer-events: none !important;
+        }
+        html.gadly-home-trash-onboarding-active body.homepage #home-trash-onboarding.home-trash-onboarding--visible {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    }
+    body.homepage #home-trash-undo-toast:not(.home-trash-undo-toast--visible) {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
+    body.homepage #home-trash-undo-toast.home-trash-undo-toast--visible {
+        display: block !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        opacity: 1 !important;
+    }
+    </style>
     <title>{% block title %}Gadly{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    {% if is_drose_site %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'tools/images/drose-favicon.svg' %}?v=24">
+    {% else %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'tools/images/favicon.svg' %}?v=2">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'tools/images/favicon-192.png' %}?v=2">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'tools/images/favicon-96.png' %}?v=2">
+    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'tools/images/favicon-192.png' %}?v=2">
+    <link rel="icon" type="image/x-icon" href="{% static 'tools/images/favicon.ico' %}?v=2">
+    {% endif %}
+    {% if canonical_url %}
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Gadly">
+    <meta name="twitter:card" content="summary">
+    {% endif %}
+    {% block og_head %}{% endblock %}
+    {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-    <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=73">
-    <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=35">
-    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=21">
-    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=2">
-    <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=151">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=89">
+    {% if is_drose_site %}
+    <style id="drose-sky-shield">
+    @media (min-width: 769px) {
+        html:not([data-theme="dark"]) {
+            background-color: #f4f6fa;
+        }
+        body.is-drose-brand:not(.dark-mode),
+        body.drose-page:not(.dark-mode) {
+            background-color: #f4f6fa !important;
+            background-image: none !important;
+        }
+    }
+    </style>
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=33">
+    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=7">
+    <style id="gadly-cookie-banner-shield">
+    /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body → niente frame “neutro” ai refresh rapidi. */
+    #cookie-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    html.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background-color: #003f7f !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+    html.gadly-cookie-accepted #cookie-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    </style>
+    {% if not is_drose_site %}
+    <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=31">
+    {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/tool-favorites.css' %}?v=1">
+<link rel="stylesheet" href="{% static 'tools/css/drose-entry.css' %}?v=59">
+<script src="{% static 'tools/js/drose-entry-boot.js' %}?v=5"></script>
 
+    <style id="gadly-boot-ui-shield">
+    /* Primo caricamento: quick-nav/footer nascosti finché layout e scroll non sono stabili. */
+    html.gadly-boot-ui aside.tool-quick-nav,
+    html.gadly-boot-ui aside.tool-popular-nav {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: none !important;
+    }
+    html.gadly-boot-ui body.markdown-preview #md-preview.preview-output {
+        visibility: hidden !important;
+    }
+    </style>
     {% block extra_css %}{% endblock %}
-    <script src="{% url 'javascript_catalog' %}"></script>
-    {% block extrahead %}{% endblock %}
+    {% if is_drose_site %}
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=346">
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=4">
+    {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
+    <link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=53">
+    {% endif %}
     {% block blockbots %}{% endblock %}
     <style>
     .mobile-tablet-maintenance {
@@ -53,8 +805,379 @@
         }
     }
     </style>
+    <script>
+    (function() {
+        try {
+            var s = localStorage.getItem('gadly-theme');
+            var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (dark) {
+                document.documentElement.style.backgroundColor = '#0f0f23';
+            } else if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
+                document.documentElement.style.backgroundColor = '#f4f6fa';
+            }
+        } catch (e) {}
+    })();
+    </script>
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}{% if is_drose_site %} is-drose-brand{% endif %}">
+    {% block body_top %}{% endblock %}
+    {% if is_drose_site %}<div class="drose-sky-layer" aria-hidden="true"></div>{% endif %}
+    <script>
+    (function() {
+        try {
+            var themeKey = 'gadly-theme';
+            var warmKey = 'gadly-warm-tone';
+            var saved = localStorage.getItem(themeKey);
+            var isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.style.backgroundColor = '#0f0f23';
+                document.documentElement.dataset.theme = 'dark';
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.dataset.theme = 'light';
+                if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
+                    document.documentElement.style.backgroundColor = '#f4f6fa';
+                }
+            }
+            if (localStorage.getItem(warmKey) === '1') {
+                document.body.classList.add('warm-tone');
+            }
+        } catch (e) {}
+        try {
+            if (
+                !document.body.classList.contains("homepage") &&
+                !document.body.classList.contains("cv-optimizer") &&
+                !document.body.classList.contains("cv-generator") &&
+                !document.body.classList.contains("drose-page") &&
+                !document.body.classList.contains("account-page")
+            ) {
+                document.documentElement.classList.add("gadly-boot-ui");
+            }
+        } catch (eBoot) {}
+    })();
+    </script>
+    {% if is_drose_site %}
+    {% url 'drose_privacy' as privacy_url %}
+    {% else %}
+    {% url 'privacy' as privacy_url %}
+    {% endif %}
+    <div id="cookie-banner" class="cookie-banner">
+        <p>{% blocktrans trimmed with privacy_url=privacy_url %}We use cookies to improve your experience. By continuing you accept our <a href="{{ privacy_url }}">Privacy Policy</a>.{% endblocktrans %}</p>
+        <button type="button" class="cookie-banner-btn" id="cookie-accept">{% trans "Accept" %}</button>
+    </div>
+    <!-- FAB subito dopo il tema: posizione salvata applicata prima del resto del body (evita flash al default) -->
+    {% if not is_drose_home %}
+    <div id="mobile-home-fab" class="mobile-home-fab mobile-home-fab--layout-pending">
+        <a href="{% if is_drose_site %}{% url 'drose' %}{% else %}{% url 'home' %}{% endif %}" class="mobile-home-fab-link{% if is_drose_site %} mobile-home-fab-link--drose{% else %} mobile-home-fab-link--gadly{% endif %}" aria-label="{% if is_drose_site %}{% trans 'Back to Drose' %}{% else %}{% trans 'Back to Home' %}{% endif %}" title="{% if is_drose_site %}{% trans 'Back to Drose' %}{% else %}{% trans 'Back to Home' %}{% endif %}">
+            {% if is_drose_site %}
+            {% include "tools/includes/drose_home_icon.html" with extra_class="mobile-home-fab-drose-logo" %}
+            {% else %}
+            {% include "tools/includes/gadly_home_icon.html" with size=30 extra_class="mobile-home-fab-gadly-logo" %}
+            {% endif %}
+        </a>
+    </div>
+    {% endif %}
+    <script>
+    (function() {
+        try {
+            if (document.body.classList.contains('homepage')) return;
+            var fab = document.getElementById('mobile-home-fab');
+            if (!fab) return;
+            var raw = localStorage.getItem('gadly-home-fab-pos');
+            if (!raw) {
+                var d0 = document.documentElement;
+                var iw0 = Math.round((typeof window.innerWidth === 'number' && window.innerWidth > 0) ? window.innerWidth : ((d0 && d0.clientWidth) || 0));
+                var ih0 = Math.round((typeof window.innerHeight === 'number' && window.innerHeight > 0) ? window.innerHeight : ((d0 && d0.clientHeight) || 0));
+                if (iw0 > 0 && ih0 > 0) {
+                    function fabDefRight(iw) {
+                        if (iw >= 2560) return '64px';
+                        if (iw >= 2200) return '56px';
+                        if (iw >= 1920) return '52px';
+                        return '28px';
+                    }
+                    function fabDefBottom(iw) {
+                        if (iw >= 2560) return 'calc(144px + env(safe-area-inset-bottom))';
+                        if (iw >= 2200) return 'calc(132px + env(safe-area-inset-bottom))';
+                        if (iw >= 1920) return 'calc(124px + env(safe-area-inset-bottom))';
+                        return 'calc(96px + env(safe-area-inset-bottom))';
+                    }
+                    fab.style.setProperty('right', fabDefRight(iw0), 'important');
+                    fab.style.setProperty('bottom', fabDefBottom(iw0), 'important');
+                    fab.style.setProperty('left', 'auto', 'important');
+                    fab.style.setProperty('top', 'auto', 'important');
+                    fab.style.transform = 'none';
+                    fab.classList.remove('mobile-home-fab--layout-pending');
+                }
+                return;
+            }
+            var p = JSON.parse(raw);
+            var d = document.documentElement;
+            var iw = Math.round((typeof window.innerWidth === 'number' && window.innerWidth > 0) ? window.innerWidth : ((d && d.clientWidth) || 0));
+            var ih = Math.round((typeof window.innerHeight === 'number' && window.innerHeight > 0) ? window.innerHeight : ((d && d.clientHeight) || 0));
+            if (iw <= 0 || ih <= 0) return;
+            /* Posizione salvata: stessi margin/minR di mobile-home-fab.js (evita salto al refresh su mobile). */
+            var S = iw <= 768 ? 58 : 62;
+            function fabEdgeMarginBoot(w) {
+                if (w >= 2560) return 34;
+                if (w >= 2200) return 26;
+                if (w >= 1920) return 22;
+                return 8;
+            }
+            function fabMinRightInsetBoot(w) {
+                if (w >= 3840) return 96;
+                if (w >= 3440) return 84;
+                if (w >= 2560) return 72;
+                if (w >= 2200) return 56;
+                if (w >= 1920) return 48;
+                if (w > 0 && w <= 1280) return 8;
+                return 28;
+            }
+            var margin = fabEdgeMarginBoot(iw);
+            var minR = fabMinRightInsetBoot(iw);
+            function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+            function posPxBoot(n) {
+                var x = Number(n);
+                if (!isFinite(x)) x = 0;
+                return (Math.round(x * 100) / 100) + 'px';
+            }
+            function rSpan() { return Math.max(0, iw - S - margin - minR); }
+            function bSpan() { return Math.max(0, ih - S - 2 * margin); }
+            function rbFromNorm(nr, nb) {
+                nr = clamp01(nr); nb = clamp01(nb);
+                var rs = rSpan(), bs = bSpan();
+                var r = minR + nr * rs, b = margin + nb * bs;
+                r = Math.max(minR, Math.min(iw - S - margin, r));
+                b = Math.max(margin, Math.min(ih - S - margin, b));
+                return { r: Math.round(r), b: Math.round(b) };
+            }
+            function normFromRBpx(rpx, bpx) {
+                var rs = rSpan(), bs = bSpan();
+                var nr = rs > 0 ? clamp01((rpx - minR) / rs) : 0.5;
+                var nb = bs > 0 ? clamp01((bpx - margin) / bs) : 0.5;
+                return { nr: nr, nb: nb };
+            }
+            function clampLT(left, top) {
+                var maxL = Math.max(margin, iw - S - minR), maxT = Math.max(margin, ih - S - margin);
+                return { l: Math.max(margin, Math.min(maxL, left)), t: Math.max(margin, Math.min(maxT, top)) };
+            }
+            function ltFromNorm(Sdec, nx, ny) {
+                var maxL = Math.max(margin, iw - Sdec - minR), maxT = Math.max(margin, ih - Sdec - margin);
+                var movW = Math.max(0, maxL - margin), movH = Math.max(0, maxT - margin);
+                nx = clamp01(nx); ny = clamp01(ny);
+                var l = movW <= 0 ? margin : margin + nx * movW, t = movH <= 0 ? margin : margin + ny * movH;
+                return { l: l, t: t };
+            }
+            function useVvBoot(vv) {
+                if (!vv || vv.width <= 0) return false;
+                if (typeof vv.scale === 'number' && vv.scale > 1.02) return true;
+                if (Math.abs(vv.offsetLeft) > 1) return true;
+                if (Math.abs(vv.offsetTop) > 1) return true;
+                if (ih > 0 && vv.height < ih - 40) return true;
+                if (iw > 0 && vv.width < iw - 40) return true;
+                return false;
+            }
+            function clampRBBoot(rx, bx) {
+                return {
+                    r: Math.max(minR, Math.min(iw - S - margin, Math.round(rx))),
+                    b: Math.max(margin, Math.min(ih - S - margin, Math.round(bx)))
+                };
+            }
+            function pctStr(x) {
+                var t = Number(x);
+                if (!isFinite(t)) t = 0;
+                return (Math.round(t * 10000) / 10000) + '%';
+            }
+            function clampPRPBBoot(pr, pb) {
+                var r0 = (Number(pr) / 100) * iw;
+                var b0 = (Number(pb) / 100) * ih;
+                var c = clampRBBoot(r0, b0);
+                return { pr: iw > 0 ? (c.r / iw) * 100 : 0, pb: ih > 0 ? (c.b / ih) * 100 : 0 };
+            }
+            var r, b;
+            /* v17: right/bottom in % del viewport (più px dal bordo su schermo più grande). */
+            if (p.v === 17 && typeof p.pr === 'number' && typeof p.pb === 'number') {
+                var cp17 = clampPRPBBoot(p.pr, p.pb);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(cp17.pr), 'important');
+                fab.style.setProperty('bottom', pctStr(cp17.pb), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v16: inset px → % (migrazione a v17). */
+            if (p.v === 16 && typeof p.r === 'number' && typeof p.b === 'number') {
+                var c16 = clampRBBoot(p.r, p.b);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(iw > 0 ? (c16.r / iw) * 100 : 0), 'important');
+                fab.style.setProperty('bottom', pctStr(ih > 0 ? (c16.b / ih) * 100 : 0), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v15: pr % + bp px o pr/pb % → % entrambi. */
+            if (p.v === 15) {
+                var cp15;
+                if (typeof p.r === 'number' && typeof p.b === 'number') {
+                    var c15a = clampRBBoot(p.r, p.b);
+                    cp15 = { pr: iw > 0 ? (c15a.r / iw) * 100 : 0, pb: ih > 0 ? (c15a.b / ih) * 100 : 0 };
+                } else if (typeof p.pr === 'number' && typeof p.bp === 'number') {
+                    var c15b = clampRBBoot((Number(p.pr) / 100) * iw, Number(p.bp));
+                    cp15 = { pr: iw > 0 ? (c15b.r / iw) * 100 : 0, pb: ih > 0 ? (c15b.b / ih) * 100 : 0 };
+                } else if (typeof p.pr === 'number' && typeof p.pb === 'number') {
+                    cp15 = clampPRPBBoot(p.pr, p.pb);
+                } else {
+                    return;
+                }
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(cp15.pr), 'important');
+                fab.style.setProperty('bottom', pctStr(cp15.pb), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v14: % viewport. */
+            if (p.v === 14 && typeof p.pr === 'number' && typeof p.pb === 'number') {
+                var cp14 = clampPRPBBoot(p.pr, p.pb);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(cp14.pr), 'important');
+                fab.style.setProperty('bottom', pctStr(cp14.pb), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v13 → %. */
+            if (p.v === 13 && typeof p.nr === 'number' && typeof p.nb === 'number') {
+                var rb13 = rbFromNorm(p.nr, p.nb);
+                var c13 = clampRBBoot(rb13.r, rb13.b);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(iw > 0 ? (c13.r / iw) * 100 : 0), 'important');
+                fab.style.setProperty('bottom', pctStr(ih > 0 ? (c13.b / ih) * 100 : 0), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v12: px → %. */
+            if (p.v === 12 && typeof p.r === 'number' && typeof p.b === 'number') {
+                var c12 = clampRBBoot(p.r, p.b);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('right', pctStr(iw > 0 ? (c12.r / iw) * 100 : 0), 'important');
+                fab.style.setProperty('bottom', pctStr(ih > 0 ? (c12.b / ih) * 100 : 0), 'important');
+                fab.style.setProperty('left', 'auto', 'important');
+                fab.style.setProperty('top', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            /* v11: migrazione; stessa geometria applyNorm. */
+            if (p.v === 11 && typeof p.sl === 'number' && typeof p.st === 'number') {
+                var clamp01b = function(t) { return Math.max(0, Math.min(1, t)); };
+                var slb = clamp01b(p.sl);
+                var stb = clamp01b(p.st);
+                if (window.visualViewport) {
+                    var vv11 = window.visualViewport;
+                    if (useVvBoot(vv11)) {
+                        var minL11 = vv11.offsetLeft + margin;
+                        var maxL11 = vv11.offsetLeft + Math.max(margin, vv11.width - S - minR);
+                        var minT11 = vv11.offsetTop + margin;
+                        var maxT11 = vv11.offsetTop + Math.max(margin, vv11.height - S - margin);
+                        var spanL11 = maxL11 - minL11;
+                        var spanT11 = maxT11 - minT11;
+                        var l11 = minL11 + slb * (spanL11 <= 0 ? 0 : spanL11);
+                        var t11 = minT11 + stb * (spanT11 <= 0 ? 0 : spanT11);
+                        fab.classList.add('mobile-home-fab--user-positioned');
+                        fab.style.setProperty('left', posPxBoot(l11), 'important');
+                        fab.style.setProperty('top', posPxBoot(t11), 'important');
+                        fab.style.setProperty('right', 'auto', 'important');
+                        fab.style.setProperty('bottom', 'auto', 'important');
+                        fab.style.transform = 'none';
+                        fab.classList.remove('mobile-home-fab--layout-pending');
+                        return;
+                    }
+                }
+                var maxLf = Math.max(margin, iw - S - minR);
+                var maxTf = Math.max(margin, ih - S - margin);
+                var movWf = Math.max(0, maxLf - margin);
+                var movHf = Math.max(0, maxTf - margin);
+                var lfb = margin + slb * (movWf <= 0 ? 0 : movWf);
+                var tfb = margin + stb * (movHf <= 0 ? 0 : movHf);
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('left', posPxBoot(lfb), 'important');
+                fab.style.setProperty('top', posPxBoot(tfb), 'important');
+                fab.style.setProperty('right', 'auto', 'important');
+                fab.style.setProperty('bottom', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            if (p.v === 10 && typeof p.sr === 'number' && typeof p.sb === 'number' && window.visualViewport) {
+                var vv0 = window.visualViewport;
+                var S0 = 62;
+                var l0 = vv0.offsetLeft + vv0.width - p.sr - S0;
+                var t0 = vv0.offsetTop + vv0.height - p.sb - S0;
+                fab.classList.add('mobile-home-fab--user-positioned');
+                fab.style.setProperty('left', posPxBoot(l0), 'important');
+                fab.style.setProperty('top', posPxBoot(t0), 'important');
+                fab.style.setProperty('right', 'auto', 'important');
+                fab.style.setProperty('bottom', 'auto', 'important');
+                fab.style.transform = 'none';
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                return;
+            }
+            if ((p.v === 10 || p.v === 9) && typeof p.r === 'number' && typeof p.b === 'number') {
+                r = Math.round(p.r); b = Math.round(p.b);
+            } else if (p.v === 8 && typeof p.nr === 'number' && typeof p.nb === 'number') {
+                var rb8 = rbFromNorm(p.nr, p.nb);
+                r = rb8.r; b = rb8.b;
+            } else if (p.v === 7 && typeof p.r === 'number' && typeof p.b === 'number') {
+                function normFromRBpx(rpx, bpx) {
+                    var rs = rSpan(), bs = bSpan();
+                    var nr = rs > 0 ? clamp01((rpx - minR) / rs) : 0.5;
+                    var nb = bs > 0 ? clamp01((bpx - margin) / bs) : 0.5;
+                    return { nr: nr, nb: nb };
+                }
+                var nn = normFromRBpx(p.r, p.b);
+                var rb7 = rbFromNorm(nn.nr, nn.nb);
+                r = rb7.r; b = rb7.b;
+            } else if (p.v === 6 && typeof p.nr === 'number' && typeof p.nb === 'number') {
+                var rb = rbFromNorm(p.nr, p.nb);
+                r = rb.r; b = rb.b;
+            } else if (typeof p.nx === 'number' && typeof p.ny === 'number') {
+                var Sdec = (p.v === 5) ? 62 : ((iw <= 768) ? 58 : 62);
+                var lt = ltFromNorm(Sdec, p.nx, p.ny);
+                var c = clampLT(lt.l, lt.t);
+                r = Math.max(minR, Math.round(iw - c.l - S));
+                b = Math.max(margin, Math.round(ih - c.t - S));
+            } else if (typeof p.r === 'number' && typeof p.b === 'number') {
+                var l0 = iw - Number(p.r) - S, t0 = ih - Number(p.b) - S;
+                var c2 = clampLT(l0, t0);
+                r = Math.max(minR, Math.round(iw - c2.l - S));
+                b = Math.max(margin, Math.round(ih - c2.t - S));
+            } else if (typeof p.left === 'number' && typeof p.top === 'number') {
+                var c3 = clampLT(p.left, p.top);
+                r = Math.max(minR, Math.round(iw - c3.l - S));
+                b = Math.max(margin, Math.round(ih - c3.t - S));
+            } else return;
+            var cFb = clampRBBoot(r, b);
+            fab.classList.add('mobile-home-fab--user-positioned');
+            fab.style.setProperty('right', pctStr(iw > 0 ? (cFb.r / iw) * 100 : 0), 'important');
+            fab.style.setProperty('bottom', pctStr(ih > 0 ? (cFb.b / ih) * 100 : 0), 'important');
+            fab.style.setProperty('left', 'auto', 'important');
+            fab.style.setProperty('top', 'auto', 'important');
+            fab.style.transform = 'none';
+            fab.classList.remove('mobile-home-fab--layout-pending');
+        } catch (e) {}
+    })();
+    </script>
     <section class="mobile-tablet-maintenance" aria-label="{% trans 'Mobile and tablet temporary notice' %}">
         <div>
             <div class="mobile-tablet-maintenance__brand">
@@ -77,11 +1200,39 @@
     </section>
     <header class="site-header">
         <div class="header-inner">
+            {% if is_drose_site %}
+            <a href="{% url 'drose' %}" class="header-logo header-logo--drose" aria-label="Drose Drone Services">
+                <span class="header-logo-icon-slot" aria-hidden="true">
+                    {% include "tools/includes/drose_logo_header_light.svg" %}
+                    {% include "tools/includes/drose_logo_header_dark.svg" %}
+                </span>
+                <span class="header-logo-text">Drose</span>
+            </a>
+            {% else %}
             <a href="{% url 'home' %}" class="header-logo">
                 <img src="{% static 'tools/images/logo.svg' %}" alt="" class="header-logo-icon header-logo-light">
                 <img src="{% static 'tools/images/logo-dark.svg' %}" alt="" class="header-logo-icon header-logo-dark">
                 <span class="header-logo-text">Gadly</span>
             </a>
+            <script>
+            (function () {
+                try {
+                    var phase = window.__gadlyLogoRotatePhase;
+                    if (typeof phase !== "number" || isNaN(phase)) return;
+                    var logo = document.currentScript.previousElementSibling;
+                    if (!logo || !logo.classList.contains("header-logo")) return;
+                    logo.querySelectorAll(".header-logo-icon").forEach(function (icon) {
+                        icon.style.setProperty(
+                            "animation",
+                            "logo-slow-rotate 22s linear " + (-phase) + "s infinite",
+                            "important"
+                        );
+                        icon.style.setProperty("transform-origin", "center", "important");
+                    });
+                } catch (eLogo) { /* ignore */ }
+            })();
+            </script>
+            {% endif %}
             <div class="header-actions">
                 <form action="{% url 'set_language' %}" method="post" class="header-lang-form" aria-label="Language">
                     {% csrf_token %}
@@ -91,41 +1242,78 @@
                 </form>
                 <button type="button" id="warm-tone-toggle" class="theme-toggle warm-tone-toggle" title="Warm tone" aria-label="Warm tone" aria-pressed="false">🟠</button>
                 <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
+                <script>
+                (function() {
+                    try {
+                        var k = 'gadly-theme';
+                        var s = localStorage.getItem(k);
+                        var isDark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                        var tb = document.getElementById('theme-toggle');
+                        if (tb) tb.textContent = isDark ? '☀️' : '🌙';
+                        var wb = document.getElementById('warm-tone-toggle');
+                        if (wb) {
+                            var w = localStorage.getItem('gadly-warm-tone') === '1';
+                            wb.classList.toggle('is-active', w);
+                            wb.setAttribute('aria-pressed', w ? 'true' : 'false');
+                        }
+                    } catch (e) {}
+                })();
+                </script>
                 <button type="button" id="header-menu-btn" class="header-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
                     <span class="header-menu-icon"></span>
                 </button>
                 <nav class="header-nav" id="header-nav" aria-label="Main navigation">
-                <a href="{% url 'home' %}" class="header-link">Home</a>
-                <a href="{% url 'faq' %}" class="header-link">FAQ</a>
-                <a href="{% url 'about' %}" class="header-link">About</a>
-                <a href="{% url 'contact' %}" class="header-link header-link-mobile-only">Contact</a>
-                <a href="{% url 'privacy' %}" class="header-link header-link-mobile-only">Privacy</a>
+                <a href="{% url 'home' %}" class="header-link{% if is_drose_site %} header-link--gadly{% endif %}">{% if is_drose_site %}Gadly{% else %}Home{% endif %}</a>
+                <a href="{% if is_drose_site %}{% url 'drose_faq' %}{% else %}{% url 'faq' %}{% endif %}" class="header-link">FAQ</a>
+                <a href="{% if is_drose_site %}{% url 'drose_about' %}{% else %}{% url 'about' %}{% endif %}" class="header-link">About</a>
+                <a href="{% if is_drose_site %}{% url 'drose_contact' %}{% else %}{% url 'contact' %}{% endif %}" class="header-link header-link-mobile-only">Contact</a>
+                <a href="{% if is_drose_site %}{% url 'drose_privacy' %}{% else %}{% url 'privacy' %}{% endif %}" class="header-link header-link-mobile-only">Privacy</a>
                 {% if user.is_authenticated and user.is_staff %}
                 <a href="{% url 'accounts_home' %}" class="header-link">Accounts</a>
                 {% endif %}
+                <a href="{% url 'hidden_tools' %}" class="header-link header-link-mobile-only header-link-bin-row" id="header-nav-bin">Bin</a>
                 {% if not user.is_authenticated %}
                 <div class="header-auth-wrap">
-                    <a href="{% url 'login' %}" class="header-link">Login</a>
-                    <a href="{% url 'register' %}" class="header-link">Sign up</a>
+                    <a href="{% auth_link 'login' %}" class="header-link">Login</a>
+                    <a href="{% auth_link 'register' %}" class="header-link">Sign up</a>
+                </div>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <div class="header-nav-account">
+                    <a href="{% url 'account_profile' %}" class="header-link header-nav-account-profile">
+                        {% if user_profile.avatar %}
+                        <img src="{{ user_avatar_inline_header }}" alt="" class="header-nav-account-avatar" width="36" height="36" decoding="sync">
+                        {% else %}
+                        <span class="header-nav-account-avatar header-avatar--letter"><span class="header-avatar-initials">{{ user|user_initials }}</span></span>
+                        {% endif %}
+                        <span>{% trans "Account" %}</span>
+                    </a>
+                    <a href="{% url 'password_change' %}" class="header-link">{% trans "Change password" %}</a>
+                    <form method="post" action="{% url 'logout' %}" class="header-nav-logout-form">
+                        {% csrf_token %}
+                        {% if is_drose_site %}<input type="hidden" name="next" value="{% url 'drose' %}">{% endif %}
+                        <button type="submit" class="header-link header-link--logout">{% trans "Logout" %}</button>
+                    </form>
                 </div>
                 {% endif %}
                 </nav>
                 {% if user.is_authenticated %}
-                <div class="header-user-wrap">
-                    <button type="button" class="header-user-trigger" id="header-user-btn" aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+                <div class="header-user-wrap header-user-wrap--bar">
+                    <button type="button" class="header-user-trigger" id="header-user-btn" aria-expanded="false" aria-haspopup="true" aria-label="{% trans 'Account menu' %}: {{ user.username }}">
                         {% if user_profile.avatar %}
-                        <img src="{{ user_profile.avatar.url }}" alt="" class="header-avatar">
+                        <img src="{{ user_avatar_inline_header }}" alt="" class="header-avatar" width="28" height="28" decoding="sync">
                         {% else %}
-                        <span class="header-avatar header-avatar--letter">{{ user.username|slice:":1"|upper }}</span>
+                        <span class="header-avatar header-avatar--letter" aria-hidden="true"><span class="header-avatar-initials">{{ user|user_initials }}</span></span>
                         {% endif %}
                         <span class="header-username">{{ user.username }}</span>
-                        <span class="header-user-chevron">▼</span>
+                        <span class="header-user-chevron" aria-hidden="true">▼</span>
                     </button>
                     <div class="header-user-dropdown" id="header-user-dropdown" hidden>
                         <a href="{% url 'account_profile' %}" class="header-dropdown-item">{% trans "Account" %}</a>
                         <a href="{% url 'password_change' %}" class="header-dropdown-item">{% trans "Change password" %}</a>
                         <form method="post" action="{% url 'logout' %}" class="header-dropdown-form">
                             {% csrf_token %}
+                            {% if is_drose_site %}<input type="hidden" name="next" value="{% url 'drose' %}">{% endif %}
                             <button type="submit" class="header-dropdown-item header-dropdown-item--btn header-dropdown-item--logout">{% trans "Logout" %}</button>
                         </form>
                     </div>
@@ -134,62 +1322,102 @@
             </div>
         </div>
     </header>
+    {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
+    <a href="{% url 'drose' %}" class="drose-float-entry{% if is_drose_site %} is-active{% endif %}" aria-label="{% trans 'Drose Drone Services' %}" title="{% trans 'Drose Drone Services' %}">
+        <span class="drose-float-entry__lift">
+        {% include "tools/includes/drose_drone_icon.svg" %}
+        </span>
+        <span class="drose-float-entry__label" aria-hidden="true">
+            <span class="drose-float-entry__label-brand">Drose</span>
+            <span class="drose-float-entry__label-tagline">Drone Services</span>
+        </span>
+    </a>
+    {% endif %}
     <main class="site-main">
         {% block content %}{% endblock %}
     </main>
-    {% include "tools/includes/tool_quick_nav.html" %}
     <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-links">
-                <a href="{% url 'privacy' %}">{% trans "Privacy" %}</a>
-                <a href="{% url 'contact' %}">{% trans "Contact" %}</a>
-                <a href="{% url 'faq' %}" class="footer-link-faq">{% trans "FAQ" %}</a>
+            <div class="footer-inner">
+                <div class="footer-links">
+                    <a href="{% if is_drose_site %}{% url 'drose_privacy' %}{% else %}{% url 'privacy' %}{% endif %}">{% trans "Privacy" %}</a>
+                    <a href="{% if is_drose_site %}{% url 'drose_contact' %}{% else %}{% url 'contact' %}{% endif %}">{% trans "Contact" %}</a>
+                    <a href="{% if is_drose_site %}{% url 'drose_faq' %}{% else %}{% url 'faq' %}{% endif %}" class="footer-link-faq">{% trans "FAQ" %}</a>
+                    {% if not is_drose_site %}
+                    <a href="{% url 'drose' %}" class="footer-link-drose">{% trans "Drose" %}</a>
+                    {% endif %}
+                    {% if is_drose_site and user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'drose_quote_staff_list' %}" class="footer-link-quote-requests">{% trans "Quotes" %}{% if drose_unviewed_quote_count %}<sup class="footer-quote-badge{% if drose_unviewed_quote_count >= 10 %} footer-quote-badge--wide{% endif %}" aria-label="{% blocktrans count counter=drose_unviewed_quote_count %}{{ counter }} new quote request{% plural %}{{ counter }} new quote requests{% endblocktrans %}">{{ drose_unviewed_quote_count }}</sup>{% endif %}</a>
+                    <a href="{% url 'drose_works_manage' %}">{% trans "Portfolio" %}</a>
+                    {% endif %}
+                </div>
+                {% if is_drose_site %}
+                <div class="footer-copy">&copy; Drose {% now "Y" %}. {% trans "All rights reserved." %}</div>
+                {% else %}
+                <div class="footer-copy">&copy; Gadly {% now "Y" %}. {% trans "All rights reserved." %}</div>
+                {% endif %}
             </div>
-            <div class="footer-copy">&copy; {% now "Y" %} Gadly. {% trans "All rights reserved." %}</div>
-        </div>
-    </footer>
-    {% url 'privacy' as privacy_url %}
-    <div id="cookie-banner" class="cookie-banner hidden" data-ready="0" hidden>
-        <p>{% blocktrans trimmed with privacy_url=privacy_url %}We use cookies to improve your experience. By continuing you accept our <a href="{{ privacy_url }}">Privacy Policy</a>.{% endblocktrans %}</p>
-        <button type="button" class="cookie-banner-btn" id="cookie-accept">{% trans "Accept" %}</button>
-    </div>
-    <!-- Mobile: cerchietto Home trascinabile (evita conflitto con home bar iPhone) -->
-    <div id="mobile-home-fab" class="mobile-home-fab">
-        <a href="{% url 'home' %}" class="mobile-home-fab-link" aria-label="{% trans 'Back to Home' %}" title="{% trans 'Back to Home' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-        </a>
-    </div>
-    <script src="{% static 'tools/js/theme.js' %}"></script>
-    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=6"></script>
-    <script>
-    window.GADLY_USER_AUTHENTICATED = {{ user.is_authenticated|yesno:"true,false" }};
-    window.GADLY_USER_STORAGE_KEY = "{% if user.is_authenticated %}{{ user.id }}{% else %}anon{% endif %}";
-    </script>
+        </footer>
+    <script src="{% static 'tools/js/cookie-banner.js' %}?v=14"></script>
+    <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
+    {% block page_scripts %}{% endblock %}
+    <script src="{% static 'tools/js/theme.js' %}?v=14"></script>
+    {% if not is_drose_site %}
+    <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
+    {% endif %}
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=42"></script>
+    {% if not is_drose_site %}
+    {% include "tools/includes/tool_quick_nav.html" %}
+    {% endif %}
+    {% block after_quick_nav %}{% endblock %}
+    <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=28"></script>
+    {% if not is_drose_site %}
+    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=106"></script>
+    {% endif %}
+    <script src="{% static 'tools/js/drose-entry.js' %}?v=62"></script>
+    <script src="{% static 'tools/js/nav-link-hover-lock.js' %}?v=2"></script>
+    {% if is_drose_site %}
+    <script src="{% static 'tools/js/drose-hover-lock.js' %}?v=8"></script>
+    <script src="{% static 'tools/js/drose-orbit-ping.js' %}?v=42"></script>
+    {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
-    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=17"></script>
-    <script src="{% static 'tools/js/cookie-banner.js' %}?v=2"></script>
+    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=148"></script>
     <script>
     (function() {
         var menuBtn = document.getElementById('header-menu-btn');
         var nav = document.getElementById('header-nav');
         if (menuBtn && nav) {
+            function clearMenuFocus() {
+                nav.querySelectorAll('a').forEach(function(link) {
+                    if (typeof link.blur === 'function') {
+                        link.blur();
+                    }
+                });
+                if (typeof menuBtn.blur === 'function') {
+                    menuBtn.blur();
+                }
+            }
+            function closeMenu() {
+                nav.classList.remove('is-open');
+                menuBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('nav-open');
+                clearMenuFocus();
+            }
             menuBtn.addEventListener('click', function() {
                 var open = nav.classList.toggle('is-open');
                 menuBtn.setAttribute('aria-expanded', open);
                 document.body.classList.toggle('nav-open', open);
+                if (!open) {
+                    clearMenuFocus();
+                }
             });
-            nav.querySelectorAll('a').forEach(function(a) {
-                a.addEventListener('click', function() {
-                    nav.classList.remove('is-open');
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                    document.body.classList.remove('nav-open');
+            nav.querySelectorAll('a, .header-nav-logout-form button').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    closeMenu();
                 });
             });
             document.body.addEventListener('click', function(e) {
                 if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) {
-                    nav.classList.remove('is-open');
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                    document.body.classList.remove('nav-open');
+                    closeMenu();
                 }
             });
         }
@@ -223,5 +1451,82 @@
     })();
     </script>
     {% endif %}
+    <script>
+    (function() {
+        var root = document.documentElement;
+
+        function clearBackNavShield() {
+            try {
+                if (document.activeElement && document.activeElement !== document.body) {
+                    document.activeElement.blur();
+                }
+            } catch (eBlur) { /* ignore */ }
+            try {
+                document.querySelectorAll(".tap-active").forEach(function(el) {
+                    el.classList.remove("tap-active");
+                });
+            } catch (eTap) { /* ignore */ }
+            root.classList.remove("gadly-back-nav");
+        }
+
+        function scheduleClearBackNavShield() {
+            requestAnimationFrame(function() {
+                requestAnimationFrame(clearBackNavShield);
+            });
+        }
+
+        if (root.classList.contains("gadly-back-nav")) {
+            document.addEventListener("DOMContentLoaded", scheduleClearBackNavShield, { once: true });
+        }
+
+        window.addEventListener("pageshow", function(ev) {
+            if (!ev.persisted) return;
+            root.classList.add("gadly-back-nav");
+            scheduleClearBackNavShield();
+        });
+
+        function gadlyBootUiClear() {
+            root.classList.remove('gadly-boot-ui');
+        }
+        function scheduleClear() {
+            requestAnimationFrame(function() {
+                requestAnimationFrame(gadlyBootUiClear);
+            });
+        }
+        function onLoad() {
+            if (root.classList.contains('gadly-scroll-restore-pending')) return;
+            if (root.classList.contains('gadly-cl-scroll-pending')) return;
+            scheduleClear();
+        }
+        if (document.body.classList.contains('homepage')) {
+            gadlyBootUiClear();
+        } else if (document.body.classList.contains('cv-generator')) {
+            if (window.__gadlyScrollRestoreSettled) {
+                scheduleClear();
+            } else {
+                document.addEventListener('gadly-scroll-restore-settled', scheduleClear, { once: true });
+            }
+            window.addEventListener('load', onLoad, { once: true });
+        } else if (document.body.classList.contains('cover-letter-generator')) {
+            if (window.__gadlyScrollRestoreSettled) {
+                scheduleClear();
+            } else {
+                document.addEventListener('gadly-scroll-restore-settled', scheduleClear, { once: true });
+            }
+            window.addEventListener('load', onLoad, { once: true });
+        } else if (document.body.classList.contains('cv-optimizer')) {
+            gadlyBootUiClear();
+        } else if (document.readyState === 'complete') {
+            onLoad();
+        } else {
+            window.addEventListener('load', onLoad, { once: true });
+        }
+        setTimeout(function() {
+            if (!root.classList.contains('gadly-scroll-restore-pending') && !root.classList.contains('gadly-cl-scroll-pending')) {
+                gadlyBootUiClear();
+            }
+        }, 5000);
+    })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,84 @@
+{% extends "tools/base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Removed quotes" %} — {% trans "Quotes" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage drose-quote-staff-page drose-quote-trash-page{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container{% if not quotes %} drose-quote-trash-container--empty{% endif %}">
+        {% if quotes %}
+        <header class="drose-subpage__head">
+            <h1>{% trans "Removed quotes" %}</h1>
+            <p class="drose-quote-staff-lead">{% trans "Quotes you removed appear here. Restore them to work on them again." %}</p>
+            <p class="drose-quote-trash-retention-notice">{% blocktrans count counter=trash_retention_days %}Removed quotes are permanently deleted automatically after {{ counter }} day in the trash.{% plural %}Removed quotes are permanently deleted automatically after {{ counter }} days in the trash.{% endblocktrans %}</p>
+        </header>
+
+        <section class="drose-section drose-cta">
+            <div class="drose-quote-staff-table-wrap">
+                <table class="drose-quote-staff-table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Reference" %}</th>
+                            <th>{% trans "Client" %}</th>
+                            <th>{% trans "Service" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Removed" %}</th>
+                            <th class="drose-quote-staff-actions-col"><span class="visually-hidden">{% trans "Actions" %}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quote in quotes %}
+                        <tr data-quote-id="{{ quote.pk }}">
+                            <td><span class="drose-quote-staff-ref">{{ quote.reference }}</span></td>
+                            <td>{{ quote.full_name }}<br><span class="drose-quote-staff-muted">{{ quote.email }}</span></td>
+                            <td>{{ quote.service_label }}</td>
+                            <td><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
+                            <td>{{ quote.deleted_at|date:"d/m/Y H:i" }}</td>
+                            <td class="drose-quote-staff-actions-col">
+                                <div class="drose-quote-staff-menu">
+                                    <button type="button" class="drose-quote-staff-menu__trigger" aria-label="{% trans 'Quote actions' %}" aria-expanded="false" aria-haspopup="true">
+                                        <span class="drose-quote-staff-menu__dots" aria-hidden="true"></span>
+                                    </button>
+                                    <div class="drose-quote-staff-menu__panel" hidden>
+                                        <form method="post" action="{% url 'drose_quote_staff_restore' quote.pk %}" class="drose-quote-staff-menu__restore-form">
+                                            {% csrf_token %}
+                                            <button type="submit" class="drose-quote-staff-menu__item drose-quote-staff-menu__item--restore">{% trans "Restore" %}</button>
+                                        </form>
+                                        <form method="post" action="{% url 'drose_quote_staff_purge' quote.pk %}" class="drose-quote-staff-menu__purge-form" onsubmit="return confirm('{% trans "Permanently delete this quote request? This cannot be undone." %}');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="drose-quote-staff-menu__item drose-quote-staff-menu__item--danger">{% trans "Delete permanently" %}</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose_quote_staff_list' %}">{% trans "Back to Quotes" %}</a>
+        </p>
+        {% else %}
+        <header class="drose-subpage__head drose-quote-trash-head">
+            <h1>{% trans "Removed quotes" %}</h1>
+            <p class="drose-quote-trash-intro">{% trans "Quotes you removed from the Quotes list appear here. Restore them individually to work on them again." %}</p>
+            <p class="drose-quote-trash-intro-hint">{% trans "You can remove quotes anytime from the menu on the Quotes list." %}</p>
+            <p class="drose-quote-trash-retention-notice">{% blocktrans count counter=trash_retention_days %}Removed quotes are permanently deleted automatically after {{ counter }} day in the trash.{% plural %}Removed quotes are permanently deleted automatically after {{ counter }} days in the trash.{% endblocktrans %}</p>
+        </header>
+
+        <div class="drose-quote-trash-empty">
+            <p>{% trans "No removed quotes. Everything is in the main Quotes list." %}</p>
+        </div>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose_quote_staff_list' %}" class="drose-landing__back-link">{% trans "Back to Quotes" %}</a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=5"></script>
+{% endblock %}

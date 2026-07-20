@@ -3,11 +3,40 @@
 {% load i18n %}
 {% block title %}{% trans "Remove Spaces" %}{% endblock %}
 {% block body_class %}text-tool remove-spaces{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Remove every space or collapse repeated spaces in pasted text—helpful after copying from PDFs or web pages, and for CSV, code, and lists. Processed in your browser.' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=overlays-content">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428c">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520n">
 <style>
+.text-tool.remove-spaces .tool-desc { color: #555; line-height: 1.55; }
+/* Bottoni mobile: blindatura colori (battono base.css / .text-tool button blu pieno) */
+@media (max-width: 768px) {
+  body.remove-spaces.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+  body.remove-spaces.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):hover,
+  body.remove-spaces.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):focus:not(.tap-active) {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:not(.copied),
+  body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:not(.copied):hover,
+  body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:not(.copied):focus:not(.tap-active) {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+}
 .remove-spaces .text-tool-row {
-    margin-bottom: 12px; /* 12px sopra l'errore */
+    margin-bottom: 12px;
+}
+.remove-spaces .remove-spaces-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 .remove-spaces .button-group {
     width: 100%;
@@ -60,22 +89,56 @@
 .remove-spaces-error.hidden {
     display: none;
 }
+/* Mobile: textarea identica in focus (niente salto layout sotto) */
+@media (max-width: 768px) {
+    body.remove-spaces .site-main .container .text-tool-row textarea,
+    body.remove-spaces .site-main .container .text-tool-row textarea:focus {
+        resize: none !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 280px !important;
+        height: 280px !important;
+        max-height: 280px !important;
+        margin-bottom: 0 !important;
+        padding: 12px !important;
+        border: 1px solid #ddd !important;
+        outline: none !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.remove-spaces .site-main .container .text-tool-row textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .text-tool-row textarea,
+    body.dark-mode.remove-spaces .site-main .container .text-tool-row textarea:focus {
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .text-tool-row textarea:focus {
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.remove-spaces .remove-spaces-outcome-stack {
+        flex-shrink: 0;
+    }
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
     <h1>{% trans "Remove Spaces" %}</h1>
-    <p class="tool-desc">{% trans "Remove or normalize spaces in your text." %}</p>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Elimina tutti gli spazi oppure riduci gli spazi multipli a uno solo—comodo dopo copia-incolla da PDF o web. Utile anche per CSV, codice e liste.{% else %}Strip every space or collapse repeated spaces into one—helpful after copying from PDFs or web pages, and for CSV, code, and lists.{% endif %}</p>
     <div class="text-tool-row">
-        <textarea id="text-input" placeholder='{% trans "Paste your text here..." %}' rows="8"></textarea>
+        <textarea id="text-input" placeholder='{% trans "Paste your text here..." %}' rows="8" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
     </div>
-    <div id="remove-spaces-error" class="remove-spaces-error hidden" aria-live="polite"></div>
     <div class="remove-spaces-outcome-stack" id="remove-spaces-outcome-stack">
         <div class="remove-spaces-actions">
             <div class="text-tool-options">
                 <label><input type="radio" name="mode" value="all" checked>{% trans "Remove all spaces" %}</label>
                 <label><input type="radio" name="mode" value="extra">{% trans "Collapse multiple spaces" %}</label>
             </div>
+            <div id="remove-spaces-error" class="remove-spaces-error hidden" aria-live="polite"></div>
             <div class="button-group">
                 <button type="button" id="btn-transform">{% trans "Transform" %}</button>
                 <button type="button" id="btn-undo" hidden>{% trans "Undo" %}</button>
@@ -90,5 +153,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/remove_spaces.js' %}?v=20260428e"></script>
+<script src="{% static 'tools/js/remove_spaces.js' %}?v=20260520a"></script>
 {% endblock %}

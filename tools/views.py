@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404, resolve_url
+from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth import views as auth_views
@@ -12,18 +13,49 @@ from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 from django.utils.translation import override, get_language_from_request
 import asyncio
+import json
 import secrets
 import logging
+from types import SimpleNamespace
 from email.utils import parseaddr
 import httpx
 
-from .forms import UserRegistrationForm, ProfileUpdateForm, AvatarUploadForm
+from .auth_throttle import (
+    SCOPE_PASSWORD_RESET,
+    SCOPE_RESEND_VERIFY,
+    allow_email_flow,
+)
+from .forms import (
+    UserRegistrationForm,
+    ProfileUpdateForm,
+    AvatarUploadForm,
+    DroseQuoteRequestForm,
+    DroseQuoteOfferForm,
+)
+from .auth_brand import drose_email_brand_preview, email_brand_context, resolve_logout_redirect
+from .drose_quotes import (
+    mark_quote_viewed_by_staff,
+    notify_staff_quote_response,
+    process_quote_submission,
+    send_quote_offer_to_customer,
+)
 from .interview_banks import get_interview_simulator_payload
-from .models import UserProfile, EmailVerificationToken
+from .models import UserProfile, EmailVerificationToken, DroseQuoteRequest, DroseWorkItem
+from .drose_works_media import (
+    validate_work_upload,
+    validate_work_slot,
+    work_items_by_slot,
+    save_work_item,
+    remove_work_item,
+    slot_range,
+    attach_gallery_thumb_urls,
+)
 from PyPDF2 import PdfReader, PdfWriter
 from googletrans import Translator  # Importa googletrans per la traduzione
 import hashlib
@@ -35,6 +67,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from urllib.parse import quote, urlparse, urlunparse
 import socket
 import json
 
@@ -49,10 +82,20 @@ def _request_language(request):
 
 
 class LocalizedPasswordResetView(auth_views.PasswordResetView):
-    """
-    Ensures reset email subject/body are rendered in the current UI language.
-    """
+    """Reset email in UI language, with Drose branding when requested from /drose/*."""
+
     def form_valid(self, form):
+        email = form.cleaned_data.get("email") or ""
+        allowed, message = allow_email_flow(
+            self.request,
+            scope=SCOPE_PASSWORD_RESET,
+            email=email,
+        )
+        if not allowed:
+            # Neutral message: does not reveal whether the address exists.
+            form.add_error(None, message)
+            return self.form_invalid(form)
+        self.extra_email_context = email_brand_context(self.request)
         with override(_request_language(self.request)):
             return super().form_valid(form)
 
@@ -92,23 +135,53 @@ def _send_via_sendgrid_api(from_email, to_email, subject, plain_message, html_me
     return False
 
 
-def _send_verification_email(request, user, token, *, email_change=False):
+def _send_verification_email(request, user, token, *, email_change=False, to_email=None):
     verify_url = request.build_absolute_uri(
         reverse("verify_email_short", kwargs={"token": token})
     )
+    brand = email_brand_context(request)
+    is_drose = brand["is_drose_brand"]
     with override(_request_language(request)):
         if email_change:
-            subject = gettext("Confirm your new email - Gadly")
+            if is_drose:
+                subject = gettext("Confirm your new email - Drose Drone Services")
+                plain_message = gettext(
+                    "Hi %(username)s,\n\n"
+                    "You recently changed the email address on your Gadly account "
+                    "(used for Gadly tools and Drose Drone Services). "
+                    "Please confirm this new address by opening the following link:\n\n"
+                    "%(url)s\n\n"
+                    "Confirming this address keeps your account secure and lets you use it for password recovery.\n\n"
+                    "For your security, this verification link is valid for a limited time and can be used only once.\n\n"
+                    "If you did not change your email, you can ignore this message.\n\n"
+                    "Best regards,\n"
+                    "Drose Drone Services"
+                ) % {"username": user.username, "url": verify_url}
+            else:
+                subject = gettext("Confirm your new email - Gadly")
+                plain_message = gettext(
+                    "Hi %(username)s,\n\n"
+                    "You recently changed the email address on your Gadly account. "
+                    "Please confirm this new address by opening the following link:\n\n"
+                    "%(url)s\n\n"
+                    "Confirming this address keeps your account secure and lets you use it for password recovery.\n\n"
+                    "For your security, this verification link is valid for a limited time and can be used only once.\n\n"
+                    "If you did not change your email on Gadly, you can ignore this email.\n\n"
+                    "Best regards,\n"
+                    "Gadly Support"
+                ) % {"username": user.username, "url": verify_url}
+        elif is_drose:
+            subject = gettext("Verify your email - Drose Drone Services")
             plain_message = gettext(
                 "Hi %(username)s,\n\n"
-                "You recently changed the email address on your Gadly account. "
-                "Please confirm this new address by opening the following link:\n\n"
+                "Thanks for signing up from Drose Drone Services. "
+                "Please verify your email address by clicking this link:\n\n"
                 "%(url)s\n\n"
-                "Confirming this address keeps your account secure and lets you use it for password recovery.\n\n"
+                "Your Gadly account works for both Gadly tools and Drose pages.\n\n"
                 "For your security, this verification link is valid for a limited time and can be used only once.\n\n"
-                "If you did not change your email on Gadly, you can ignore this email.\n\n"
+                "If you didn't create an account, ignore this email.\n\n"
                 "Best regards,\n"
-                "Gadly Support"
+                "Drose Drone Services"
             ) % {"username": user.username, "url": verify_url}
         else:
             subject = gettext("Verify your email - Gadly")
@@ -126,13 +199,16 @@ def _send_verification_email(request, user, token, *, email_change=False):
             {
                 "username": user.username,
                 "verify_url": verify_url,
-                "brand_logo_url": request.build_absolute_uri(static("tools/images/logo.svg")),
                 "email_change": email_change,
+                **brand,
             },
             request=request,
         )
+    recipient = (to_email or user.email or "").strip()
+    if not recipient:
+        return None
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@gadly.local')
-    msg = EmailMultiAlternatives(subject, plain_message, from_email, [user.email])
+    msg = EmailMultiAlternatives(subject, plain_message, from_email, [recipient])
     msg.attach_alternative(html_message, "text/html")
     smtp_ok = False
     api_ok = False
@@ -151,7 +227,7 @@ def _send_verification_email(request, user, token, *, email_change=False):
     except Exception:
         logger.exception("SMTP send failed for verification email user=%s", user.email)
         reason = "smtp_failed"
-    if _send_via_sendgrid_api(from_email, user.email, subject, plain_message, html_message):
+    if _send_via_sendgrid_api(from_email, recipient, subject, plain_message, html_message):
         api_ok = True
         reason = "api_sent_after_smtp_fail"
         logger.info(
@@ -174,11 +250,473 @@ def _send_verification_email(request, user, token, *, email_change=False):
     )
     return None
 
+
+def _sanitize_home_hidden_tools(data):
+    """Normalize hidden-tool entries from client JSON or profile storage."""
+    if not isinstance(data, list):
+        return []
+    seen = set()
+    out = []
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        url = (item.get("url") or "").strip()
+        if not url.startswith("/"):
+            continue
+        if len(url) > 1 and url.endswith("/"):
+            url = url[:-1]
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        out.append({
+            "url": url,
+            "name": str(item.get("name") or url)[:200],
+            "categoryId": str(item.get("categoryId") or "")[:100],
+            "categoryName": str(item.get("categoryName") or "")[:200],
+        })
+    return out
+
+
 # -------------------------
 # Normal page views
 # -------------------------
 def home(request):
     return render(request, 'tools/home.html')
+
+
+def drose(request):
+    from .drose_service_thumbs import drose_service_photo_uris
+
+    return render(
+        request,
+        "tools/drose.html",
+        {"drose_service_photos": drose_service_photo_uris()},
+    )
+
+
+def drose_quote_request(request):
+    quote_form = DroseQuoteRequestForm()
+    quote_sent = False
+
+    if request.method == "POST":
+        quote_form = DroseQuoteRequestForm(request.POST)
+        if quote_form.is_valid():
+            lang = _request_language(request)
+            try:
+                process_quote_submission(request, quote_form, language=lang)
+                quote_sent = True
+                quote_form = DroseQuoteRequestForm()
+            except Exception:
+                logger.exception("Drose quote form send failed")
+                quote_form.add_error(
+                    None,
+                    gettext("We could not send your request right now. Please try again in a few minutes."),
+                )
+
+    return render(
+        request,
+        'tools/drose_quote_request.html',
+        {
+            'quote_form': quote_form,
+            'quote_sent': quote_sent,
+        },
+    )
+
+
+@staff_member_required
+def drose_quote_staff_list(request):
+    quotes = DroseQuoteRequest.objects.filter(deleted_at__isnull=True)[:200]
+    return render(request, 'tools/drose_quote_staff_list.html', {'quotes': quotes})
+
+
+@staff_member_required
+def drose_quote_staff_trash(request):
+    quotes = DroseQuoteRequest.objects.filter(deleted_at__isnull=False)[:200]
+    return render(
+        request,
+        'tools/drose_quote_staff_trash.html',
+        {
+            'quotes': quotes,
+            'trash_retention_days': getattr(settings, 'DROSE_QUOTE_TRASH_RETENTION_DAYS', 60),
+        },
+    )
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def drose_quote_staff_delete(request, pk):
+    quote = get_object_or_404(DroseQuoteRequest, pk=pk, deleted_at__isnull=True)
+    quote.deleted_at = timezone.now()
+    quote.save(update_fields=["deleted_at", "updated_at"])
+    return redirect('drose_quote_staff_list')
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def drose_quote_staff_restore(request, pk):
+    quote = get_object_or_404(DroseQuoteRequest, pk=pk, deleted_at__isnull=False)
+    quote.deleted_at = None
+    quote.save(update_fields=["deleted_at", "updated_at"])
+    return redirect(f"{reverse('drose_quote_staff_list')}?restored={quote.pk}")
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def drose_quote_staff_purge(request, pk):
+    quote = get_object_or_404(DroseQuoteRequest, pk=pk, deleted_at__isnull=False)
+    quote.delete()
+    return redirect('drose_quote_staff_trash')
+
+
+@staff_member_required
+@require_http_methods(["GET", "POST"])
+def drose_quote_staff_detail(request, pk):
+    quote = get_object_or_404(DroseQuoteRequest, pk=pk, deleted_at__isnull=True)
+    if request.method == "GET":
+        mark_quote_viewed_by_staff(quote)
+    offer_sent = False
+    offer_error = ""
+
+    initial_deliverables = "\n".join(quote.offer_deliverables) if quote.offer_deliverables else quote.deliverables_label
+    initial = {
+        "valid_until": quote.valid_until,
+        "offer_scope": quote.offer_scope or quote.project_details,
+        "offer_deliverables_text": initial_deliverables,
+        "price_subtotal": quote.price_subtotal,
+        "price_total": quote.price_total,
+        "offer_timeline": quote.offer_timeline or quote.preferred_timeline,
+        "offer_notes": quote.offer_notes,
+    }
+    offer_form = DroseQuoteOfferForm(initial=initial)
+
+    if request.method == "POST":
+        offer_form = DroseQuoteOfferForm(request.POST)
+        if offer_form.is_valid():
+            quote.valid_until = offer_form.cleaned_data["valid_until"]
+            quote.offer_scope = offer_form.cleaned_data["offer_scope"]
+            quote.offer_deliverables = offer_form.deliverables_list()
+            quote.price_subtotal = offer_form.cleaned_data["price_subtotal"]
+            quote.price_total = offer_form.cleaned_data["price_total"]
+            quote.offer_timeline = offer_form.cleaned_data["offer_timeline"]
+            quote.offer_notes = offer_form.cleaned_data.get("offer_notes") or ""
+            quote.save()
+            try:
+                send_quote_offer_to_customer(request, quote)
+                offer_sent = True
+            except Exception:
+                logger.exception("Drose quote offer send failed for %s", quote.reference)
+                offer_error = gettext("We could not send the quote email. Check mail settings and try again.")
+
+    return render(
+        request,
+        'tools/drose_quote_staff_detail.html',
+        {
+            'quote': quote,
+            'offer_form': offer_form,
+            'offer_sent': offer_sent,
+            'offer_error': offer_error,
+        },
+    )
+
+
+@require_http_methods(["GET", "POST"])
+def drose_quote_response(request, token):
+    quote = get_object_or_404(DroseQuoteRequest, response_token=token)
+    intent = (request.GET.get("intent") or request.POST.get("intent") or "").strip().lower()
+    completed = False
+    completed_action = ""
+
+    if request.method == "POST" and quote.can_respond_to_offer:
+        action = (request.POST.get("action") or "").strip().lower()
+        if action == "accept":
+            quote.status = DroseQuoteRequest.STATUS_ACCEPTED
+            quote.responded_at = timezone.now()
+            quote.staff_viewed_at = None
+            quote.save(update_fields=["status", "responded_at", "staff_viewed_at", "updated_at"])
+            notify_staff_quote_response(request, quote)
+            completed = True
+            completed_action = "accepted"
+        elif action == "decline":
+            quote.status = DroseQuoteRequest.STATUS_DECLINED
+            quote.responded_at = timezone.now()
+            quote.staff_viewed_at = None
+            quote.save(update_fields=["status", "responded_at", "staff_viewed_at", "updated_at"])
+            notify_staff_quote_response(request, quote)
+            completed = True
+            completed_action = "declined"
+
+    with override(quote.language):
+        return render(
+            request,
+            'tools/drose_quote_response.html',
+            {
+                'quote': quote,
+                'intent': intent if intent in ("accept", "decline") else "",
+                'completed': completed,
+                'completed_action': completed_action,
+                'can_respond': quote.can_respond_to_offer,
+            },
+        )
+
+
+def drose_faq(request):
+    return render(request, 'tools/drose_faq.html')
+
+
+def drose_about(request):
+    return render(request, 'tools/drose_about.html')
+
+
+def drose_works(request):
+    raw_type = (request.GET.get("type") or "").strip().lower()
+    works_media_type = raw_type if raw_type in (
+        DroseWorkItem.MEDIA_PHOTO,
+        DroseWorkItem.MEDIA_VIDEO,
+    ) else ""
+    # Mobile intermediate step: ?choose=1 shows Photos/Videos picker without loading grids.
+    show_works_chooser = request.GET.get("choose") == "1" and not works_media_type
+
+    photo_items = work_items_by_slot(DroseWorkItem.MEDIA_PHOTO)
+    video_items = work_items_by_slot(DroseWorkItem.MEDIA_VIDEO)
+    has_any_media = bool(photo_items or video_items)
+
+    if show_works_chooser:
+        photo_slots = []
+        video_slots = []
+        has_work_media = has_any_media
+    else:
+        attach_gallery_thumb_urls(photo_items)
+        show_photos = works_media_type in ("", DroseWorkItem.MEDIA_PHOTO)
+        show_videos = works_media_type in ("", DroseWorkItem.MEDIA_VIDEO)
+        photo_slots = (
+            [(n, photo_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_PHOTO)]
+            if show_photos
+            else []
+        )
+        video_slots = (
+            [(n, video_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_VIDEO)]
+            if show_videos
+            else []
+        )
+        if works_media_type == DroseWorkItem.MEDIA_PHOTO:
+            has_work_media = bool(photo_items)
+        elif works_media_type == DroseWorkItem.MEDIA_VIDEO:
+            has_work_media = bool(video_items)
+        else:
+            has_work_media = has_any_media
+
+    # data-URI già in pagina: niente preload (evita doppio fetch / race)
+    preload_urls = []
+    return render(
+        request,
+        'tools/drose_works.html',
+        {
+            'photo_slots': photo_slots,
+            'video_slots': video_slots,
+            'can_manage_works': request.user.is_authenticated and request.user.is_staff,
+            'has_work_media': has_work_media,
+            'work_preload_urls': preload_urls,
+            'works_media_type': works_media_type,
+            'show_works_chooser': show_works_chooser,
+        },
+    )
+
+
+@staff_member_required
+def drose_works_manage(request):
+    from django.core.exceptions import ValidationError
+
+    upload_error = ""
+    upload_success = False
+    removed = False
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        media_type = request.POST.get("media_type")
+        slot = request.POST.get("slot")
+        if action == "remove":
+            try:
+                media_type, slot_num = validate_work_slot(media_type, slot)
+                if remove_work_item(media_type, slot_num):
+                    removed = True
+                else:
+                    upload_error = gettext("Could not remove this item.")
+            except ValidationError as exc:
+                upload_error = exc.messages[0] if exc.messages else str(exc)
+        elif action == "upload":
+            uploaded = request.FILES.get("file")
+            try:
+                media_type, slot_num = validate_work_upload(media_type, slot, uploaded)
+                save_work_item(media_type, slot_num, uploaded)
+                upload_success = True
+            except ValidationError as exc:
+                upload_error = exc.messages[0] if exc.messages else str(exc)
+            except Exception:
+                logger.exception("Drose work upload failed")
+                upload_error = gettext("Upload failed. Please try again.")
+
+    photo_items = work_items_by_slot(DroseWorkItem.MEDIA_PHOTO)
+    video_items = work_items_by_slot(DroseWorkItem.MEDIA_VIDEO)
+    attach_gallery_thumb_urls(photo_items)
+    photo_slots = [(n, photo_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_PHOTO)]
+    video_slots = [(n, video_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_VIDEO)]
+    preload_urls = []
+    return render(
+        request,
+        'tools/drose_works_manage.html',
+        {
+            'photo_slots': photo_slots,
+            'video_slots': video_slots,
+            'upload_error': upload_error,
+            'upload_success': upload_success,
+            'removed': removed,
+            'work_preload_urls': preload_urls,
+        },
+    )
+
+
+def drose_privacy(request):
+    return render(request, 'tools/drose_privacy.html')
+
+
+def drose_contact(request):
+    return render(request, 'tools/drose_contact.html')
+
+
+def _ensure_debug_email_preview():
+    if not settings.DEBUG:
+        raise Http404
+
+
+@require_GET
+def drose_email_preview_index(request):
+    """Index of Drose transactional email previews (DEBUG only)."""
+    _ensure_debug_email_preview()
+    return render(request, 'tools/drose_email_preview_index.html')
+
+
+@require_GET
+def drose_email_preview_verify(request):
+    """Render verify-email HTML as sent from Drose (DEBUG only)."""
+    _ensure_debug_email_preview()
+    lang = (request.GET.get('lang') or get_language_from_request(request) or 'en')[:2]
+    if lang not in ('en', 'it'):
+        lang = 'en'
+    email_change = request.GET.get('change') == '1'
+    with override(lang):
+        html = render_to_string(
+            'tools/emails/verify_email.html',
+            {
+                'username': 'mario',
+                'verify_url': request.build_absolute_uri('/v/example-token-preview/'),
+                'email_change': email_change,
+                **drose_email_brand_preview(request),
+            },
+            request=request,
+        )
+    return HttpResponse(html)
+
+
+@require_GET
+def drose_email_preview_password_reset(request):
+    """Render password-reset HTML as sent from Drose (DEBUG only)."""
+    _ensure_debug_email_preview()
+    lang = (request.GET.get('lang') or get_language_from_request(request) or 'en')[:2]
+    if lang not in ('en', 'it'):
+        lang = 'en'
+    user = SimpleNamespace(get_username=lambda: 'mario')
+    with override(lang):
+        html = render_to_string(
+            'registration/password_reset_email_html.html',
+            {
+                'user': user,
+                'protocol': 'https' if request.is_secure() else 'http',
+                'domain': request.get_host(),
+                'uid': 'preview',
+                'token': 'preview-token',
+                'site_name': 'Gadly',
+                **drose_email_brand_preview(request),
+            },
+            request=request,
+        )
+    return HttpResponse(html)
+
+
+@require_GET
+def drose_email_preview_quote_offer(request):
+    """Render quote-offer HTML template with Drose branding (DEBUG only)."""
+    _ensure_debug_email_preview()
+    lang = (request.GET.get('lang') or get_language_from_request(request) or 'en')[:2]
+    if lang not in ('en', 'it'):
+        lang = 'en'
+    with override(lang):
+        html = render_to_string(
+            'tools/emails/drose_quote_offer.html',
+            {
+                'recipient_name': 'Mario Rossi',
+                'quote_reference': 'DS-2026-041',
+                'valid_until': '31/07/2026',
+                'location': 'Milano',
+                'service_label': gettext('Inspection'),
+                'project_scope': gettext('Facade and roof visual inspection with 4K coverage.'),
+                'deliverables': [
+                    gettext('12 edited aerial photos'),
+                    gettext('1 short recap video (45-60 seconds)'),
+                    gettext('Inspection summary PDF'),
+                ],
+                'price_subtotal': '680 EUR',
+                'price_total': '680 EUR',
+                'timeline': gettext('Delivery in 3 business days after flight.'),
+                'notes': gettext('Flight date subject to weather and local airspace clearance.'),
+                'accept_url': request.build_absolute_uri(reverse('drose_quote_response', kwargs={'token': 'preview-token'})) + '?intent=accept',
+                'decline_url': request.build_absolute_uri(reverse('drose_quote_response', kwargs={'token': 'preview-token'})) + '?intent=decline',
+                **drose_email_brand_preview(request),
+            },
+            request=request,
+        )
+    return HttpResponse(html)
+
+
+@require_GET
+def drose_email_preview_quote_received(request):
+    """Render quote-request-received HTML template with Drose branding (DEBUG only)."""
+    _ensure_debug_email_preview()
+    lang = (request.GET.get('lang') or get_language_from_request(request) or 'en')[:2]
+    if lang not in ('en', 'it'):
+        lang = 'en'
+    with override(lang):
+        html = render_to_string(
+            'tools/emails/drose_quote_request_received.html',
+            {
+                'recipient_name': 'Mario Rossi',
+                'quote_reference': 'DS-2026-0041',
+                **drose_email_brand_preview(request),
+            },
+            request=request,
+        )
+    return HttpResponse(html)
+
+
+def hidden_tools(request):
+    return render(request, 'tools/hidden_tools.html')
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def api_home_hidden_tools(request):
+    """Read/write hidden home tools for cross-device sync (logged-in users)."""
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == "GET":
+        stored = profile.home_hidden_tools if isinstance(profile.home_hidden_tools, list) else []
+        return JsonResponse({"tools": _sanitize_home_hidden_tools(stored)})
+    try:
+        body = json.loads(request.body.decode() or "{}")
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"error": "invalid_json"}, status=400)
+    tools = _sanitize_home_hidden_tools(body.get("tools", []))
+    profile.home_hidden_tools = tools
+    profile.save(update_fields=["home_hidden_tools"])
+    return JsonResponse({"ok": True, "tools": tools})
 
 
 def faq(request):
@@ -197,6 +735,28 @@ def contact(request):
     return render(request, 'tools/contact.html')
 
 
+class DroseAwareLogoutView(auth_views.LogoutView):
+    """Logout with redirect to /drose/ when the session started from Drose."""
+
+    http_method_names = ["post", "options"]
+    next_page = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self._drose_logout_target = resolve_logout_redirect(request)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        target = getattr(self, "_drose_logout_target", "")
+        if target:
+            return target
+        redirect_url = self.get_redirect_url()
+        if redirect_url:
+            return redirect_url
+        if settings.LOGOUT_REDIRECT_URL:
+            return resolve_url(settings.LOGOUT_REDIRECT_URL)
+        return "/"
+
+
 def accounts_home(request):
     """Redirect /accounts/ to admin (staff), account profile (user), or login."""
     if request.user.is_authenticated and request.user.is_staff:
@@ -207,6 +767,35 @@ def accounts_home(request):
     return redirect('login')
 
 
+def _profile_form_wants_ajax(request):
+    return request.headers.get("X-Gadly-Profile-Ajax") == "1"
+
+
+def _profile_form_ajax_success(request, profile, message=None):
+    user = request.user
+    username = (user.username or "").strip()
+    return JsonResponse({
+        "ok": True,
+        "message": message or gettext("Profile updated."),
+        "username": username,
+        "email": user.email or "",
+        "pending_email": profile.pending_email or "",
+        "initials": (username[:2].upper() if username else "?"),
+    })
+
+
+def _profile_form_ajax_redirect(url):
+    return JsonResponse({"ok": True, "redirect": url})
+
+
+def _profile_form_ajax_errors(profile_form):
+    errors = {}
+    for field, field_errors in profile_form.errors.items():
+        key = field if field != "__all__" else "_all"
+        errors[key] = [str(err) for err in field_errors]
+    return JsonResponse({"ok": False, "errors": errors}, status=400)
+
+
 @login_required
 def account_profile(request):
     """Account settings: username, email, avatar, password change."""
@@ -215,35 +804,96 @@ def account_profile(request):
     avatar_form = AvatarUploadForm(instance=profile)
     msg = None
     avatar_saved = False
+    avatar_removed = False
+    profile_saved = False
+    pending_cancelled = False
 
     if request.method == 'POST':
         if 'update_profile' in request.POST:
             profile_form = ProfileUpdateForm(request.POST, user=request.user)
             if profile_form.is_valid():
-                old_email = (request.user.email or "").strip().lower()
-                new_email = profile_form.cleaned_data['email'].strip()
-                request.user.username = profile_form.cleaned_data['username']
-                request.user.email = new_email
-                request.user.save()
-                email_changed = old_email != new_email.lower()
+                current_email = (request.user.email or "").strip().lower()
+                new_email = profile_form.cleaned_data["email"].strip().lower()
+                new_username = profile_form.cleaned_data["username"]
+                email_changed = current_email != new_email
+                pending_email = (profile.pending_email or "").strip().lower()
+
                 if email_changed:
-                    profile.email_verified = False
-                    profile.save(update_fields=["email_verified"])
                     EmailVerificationToken.objects.filter(user=request.user).delete()
                     token = secrets.token_hex(24)
                     EmailVerificationToken.objects.create(user=request.user, token=token)
                     verify_url = _send_verification_email(
-                        request, request.user, token, email_change=True
+                        request,
+                        request.user,
+                        token,
+                        email_change=True,
+                        to_email=new_email,
                     )
-                    request.session["pending_verify_user_id"] = request.user.id
-                    if settings.DEBUG and verify_url:
-                        request.session["pending_verify_url"] = verify_url
                     if verify_url:
-                        return redirect(reverse("verify_email_sent") + "?sent=1")
-                    return redirect(reverse("verify_email_sent") + "?resent=0")
-                msg = gettext("Profile updated.")
-                profile_form = ProfileUpdateForm(user=request.user)
+                        profile.pending_email = new_email
+                        profile.save(update_fields=["pending_email"])
+                        if new_username != request.user.username:
+                            request.user.username = new_username
+                            request.user.save(update_fields=["username"])
+                        request.session["pending_verify_user_id"] = request.user.id
+                        if settings.DEBUG:
+                            request.session["pending_verify_url"] = verify_url
+                        verify_redirect = reverse("verify_email_sent") + "?email_change=1&sent=1"
+                        if _profile_form_wants_ajax(request):
+                            return _profile_form_ajax_redirect(verify_redirect)
+                        return redirect(verify_redirect)
+                    profile_form.add_error(
+                        None,
+                        gettext(
+                            "We could not send the confirmation email. Your email address was not changed."
+                        ),
+                    )
+                elif pending_email and new_email == current_email:
+                    profile.pending_email = ""
+                    profile.save(update_fields=["pending_email"])
+                    request.user.username = new_username
+                    request.user.save(update_fields=["username"])
+                    if _profile_form_wants_ajax(request):
+                        return _profile_form_ajax_success(request, profile)
+                    return redirect(
+                        reverse("account_profile")
+                        + "?profile_saved=1&pending_cancelled=1"
+                    )
+                elif pending_email:
+                    if new_username != request.user.username:
+                        request.user.username = new_username
+                        request.user.save(update_fields=["username"])
+                        if _profile_form_wants_ajax(request):
+                            return _profile_form_ajax_success(request, profile)
+                        return redirect(
+                            reverse("account_profile") + "?profile_saved=1"
+                        )
+                    profile_form.add_error(
+                        "email",
+                        gettext(
+                            "Confirm the new email address using the link we sent before saving again."
+                        ),
+                    )
+                    if _profile_form_wants_ajax(request):
+                        return _profile_form_ajax_errors(profile_form)
+                    profile_form = ProfileUpdateForm(user=request.user)
+                else:
+                    request.user.username = new_username
+                    request.user.save(update_fields=["username"])
+                    if _profile_form_wants_ajax(request):
+                        return _profile_form_ajax_success(request, profile)
+                    return redirect(
+                        reverse("account_profile") + "?profile_saved=1"
+                    )
+            if _profile_form_wants_ajax(request) and profile_form.errors:
+                return _profile_form_ajax_errors(profile_form)
         elif 'update_avatar' in request.POST:
+            if request.POST.get('avatar_action') == 'remove':
+                if profile.avatar:
+                    profile.avatar.delete(save=False)
+                profile.avatar = None
+                profile.save(update_fields=['avatar'])
+                return redirect(reverse('account_profile') + '?avatar_removed=1')
             avatar_form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
             if avatar_form.is_valid():
                 media_avatars = os.path.join(settings.MEDIA_ROOT, 'avatars')
@@ -254,6 +904,9 @@ def account_profile(request):
                 avatar_form = AvatarUploadForm(instance=profile)
     else:
         avatar_saved = request.GET.get('avatar_saved') == '1'
+        avatar_removed = request.GET.get('avatar_removed') == '1'
+        profile_saved = request.GET.get('profile_saved') == '1'
+        pending_cancelled = request.GET.get('pending_cancelled') == '1'
 
     return render(request, 'tools/account_profile.html', {
         'profile': profile,
@@ -261,6 +914,9 @@ def account_profile(request):
         'avatar_form': avatar_form,
         'msg': msg,
         'avatar_saved': avatar_saved,
+        'avatar_removed': avatar_removed,
+        'profile_saved': profile_saved,
+        'pending_cancelled': pending_cancelled,
     })
 
 
@@ -293,13 +949,15 @@ def check_username(request):
 
 def register(request):
     if request.user.is_authenticated:
+        from tools.auth_brand import resolve_auth_next
+        auth_next = resolve_auth_next(request)
+        if auth_next:
+            return redirect(auth_next)
         return redirect('home')
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.email = form.cleaned_data['email']
-            user.save()
+            user = form.save()
             UserProfile.objects.get_or_create(user=user)
             # Send verification email (use hex token - no special chars, avoids copy issues)
             EmailVerificationToken.objects.filter(user=user).delete()
@@ -325,15 +983,43 @@ def verify_email(request, token):
     evt = EmailVerificationToken.objects.filter(token=token).first()
     if not evt:
         return render(request, 'tools/verify_email_invalid.html')
-    profile, _ = UserProfile.objects.get_or_create(user=evt.user)
-    profile.email_verified = True
-    profile.save()
+    user = evt.user
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    pending = (profile.pending_email or "").strip()
+    email_change_confirmed = bool(pending)
+    confirmed_email = pending
+    if pending:
+        user.email = pending
+        profile.pending_email = ""
+        user.save(update_fields=["email"])
+        profile.email_verified = True
+        profile.save(update_fields=["email_verified", "pending_email"])
+    else:
+        profile.email_verified = True
+        profile.save(update_fields=["email_verified"])
     if request.session.get('pending_verify_user_id') == evt.user.id:
         try:
             del request.session['pending_verify_user_id']
         except Exception:
             pass
+    try:
+        del request.session['pending_verify_url']
+    except Exception:
+        pass
     evt.delete()
+
+    if email_change_confirmed:
+        if request.user.is_authenticated and request.user.pk == user.pk:
+            logout(request)
+        login_url = reverse('login') + '?email_changed=1'
+        if confirmed_email:
+            login_url += '&email=' + quote(confirmed_email)
+        return render(request, 'tools/verify_email_done.html', {
+            'email_change_confirmed': True,
+            'confirmed_email': confirmed_email,
+            'login_url': login_url,
+        })
+
     return render(request, 'tools/verify_email_done.html')
 
 
@@ -345,12 +1031,14 @@ def verify_email_sent(request):
     resent = request.GET.get('resent') == '1'
     already_verified = request.GET.get('already_verified') == '1'
     resend_failed = (request.GET.get('resent') == '0') and (not already_verified)
+    email_change = request.GET.get('email_change') == '1'
     return render(request, 'tools/verify_email_sent.html', {
         'verify_url': verify_url,
         'sent': sent,
         'resent': resent,
         'resend_failed': resend_failed,
         'already_verified': already_verified,
+        'email_change': email_change,
     })
 
 
@@ -363,7 +1051,41 @@ def resend_verification_email(request):
             target_user = User.objects.filter(pk=pending_user_id).first()
     if target_user is None:
         return redirect('login')
+
+    throttle_email = (getattr(target_user, "email", "") or "").strip()
+    profile_preview, _ = UserProfile.objects.get_or_create(user=target_user)
+    pending_change_preview = (profile_preview.pending_email or "").strip()
+    if pending_change_preview:
+        throttle_email = pending_change_preview
+    allowed, message = allow_email_flow(
+        request,
+        scope=SCOPE_RESEND_VERIFY,
+        email=throttle_email,
+    )
+    if not allowed:
+        messages.error(request, message)
+        return redirect(reverse('verify_email_sent') + '?resent=0')
+
     profile, _ = UserProfile.objects.get_or_create(user=target_user)
+    pending_change = (profile.pending_email or "").strip()
+    if pending_change:
+        token = secrets.token_hex(24)
+        new_evt = EmailVerificationToken.objects.create(user=target_user, token=token)
+        verify_url = _send_verification_email(
+            request,
+            target_user,
+            token,
+            email_change=True,
+            to_email=pending_change,
+        )
+        request.session['pending_verify_user_id'] = target_user.id
+        if settings.DEBUG and verify_url:
+            request.session['pending_verify_url'] = verify_url
+        if verify_url:
+            EmailVerificationToken.objects.filter(user=target_user).exclude(pk=new_evt.pk).delete()
+            return redirect(reverse('verify_email_sent') + '?email_change=1&resent=1')
+        new_evt.delete()
+        return redirect(reverse('verify_email_sent') + '?email_change=1&resent=0')
     # Keep profile flag aligned for legacy accounts that are clearly active.
     if (not profile.email_verified) and target_user.last_login is not None:
         profile.email_verified = True
@@ -386,6 +1108,15 @@ def resend_verification_email(request):
 @require_http_methods(["POST"])
 def resend_verification_email_public(request):
     email = (request.POST.get("email") or "").strip()
+    allowed, message = allow_email_flow(
+        request,
+        scope=SCOPE_RESEND_VERIFY,
+        email=email or "missing",
+    )
+    if not allowed:
+        messages.error(request, message)
+        return redirect(reverse('request_verification_email_page'))
+
     if email:
         user = User.objects.filter(email__iexact=email).first()
         if user:
@@ -442,6 +1173,67 @@ def calculator_single(request, panel):
         'single_calc': True,
         'calc_title': CALC_TITLES.get(panel, _('Finance calculator')),
     })
+
+
+CURRENCY_CODES = frozenset({'EUR', 'USD', 'GBP', 'CHF', 'JPY'})
+
+
+@require_GET
+def currency_convert_api(request):
+    """Proxy tassi di cambio: richieste same-origin dal browser, niente CORS."""
+    try:
+        amount = float(request.GET.get('amount', ''))
+    except (TypeError, ValueError):
+        return JsonResponse({'error': 'invalid_amount'}, status=400)
+    if amount < 0:
+        return JsonResponse({'error': 'invalid_amount'}, status=400)
+
+    from_curr = (request.GET.get('from') or '').upper().strip()
+    to_curr = (request.GET.get('to') or '').upper().strip()
+    if from_curr not in CURRENCY_CODES or to_curr not in CURRENCY_CODES:
+        return JsonResponse({'error': 'invalid_currency'}, status=400)
+    if from_curr == to_curr:
+        return JsonResponse({'error': 'same_currency'}, status=400)
+
+    ua = {'User-Agent': 'Mozilla/5.0 (compatible; GadlyTools/1.0)'}
+    ff_url = (
+        'https://api.frankfurter.app/latest?'
+        f'amount={quote(str(amount))}&from={from_curr}&to={to_curr}'
+    )
+    try:
+        req = Request(ff_url, headers=ua)
+        with urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+        converted = (data.get('rates') or {}).get(to_curr)
+        if converted is not None:
+            return JsonResponse({
+                'amount': amount,
+                'from': from_curr,
+                'to': to_curr,
+                'converted': float(converted),
+                'date': data.get('date') or '',
+            })
+    except (URLError, HTTPError, json.JSONDecodeError, ValueError, socket.timeout, OSError) as exc:
+        logger.warning('currency_convert_api: frankfurter failed: %s', exc)
+
+    fb_url = f'https://open.er-api.com/v6/latest/{from_curr}'
+    try:
+        req = Request(fb_url, headers=ua)
+        with urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+        rate = (data.get('rates') or {}).get(to_curr)
+        if rate is None:
+            raise ValueError('no_rate')
+        return JsonResponse({
+            'amount': amount,
+            'from': from_curr,
+            'to': to_curr,
+            'converted': amount * float(rate),
+            'date': '',
+        })
+    except (URLError, HTTPError, json.JSONDecodeError, ValueError, socket.timeout, OSError) as exc:
+        logger.warning('currency_convert_api: fallback failed: %s', exc)
+        return JsonResponse({'error': 'upstream'}, status=502)
 
 def translator(request):
     return render(request, 'tools/translator.html')
@@ -606,6 +1398,10 @@ def help_robots_txt(request):
 
 def help_json_guide(request):
     return render(request, 'tools/help_json_guide.html')
+
+
+def help_data_viz(request):
+    return render(request, 'tools/help_data_viz.html')
 
 
 def help_diff_checker(request):
@@ -1043,38 +1839,45 @@ def _fetch_url(url, timeout=15):
 
 @csrf_exempt
 def meta_tag_check_api(request):
-    if request.method != 'POST':
-        return JsonResponse({"error": gettext("Invalid method")}, status=405)
-    try:
-        data = json.loads(request.body)
-        url = data.get('url', '').strip()
-        if not url:
-            return JsonResponse({"error": gettext("URL required")}, status=400)
-        resp = _fetch_url(url)
-        html = resp.read().decode('utf-8', errors='ignore')
-        meta_tags = []
-        # title
-        m = re.search(r'<title[^>]*>([^<]+)</title>', html, re.I | re.S)
-        if m:
-            meta_tags.append({"name": "title", "content": m.group(1).strip()})
-        # meta tags
-        for m in re.finditer(r'<meta\s+([^>]+)>', html, re.I):
-            attrs = m.group(1)
-            name = None
-            prop = None
-            content = None
-            for a in re.finditer(r'(\w+)\s*=\s*["\']([^"\']*)["\']', attrs):
-                k, v = a.group(1).lower(), a.group(2)
-                if k == 'name': name = v
-                elif k == 'property': prop = v
-                elif k == 'content': content = v
-            if content and (name or prop):
-                meta_tags.append({"name": name or prop, "content": content})
-        return JsonResponse({"meta_tags": meta_tags})
-    except (URLError, HTTPError):
-        return JsonResponse({"error": gettext("The URL could not be reached. Check the address and try again.")}, status=400)
-    except Exception:
-        return JsonResponse({"error": gettext("An error occurred while checking meta tags.")}, status=500)
+    with override(_request_language(request)):
+        if request.method != 'POST':
+            return JsonResponse({"error": gettext("Invalid method")}, status=405)
+        try:
+            data = json.loads(request.body)
+            url = data.get('url', '').strip()
+            if not url:
+                return JsonResponse({"error": gettext("URL required")}, status=400)
+            resp = _fetch_url(url)
+            html = resp.read().decode('utf-8', errors='ignore')
+            meta_tags = []
+            # title
+            m = re.search(r'<title[^>]*>([^<]+)</title>', html, re.I | re.S)
+            if m:
+                meta_tags.append({"name": "title", "content": m.group(1).strip()})
+            # meta tags
+            for m in re.finditer(r'<meta\s+([^>]+)>', html, re.I):
+                attrs = m.group(1)
+                name = None
+                prop = None
+                content = None
+                for a in re.finditer(r'(\w+)\s*=\s*["\']([^"\']*)["\']', attrs):
+                    k, v = a.group(1).lower(), a.group(2)
+                    if k == 'name': name = v
+                    elif k == 'property': prop = v
+                    elif k == 'content': content = v
+                if content and (name or prop):
+                    meta_tags.append({"name": name or prop, "content": content})
+            return JsonResponse({"meta_tags": meta_tags})
+        except (URLError, HTTPError):
+            return JsonResponse(
+                {"error": gettext("The URL could not be reached. Check the address and try again.")},
+                status=400,
+            )
+        except Exception:
+            return JsonResponse(
+                {"error": gettext("An error occurred while checking meta tags.")},
+                status=500,
+            )
 
 
 @csrf_exempt
@@ -1134,37 +1937,177 @@ def sitemap_extract_api(request):
         }, status=500)
 
 
+def _robots_txt_url(url):
+    if not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    parsed = urlparse(url)
+    path = (parsed.path or '').rstrip('/')
+    if path.endswith('robots.txt'):
+        robots_path = path
+    else:
+        robots_path = '/robots.txt'
+    return urlunparse((parsed.scheme, parsed.netloc, robots_path, '', '', ''))
+
+
+def _parse_robots_txt(text):
+    """Return fields for the * user-agent block, or the first block if none."""
+    lines = []
+    for raw in text.splitlines():
+        line = raw.split('#', 1)[0].strip()
+        if line:
+            lines.append(line)
+    blocks = []
+    current = {'agents': [], 'disallow': [], 'allow': []}
+    sitemaps = []
+
+    def flush():
+        nonlocal current
+        if current['agents'] or current['disallow'] or current['allow']:
+            blocks.append(current)
+        current = {'agents': [], 'disallow': [], 'allow': []}
+
+    for line in lines:
+        if ':' not in line:
+            continue
+        key, _, val = line.partition(':')
+        key = key.strip().lower()
+        val = val.strip()
+        if key == 'user-agent':
+            if current['agents'] or current['disallow'] or current['allow']:
+                flush()
+            current['agents'].append(val)
+        elif key == 'disallow':
+            current['disallow'].append(val)
+        elif key == 'allow':
+            current['allow'].append(val)
+        elif key == 'sitemap' and val:
+            sitemaps.append(val)
+    flush()
+
+    chosen = None
+    for block in blocks:
+        if '*' in block['agents']:
+            chosen = block
+            break
+    if not chosen and blocks:
+        chosen = blocks[0]
+
+    user_agent = '*'
+    disallow = []
+    allow = []
+    if chosen:
+        if chosen['agents']:
+            user_agent = chosen['agents'][0]
+        disallow = [p for p in chosen['disallow'] if p]
+        allow = [p for p in chosen['allow'] if p]
+
+    return {
+        'user_agent': user_agent,
+        'disallow': disallow,
+        'allow': allow,
+        'sitemap': sitemaps[0] if sitemaps else '',
+        'sitemaps': sitemaps,
+    }
+
+
+@csrf_exempt
+def robots_fetch_api(request):
+    with override(_request_language(request)):
+        if request.method != 'POST':
+            return JsonResponse({"error": gettext("Invalid method")}, status=405)
+        try:
+            data = json.loads(request.body)
+            url = data.get('url', '').strip()
+            if not url:
+                return JsonResponse(
+                    {"error": gettext("URL required"), "code": "url_required"},
+                    status=400,
+                )
+            robots_url = _robots_txt_url(url)
+            resp = _fetch_url(robots_url)
+            content = resp.read().decode('utf-8', errors='ignore')
+            peek = content[:200].strip().lower()
+            if peek.startswith('<!') or '<html' in peek[:80]:
+                return JsonResponse({
+                    "error": gettext(
+                        "No robots.txt found at this address (the server returned a web page). Check the site URL."
+                    ),
+                    "code": "no_robots",
+                }, status=400)
+            parsed = _parse_robots_txt(content)
+            return JsonResponse({
+                "content": content,
+                "robots_url": robots_url,
+                "parsed": parsed,
+            })
+        except (URLError, HTTPError):
+            return JsonResponse({
+                "error": gettext(
+                    "The URL could not be reached. Check the address and try again."
+                ),
+                "code": "unreachable",
+            }, status=400)
+        except Exception:
+            return JsonResponse({
+                "error": gettext(
+                    "An error occurred while loading robots.txt."
+                ),
+                "code": "fetch_error",
+            }, status=500)
+
+
+@require_GET
+def vat_rates_api(request):
+    """Proxy verso vat-api.eu: richieste same-origin dal browser, niente CORS."""
+    upstream = "https://vat-api.eu/api/v1/rates"
+    try:
+        req = Request(
+            upstream,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; GadlyTools/1.0; +https://vat-api.eu)"},
+        )
+        with urlopen(req, timeout=15) as resp:
+            body = resp.read().decode("utf-8")
+        data = json.loads(body)
+        if not isinstance(data, list):
+            return JsonResponse({"error": "unexpected_shape"}, status=502)
+        return JsonResponse(data, safe=False)
+    except (URLError, HTTPError, json.JSONDecodeError, ValueError, socket.timeout, OSError) as exc:
+        logger.warning("vat_rates_api: upstream failed: %s", exc)
+        return JsonResponse({"error": "upstream"}, status=502)
+
+
 @csrf_exempt
 def site_speed_api(request):
-    if request.method != 'POST':
-        return JsonResponse({"error": gettext("Invalid method")}, status=405)
-    try:
-        data = json.loads(request.body)
-        url = data.get('url', '').strip()
-        if not url:
-            return JsonResponse({"error": gettext("URL required")}, status=400)
-        if not url.startswith(('http://', 'https://')):
-            url = 'https://' + url
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; ToolsBot/1.0)'})
-        t0 = time.time()
-        resp = urlopen(req, timeout=30)
-        _ = resp.read()
-        elapsed = round((time.time() - t0) * 1000)
-        return JsonResponse({"time_ms": elapsed, "status": resp.status})
-    except (URLError, HTTPError) as e:
-        if isinstance(e, URLError) and isinstance(getattr(e, "reason", None), socket.timeout):
+    with override(_request_language(request)):
+        if request.method != 'POST':
+            return JsonResponse({"error": gettext("Invalid method")}, status=405)
+        try:
+            data = json.loads(request.body)
+            url = data.get('url', '').strip()
+            if not url:
+                return JsonResponse({"error": gettext("URL required")}, status=400)
+            if not url.startswith(('http://', 'https://')):
+                url = 'https://' + url
+            req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; ToolsBot/1.0)'})
+            t0 = time.time()
+            resp = urlopen(req, timeout=30)
+            _ = resp.read()
+            elapsed = round((time.time() - t0) * 1000)
+            return JsonResponse({"time_ms": elapsed, "status": resp.status})
+        except (URLError, HTTPError) as e:
+            if isinstance(e, URLError) and isinstance(getattr(e, "reason", None), socket.timeout):
+                return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
+            return JsonResponse({
+                "error": gettext("The URL could not be reached. Check the address and try again.")
+            }, status=400)
+        except socket.timeout:
             return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
-        return JsonResponse({
-            "error": gettext("The URL could not be reached. Check the address and try again.")
-        }, status=400)
-    except socket.timeout:
-        return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
-    except Exception as e:
-        if "timed out" in str(e).lower():
-            return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
-        return JsonResponse({
-            "error": gettext("The URL could not be reached. Check the address and try again.")
-        }, status=500)
+        except Exception as e:
+            if "timed out" in str(e).lower():
+                return JsonResponse({"error": gettext("The request timed out. Please try again.")}, status=408)
+            return JsonResponse({
+                "error": gettext("The URL could not be reached. Check the address and try again.")
+            }, status=500)
 
 
 def _extract_text_from_uploaded_cv(uploaded_file):
@@ -1333,4 +2276,20 @@ def cv_optimize_api(request):
     except Exception:
         return JsonResponse({"error": gettext("An error occurred while optimizing the CV.")}, status=500)
 
+
+@require_GET
+def robots_txt(request):
+    """Root robots.txt: disallow admin/accounts/api; point crawlers to sitemap.xml."""
+    sitemap_abs = request.build_absolute_uri(reverse("sitemap_xml"))
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Disallow: /accounts/",
+        "Disallow: /api/",
+        "Disallow: /jsi18n/",
+        "",
+        f"Sitemap: {sitemap_abs}",
+        "",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain; charset=utf-8")
 

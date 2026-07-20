@@ -1,19 +1,323 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
+{% load career_kit_tags %}
 {% block title %}{% trans "Application Email Generator" %}{% endblock %}
 {% block body_class %}text-tool application-email-generator{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Draft a clear job application email with Gadly’s application email generator.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/career-kit.css' %}?v=35">
 <style>
+/* Light mode (desktop + mobile): descrizione sotto il titolo */
+body.application-email-generator:not(.dark-mode) .site-main .container .tool-desc {
+  color: #555 !important;
+  -webkit-text-fill-color: #555 !important;
+}
 .application-email-generator .form-group textarea, .application-email-generator .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
 .application-email-generator .text-tool-error-above { margin: 0 0 12px 0; padding: 10px 16px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
 .application-email-generator .text-tool-error-above.hidden { display: none !important; }
-body.dark-mode.application-email-generator .text-tool-error-above { background: #fff5f5; color: #c00; border-color: #fcc; }
-.application-email-generator .button-group { width: 100%; justify-content: space-between; margin-bottom: 0; flex-wrap: wrap; }
-.application-email-generator .button-group #email-copy { margin-left: auto; }
-.application-email-generator .button-group button { width: 140px; min-width: 140px; max-width: 140px; height: 44px; min-height: 44px; max-height: 44px; padding: 0 8px; box-sizing: border-box; }
+@media (min-width: 769px) {
+  body.dark-mode.application-email-generator .text-tool-error-above {
+    background: #fff5f5;
+    color: #c00;
+    border-color: #fcc;
+  }
+}
 .application-email-generator .result-area { white-space: pre-wrap; margin-top: 12px; }
+@media (min-width: 769px) {
+  .application-email-generator .button-group { width: 100%; justify-content: space-between; margin-bottom: 0; flex-wrap: wrap; }
+  .application-email-generator .button-group #email-copy { margin-left: auto; }
+  .application-email-generator .button-group button {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    padding: 0 8px;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 768px) {
+  body.application-email-generator .site-main .container {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 16px 0 24px 0 !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  body.application-email-generator .site-main .container .form-group,
+  body.application-email-generator .site-main .container .button-group,
+  body.application-email-generator .site-main .container #email-error,
+  body.application-email-generator .site-main .container #email-result,
+  body.application-email-generator .site-main .container .career-kit-flow {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.application-email-generator .site-main .container .form-group textarea,
+  body.application-email-generator .site-main .container .form-group input {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Mobile: Nome, Ruolo target, Azienda — 47.5px (come Lettera di presentazione) */
+  body.application-email-generator .site-main .container #email-name,
+  body.application-email-generator .site-main .container #email-role,
+  body.application-email-generator .site-main .container #email-company,
+  body.application-email-generator .site-main .container #email-name:focus,
+  body.application-email-generator .site-main .container #email-role:focus,
+  body.application-email-generator .site-main .container #email-company:focus {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+  }
+  /* Campi scrittura — copia CV Generator @media (max-width: 480px) */
+  body.application-email-generator .site-main .container textarea,
+  body.application-email-generator .site-main .container textarea:focus,
+  body.application-email-generator .site-main .container textarea:not(:focus),
+  body.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]),
+  body.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]):focus,
+  body.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]):not(:focus) {
+    background: #f8f9fa !important;
+    border: 1px solid #ddd !important;
+    color: #0f2f55 !important;
+    -webkit-text-fill-color: #0f2f55 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    caret-color: #0f2f55 !important;
+    opacity: 1 !important;
+  }
+  body.application-email-generator .site-main .container textarea::placeholder,
+  body.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: #444 !important;
+    font-family: Arial, sans-serif !important;
+  }
+  body.dark-mode.application-email-generator .site-main .container textarea,
+  body.dark-mode.application-email-generator .site-main .container textarea:focus,
+  body.dark-mode.application-email-generator .site-main .container textarea:not(:focus),
+  body.dark-mode.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]),
+  body.dark-mode.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]):focus,
+  body.dark-mode.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"]):not(:focus) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    caret-color: #0d0d1a !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.application-email-generator .site-main .container textarea::placeholder,
+  body.dark-mode.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: #333 !important;
+  }
+  body.application-email-generator .site-main .container .button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    margin-bottom: 0 !important;
+  }
+  body.application-email-generator .site-main .container .button-group #email-copy {
+    margin-left: 0 !important;
+  }
+  body.application-email-generator .site-main .container .button-group button,
+  body.application-email-generator .site-main .container #email-generate,
+  body.application-email-generator .site-main .container #email-copy {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 20px !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex: 0 0 338px !important;
+  }
+  /* Light mobile: override finale CV Generator (batte text-tools.css #999 su textarea ≤480px) */
+  body.application-email-generator:not(.dark-mode) .site-main .container textarea::placeholder,
+  body.application-email-generator:not(.dark-mode) .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: var(--mobile-text-muted, rgba(15, 47, 85, 0.7)) !important;
+  }
+  @keyframes ae-mobile-btn-press {
+    from { transform: scale(1); }
+    to { transform: scale(0.96); }
+  }
+  body.application-email-generator .site-main .container .ae-press-pulse {
+    animation: ae-mobile-btn-press 0.12s ease-out forwards !important;
+  }
+  body.application-email-generator .site-main .container #email-generate:focus,
+  body.application-email-generator .site-main .container #email-copy:focus,
+  body.application-email-generator .site-main .container #email-generate:focus-visible,
+  body.application-email-generator .site-main .container #email-copy:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  body.application-email-generator .site-main .container #email-generate,
+  body.application-email-generator .site-main .container #email-copy {
+    transition: transform 0.05s ease-out !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    transform: scale(1) !important;
+  }
+  /* Mobile Genera/Copia: stesso aspetto a riposo; niente evidenza dopo tap (:hover/:focus fantasma) */
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-generate,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-generate:hover,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-generate:focus,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-generate:focus-visible,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-copy,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-copy:hover,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-copy:focus,
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-copy:focus-visible,
+  body.application-email-generator:not(.dark-mode) .site-main .container .button-group #email-generate:hover,
+  body.application-email-generator:not(.dark-mode) .site-main .container .button-group #email-copy:hover {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #e8f4fd !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  body.dark-mode.application-email-generator .site-main .container #email-generate,
+  body.dark-mode.application-email-generator .site-main .container #email-generate:hover,
+  body.dark-mode.application-email-generator .site-main .container #email-generate:focus,
+  body.dark-mode.application-email-generator .site-main .container #email-generate:focus-visible,
+  body.dark-mode.application-email-generator .site-main .container #email-copy,
+  body.dark-mode.application-email-generator .site-main .container #email-copy:hover,
+  body.dark-mode.application-email-generator .site-main .container #email-copy:focus,
+  body.dark-mode.application-email-generator .site-main .container #email-copy:focus-visible,
+  body.dark-mode.application-email-generator .site-main .container .button-group #email-generate:hover,
+  body.dark-mode.application-email-generator .site-main .container .button-group #email-copy:hover {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  body.application-email-generator .site-main .container #email-generate:active,
+  body.application-email-generator .site-main .container #email-generate.tap-active,
+  body.application-email-generator .site-main .container #email-copy:active,
+  body.application-email-generator .site-main .container #email-copy.tap-active {
+    transform: scale(0.96) !important;
+  }
+  body.dark-mode.application-email-generator .site-main .container #email-copy.copied,
+  body.dark-mode.application-email-generator .site-main .container #email-copy.copied:hover,
+  body.dark-mode.application-email-generator .site-main .container #email-copy.copied:focus,
+  body.dark-mode.application-email-generator .site-main .container #email-copy.copied:focus-visible,
+  body.dark-mode.application-email-generator .site-main .container #email-copy.copied:active,
+  body.dark-mode.application-email-generator .site-main .container .button-group #email-copy.copied:hover {
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  /* Mobile: 12px tra messaggio errore e bottoni Genera/Copia */
+  body.application-email-generator .site-main .container #email-error.text-tool-error-above:not(.hidden),
+  body.application-email-generator .site-main .container .text-tool-error-above:not(.hidden) {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+  }
+  /* Dark mobile: testo #email-points uguale con/senza focus (batte theme.css #b0c4de) */
+  body.dark-mode.application-email-generator .site-main .container .form-group textarea,
+  body.dark-mode.application-email-generator .site-main .container .form-group textarea:focus,
+  body.dark-mode.application-email-generator .site-main .container .form-group textarea:not(:focus),
+  body.dark-mode.application-email-generator .site-main .container #email-points,
+  body.dark-mode.application-email-generator .site-main .container #email-points:focus,
+  body.dark-mode.application-email-generator .site-main .container #email-points:not(:focus) {
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    caret-color: #0d0d1a !important;
+  }
+  /* Dark mobile: errore — solo base.css (rgba / #e88), mai #0d0d1a dei campi */
+  body.dark-mode.application-email-generator .site-main .container #email-error.text-tool-error-above,
+  body.dark-mode.application-email-generator .site-main .container .text-tool-error-above {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    padding: 10px 16px !important;
+    min-height: 44px !important;
+    border-radius: 12px !important;
+    border: 2px solid #fcc !important;
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    box-shadow: none !important;
+    outline: none !important;
+    filter: none !important;
+  }
+  /* Mobile: area risultato — 17px come Lettera di presentazione (batte text-tools .result-area 0.9rem) */
+  body.application-email-generator .site-main .container #email-result.result-area:not(.error) {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    padding: 12px !important;
+    min-height: 0 !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    border-style: solid !important;
+    margin-top: 12px !important;
+    box-sizing: border-box !important;
+  }
+  body.application-email-generator:not(.dark-mode) .site-main .container #email-result.result-area:not(.error),
+  body.dark-mode.application-email-generator .site-main .container #email-result.result-area:not(.error) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+  }
+}
+@media (max-width: 480px) {
+  /* Stesso ordine/specificità del CV: placeholder non #999 di text-tools.css */
+  body.application-email-generator .site-main .container textarea::placeholder,
+  body.application-email-generator .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: #444 !important;
+    font-family: Arial, sans-serif !important;
+  }
+  body.application-email-generator:not(.dark-mode) .site-main .container textarea::placeholder,
+  body.application-email-generator:not(.dark-mode) .site-main .container input:not([type="file"]):not([type="hidden"])::placeholder {
+    color: var(--mobile-text-muted, rgba(15, 47, 85, 0.7)) !important;
+  }
+  body.application-email-generator .site-main .container #email-result.result-area:not(.error) {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    padding: 12px !important;
+  }
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -48,11 +352,7 @@ body.dark-mode.application-email-generator .text-tool-error-above { background: 
   </div>
   <div id="email-result" class="result-area hidden" aria-live="polite"></div>
 
-  <div class="home-link-wrap">
-    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-    </a>
-  </div>
+  {% career_kit_flow_nav "application_email_generator" %}
 </div>
-<script src="{% static 'tools/js/application_email_generator.js' %}?v=20260421a"></script>
+<script src="{% static 'tools/js/application_email_generator.js' %}?v=20260520c"></script>
 {% endblock %}

@@ -20,7 +20,7 @@
 
 .file-analyzer .tool-desc {
     text-align: center;
-    color: #666;
+    color: #555;
     margin: 0 0 24px 0;
     font-size: 1rem;
 }
@@ -107,6 +107,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 12px 16px;
+    margin-top: 24px;
     margin-bottom: 0; /* nessun margine extra, gestiamo il distacco con #file-results e button-group */
     padding: 16px 20px;
     background: linear-gradient(135deg, #f8fcff 0%, #eef6fc 100%);
@@ -122,6 +123,16 @@
     color: #dc3545;
     flex-basis: 100%;
     text-align: center;
+}
+
+/* Desktop: griglia checkbox; trigger nascosto */
+.analysis-opts-trigger {
+    display: none;
+}
+
+.analysis-opts-panel {
+    flex-basis: 100%;
+    width: 100%;
 }
 
 .analysis-options-row {
@@ -317,49 +328,401 @@
 }
 
 @media (max-width: 768px) {
-    .file-analyzer .container {
-        margin: 20px 16px;
-        padding: 28px 24px;
+    body.file-analyzer .site-main {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
     }
-    .analysis-options-row {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
+    body.file-analyzer .site-main .file-analyzer {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
     }
-    .analysis-option {
+    /* Solo centratura contenuto: niente card/box extra (resta layout base.css trasparente) */
+    body.file-analyzer .site-main .file-analyzer > .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 16px auto 24px !important;
+        padding: 20px 16px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+    body.file-analyzer .site-main .file-analyzer > .container > h1,
+    body.file-analyzer .site-main .file-analyzer > .container > .tool-desc,
+    body.file-analyzer .site-main .file-analyzer > .container #file-analyzer-form,
+    body.file-analyzer .site-main .file-analyzer > .container #analysis-options-wrap,
+    body.file-analyzer .site-main .file-analyzer > .container #file-results,
+    body.file-analyzer .site-main .file-analyzer > .container > .button-group,
+    body.file-analyzer .site-main .file-analyzer > .container > .home-link-wrap {
+        width: 100% !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        box-sizing: border-box !important;
+    }
+    #file-analyzer-form {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+        width: 100% !important;
+        max-width: 338px !important;
+    }
+    .file-analyzer h1 {
+        font-size: 1.5em;
+        text-align: center;
+    }
+    .file-analyzer .tool-desc {
+        text-align: center;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .container .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+    .file-analyzer .upload-area,
+    .file-analyzer .analysis-options {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    /* Mobile A: «Mostra nei risultati» piatto — niente box/card (solo desktop mantiene gradiente) */
+    .file-analyzer .analysis-options {
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        gap: 4px !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-options {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .file-analyzer .analysis-options-label {
+        text-align: center;
+        margin: 0;
+        width: 100%;
+    }
+    .file-analyzer .analysis-opts-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        text-align: left;
+        box-sizing: border-box;
+        flex-basis: 100%;
+        -webkit-tap-highlight-color: transparent;
+    }
+    /* Light mobile: «Mostra nei risultati» — testo normale (non grassetto base.css) */
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger *,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .analysis-opts-trigger,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .analysis-opts-trigger * {
+        font-weight: 400 !important;
+    }
+    .file-analyzer .analysis-opts-trigger::after {
+        content: "";
+        width: 0;
+        height: 0;
+        margin-left: 8px;
         flex-shrink: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid currentColor;
+        transition: transform 0.2s ease;
+    }
+    .file-analyzer .analysis-options.is-open .analysis-opts-trigger::after {
+        transform: rotate(180deg);
+    }
+    /* Menu: stessi colori di riposo su tap/focus (niente scurimento) */
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:hover,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:focus,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:focus-visible,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        transform: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-trigger::after {
+        border-top-color: #b0c4de;
+    }
+    body.file-analyzer .file-analyzer .analysis-opts-trigger:focus:not(:focus-visible) {
+        outline: none !important;
+    }
+    .file-analyzer .analysis-opts-panel {
+        display: none;
+        width: 100%;
+        flex-basis: 100%;
+        margin-top: 4px;
+        padding: 8px 12px;
+        box-sizing: border-box;
+        background: #fff;
+        border: 2px solid #d0e8f9;
+        border-radius: 12px;
+        max-height: min(60vh, 320px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .file-analyzer .analysis-opts-panel::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .file-analyzer .analysis-options.is-open .analysis-opts-panel {
+        display: block;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-panel {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-panel .analysis-option {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-panel .analysis-option:has(input:checked) {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-panel .analysis-option:hover,
+    body.dark-mode.file-analyzer .file-analyzer .analysis-opts-panel .analysis-option:active {
+        background: rgba(220, 224, 230, 0.45) !important;
+    }
+    .file-analyzer .upload-area {
+        padding: 32px 20px;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: 2px dashed #b8d4f0 !important;
+    }
+    .file-analyzer .upload-area:hover {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .upload-area,
+    body.dark-mode.file-analyzer .file-analyzer .upload-area:hover {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: 2px dashed #b8d4f0 !important;
+    }
+    .file-analyzer .button-group {
+        flex-direction: column;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    .file-analyzer .home-link-wrap {
+        text-align: center !important;
+    }
+    body.file-analyzer .file-analyzer .button-group #submit-file,
+    body.file-analyzer .file-analyzer .button-group #submit-file:hover,
+    body.file-analyzer .file-analyzer .button-group #submit-file:focus,
+    body.file-analyzer .file-analyzer .button-group #submit-file:focus-visible,
+    body.file-analyzer .file-analyzer .button-group #submit-file:active {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        flex: 0 0 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        border-radius: 12px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    .file-analyzer .analysis-options-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 2px;
+        width: 100%;
+        margin: 0;
+    }
+    .file-analyzer .analysis-option {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 8px !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        font-size: 0.95rem;
+    }
+    .file-analyzer .analysis-option:hover,
+    .file-analyzer .analysis-option:active {
+        background: #f0f8ff !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     .result-row {
         grid-template-columns: 1fr;
         gap: 6px;
         padding: 6px 0;
     }
-}
-
-@media (max-width: 600px) {
-    .file-analyzer .container {
-        margin: 12px 10px;
-        padding: 24px 18px;
+    /* Dark mobile: titolo, descrizione e hint #b0c4de; risultati/checklist su card bianca */
+    body.dark-mode.file-analyzer .file-analyzer .container h1,
+    body.dark-mode.file-analyzer .file-analyzer .container .tool-desc,
+    body.dark-mode.file-analyzer .file-analyzer .container .upload-hint {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
-    .file-analyzer h1 {
-        font-size: 1.5em;
+    body.dark-mode.file-analyzer .file-analyzer .container .result-label,
+    body.dark-mode.file-analyzer .file-analyzer .container .result-value,
+    body.dark-mode.file-analyzer .file-analyzer .container .result-hash,
+    body.dark-mode.file-analyzer .file-analyzer .container .loading-msg {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
     }
-    /* File Analyzer mobile: bottoni uno sotto l'altro a tutta larghezza */
-    .file-analyzer .button-group {
-        flex-direction: column;
-        justify-content: stretch;
+    body.dark-mode.file-analyzer .file-analyzer .container .analysis-options-label {
+        color: #dc3545 !important;
+        -webkit-text-fill-color: #dc3545 !important;
     }
-    .file-analyzer .button-group button {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
+    body.dark-mode.file-analyzer .file-analyzer .container .result-label {
+        color: #64748b !important;
+        -webkit-text-fill-color: #64748b !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer #file-results:not(.error) {
+        background: #fff !important;
+        border: 2px solid #d0e8f9 !important;
+    }
+    body.file-analyzer .file-analyzer .choose-file-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 12px 20px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        box-sizing: border-box !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    /* Light mobile: Scegli file / Analizza — tap senza scurimento base.css */
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file:hover,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file:focus,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file:focus-visible,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file:active,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .button-group #submit-file.is-tap-pressed,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn:hover,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn:active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .button-group #submit-file:active,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .button-group #submit-file.is-tap-pressed {
+        transform: scale(0.96) !important;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn:active {
+        transform: scale(0.96) !important;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .choose-file-btn * {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 400 !important;
+    }
+    /* Dark mobile: bottoni tema a riposo; tap/hover senza evidenziazione blu */
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:hover,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus-visible,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:active,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file:hover,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file:focus,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file:focus-visible,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file:active,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .button-group #submit-file.is-tap-pressed,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn:hover,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn:active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn * {
+        font-weight: 400 !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn *,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn:hover *,
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn:active * {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:hover,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus-visible,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:active {
+        transform: none !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .button-group #submit-file:active,
+    body.dark-mode.file-analyzer .file-analyzer .button-group #submit-file.is-tap-pressed {
+        transform: scale(0.96) !important;
+    }
+    body.dark-mode.file-analyzer .file-analyzer .choose-file-btn:active {
+        transform: scale(0.96) !important;
+    }
+    body.file-analyzer .file-analyzer .button-group #submit-file:focus:not(:focus-visible),
+    body.file-analyzer .file-analyzer .choose-file-btn:focus:not(:focus-visible) {
+        outline: none !important;
+    }
+    /* Mobile: 12px sopra errore (da opzioni) e 12px sotto errore verso Analizza (non sommare) */
+    body.file-analyzer .site-main .file-analyzer > .container #file-results.error,
+    body.dark-mode.file-analyzer .site-main .file-analyzer > .container #file-results.error {
+        margin-top: 12px !important;
+        margin-bottom: 0 !important;
+    }
+    body.file-analyzer .site-main .file-analyzer > .container #file-results.error + .button-group,
+    body.dark-mode.file-analyzer .site-main .file-analyzer > .container #file-results.error + .button-group {
+        margin-top: 12px !important;
     }
 }
 
 @media (max-width: 480px) {
-    .file-analyzer .container {
-        margin: 8px 8px;
-        padding: 20px 14px;
+    body.file-analyzer .site-main .file-analyzer > .container {
+        margin: 8px auto 24px !important;
+        padding: 16px 8px !important;
     }
 }

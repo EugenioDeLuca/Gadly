@@ -2,6 +2,9 @@
 {% load i18n %}
 {% block title %}{% trans "CV Web Preview" %}{% endblock %}
 {% block body_class %}text-tool cv-web-preview-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Preview how a web-export CV layout looks before printing or sharing with Gadly.' %}">
+{% endblock %}
 {% block extra_css %}
 <style>
 .cv-web-preview-wrap { max-width: 920px; margin: 20px auto; }
@@ -19,18 +22,96 @@
   gap: 12px;
   margin-bottom: 10px;
 }
+.cv-web-preview-card .preview-head-main {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: left;
+}
 .cv-web-preview-card .preview-name { font-size: 1.45rem; font-weight: 700; color: #111827; }
 .cv-web-preview-card .preview-role { color: #374151; font-size: 1rem; }
+.cv-web-preview-card .preview-text--personal {
+  margin-top: 8px;
+  text-align: left;
+  white-space: normal;
+}
 .cv-web-preview-card .preview-photo {
-  width: 92px;
-  height: 92px;
+  width: 128px;
+  height: 128px;
   border-radius: 12px;
   object-fit: cover;
   border: 1px solid #d1d5db;
+  align-self: flex-start;
 }
 .cv-web-preview-card .preview-section { margin-top: 10px; }
 .cv-web-preview-card .preview-section-title { font-weight: 700; color: #111827; margin-bottom: 4px; }
 .cv-web-preview-card .preview-text { color: #111827; white-space: pre-wrap; }
+.cv-web-preview-card .preview-text--labeled { white-space: normal; }
+.cv-web-preview-card .preview-line { margin: 0.28em 0; line-height: 1.42; }
+.cv-web-preview-card .preview-line-k { font-weight: 600; }
+.cv-web-preview-card .preview-line-v--pre {
+  margin-top: 0.2em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.cv-web-preview-card .preview-entry + .preview-entry {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.cv-web-preview-card.preview-european .preview-head {
+  border-bottom: 2px solid #003399;
+  padding-bottom: 10px;
+}
+.cv-web-preview-card.preview-european .preview-name { color: #003399; }
+.cv-web-preview-card.preview-european .preview-eu-doc-title {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #003399;
+}
+.cv-web-preview-card.preview-european .preview-section-title {
+  color: #003399;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(0, 51, 153, 0.35);
+  padding-bottom: 3px;
+}
+.cv-web-preview-card.preview-european .preview-eu-personal-row {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.45em;
+  row-gap: 2px;
+  align-items: baseline;
+  margin: 0.25em 0;
+  line-height: 1.45;
+}
+.cv-web-preview-card.preview-european .preview-eu-personal-k { font-weight: 600; color: #003399; white-space: normal; }
+.cv-web-preview-card.preview-european .preview-eu-personal-v { min-width: 0; word-break: break-word; }
+.cv-web-preview-card.preview-european .preview-eu-dates { font-weight: 700; color: #003399; margin-bottom: 3px; }
+.cv-web-preview-card.preview-european .preview-eu-block-title { font-weight: 700; color: #1e293b; }
+.cv-web-preview-card.preview-european .preview-eu-field-k,
+.cv-web-preview-card.preview-european .preview-eu-label { font-weight: 700; color: #003399; }
+.cv-web-preview-card.preview-european .preview-eu-entry {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(0, 51, 153, 0.12);
+}
+.cv-web-preview-card.preview-european .preview-lang-eu {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 0;
+  border-bottom: 1px dotted rgba(0, 51, 153, 0.18);
+}
+.cv-web-preview-card.preview-european .preview-lang-eu--header {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(0, 51, 153, 0.35);
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -53,20 +134,11 @@
   var root = document.getElementById("cv-web-preview");
   if (!root) return;
 
-  function tr(it, en) { return isItalian ? it : en; }
   function esc(v) {
     return (v || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
   function escAttr(v) {
     return (v || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-  function levelLabel(level) {
-    var map = {
-      base: tr("base", "basic"),
-      intermedio: tr("intermedio", "intermediate"),
-      avanzato: tr("avanzato", "advanced")
-    };
-    return map[level] || map.intermedio;
   }
 
   var raw = "";
@@ -77,47 +149,183 @@
   try { data = JSON.parse(raw); } catch (e) { return; }
   if (!data || typeof data !== "object") return;
 
-  var fullName = [data.firstName || "", data.lastName || ""].join(" ").trim() || tr("Nome Cognome", "Name Surname");
+  var cvLang = String(data.cvLang || "").toLowerCase().trim();
+  var validCvLang = { it: 1, en: 1, es: 1, fr: 1, de: 1 };
+  if (!validCvLang[cvLang]) cvLang = isItalian ? "it" : "en";
+
+  function trMap(map) {
+    return map[cvLang] || map.en || "";
+  }
+  function pLine(map, val) {
+    var v = String(val || "").trim();
+    if (!v) return "";
+    var lab = trMap(map);
+    if (lab.slice(-1) !== ":") lab += ":";
+    return '<div class="preview-line"><span class="preview-line-k">' + esc(lab) + '</span> <span class="preview-line-v">' + esc(v) + "</span></div>";
+  }
+  function levelLabel(level) {
+    var map = {
+      base: { it: "base", en: "basic", es: "basico", fr: "debutant", de: "grundlegend" },
+      intermedio: { it: "intermedio", en: "intermediate", es: "intermedio", fr: "intermediaire", de: "mittel" },
+      avanzato: { it: "avanzato", en: "advanced", es: "avanzado", fr: "avance", de: "fortgeschritten" }
+    };
+    return trMap(map[level] || map.intermedio);
+  }
+
+  var template = String(data.template || "classic").toLowerCase();
+  if (template !== "classic" && template !== "modern" && template !== "minimal" && template !== "european") template = "classic";
+  root.classList.add("preview-" + template);
+
+  function euPersonalLine(map, val) {
+    var v = String(val || "").trim();
+    if (!v) return "";
+    var lab = trMap(map);
+    if (lab.slice(-1) !== ":") lab += ":";
+    return '<div class="preview-eu-personal-row"><span class="preview-eu-personal-k">' + esc(lab) + '</span><span class="preview-eu-personal-v">' + esc(v) + "</span></div>";
+  }
+  function langLevelLabel(level) {
+    var normalized = String(level || "").trim().toLowerCase();
+    if (normalized === "native") return trMap({ it: "Madrelingua", en: "Mother tongue", es: "Lengua materna", fr: "Langue maternelle", de: "Muttersprache" });
+    return normalized;
+  }
+
+  var fullName = [data.firstName || "", data.lastName || ""].join(" ").trim() || trMap({ it: "Nome Cognome", en: "Name Surname", es: "Nombre Apellido", fr: "Nom Prenom", de: "Vorname Nachname" });
   var role = (data.role || "").trim();
-  var contact = [data.email, data.phone, data.linkedin].filter(Boolean).join(" | ");
   var sections = [];
 
+  var detailRows = [];
+  if (data.email) detailRows.push(pLine({ it: "Email", en: "Email", es: "Correo electronico", fr: "E-mail", de: "E-Mail" }, data.email));
+  if (data.phone) detailRows.push(pLine({ it: "Telefono", en: "Phone", es: "Telefono", fr: "Telephone", de: "Telefon" }, data.phone));
+  if (data.linkedin) detailRows.push(pLine({ it: "LinkedIn / Portfolio", en: "LinkedIn / Portfolio", es: "LinkedIn / Portfolio", fr: "LinkedIn / Portfolio", de: "LinkedIn / Portfolio" }, data.linkedin));
+  if (data.birthDate) detailRows.push(pLine({ it: "Data di nascita", en: "Date of birth", es: "Fecha de nacimiento", fr: "Date de naissance", de: "Geburtsdatum" }, data.birthDate));
+  if (data.citizenship) detailRows.push(pLine({ it: "Cittadinanza", en: "Citizenship", es: "Nacionalidad", fr: "Nationalite", de: "Staatsangehorigkeit" }, data.citizenship));
+  if (data.address) detailRows.push(pLine({ it: "Indirizzo", en: "Address", es: "Direccion", fr: "Adresse", de: "Adresse" }, data.address));
+  if (data.city) detailRows.push(pLine({ it: "Città di residenza", en: "City of residence", es: "Ciudad de residencia", fr: "Ville de residence", de: "Wohnort" }, data.city));
+
+  function expEntryHtml(x) {
+    var rows = [];
+    if (x.role) rows.push(pLine({ it: "Ruolo", en: "Role", es: "Puesto", fr: "Poste", de: "Rolle" }, x.role));
+    if (x.company) rows.push(pLine({ it: "Azienda", en: "Company", es: "Empresa", fr: "Entreprise", de: "Unternehmen" }, x.company));
+    if (x.period) rows.push(pLine({ it: "Periodo", en: "Period", es: "Periodo", fr: "Periode", de: "Zeitraum" }, x.period));
+    if (x.result) rows.push(pLine({ it: "Risultati", en: "Results", es: "Logros", fr: "Resultats", de: "Ergebnisse" }, x.result));
+    if ((x.description || "").trim()) {
+      var labD = trMap({ it: "Descrizione", en: "Description", es: "Descripcion", fr: "Description", de: "Beschreibung" });
+      if (labD.slice(-1) !== ":") labD += ":";
+      rows.push(
+        '<div class="preview-line preview-line--stack"><span class="preview-line-k">' + esc(labD) + '</span>' +
+        '<div class="preview-line-v preview-line-v--pre">' + esc(x.description.trim()) + "</div></div>"
+      );
+    }
+    if (!(x.role || x.company || x.period || x.result || (x.description || "").trim())) return "";
+    return '<div class="preview-entry">' + rows.join("") + "</div>";
+  }
+  function euExpEntryHtml(x) {
+    var parts = [];
+    if (x.period) parts.push('<div class="preview-eu-dates">' + esc(x.period) + "</div>");
+    if (x.role) parts.push('<div class="preview-eu-block-title">' + esc(x.role) + "</div>");
+    if (x.company) parts.push('<div class="preview-eu-field"><span class="preview-eu-field-k">' + esc(trMap({ it: "Datore di lavoro", en: "Employer", es: "Empleador", fr: "Employeur", de: "Arbeitgeber" })) + ":</span> " + esc(x.company) + "</div>");
+    if ((x.description || "").trim()) {
+      parts.push('<div class="preview-eu-label">' + esc(trMap({ it: "Principali attivita e responsabilita", en: "Main activities and responsibilities", es: "Principales actividades y responsabilidades", fr: "Principales activites et responsabilites", de: "Haupttaetigkeiten und Verantwortlichkeiten" })) + "</div>");
+      parts.push('<div class="preview-eu-text preview-line-v--pre">' + esc(x.description.trim()) + "</div>");
+    }
+    if (x.result) {
+      parts.push('<div class="preview-eu-label">' + esc(trMap({ it: "Risultati", en: "Results", es: "Logros", fr: "Resultats", de: "Ergebnisse" })) + "</div>");
+      parts.push('<div class="preview-eu-text">' + esc(x.result) + "</div>");
+    }
+    return parts.length ? '<div class="preview-eu-entry">' + parts.join("") + "</div>" : "";
+  }
+  var expHtml = (Array.isArray(data.experienceItems) ? data.experienceItems : []).map(function (x) {
+    return template === "european" ? euExpEntryHtml(x) : expEntryHtml(x);
+  }).filter(Boolean).join("");
+
+  function eduEntryHtml(x) {
+    var rows = [];
+    if (x.title) rows.push(pLine({ it: "Titolo", en: "Title", es: "Titulo", fr: "Intitule", de: "Titel" }, x.title));
+    if (x.school) rows.push(pLine({ it: "Istituto", en: "Institution", es: "Centro", fr: "Etablissement", de: "Bildungseinrichtung" }, x.school));
+    if (x.year) rows.push(pLine({ it: "Anno", en: "Year", es: "Ano", fr: "Annee", de: "Jahr" }, x.year));
+    if (x.grade) rows.push(pLine({ it: "Voto", en: "Grade", es: "Nota", fr: "Note", de: "Note" }, x.grade));
+    if (!rows.length) return "";
+    return '<div class="preview-entry">' + rows.join("") + "</div>";
+  }
+  function euEduEntryHtml(x) {
+    var parts = [];
+    if (x.year) parts.push('<div class="preview-eu-dates">' + esc(x.year) + "</div>");
+    if (x.title) parts.push('<div class="preview-eu-block-title">' + esc(x.title) + "</div>");
+    if (x.school) parts.push('<div class="preview-eu-field"><span class="preview-eu-field-k">' + esc(trMap({ it: "Nome dell'organizzazione", en: "Name of organisation", es: "Nombre de la organizacion", fr: "Nom de l'organisme", de: "Name der Bildungseinrichtung" })) + ":</span> " + esc(x.school) + "</div>");
+    if (x.grade) parts.push('<div class="preview-eu-field"><span class="preview-eu-field-k">' + esc(trMap({ it: "Livello nella classificazione nazionale", en: "Level in national classification", es: "Nivel en la clasificacion nacional", fr: "Niveau dans la classification nationale", de: "Niveau in der nationalen Klassifikation" })) + ":</span> " + esc(x.grade) + "</div>");
+    return parts.length ? '<div class="preview-eu-entry">' + parts.join("") + "</div>" : "";
+  }
+  var eduHtml = (Array.isArray(data.educationItems) ? data.educationItems : []).map(function (x) {
+    return template === "european" ? euEduEntryHtml(x) : eduEntryHtml(x);
+  }).filter(Boolean).join("");
+
+  var skillsHtml = template === "european"
+    ? (Array.isArray(data.skillItems) ? data.skillItems : []).map(function (x) {
+        return "<li>" + esc((x.name || "") + " — " + levelLabel(x.level)) + "</li>";
+      }).join("")
+    : (Array.isArray(data.skillItems) ? data.skillItems : []).map(function (x) {
+        return pLine({ it: "Competenza", en: "Skill", es: "Competencia", fr: "Competence", de: "Kompetenz" }, (x.name || "") + " (" + levelLabel(x.level) + ")");
+      }).filter(Boolean).join("");
+
+  var languagesHtml = template === "european"
+    ? ('<div class="preview-lang-eu preview-lang-eu--header"><span class="preview-lang-eu-name">' + esc(trMap({ it: "Lingua", en: "Language", es: "Idioma", fr: "Langue", de: "Sprache" })) + '</span><span class="preview-lang-eu-level">' + esc(trMap({ it: "Livello", en: "Level", es: "Nivel", fr: "Niveau", de: "Niveau" })) + "</span></div>" +
+      (Array.isArray(data.languageItems) ? data.languageItems : []).map(function (x) {
+        return '<div class="preview-lang-eu"><span class="preview-lang-eu-name">' + esc(x.name || "") + '</span><span class="preview-lang-eu-level">' + esc(langLevelLabel(x.level)) + "</span></div>";
+      }).join(""))
+    : (Array.isArray(data.languageItems) ? data.languageItems : []).map(function (x) {
+        return pLine({ it: "Lingua", en: "Language", es: "Idioma", fr: "Langue", de: "Sprache" }, (x.name || "") + " (" + levelLabel(x.level) + ")");
+      }).filter(Boolean).join("");
+
+  var euPersonalRows = [];
+  if (template === "european") {
+    var residence = [data.address, data.city].filter(Boolean).join(", ");
+    if (residence) euPersonalRows.push(euPersonalLine({ it: "Indirizzo", en: "Address", es: "Direccion", fr: "Adresse", de: "Adresse" }, residence));
+    if (data.phone) euPersonalRows.push(euPersonalLine({ it: "Telefono", en: "Phone", es: "Telefono", fr: "Telephone", de: "Telefon" }, data.phone));
+    if (data.email) euPersonalRows.push(euPersonalLine({ it: "Email", en: "Email", es: "Correo electronico", fr: "E-mail", de: "E-Mail" }, data.email));
+    if (data.linkedin) euPersonalRows.push(euPersonalLine({ it: "Sito web", en: "Website", es: "Sitio web", fr: "Site web", de: "Webseite" }, data.linkedin));
+    if (data.citizenship) euPersonalRows.push(euPersonalLine({ it: "Cittadinanza", en: "Nationality", es: "Nacionalidad", fr: "Nationalite", de: "Staatsangehoerigkeit" }, data.citizenship));
+    if (data.birthDate) euPersonalRows.push(euPersonalLine({ it: "Data di nascita", en: "Date of birth", es: "Fecha de nacimiento", fr: "Date de naissance", de: "Geburtsdatum" }, data.birthDate));
+    if (role) euPersonalRows.push(euPersonalLine({ it: "Occupazione desiderata / Settore professionale", en: "Desired occupation / Professional field", es: "Ocupacion deseada / Sector profesional", fr: "Emploi souhaite / Domaine professionnel", de: "Gewuenschte Taetigkeit / Berufsfeld" }, role));
+    if (euPersonalRows.length) {
+      sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap({ it: "Informazioni personali", en: "Personal information", es: "Informacion personal", fr: "Informations personnelles", de: "Persoenliche Angaben" })) + '</div><div class="preview-text preview-text--personal-eu">' + euPersonalRows.join("") + "</div></div>");
+    }
+  }
+
   if (data.summary) {
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Profilo", "Summary")) + '</div><div class="preview-text">' + esc(data.summary) + "</div></div>");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap({ it: "Profilo", en: "Profile", es: "Perfil", fr: "Profil", de: "Profil" })) + '</div><div class="preview-text">' + esc(data.summary) + "</div></div>");
   }
-  if (Array.isArray(data.experienceItems) && data.experienceItems.length) {
-    var exp = data.experienceItems.map(function (x) { return [x.role, x.company, x.period, x.result].filter(Boolean).join(" - "); }).join("\n");
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Esperienze", "Experience")) + '</div><div class="preview-text">' + esc(exp) + "</div></div>");
+  if (expHtml) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap(template === "european" ? { it: "Esperienza professionale", en: "Work experience", es: "Experiencia laboral", fr: "Experience professionnelle", de: "Berufserfahrung" } : { it: "Esperienze", en: "Experience", es: "Experiencia", fr: "Experience", de: "Erfahrung" })) + '</div><div class="preview-text preview-text--labeled">' + expHtml + "</div></div>");
   }
-  if (Array.isArray(data.educationItems) && data.educationItems.length) {
-    var edu = data.educationItems.map(function (x) { return [x.title, x.school, x.year, x.grade].filter(Boolean).join(" - "); }).join("\n");
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Formazione", "Education")) + '</div><div class="preview-text">' + esc(edu) + "</div></div>");
+  if (eduHtml) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap(template === "european" ? { it: "Istruzione e formazione", en: "Education and training", es: "Educacion y formacion", fr: "Formation", de: "Ausbildung" } : { it: "Formazione", en: "Education", es: "Educacion", fr: "Formation", de: "Ausbildung" })) + '</div><div class="preview-text preview-text--labeled">' + eduHtml + "</div></div>");
   }
-  if (Array.isArray(data.skillItems) && data.skillItems.length) {
-    var skills = data.skillItems.map(function (x) { return (x.name || "") + " (" + levelLabel(x.level) + ")"; }).join(", ");
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Competenze", "Skills")) + '</div><div class="preview-text">' + esc(skills) + "</div></div>");
+  if (skillsHtml) {
+    var skillsBody = template === "european" ? ("<ul>" + skillsHtml + "</ul>") : skillsHtml;
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap(template === "european" ? { it: "Capacita e competenze", en: "Skills and competences", es: "Capacidades y competencias", fr: "Competences", de: "Kenntnisse und Faehigkeiten" } : { it: "Competenze", en: "Skills", es: "Competencias", fr: "Competences", de: "Kompetenzen" })) + '</div><div class="preview-text preview-text--labeled">' + skillsBody + "</div></div>");
   }
-  if (Array.isArray(data.languageItems) && data.languageItems.length) {
-    var langs = data.languageItems.map(function (x) { return (x.name || "") + " (" + levelLabel(x.level) + ")"; }).join(", ");
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Lingue", "Languages")) + '</div><div class="preview-text">' + esc(langs) + "</div></div>");
+  if (languagesHtml) {
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap(template === "european" ? { it: "Competenze linguistiche", en: "Language skills", es: "Competencias linguisticas", fr: "Competences linguistiques", de: "Sprachkenntnisse" } : { it: "Lingue", en: "Languages", es: "Idiomas", fr: "Langues", de: "Sprachen" })) + '</div><div class="preview-text preview-text--labeled">' + languagesHtml + "</div></div>");
   }
   if (data.certifications) {
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Certificazioni", "Certifications")) + '</div><div class="preview-text">' + esc(data.certifications) + "</div></div>");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap({ it: "Certificazioni", en: "Certifications", es: "Certificaciones", fr: "Certifications", de: "Zertifizierungen" })) + '</div><div class="preview-text">' + esc(data.certifications) + "</div></div>");
   }
   if (data.projects) {
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Progetti", "Projects")) + '</div><div class="preview-text">' + esc(data.projects) + "</div></div>");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap({ it: "Progetti", en: "Projects", es: "Proyectos", fr: "Projets", de: "Projekte" })) + '</div><div class="preview-text">' + esc(data.projects) + "</div></div>");
   }
   if (data.achievements) {
-    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(tr("Risultati", "Achievements")) + '</div><div class="preview-text">' + esc(data.achievements) + "</div></div>");
+    sections.push('<div class="preview-section"><div class="preview-section-title">' + esc(trMap({ it: "Risultati", en: "Achievements", es: "Logros", fr: "Realisations", de: "Erfolge" })) + '</div><div class="preview-text">' + esc(data.achievements) + "</div></div>");
   }
 
   var photoTag = data.photoDataUrl ? '<img class="preview-photo" src="' + escAttr(data.photoDataUrl) + '" alt="">' : "";
-  var roleTag = role ? '<div class="preview-role">' + esc(role) + '</div>' : "";
-  var contactTag = contact ? '<div class="preview-text">' + esc(contact) + '</div>' : "";
+  var roleTag = template === "european" ? "" : (role ? '<div class="preview-role">' + esc(role) + "</div>" : "");
+  var cvSubtitleTag = template === "european" ? '<div class="preview-eu-doc-title">Curriculum Vitae</div>' : "";
+  var personalBlock = template === "european" ? "" : (detailRows.length
+    ? '<div class="preview-text preview-text--labeled preview-text--personal">' + detailRows.join("") + "</div>"
+    : "");
 
   root.innerHTML =
-    '<div class="preview-head"><div><div class="preview-name">' + esc(fullName) + '</div>' + roleTag + '</div>' + photoTag + '</div>' +
-    contactTag +
+    '<div class="preview-head"><div class="preview-head-main"><div class="preview-name">' + esc(fullName) + "</div>" + cvSubtitleTag + roleTag + personalBlock + "</div>" + photoTag + "</div>" +
     sections.join("");
 })();
 </script>

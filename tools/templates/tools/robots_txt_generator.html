@@ -1,38 +1,74 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Robots.txt Generator" %}{% endblock %}
+{% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore Robots.txt{% else %}{% trans "Robots.txt Generator" %}{% endif %}{% endblock %}
 {% block body_class %}web-seo robots-txt-gen{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% if LANGUAGE_CODE|slice:":2" == "it" %}Apri un robots.txt dal PC, scaricalo da un sito, modifica le regole e scarica il file su Gadly.{% else %}{% trans 'Open a robots.txt from your computer, fetch one from a site, edit rules, and download on Gadly.' %}{% endif %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=95">
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>{% trans "Robots.txt Generator" %}</h1>
-    <p class="tool-desc">{% trans "Generate a robots.txt file with custom rules." %}</p>
+    <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore Robots.txt{% else %}{% trans "Robots.txt Generator" %}{% endif %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apri un file robots.txt dal tuo PC o scaricalo da un sito web, modifica le regole e genera il file finale.{% else %}{% trans "Open a robots.txt file from your computer or fetch it from a website, edit the rules, and build the final file." %}{% endif %}</p>
     <p class="tool-help">
-        <a href="{% url 'help_robots_txt' %}">{% trans "Learn more about robots.txt and how search engines use it" %}</a>
+        <a href="{% url 'help_robots_txt' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scopri di più su robots.txt e su come lo usano i motori di ricerca{% else %}{% trans "Learn more about robots.txt and how search engines use it" %}{% endif %}</a>
     </p>
+
+    <section class="robots-import" aria-labelledby="robots-import-heading">
+        <div class="robots-import-panel">
+            <h2 id="robots-import-heading" class="robots-import-heading">{% if LANGUAGE_CODE|slice:":2" == "it" %}Importa un file esistente{% else %}{% trans "Import an existing file" %}{% endif %}</h2>
+            <p class="robots-import-hint">{% if LANGUAGE_CODE|slice:":2" == "it" %}Dal PC si apre Esplora file. Da web inserisci solo l’indirizzo del sito (es. https://tuosito.it): verrà letto automaticamente /robots.txt.{% else %}{% trans "From your PC, use the file picker. From the web, enter only the site address (e.g. https://yoursite.com)—we fetch /robots.txt automatically." %}{% endif %}</p>
+            <div class="robots-import-actions">
+                <input type="file" id="robots-file" class="robots-file-input" accept=".txt,text/plain" hidden />
+                <button type="button" id="btn-open-file" class="btn-secondary">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apri file dal PC{% else %}Open file from PC{% endif %}</button>
+                <span class="robots-import-or" aria-hidden="true">{% if LANGUAGE_CODE|slice:":2" == "it" %}o{% else %}{% trans "or" %}{% endif %}</span>
+                <p class="robots-import-divider">{% if LANGUAGE_CODE|slice:":2" == "it" %}Oppure URL del sito{% else %}Or site URL{% endif %}</p>
+                <label for="import-url" class="visually-hidden">{% if LANGUAGE_CODE|slice:":2" == "it" %}URL del sito per scaricare robots.txt{% else %}{% trans "Site URL to fetch robots.txt" %}{% endif %}</label>
+                <input type="url" id="import-url" class="robots-import-url" placeholder="https://example.com" />
+                <button type="button" id="btn-load-web" class="btn-secondary">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scarica da web{% else %}{% trans "Fetch from web" %}{% endif %}</button>
+            </div>
+            <div id="robots-import-status" class="robots-import-status result-area hidden" role="alert" aria-live="polite"></div>
+            <p id="robots-import-filename" class="robots-import-filename hidden" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <section class="robots-presets-wrap" aria-labelledby="robots-presets-heading">
+        <div class="robots-presets-panel">
+            <h2 id="robots-presets-heading" class="robots-presets-heading">{% if LANGUAGE_CODE|slice:":2" == "it" %}Preset rapidi{% else %}{% trans "Quick presets" %}{% endif %}</h2>
+            <p class="robots-presets-hint">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scegli un modello per compilare in un clic User-agent, Disallow e Allow; puoi modificarlo liberamente dopo.{% else %}Pick a template to fill User-agent, Disallow, and Allow in one click—you can edit everything afterward.{% endif %}</p>
+            <div class="robots-presets" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Preset rapidi{% else %}{% trans 'Quick presets' %}{% endif %}">
+                <button type="button" class="preset-btn" data-preset="allow-all">{% if LANGUAGE_CODE|slice:":2" == "it" %}Consenti tutti i crawler{% else %}{% trans "Allow all crawlers" %}{% endif %}</button>
+                <button type="button" class="preset-btn" data-preset="block-all">{% if LANGUAGE_CODE|slice:":2" == "it" %}Blocca tutti i crawler{% else %}{% trans "Block all crawlers" %}{% endif %}</button>
+                <button type="button" class="preset-btn" data-preset="standard">{% if LANGUAGE_CODE|slice:":2" == "it" %}Standard (aree admin){% else %}{% trans "Standard (admin areas)" %}{% endif %}</button>
+                <button type="button" class="preset-btn" data-preset="wordpress">WordPress</button>
+            </div>
+        </div>
+    </section>
     <div class="form-group">
-        <label for="user-agent">User Agent *</label>
-        <input type="text" id="user-agent" value="" placeholder='{% trans "e.g. Googlebot" %}' />
+        <label for="user-agent">User-agent</label>
+        <input type="text" id="user-agent" value="" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es. * (tutti i crawler){% else %}{% trans 'e.g. * (all crawlers)' %}{% endif %}" autocomplete="off" />
     </div>
     <div class="form-group">
-        <label for="disallow">{% trans "Disallow (one path per line)" %}</label>
+        <label for="disallow">{% if LANGUAGE_CODE|slice:":2" == "it" %}Percorsi da bloccare (uno per riga){% else %}{% trans "Disallow (one path per line)" %}{% endif %}</label>
         <textarea id="disallow" rows="4" placeholder="/admin&#10;/private"></textarea>
     </div>
     <div class="form-group">
-        <label for="allow">{% trans "Allow (one path per line, optional)" %}</label>
+        <label for="allow">{% if LANGUAGE_CODE|slice:":2" == "it" %}Percorsi consentiti (uno per riga, opzionale){% else %}{% trans "Allow (one path per line, optional)" %}{% endif %}</label>
         <textarea id="allow" rows="2" placeholder="/public"></textarea>
     </div>
     <div class="form-group">
-        <label for="sitemap">{% trans "Sitemap URL" %}</label>
+        <label for="sitemap">{% if LANGUAGE_CODE|slice:":2" == "it" %}Riga Sitemap nel file (opzionale){% else %}{% trans "Sitemap line in file (optional)" %}{% endif %}</label>
         <input type="url" id="sitemap" placeholder="https://example.com/sitemap.xml" />
+        <p class="field-hint">{% if LANGUAGE_CODE|slice:":2" == "it" %}Non è l’URL del sito: è solo il link alla sitemap.xml da inserire nel robots.txt generato.{% else %}{% trans "Not the site homepage—only the sitemap.xml URL to add as a Sitemap: line in the generated file." %}{% endif %}</p>
     </div>
     <div id="result-area" class="result-area hidden"></div>
     <div class="button-group">
-        <button type="button" id="btn-generate">{% trans "Generate" %}</button>
-        <button type="button" id="btn-copy">{% trans "Copy" %}</button>
+        <button type="button" id="btn-generate">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera{% else %}{% trans "Generate" %}{% endif %}</button>
+        <button type="button" id="btn-copy">{% if LANGUAGE_CODE|slice:":2" == "it" %}Copia{% else %}{% trans "Copy" %}{% endif %}</button>
+        <button type="button" id="btn-download">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scarica{% else %}{% trans "Download" %}{% endif %}</button>
     </div>
     <div class="home-link-wrap">
         <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
@@ -40,5 +76,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/robots_txt_generator.js' %}?v=20260422"></script>
+<script src="{% static 'tools/js/robots_txt_generator.js' %}?v=20260529k"></script>
 {% endblock %}

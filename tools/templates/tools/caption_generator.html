@@ -3,9 +3,20 @@
 {% load i18n %}
 {% block title %}{% trans "Caption Generator" %}{% endblock %}
 {% block body_class %}text-tool caption-gen{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Generate short captions for social posts with Gadly’s free caption generator.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428j">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520u">
 <style>
+.text-tool.caption-gen .tool-desc { color: #555; line-height: 1.55; }
+/* Mobile dark: descrizione come gli altri testi del tool (#b0c4de) */
+@media (max-width: 768px) {
+  body.dark-mode.text-tool.caption-gen .tool-desc {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+}
 .caption-gen .result-area:not(.error) {
     white-space: normal;
 }
@@ -46,6 +57,40 @@ body.dark-mode.caption-gen .site-main .container .result-area:not(.error) .capti
 }
 @media (max-width: 768px) {
     .caption-gen .button-group { justify-content: space-between; }
+}
+/* Mobile tap: mobile-tap.js + pattern CV Generator (≤768px) */
+@media (max-width: 768px) {
+    body.caption-gen .site-main .container .button-group button,
+    body.caption-gen .site-main .container .button-group button:hover,
+    body.caption-gen .site-main .container .button-group button:focus,
+    body.caption-gen .site-main .container .button-group button:focus-visible {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.caption-gen .site-main .container .button-group #btn-generate,
+    body.caption-gen .site-main .container .button-group #btn-copy {
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        touch-action: manipulation !important;
+    }
+    body.caption-gen.text-tool .site-main .container .button-group button:hover,
+    body.caption-gen .site-main .container .button-group button:focus,
+    body.caption-gen .site-main .container .button-group button:focus-visible {
+        transform: scale(1) !important;
+    }
+    body.caption-gen .site-main .container .button-group button:active,
+    body.caption-gen .site-main .container .button-group button.tap-active,
+    body.caption-gen .site-main .container .button-group button:focus.tap-active,
+    body.caption-gen .site-main .container .button-group .tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.dark-mode.caption-gen .site-main .container .button-group button:active,
+    body.dark-mode.caption-gen .site-main .container .button-group button.tap-active,
+    body.dark-mode.caption-gen .site-main .container .button-group .tap-active {
+        transform: scale(0.96) !important;
+    }
 }
 .caption-gen .result-area .caption-results-header {
     margin-bottom: 12px;
@@ -128,27 +173,47 @@ body.dark-mode.caption-gen .site-main .container .result-area .caption-select-ac
     body.caption-gen .site-main .container .form-group {
         margin-bottom: 12px !important;
     }
-    body.caption-gen .site-main .container #caption-topic,
-    body.caption-gen .site-main .container #caption-topic:focus {
+    body.caption-gen .site-main .container .form-group:has(#caption-platform-wrap) {
+        margin-bottom: 48px !important;
+        overflow: visible !important;
+    }
+    body.caption-gen .site-main .container #caption-topic {
         width: 338px !important;
         max-width: 338px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         box-sizing: border-box !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
         color: #0f2f55 !important;
         -webkit-text-fill-color: #0f2f55 !important;
+        outline: none !important;
+    }
+    body.caption-gen:not(.dark-mode) .site-main .container #caption-topic:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     body.caption-gen .site-main .container #caption-topic::placeholder {
         color: #444 !important;
     }
-    body.dark-mode.caption-gen .site-main .container #caption-topic,
-    body.dark-mode.caption-gen .site-main .container #caption-topic:focus {
+    body.dark-mode.caption-gen .site-main .container #caption-topic {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #0d0d1a !important;
         -webkit-text-fill-color: #0d0d1a !important;
+    }
+    body.dark-mode.caption-gen .site-main .container #caption-topic:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+        outline: none !important;
     }
     body.dark-mode.caption-gen .site-main .container #caption-topic::placeholder {
         color: #333 !important;
@@ -219,66 +284,6 @@ body.dark-mode.caption-gen .site-main .container .result-area .caption-select-ac
         align-items: center !important;
         justify-content: flex-start !important;
         width: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-    }
-    body.caption-gen .site-main .container .button-group button {
-        flex: 0 0 338px !important;
-        min-width: 338px !important;
-        width: 338px !important;
-        max-width: 338px !important;
-        min-height: 52px !important;
-        height: 52px !important;
-        padding: 12px 20px !important;
-        font-size: 1.05rem !important;
-        font-weight: 600 !important;
-    }
-    body.caption-gen .site-main .container .button-group #btn-generate,
-    body.caption-gen .site-main .container .button-group #btn-generate:hover,
-    body.caption-gen .site-main .container .button-group #btn-generate:focus,
-    body.caption-gen .site-main .container .button-group #btn-generate:focus-visible,
-    body.caption-gen .site-main .container .button-group #btn-generate:active,
-    body.caption-gen .site-main .container .button-group #btn-copy,
-    body.caption-gen .site-main .container .button-group #btn-copy:hover,
-    body.caption-gen .site-main .container .button-group #btn-copy:focus,
-    body.caption-gen .site-main .container .button-group #btn-copy:focus-visible,
-    body.caption-gen .site-main .container .button-group #btn-copy:active {
-        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-        border: 2px solid #003f7f !important;
-        color: #003f7f !important;
-        outline: none !important;
-        box-shadow: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-focus-ring-color: transparent !important;
-        transform: scale(1) !important;
-    }
-    body.caption-gen .site-main .container .button-group #btn-generate:active,
-    body.caption-gen .site-main .container .button-group #btn-copy:active {
-        transform: scale(1.03) !important;
-    }
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:hover,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:focus,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:focus-visible,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:active,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:hover,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:focus,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:focus-visible,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:active {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
-        outline: none !important;
-        box-shadow: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-focus-ring-color: transparent !important;
-        transform: scale(1) !important;
-    }
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:active,
-    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:active {
-        transform: scale(1.03) !important;
     }
 }
 </style>
@@ -313,5 +318,5 @@ body.dark-mode.caption-gen .site-main .container .result-area .caption-select-ac
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/caption_generator.js' %}?v=20260428a"></script>
+<script src="{% static 'tools/js/caption_generator.js' %}?v=20260531a"></script>
 {% endblock %}

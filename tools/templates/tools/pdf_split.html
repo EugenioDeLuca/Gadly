@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "PDF Split" %}{% endblock %}
 {% block body_class %}pdf-split{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Split a PDF into smaller files by pages per file with Gadly’s free PDF split tool.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/pdf-merge.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/pdf-merge.css' %}?v=20260529c">
 {% endblock %}
 {% block content %}
 <div class="pdf-merger">
@@ -45,18 +48,16 @@
                     </div>
                     <p class="split-options-hint">{% trans "Each output file will contain this many pages. You can also type a number manually." %}</p>
                 </div>
+                <div id="pdf-result-area" class="result-area hidden" aria-live="polite"></div>
+                <div class="button-group pdf-split-submit-group">
+                    <button type="submit" id="submit-files" form="pdf-split-form">{% trans "Split PDF" %}</button>
+                </div>
             </div>
             <div id="file-preview" class="file-preview">
                 <p class="file-preview-title">{% trans "Preview – File to split:" %}</p>
                 <ul id="file-list"></ul>
             </div>
         </form>
-
-        <div id="pdf-result-area" class="result-area hidden" aria-live="polite"></div>
-
-        <div class="button-group">
-            <button type="submit" id="submit-files" form="pdf-split-form">{% trans "Split PDF" %}</button>
-        </div>
 
         <div class="home-link-wrap">
             <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
@@ -65,5 +66,5 @@
         </div>
     </div>
 </div>
-<script src="{% static 'tools/js/pdf-split.js' %}"></script>
+<script src="{% static 'tools/js/pdf-split.js' %}?v=20260525d"></script>
 {% endblock %}

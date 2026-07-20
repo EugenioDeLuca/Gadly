@@ -11,14 +11,61 @@
     background: white;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
 }
 
 .translator h1 {
     font-size: 2em;
     color: #003f7f;
-    margin: 0 0 16px 0;
+    margin: 0 0 8px 0;
     text-align: center;
+}
+
+.translator .tool-desc {
+    text-align: center;
+    color: #555;
+    margin: 0 0 24px;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: 1.55;
+    font-size: 1rem;
+}
+
+body.dark-mode .translator .tool-desc {
+    color: var(--text-secondary, #b0c4de);
+}
+
+/* Barre di scorrimento non visibili (scroll con rotella/touch resta attivo) */
+html:has(body.translator) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+html:has(body.translator)::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+body.translator {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+body.translator::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+.translator textarea,
+.translator .custom-select-dropdown,
+.translator .custom-select-options-wrap {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.translator textarea::-webkit-scrollbar,
+.translator .custom-select-dropdown::-webkit-scrollbar,
+.translator .custom-select-options-wrap::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .translator textarea {
@@ -30,16 +77,18 @@
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 12px;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
     background: white;
     resize: vertical;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
 }
 
+/* Desktop: come Markdown Preview (.text-tool textarea — bordo 2px, focus #007BFF, senza alone) */
 .translator textarea:focus {
     outline: none;
     border-color: #007BFF;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    box-shadow: none;
 }
 
 .translator textarea::placeholder {
@@ -54,6 +103,7 @@
     width: 100%;
     gap: 12px;
     flex-wrap: wrap;
+    margin-bottom: 12px;
 }
 .translator-lang-row {
     display: flex;
@@ -227,7 +277,7 @@ html[lang^="it"] .translator .result:empty::before {
     width: 100%;
     box-sizing: border-box;
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 12px;
     padding: 20px;
     min-height: 60px;
     border-radius: 12px;
@@ -265,10 +315,39 @@ body.dark-mode .translator .result-area.error {
     color: #e88;
 }
 
-/* Desktop: Back to Home - il gap (12px) del container dà già lo spazio, margin-top 0 per evitare 32px */
+/* Desktop: Back to Home — spazio come ex gap del container */
 .translator .home-link-wrap {
-    margin-top: 0;
+    margin-top: 12px;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    /* Stesso distacco titolo → descrizione di Word Counter mobile */
+    .translator h1 {
+        font-size: 1.6em;
+        margin: 0 0 8px 0;
+        text-align: center;
+    }
+    .translator .tool-desc {
+        font-size: 15.2px;
+        margin-top: 0;
+    }
+    body.translator .translator-page .custom-select-trigger,
+    .translator .translator-controls .custom-select-trigger,
+    body.translator .translator-page #swap-btn,
+    body.translator .site-main .container .translator-lang-row #swap-btn {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+    }
+    /* Light mobile: focus #007BFF come desktop */
+    .translator textarea:focus {
+        border-color: #007BFF;
+        box-shadow: none;
+    }
+    body.dark-mode.translator .site-main .container textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
 }
 
 /* ============================================
@@ -284,9 +363,16 @@ body.dark-mode .translator .result-area.error {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         color: #003f7f !important;
         font-weight: 700 !important;
-        min-height: 52px !important;
         transform: scale(1) !important;
         transition: transform 0.15s ease !important;
+    }
+    body.translator .translator-page #translate-btn {
+        min-height: 52px !important;
+    }
+    body.translator .translator-page .custom-select-trigger,
+    body.translator .translator-page #swap-btn {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
     }
     body.translator .translator-page #translate-btn:focus,
     body.translator .translator-page .custom-select-trigger:focus,
@@ -296,13 +382,24 @@ body.dark-mode .translator .result-area.error {
     body.translator .translator-page #translate-btn:active,
     body.translator .translator-page .custom-select-trigger:active,
     body.translator .translator-page #swap-btn:active {
-        transform: scale(1.03) !important;
+        transform: scale(1) !important;
+    }
+    body.translator .translator-page #translate-btn.tap-active,
+    body.translator .translator-page .custom-select-trigger.tap-active,
+    body.translator .translator-page #swap-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.translator .translator-page .custom-select-trigger::after {
+        color: #003f7f !important;
     }
 
     /* Mobile: Italian|Swap|English sopra, Translate SOTTO - display:contents + order */
     body.translator .translator-page .translator-controls { display: contents !important; }
     body.translator .translator-page { display: flex !important; flex-direction: column !important; gap: 8px !important; }
-    body.translator .translator-page > h1 { order: 0 !important; }
+    body.translator .translator-page > h1 {
+        order: 0 !important;
+        margin-bottom: 0 !important; /* gap 8px = 8px come Word Counter (no doppio margine) */
+    }
     body.translator .translator-page .translator-lang-row {
         order: 1 !important;
         display: flex !important;
@@ -367,12 +464,9 @@ body.dark-mode .translator .result-area.error {
         overflow-x: hidden;
     }
     .translator h1 {
-        font-size: 1.5em;
         color: #003f7f !important;
-        margin-bottom: 6px !important;
     }
-    .translator textarea,
-    .translator textarea:focus {
+    .translator textarea {
         min-height: 120px;
         padding: 12px;
         font-family: Arial, sans-serif;
@@ -384,6 +478,10 @@ body.dark-mode .translator .result-area.error {
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
     }
+    .translator textarea:focus {
+        border-color: #007BFF;
+        box-shadow: none;
+    }
     body.translator .site-main .container #translate-btn {
         min-height: 52px;
         height: auto;
@@ -393,8 +491,8 @@ body.dark-mode .translator .result-area.error {
         font-size: 1.05rem;
     }
     .translator .translator-controls .custom-select-trigger {
-        height: 52px;
-        min-height: 52px;
+        height: 47.5px;
+        min-height: 47.5px;
         padding: 0 36px 0 16px;
         font-size: 0.95rem;
     }
@@ -423,8 +521,8 @@ body.dark-mode .translator .result-area.error {
     }
     body.translator .site-main .container .translator-controls #swap-btn,
     body.translator .site-main .container .translator-lang-row #swap-btn {
-        height: 52px;
-        min-height: 52px;
+        height: 47.5px;
+        min-height: 47.5px;
         width: 100%;
         -webkit-appearance: none;
         appearance: none;
@@ -442,7 +540,15 @@ body.dark-mode .translator .result-area.error {
     body.dark-mode.translator .translator-page #translate-btn:active,
     body.dark-mode.translator .translator-page .custom-select-trigger:active,
     body.dark-mode.translator .translator-page #swap-btn:active {
-        transform: scale(1.03) !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.translator .translator-page #translate-btn.tap-active,
+    body.dark-mode.translator .translator-page .custom-select-trigger.tap-active,
+    body.dark-mode.translator .translator-page #swap-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.dark-mode.translator .translator-page .custom-select-trigger::after {
+        color: #b0c4de !important;
     }
     .translator .result {
         min-height: 120px;
@@ -539,6 +645,26 @@ body.dark-mode .translator .result-area.error {
         font-weight: 700;
         font-size: 0.95rem;
         letter-spacing: 0.01em;
+    }
+}
+
+/* 481–768px: tap come CV Generator (mobile-tap.js) + frecce dropdown */
+@media (min-width: 481px) and (max-width: 768px) {
+    body.translator .translator-page #translate-btn:active,
+    body.translator .translator-page .custom-select-trigger:active,
+    body.translator .translator-page #swap-btn:active {
+        transform: scale(1) !important;
+    }
+    body.translator .translator-page #translate-btn.tap-active,
+    body.translator .translator-page .custom-select-trigger.tap-active,
+    body.translator .translator-page #swap-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.translator .translator-page .custom-select-trigger::after {
+        color: #003f7f !important;
+    }
+    body.dark-mode.translator .translator-page .custom-select-trigger::after {
+        color: #b0c4de !important;
     }
 }
 

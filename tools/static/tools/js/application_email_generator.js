@@ -43,7 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
         result.classList.remove("error");
     }
 
+    function blurOnMobile(btn) {
+        if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && btn && btn.blur) {
+            btn.blur();
+        }
+    }
+
     btnGenerate.addEventListener("click", function () {
+        blurOnMobile(btnGenerate);
         var name = v("email-name");
         var role = v("email-role");
         var company = v("email-company");
@@ -124,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     btnCopy.addEventListener("click", function () {
+        blurOnMobile(btnCopy);
         var text = result.textContent || "";
         if (!text || result.classList.contains("hidden")) return;
         if (errorEl && !errorEl.classList.contains("hidden") && errorEl.textContent) return;
@@ -136,4 +144,5 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 1600);
         });
     });
+
 });

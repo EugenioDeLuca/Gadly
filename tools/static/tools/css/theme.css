@@ -1,9 +1,18 @@
+/* Cambio tema: niente fade scaglionato (background/color su bottoni, card, input) */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+    animation-duration: 0s !important;
+}
+
 /* Theme: light (default) and dark */
 :root {
     --btn-primary: #003f7f;
     --btn-primary-dark: #002d5c;
     --bg-body: radial-gradient(circle at bottom right, #6a0dad, #3554a6 30%, #f4f4f4 70%);
-    --bg-header: rgba(255, 255, 255, 0.95);
+    --bg-header: #ffffff;
     --bg-card: #fff;
     --text-primary: #003f7f;
     --text-secondary: #555;
@@ -64,41 +73,120 @@ body {
     body {
         background: var(--bg-header) !important;
     }
-    /* Light: sfondo solido bianco, header e menu identici */
-    body:not(.dark-mode) {
+    /* Light (senza warm tone): sfondo bianco; warm tone → regole dedicate sotto */
+    body:not(.dark-mode):not(.warm-tone) {
         background: #fff !important;
     }
-    body:not(.dark-mode) .site-header {
+    body:not(.dark-mode):not(.warm-tone) .site-header {
         background: #fff !important;
     }
-    body:not(.dark-mode) .header-nav,
-    body:not(.dark-mode) .header-nav.is-open {
+    body:not(.dark-mode):not(.warm-tone) .header-nav,
+    body:not(.dark-mode):not(.warm-tone) .header-nav.is-open {
         background: #fff !important;
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
         border: none !important;
         box-shadow: none !important;
+    }
+    /* Warm tone + menu aperto: pagina sotto resta warm (non tornare a light/dark) */
+    body.nav-open.warm-tone::before {
+        background: hsl(42, 70%, 88%) !important;
+        mix-blend-mode: color !important;
+        opacity: 0.45 !important;
+        z-index: 201 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    body.nav-open.warm-tone::after {
+        content: '' !important;
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(0, 0, 0, 0.25) !important;
+        mix-blend-mode: normal !important;
+        opacity: 1 !important;
+        pointer-events: none !important;
+        z-index: 202 !important;
+    }
+    body.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav {
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }
+    body.warm-tone .header-nav.is-open,
+    body.dark-mode.warm-tone .header-nav.is-open {
+        pointer-events: auto;
+    }
+    body.warm-tone .header-nav:not(.is-open) .header-link:hover,
+    body.warm-tone .header-nav:not(.is-open) .header-link:active,
+    body.warm-tone .header-nav:not(.is-open) .header-link:focus,
+    body.warm-tone .header-nav:not(.is-open) .header-link:focus-visible,
+    body.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:hover,
+    body.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:active,
+    body.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:focus,
+    body.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:focus-visible {
+        background: transparent !important;
+        color: var(--warm-nav-link-color) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-link:hover,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-link:active,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-link:focus,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-link:focus-visible,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:hover,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:active,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:focus,
+    body.dark-mode.warm-tone .header-nav:not(.is-open) .header-auth-wrap .header-link:focus-visible {
+        background: transparent !important;
+        color: var(--warm-nav-link-color) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.warm-tone.nav-open .header-nav.is-open .header-link:hover,
+    body.warm-tone.nav-open .header-nav.is-open .header-link:active,
+    body.warm-tone.nav-open .header-nav.is-open .header-link:focus,
+    body.warm-tone.nav-open .header-nav.is-open .header-link:focus-visible,
+    body.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:hover,
+    body.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:active,
+    body.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:focus,
+    body.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:focus-visible {
+        background: #e8f4fd !important;
+        color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-link:hover,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-link:active,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-link:focus,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-link:focus-visible,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:hover,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:active,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:focus,
+    body.dark-mode.warm-tone.nav-open .header-nav.is-open .header-auth-wrap .header-link:focus-visible {
+        background: rgba(232, 244, 253, 0.14) !important;
+        color: #5a9fd4 !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     /* Light: bottone hamburger senza shadow quando menu aperto */
     body:not(.dark-mode).nav-open .header-menu-btn,
     body:not(.dark-mode).nav-open .header-menu-btn:hover {
         box-shadow: none !important;
     }
-    /* Dark: header è rgba, body serve colore solido identico */
+    /* Dark: header e menu hamburger stesso colore opaco */
     body.dark-mode {
         background: #0f0f23 !important;
     }
-    body.dark-mode .site-header {
+    body.dark-mode:not(.warm-tone) .site-header,
+    body.dark-mode:not(.warm-tone) .header-nav,
+    body.dark-mode:not(.warm-tone) .header-nav.is-open {
         background: #0f0f23 !important;
-    }
-    /* Dark: menu hamburger stesso sfondo e larghezza dell'header */
-    body.dark-mode .header-nav,
-    body.dark-mode .header-nav.is-open {
-        background: #0f0f23 !important;
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
+        background-color: #0f0f23 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         border: none !important;
         box-shadow: none !important;
+        border-radius: 0 !important;
     }
     /* Dark: bottone hamburger senza shadow quando menu aperto */
     body.dark-mode.nav-open .header-menu-btn,
@@ -119,10 +207,10 @@ body {
     body.dark-mode .site-main .container h2,
     body.dark-mode .site-main .container h3,
     body.dark-mode .site-main .container h4,
-    body.dark-mode .site-main .container p,
+    body.dark-mode:not(.cv-generator):not(.qr-generator) .site-main .container p,
     body.dark-mode .site-main .container label,
-    body.dark-mode .site-main .container input:not([type="submit"]):not([type="button"]),
-    body.dark-mode:not(.markdown-preview):not(.remove-spaces):not(.word-counter):not(.translator):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.qr-generator):not(.data-viz):not(.web-seo) .site-main .container textarea,
+    body.dark-mode:not(.homepage):not(.cover-letter-generator):not(.application-email-generator):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.calculators) .site-main .container input:not([type="submit"]):not([type="button"]),
+    body.dark-mode:not(.markdown-preview):not(.remove-spaces):not(.word-counter):not(.translator):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.qr-generator):not(.data-viz):not(.web-seo):not(.cover-letter-generator):not(.application-email-generator):not(.cv-generator):not(.qr-generator) .site-main .container textarea,
     body.dark-mode .site-main .container select,
     body.dark-mode .site-main .container .text-tool-select-trigger,
     body.dark-mode .site-main .container .result-area,
@@ -167,10 +255,17 @@ body {
     body.dark-mode.markdown-preview .site-main .container .preview-output,
     body.dark-mode.qr-generator .site-main .container textarea,
     body.dark-mode.qr-generator .site-main .container textarea:focus,
+    body.dark-mode.qr-generator .site-main .container .qr-field-input,
+    body.dark-mode.qr-generator .site-main .container .qr-field-input:focus,
     body.dark-mode.data-viz .site-main .container #data-input,
     body.dark-mode.data-viz .site-main .container #data-input:focus,
     body.dark-mode.web-seo .site-main .container .form-group textarea,
-    body.dark-mode.web-seo .site-main .container .form-group textarea:focus {
+    body.dark-mode.web-seo .site-main .container .form-group textarea:focus,
+    body.dark-mode.cover-letter-generator .site-main .container textarea,
+    body.dark-mode.cover-letter-generator .site-main .container textarea:focus,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:focus,
+    body.dark-mode.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
@@ -196,35 +291,42 @@ body {
     body.dark-mode.json-formatter .site-main .container .form-group textarea::placeholder,
     body.dark-mode.markdown-preview .site-main .container textarea::placeholder,
     body.dark-mode.qr-generator .site-main .container textarea::placeholder,
+    body.dark-mode.qr-generator .site-main .container .qr-field-input::placeholder,
     body.dark-mode.data-viz .site-main .container #data-input::placeholder,
-    body.dark-mode.web-seo .site-main .container .form-group textarea::placeholder {
-        color: #555 !important;
+    body.dark-mode.web-seo .site-main .container .form-group textarea::placeholder,
+    body.dark-mode.cover-letter-generator .site-main .container textarea::placeholder,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input::placeholder,
+    body.dark-mode.calculators .site-main .calculators .container .calc-panel .calc-group input::placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
         opacity: 1 !important;
     }
 
-    /* Dark mode mobile: bottoni tool come homepage (stile category-btn) */
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container .button-group button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .faq-container button,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container input[type="submit"],
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container input[type="button"],
-    body.dark-mode:not(.homepage):not(.image-editor):not(.interview-simulator):not(.cv-generator) .site-main .container .btn {
+    /* Dark mode mobile: bottoni tool (default). Tool con CSS dedicato sono esclusi. */
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container button:not(.split-preset-btn),
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .button-group button:not(.split-preset-btn),
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .faq-container button,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="submit"],
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="button"],
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .btn {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border: 2px solid #b0c4de !important;
         color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container .button-group button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .faq-container button:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container input[type="submit"]:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container input[type="button"]:hover,
-    body.dark-mode:not(.homepage):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator) .site-main .container .btn:hover {
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.cover-letter-generator):not(.application-email-generator):not(.data-viz):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container button:hover,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.cover-letter-generator):not(.application-email-generator):not(.data-viz):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .button-group button:hover,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.case-converter):not(.uuid-generator):not(.calculators) .site-main .faq-container button:hover,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.case-converter):not(.uuid-generator):not(.calculators) .site-main .container input[type="submit"]:hover,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.case-converter):not(.uuid-generator):not(.calculators) .site-main .container input[type="button"]:hover,
+    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.interview-simulator):not(.markdown-preview):not(.cv-generator):not(.qr-generator):not(.case-converter):not(.uuid-generator):not(.calculators) .site-main .container .btn:hover {
         background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%) !important;
         border-color: #003f7f !important;
         color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
 
     /* Dark mode mobile: FAB Back to Home - sfondo azzurrino, casetta blu scuro, bordo rosso */
@@ -237,8 +339,8 @@ body {
         fill: #002d5c !important;
     }
 
-    /* Overlay menu: niente blur (iOS non lo applica ovunque), usa overlay solido */
-    body.nav-open::before {
+    /* Overlay menu: niente blur; warm tone ha overlay dedicato sopra */
+    body.nav-open:not(.warm-tone)::before {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
         background: rgba(0, 0, 0, 0.35) !important;
@@ -287,60 +389,76 @@ body.dark-mode .header-logo:hover .header-logo-text {
     background: var(--bg-header) !important;
 }
 
-/* Warm tone: apply visible tint to header too */
-body.warm-tone .site-header {
-    background: rgba(255, 248, 236, 0.95) !important;
-    box-shadow: 0 1px 0 rgba(184, 106, 0, 0.1);
+.site-footer {
+    background: var(--bg-header) !important;
 }
 
-body.warm-tone {
+body.warm-tone:not(.dark-mode) {
+    --bg-header: #fff8ec;
     --warm-nav-link-color: #003f7f;
     --warm-nav-link-hover-color: #007BFF;
 }
 
-body.warm-tone .header-nav {
-    background: transparent !important;
-}
-
-body.warm-tone .header-nav.is-open {
-    background: rgba(255, 248, 236, 0.95) !important;
-}
-
-body.dark-mode.warm-tone .site-header {
-    background: rgba(38, 32, 28, 0.9) !important;
-    box-shadow: 0 1px 0 rgba(232, 160, 64, 0.14);
-}
-
 body.dark-mode.warm-tone {
+    --bg-header: rgba(38, 32, 28, 0.9);
     --warm-nav-link-color: var(--text-secondary);
     --warm-nav-link-hover-color: var(--accent);
 }
 
-body.dark-mode.warm-tone .header-nav {
-    background: transparent !important;
+/* Warm tone: header/footer usano --bg-header */
+@media (min-width: 481px) {
+    body.warm-tone:not(.dark-mode) .site-header,
+    body.dark-mode.warm-tone .site-header {
+        background: var(--bg-header) !important;
+        box-shadow: none !important;
+    }
+
+    body.warm-tone .header-nav {
+        background: transparent !important;
+    }
+
+    body.warm-tone .header-nav.is-open {
+        background: rgb(255, 248, 236) !important;
+    }
 }
 
-body.dark-mode.warm-tone .header-nav.is-open {
-    background: rgba(38, 32, 28, 0.9) !important;
+@media (min-width: 481px) {
+    body.dark-mode.warm-tone .header-nav {
+        background: transparent !important;
+    }
 }
 
-/* Warm tone: footer should receive the same effect */
-body.warm-tone .site-footer {
-    background: rgba(255, 248, 236, 0.95) !important;
-    border-top: 1px solid rgba(184, 106, 0, 0.1) !important;
+@media (min-width: 481px) {
+    body.dark-mode.warm-tone .header-nav.is-open {
+        background: rgb(38, 32, 28) !important;
+    }
 }
 
+/* Mobile ≤480px: dark mode (no warm tone) header = menu */
+@media (max-width: 480px) {
+    body.dark-mode:not(.warm-tone) .site-header,
+    body.dark-mode:not(.warm-tone) .header-nav,
+    body.dark-mode:not(.warm-tone) .header-nav.is-open {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}
+
+/* Warm tone: footer = stesso --bg-header dell'header */
+body.warm-tone .site-footer,
 body.dark-mode.warm-tone .site-footer {
-    background: rgba(38, 32, 28, 0.9) !important;
-    border-top: 1px solid rgba(232, 160, 64, 0.14) !important;
+    background: var(--bg-header) !important;
+    border-top: none !important;
 }
 
-/* Warm tone: remove nav item "boxed" emphasis */
+/* Warm tone: stato base senza box; :hover/:active/:focus sul menu in regole dedicate sotto */
 body.warm-tone .header-link,
 body.warm-tone .header-link:visited,
-body.warm-tone .header-link:focus,
-body.warm-tone .header-link:focus-visible,
-body.warm-tone .header-link:active,
 body.warm-tone .header-link.active,
 body.warm-tone .header-nav .header-link,
 body.warm-tone .header-nav .header-link.active {
@@ -360,13 +478,19 @@ body.warm-tone .header-nav .header-link[aria-current="page"] {
 }
 
 body.warm-tone .header-link:hover,
-body.warm-tone .header-nav .header-link:hover {
+body.warm-tone .header-nav .header-link:hover,
+body.warm-tone .header-nav .header-link:active,
+body.warm-tone .header-nav .header-link:focus,
+body.warm-tone .header-nav .header-link:focus-visible {
     background: #e8f4fd !important;
     color: #007BFF !important;
 }
 
 body.dark-mode.warm-tone .header-link:hover,
-body.dark-mode.warm-tone .header-nav .header-link:hover {
+body.dark-mode.warm-tone .header-nav .header-link:hover,
+body.dark-mode.warm-tone .header-nav .header-link:active,
+body.dark-mode.warm-tone .header-nav .header-link:focus,
+body.dark-mode.warm-tone .header-nav .header-link:focus-visible {
     background: rgba(232, 244, 253, 0.14) !important;
     color: #5a9fd4 !important;
 }
@@ -461,9 +585,9 @@ body.dark-mode .header-nav .header-link[aria-current="page"] {
 
 body.dark-mode .header-nav .header-link,
 body.dark-mode .header-nav .header-link:visited,
-body.dark-mode .header-nav .header-link:focus,
-body.dark-mode .header-nav .header-link:focus-visible,
-body.dark-mode .header-nav .header-link:active {
+body.dark-mode .header-nav .header-link:focus:not(:hover):not(.is-nav-link-hover),
+body.dark-mode .header-nav .header-link:focus-visible:not(:hover):not(.is-nav-link-hover),
+body.dark-mode .header-nav .header-link:active:not(:hover):not(.is-nav-link-hover) {
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
@@ -540,6 +664,7 @@ body.dark-mode .shortcuts-btn {
     border: none;
     border-radius: 8px;
     font-size: 1rem;
+    box-sizing: border-box;
     background: transparent;
     color: #003f7f;
     cursor: pointer;
@@ -558,8 +683,50 @@ body.dark-mode .theme-toggle {
     color: var(--text-secondary);
 }
 
-body.dark-mode .theme-toggle:hover {
-    color: var(--accent);
+body.dark-mode .theme-toggle:hover,
+body.dark-mode .warm-tone-toggle:not(.is-active):hover {
+    color: #4a8ec2 !important;
+    background: #e8f4fd !important;
+}
+
+/* Touch: niente pill sticky su tema/lingua; warm tone .is-active resta visibile */
+@media (hover: none) {
+    .theme-toggle:not(.warm-tone-toggle):hover,
+    .theme-toggle:not(.warm-tone-toggle):active,
+    .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        background: transparent !important;
+    }
+    .theme-toggle:not(.warm-tone-toggle):hover,
+    .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        color: #003f7f !important;
+    }
+    body.dark-mode .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode .theme-toggle:not(.warm-tone-toggle):active,
+    body.dark-mode .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        background: transparent !important;
+    }
+    body.dark-mode .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        color: var(--text-secondary) !important;
+    }
+    .warm-tone-toggle.is-active {
+        background: rgba(255, 180, 100, 0.35) !important;
+        color: #b86a00 !important;
+    }
+    body.dark-mode .warm-tone-toggle.is-active,
+    body.dark-mode.warm-tone .warm-tone-toggle.is-active {
+        background: rgba(255, 200, 120, 0.25) !important;
+        color: #e8a040 !important;
+    }
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+body.dark-mode .theme-toggle:focus-visible {
+    outline-color: var(--accent, #4a8ec2);
 }
 
 /* Warm tone (tono caldo): ingiallisce senza opacizzare (blend color = solo tinta).
@@ -580,6 +747,65 @@ body.warm-tone::before {
     font-size: 0.85em;
     padding: 10px 20px;
     box-sizing: border-box;
+}
+
+/* Desktop: solo pulsanti tema/warm tone a 38px (come Home/FAQ); voci nav invariate */
+@media (min-width: 769px) {
+    .header-actions .theme-toggle,
+    .header-actions .warm-tone-toggle {
+        padding: 10px 20px !important;
+        height: 38px !important;
+        min-height: 0 !important;
+        max-height: 38px !important;
+        box-sizing: border-box !important;
+        border-radius: 8px !important;
+        line-height: 18px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Desktop: Login/Sign up come prima (affiancati, non stile menu mobile) */
+    .header-nav .header-auth-wrap {
+        display: contents !important;
+        flex-basis: auto !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    /* Desktop: voci menu (Home/Gadly, FAQ, About…) */
+    .header-nav .header-link,
+    .header-nav .header-auth-wrap .header-link {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        line-height: normal !important;
+    }
+
+    body:not(.dark-mode) .header-actions .theme-toggle:hover,
+    body:not(.dark-mode) .header-actions .warm-tone-toggle:not(.is-active):hover {
+        background: #e8f4fd !important;
+        color: #007BFF !important;
+    }
+
+    body.dark-mode .header-actions .theme-toggle:hover,
+    body.dark-mode .header-actions .warm-tone-toggle:not(.is-active):hover {
+        background: #e8f4fd !important;
+        color: #4a8ec2 !important;
+    }
+
+    body.warm-tone .header-actions .theme-toggle:hover,
+    body.warm-tone .header-actions .warm-tone-toggle:not(.is-active):hover {
+        background: #e8f4fd !important;
+        color: #007BFF !important;
+    }
+
+    body.dark-mode.warm-tone .header-actions .theme-toggle:hover,
+    body.dark-mode.warm-tone .header-actions .warm-tone-toggle:not(.is-active):hover {
+        background: rgba(232, 244, 253, 0.14) !important;
+        color: #5a9fd4 !important;
+    }
 }
 
 .warm-tone-toggle.is-active {
@@ -603,14 +829,226 @@ body.dark-mode .warm-tone-toggle.is-active {
     .site-header::before {
         display: none !important;
     }
-    /* Con warm tone: menu aperto = overlay solo blur, come in light/dark */
-    body.nav-open.warm-tone::before {
-        background: rgba(0, 0, 0, 0.04) !important;
-        mix-blend-mode: normal !important;
+    /* Header: niente pill/hover al tap (tema, warm tone, lingua, hamburger) */
+    .site-header .theme-toggle,
+    .site-header .warm-tone-toggle,
+    .site-header .header-lang-btn,
+    .site-header .header-menu-btn {
+        -webkit-tap-highlight-color: transparent;
+    }
+    .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible),
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible),
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        color: #003f7f !important;
+    }
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        color: var(--text-secondary, #b0c4de) !important;
+    }
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):active,
+    body.dark-mode.warm-tone .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible) {
+        color: var(--warm-nav-link-color, #003f7f) !important;
+    }
+    /* Warm tone ON: pill arancione visibile subito (non serve aprire il menu) */
+    .site-header .warm-tone-toggle.is-active {
+        background: rgba(255, 180, 100, 0.35) !important;
+        color: #b86a00 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode .site-header .warm-tone-toggle.is-active,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle.is-active {
+        background: rgba(255, 200, 120, 0.25) !important;
+        color: #e8a040 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    .site-header .warm-tone-toggle:not(.is-active):hover,
+    .site-header .warm-tone-toggle:not(.is-active):active,
+    .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible),
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):active,
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible),
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):active,
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):active,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible) {
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: #003f7f !important;
+    }
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):active,
+    body.dark-mode .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):active,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible) {
+        color: var(--text-secondary, #b0c4de) !important;
+    }
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):active,
+    body.warm-tone .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):hover,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):active,
+    body.dark-mode.warm-tone .site-header .warm-tone-toggle:not(.is-active):focus:not(:focus-visible) {
+        color: var(--warm-nav-link-color, #003f7f) !important;
+    }
+    .site-header .header-lang-btn:hover,
+    .site-header .header-lang-btn:active,
+    .site-header .header-lang-btn:focus:not(:focus-visible),
+    body.warm-tone .site-header .header-lang-btn:hover,
+    body.warm-tone .site-header .header-lang-btn:active,
+    body.warm-tone .site-header .header-lang-btn:focus:not(:focus-visible),
+    body.dark-mode .site-header .header-lang-btn:hover,
+    body.dark-mode .site-header .header-lang-btn:active,
+    body.dark-mode .site-header .header-lang-btn:focus:not(:focus-visible),
+    body.dark-mode.warm-tone .site-header .header-lang-btn:hover,
+    body.dark-mode.warm-tone .site-header .header-lang-btn:active,
+    body.dark-mode.warm-tone .site-header .header-lang-btn:focus:not(:focus-visible) {
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    .header-lang-form .header-lang-btn:not(.is-active):hover,
+    .header-lang-form .header-lang-btn:not(.is-active):active,
+    .header-lang-form .header-lang-btn:not(.is-active):focus:not(:focus-visible) {
+        background: rgba(0, 123, 255, 0.15) !important;
+        border-color: rgba(0, 123, 255, 0.5) !important;
+        color: #007BFF !important;
+    }
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):focus:not(:focus-visible) {
+        background: transparent !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+    }
+    .site-header .header-menu-btn:hover,
+    .site-header .header-menu-btn:active,
+    .site-header .header-menu-btn:focus:not(:focus-visible) {
+        transform: none !important;
+        box-shadow: 0 2px 8px rgba(0, 63, 127, 0.12) !important;
+    }
+    body.dark-mode .site-header .header-menu-btn:hover,
+    body.dark-mode .site-header .header-menu-btn:active,
+    body.dark-mode .site-header .header-menu-btn:focus:not(:focus-visible) {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* Cover letter: campi leggibili in dark su layout mobile (481–768; sotto 480 coperto anche dal blocco 480px) */
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:focus,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:not(:focus),
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]),
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):focus,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):not(:focus),
+    body.dark-mode.cover-letter-generator .site-main .container #cl-result.result-area:not(.error) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea::placeholder,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input::placeholder {
+        color: #555 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
         opacity: 1 !important;
-        z-index: 98 !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
+    }
+
+    /* Email candidatura: campi leggibili in dark su mobile (testo scuro fisso focus/blur) */
+    body.dark-mode.application-email-generator .site-main .container .form-group textarea,
+    body.dark-mode.application-email-generator .site-main .container .form-group textarea:focus,
+    body.dark-mode.application-email-generator .site-main .container .form-group textarea:not(:focus),
+    body.dark-mode.application-email-generator .site-main .container #email-points,
+    body.dark-mode.application-email-generator .site-main .container #email-points:focus,
+    body.dark-mode.application-email-generator .site-main .container #email-points:not(:focus),
+    body.dark-mode.application-email-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]),
+    body.dark-mode.application-email-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):focus,
+    body.dark-mode.application-email-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+        caret-color: #0d0d1a !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    body.dark-mode.application-email-generator .site-main .container .form-group textarea::placeholder,
+    body.dark-mode.application-email-generator .site-main .container .form-group input::placeholder {
+        color: #333 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        opacity: 1 !important;
+    }
+
+    /* Simulatore colloquio: campi leggibili in dark su mobile (testo scuro fisso focus/blur) */
+    body.dark-mode.interview-simulator .site-main .container .interview-settings input,
+    body.dark-mode.interview-simulator .site-main .container .interview-settings textarea,
+    body.dark-mode.interview-simulator .site-main .container .interview-settings input:focus,
+    body.dark-mode.interview-simulator .site-main .container .interview-settings textarea:focus,
+    body.dark-mode.interview-simulator .site-main .container .interview-settings input:not(:focus),
+    body.dark-mode.interview-simulator .site-main .container .interview-settings textarea:not(:focus),
+    body.dark-mode.interview-simulator .site-main .container #interview-role,
+    body.dark-mode.interview-simulator .site-main .container #interview-level,
+    body.dark-mode.interview-simulator .site-main .container #interview-focus,
+    body.dark-mode.interview-simulator .site-main .container #interview-role:focus,
+    body.dark-mode.interview-simulator .site-main .container #interview-level:focus,
+    body.dark-mode.interview-simulator .site-main .container #interview-focus:focus,
+    body.dark-mode.interview-simulator .site-main .container #interview-role:not(:focus),
+    body.dark-mode.interview-simulator .site-main .container #interview-level:not(:focus),
+    body.dark-mode.interview-simulator .site-main .container #interview-focus:not(:focus),
+    body.dark-mode.interview-simulator .site-main .container .interview-composer-area textarea.interview-answer-input,
+    body.dark-mode.interview-simulator .site-main .container .interview-composer-area textarea.interview-answer-input:focus,
+    body.dark-mode.interview-simulator .site-main .container .interview-composer-area textarea.interview-answer-input:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+        caret-color: #0d0d1a !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    body.dark-mode.interview-simulator .site-main .container .interview-settings input::placeholder,
+    body.dark-mode.interview-simulator .site-main .container .interview-settings textarea::placeholder,
+    body.dark-mode.interview-simulator .site-main .container #interview-role::placeholder,
+    body.dark-mode.interview-simulator .site-main .container #interview-level::placeholder,
+    body.dark-mode.interview-simulator .site-main .container #interview-focus::placeholder {
+        color: #333 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        opacity: 1 !important;
     }
 }
 
@@ -631,12 +1069,12 @@ body.dark-mode .warm-tone-toggle.is-active {
 }
 
 /* Dark: tasto Copia / stato Copiato sempre rosso (override gradienti !important sui bottoni, tutti i viewport). */
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied,
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-group button.copied:hover,
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-wrapper button.copied,
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .button-wrapper button.copied:hover,
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.btn-copy.copied,
-body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.btn-copy.copied:hover {
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container .button-group button.copied,
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container .button-group button.copied:hover,
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container .button-wrapper button.copied,
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container .button-wrapper button.copied:hover,
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container button.btn-copy.copied,
+body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-main .container button.btn-copy.copied:hover {
     background: #dc3545 !important;
     border-color: #dc3545 !important;
     color: #fff !important;
@@ -660,5 +1098,65 @@ body.dark-mode:not(.homepage):not(.image-editor) .site-main .container button.bt
     .header-inner,
     .footer-inner {
         max-width: 1220px !important;
+    }
+}
+
+/* Warm tone mobile: header e pannello sotto = stesso colore (menu aperto/chiuso) */
+@media (max-width: 480px) {
+    body.warm-tone:not(.dark-mode) {
+        --warm-mobile-bar-bg: #fff8ec;
+    }
+    body.dark-mode.warm-tone {
+        --warm-mobile-bar-bg: #26201c;
+    }
+    body.warm-tone:not(.dark-mode) .site-header,
+    body.nav-open.warm-tone:not(.dark-mode) .site-header,
+    body.warm-tone:not(.dark-mode) .header-nav,
+    body.nav-open.warm-tone:not(.dark-mode) .header-nav,
+    body.warm-tone:not(.dark-mode) .header-nav.is-open,
+    body.nav-open.warm-tone:not(.dark-mode) .header-nav.is-open {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-top: none !important;
+    }
+    body.dark-mode.warm-tone .site-header,
+    body.nav-open.dark-mode.warm-tone .site-header,
+    body.dark-mode.warm-tone .header-nav,
+    body.nav-open.dark-mode.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav.is-open,
+    body.nav-open.dark-mode.warm-tone .header-nav.is-open {
+        background: #26201c !important;
+        background-color: #26201c !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-top: none !important;
+    }
+    body.warm-tone .header-nav,
+    body.warm-tone .header-nav.is-open {
+        border-radius: 0 0 12px 12px !important;
+    }
+    body.warm-tone .site-header,
+    body.warm-tone .header-nav {
+        isolation: isolate;
+    }
+}
+
+/* Light desktop: header e footer stesso pannello opaco (niente blur su sfondi diversi). */
+@media (min-width: 769px) {
+    body:not(.dark-mode) .site-header,
+    body:not(.dark-mode) .site-footer {
+        background: var(--bg-header) !important;
+        background-color: var(--bg-header) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        box-shadow: none !important;
     }
 }

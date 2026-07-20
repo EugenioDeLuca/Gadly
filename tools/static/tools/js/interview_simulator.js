@@ -53,6 +53,13 @@
     var errEl = document.getElementById("interview-inline-error");
     var btnRestart = document.getElementById("interview-restart");
     var btnExport = document.getElementById("interview-export");
+    var btnMobileSetup = document.getElementById("interview-mobile-setup");
+    var mobileSetupLabelShow = btnMobileSetup
+        ? btnMobileSetup.getAttribute("data-label-show") || lbl("voiceAndOptions", "Voice & options")
+        : "";
+    var mobileSetupLabelHide = btnMobileSetup
+        ? btnMobileSetup.getAttribute("data-label-hide") || lbl("hideOptions", "Hide options")
+        : "";
 
     var roleInput = document.getElementById("interview-role");
     var levelInput = document.getElementById("interview-level");
@@ -62,6 +69,7 @@
     var settingsSectionEl = document.querySelector(".interview-settings");
     var readAloudEl = document.getElementById("interview-read-aloud");
     var flowEl = document.getElementById("interview-flow");
+    var flowActionsEl = document.querySelector(".interview-flow-actions");
     /** Dopo la prima scelta uomo/donna: sblocca chat e avvia colloquio (una sola volta). */
     var interviewFlowStarted = false;
 
@@ -111,8 +119,9 @@
     function resizeAnswerField() {
         if (!inputEl) return;
         inputEl.style.height = "auto";
-        var minH = 44;
-        var maxH = 260;
+        var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+        var minH = isMobile ? 44 : 44;
+        var maxH = isMobile ? 100 : 260;
         var next = Math.max(minH, Math.min(maxH, inputEl.scrollHeight || minH));
         inputEl.style.height = next + "px";
         inputEl.style.overflowX = "hidden";
@@ -130,10 +139,27 @@
         return !!(el && el.checked);
     }
 
+    function setMobileSetupOpen(open) {
+        document.body.classList.toggle("interview-mobile-setup-open", !!open);
+        if (!btnMobileSetup) return;
+        btnMobileSetup.setAttribute("aria-expanded", open ? "true" : "false");
+        btnMobileSetup.textContent = open ? mobileSetupLabelHide : mobileSetupLabelShow;
+    }
+
+    function isMobileViewport() {
+        return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
+    }
+
     function unlockInterviewFlow() {
         if (!flowEl) return;
         flowEl.classList.remove("interview-flow--locked");
         flowEl.setAttribute("aria-hidden", "false");
+        document.body.classList.add("interview-chat-active");
+        setMobileSetupOpen(false);
+        if (flowActionsEl) {
+            flowActionsEl.hidden = false;
+            flowActionsEl.setAttribute("aria-hidden", "false");
+        }
     }
 
     function tryStartInterviewAfterGenderChoice() {
@@ -567,9 +593,9 @@
     function recruiterReplyToCandidateQuestion() {
         var msgs = isItalianPage()
             ? [
-                "Certo, ottima domanda. In un colloquio valuto soprattutto chiarezza, esempi concreti e capacita di sintesi.",
+                "Certo, ottima domanda. In un colloquio valuto soprattutto chiarezza, esempi concreti e capacità di sintesi.",
                 "Domanda utile. Mi interessa capire il tuo ragionamento: contesto, azioni fatte e risultato finale.",
-                "Volentieri: piu la risposta e concreta, meglio riesco a valutare il tuo approccio al lavoro.",
+                "Volentieri: più la risposta è concreta, meglio riesco a valutare il tuo approccio al lavoro.",
                 "Ottimo punto. Cerca di collegare la risposta a un caso reale: aiuta molto durante il colloquio."
             ]
             : [
@@ -616,10 +642,10 @@
     function randomRecruiterPushbackFlexible() {
         var msgs = isItalianPage()
             ? [
-                "Questa risposta non e ancora centrata sulla domanda. Riprova in modo piu diretto.",
-                "Non siamo ancora sul punto: prova a rispondere esattamente a cio che ti ho chiesto.",
-                "Capisco, ma mi serve una risposta piu pertinente alla domanda.",
-                "Siamo un po fuori traccia: puoi riformulare con un esempio in linea con la domanda?",
+                "Questa risposta non è ancora centrata sulla domanda. Riprova in modo più diretto.",
+                "Non siamo ancora sul punto: prova a rispondere esattamente a ciò che ti ho chiesto.",
+                "Capisco, ma mi serve una risposta più pertinente alla domanda.",
+                "Siamo un po' fuori traccia: puoi riformulare con un esempio in linea con la domanda?",
                 "Proviamo ancora: dammi una risposta breve ma focalizzata su quello che ho chiesto."
             ]
             : [
@@ -801,6 +827,7 @@
     }
 
     function startInterview() {
+        setMobileSetupOpen(false);
         buildBanks();
         if (!questionBank.length) {
             showInlineError(
@@ -968,25 +995,59 @@
         });
     }
 
+    function runCopyConversation() {
+        var t = transcript.join("\n\n");
+        if (!t) return;
+        navigator.clipboard.writeText(t).then(function () {
+            if (btnExport) {
+                var prev = btnExport.textContent;
+                btnExport.classList.add("copied");
+                btnExport.textContent = lbl("copied", "Copied!");
+                if (btnExport.blur) {
+                    btnExport.blur();
+                }
+                setTimeout(function () {
+                    btnExport.textContent = prev;
+                    btnExport.classList.remove("copied");
+                }, 1600);
+            }
+        });
+    }
+
+    if (btnMobileSetup) {
+        btnMobileSetup.addEventListener("click", function () {
+            if (!isMobileViewport()) {
+                return;
+            }
+            var open = !document.body.classList.contains("interview-mobile-setup-open");
+            setMobileSetupOpen(open);
+            if (open) {
+                var panel = document.getElementById("interview-recruiter-panel");
+                if (panel && panel.scrollIntoView) {
+                    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && btnMobileSetup.blur) {
+                btnMobileSetup.blur();
+            }
+        });
+    }
+
     if (btnRestart) {
         btnRestart.addEventListener("click", function () {
             startInterview();
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && btnRestart.blur) {
+                btnRestart.blur();
+            }
         });
     }
 
     if (btnExport) {
         btnExport.addEventListener("click", function () {
-            var t = transcript.join("\n\n");
-            if (!t) return;
-            navigator.clipboard.writeText(t).then(function () {
-                var prev = btnExport.textContent;
-                btnExport.classList.add("copied");
-                btnExport.textContent = lbl("copied", "Copied!");
-                setTimeout(function () {
-                    btnExport.textContent = prev;
-                    btnExport.classList.remove("copied");
-                }, 1600);
-            });
+            runCopyConversation();
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && btnExport.blur) {
+                btnExport.blur();
+            }
         });
     }
 
@@ -1013,6 +1074,9 @@
             settingsToggleEl.setAttribute("aria-expanded", next ? "true" : "false");
             settingsContentEl.hidden = !next;
             settingsSectionEl.classList.toggle("is-open", next);
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && settingsToggleEl.blur) {
+                settingsToggleEl.blur();
+            }
         });
     }
 })();

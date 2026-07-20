@@ -1,0 +1,76 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "FAQ - Drose" %}{% endblock %}
+{% block body_class %}drose-page faq-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Drose Drone Services FAQ: quotes, flights, deliverables, compliance, and how to request aerial imaging.' %}">
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/faq.css' %}?v=15">
+{% endblock %}
+{% block content %}
+<div class="faq-container">
+    <h1 class="faq-main-title">FAQ</h1>
+    <p class="faq-intro faq-intro-lead">{% trans "Common questions about Drose Drone Services, quotes, and deliverables." %}</p>
+    <p class="faq-intro faq-intro-detail">{% blocktrans trimmed %}Below you will find topics about our services, flight operations, deliverables, and how Drose relates to Gadly.{% endblocktrans %}</p>
+
+    <section class="faq-section">
+        <h2>{% trans "Services and quotes" %}</h2>
+        <div class="faq-item">
+            <h3>{% trans "What services does Drose offer?" %}</h3>
+            <p>{% blocktrans trimmed %}Aerial photography and video, roof and site inspections, mapping and surveys, and event coverage. Each project is planned around your location, goals, and the deliverables you need.{% endblocktrans %}</p>
+        </div>
+        <div class="faq-item">
+            <h3>{% trans "How do I request a quote?" %}</h3>
+            <p>{% blocktrans trimmed %}Use our contact page and describe the location, date, type of work, and any deadlines. You can write by email, call us, or message us on WhatsApp. We will reply with scope, timing, and a tailored proposal.{% endblocktrans %}</p>
+        </div>
+        <div class="faq-item">
+            <h3>{% trans "How quickly can you deliver?" %}</h3>
+            <p>{% blocktrans trimmed %}Turnaround depends on the job size and weather. Simple photo or video packages are often ready within a few days after the flight; larger mapping or inspection sets may take longer. We confirm timelines in the quote.{% endblocktrans %}</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>{% trans "Operations and compliance" %}</h2>
+        <div class="faq-item">
+            <h3>{% trans "Are flights legal and insured?" %}</h3>
+            <p>{% blocktrans trimmed %}Operations follow applicable local rules, airspace restrictions, and safety procedures. Flight planning includes risk assessment and permissions where required. Insurance details are provided on request for commercial clients.{% endblocktrans %}</p>
+        </div>
+        <div class="faq-item">
+            <h3>{% trans "What affects whether a flight can go ahead?" %}</h3>
+            <p>{% blocktrans trimmed %}Weather, wind, visibility, temporary flight restrictions, and site access can postpone or reschedule a mission. If conditions are not safe or legal, we do not fly.{% endblocktrans %}</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>{% trans "Deliverables and privacy" %}</h2>
+        <div class="faq-item">
+            <h3>{% trans "What will I receive after the flight?" %}</h3>
+            <p>{% blocktrans trimmed %}Deliverables are agreed in advance—typically edited photos, video clips, or overview files suitable for reports and marketing. Format and resolution depend on the package you choose.{% endblocktrans %}</p>
+        </div>
+        <div class="faq-item">
+            <h3>{% trans "How is my footage handled?" %}</h3>
+            <p>{% blocktrans trimmed %}Project files are used only to produce your deliverables and are not published without your permission. For sensitive sites, we can discuss retention and sharing limits in the quote.{% endblocktrans %}</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>{% trans "Drose and Gadly" %}</h2>
+        <div class="faq-item">
+            <h3>{% trans "What is the relationship between Drose and Gadly?" %}</h3>
+            <p>{% blocktrans trimmed %}Drose Drone Services is the aerial imaging brand. It shares the same website platform as Gadly, but quotes, contact, and drone work are handled by Drose and stay separate from Gadly’s free online tools.{% endblocktrans %}</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>{% trans "Help and contact" %}</h2>
+        <div class="faq-item">
+            <h3>{% trans "How do I request a quote or ask a question?" %}</h3>
+            {% url 'drose_contact' as contact_url %}
+            <p>{% blocktrans trimmed with contact_url=contact_url %}Use the <a href="{{ contact_url }}">Contact</a> page with location, dates, and the type of aerial work you need. We read incoming messages and reply with next steps when we can.{% endblocktrans %}</p>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

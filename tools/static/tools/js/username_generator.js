@@ -68,8 +68,20 @@ document.addEventListener("DOMContentLoaded", function() {
     var btnCopy = document.getElementById("btn-copy");
     var lastGeneratedUsernames = [];
 
+    /* Mobile: niente focus al touch (tap ripetuti = stesso effetto; blur gestito da mobile-tap.js) */
+    if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) {
+        [btnGen, btnCopy].forEach(function(btn) {
+            if (!btn) return;
+            btn.setAttribute("tabindex", "-1");
+            btn.addEventListener("pointerdown", function(e) {
+                if (e.pointerType === "mouse") return;
+                e.preventDefault();
+            });
+        });
+    }
+
     function isMobileViewport() {
-        return window.innerWidth <= 480;
+        return window.matchMedia && window.matchMedia("(max-width: 480px)").matches;
     }
 
     function escapeHtml(str) {
@@ -157,10 +169,10 @@ document.addEventListener("DOMContentLoaded", function() {
             seen[u] = true;
             list.push(u);
         }
-        var title = gt("Suggested usernames");
-        var selAll = gt("Select all");
-        var selNone = gt("Deselect all");
-        var copyHint = gt("The Copy button copies only the usernames you have selected.");
+        var title = gettext("Suggested usernames");
+        var selAll = gettext("Select all");
+        var selNone = gettext("Deselect all");
+        var copyHint = gettext("The Copy button copies only the usernames you have selected.");
         lastGeneratedUsernames = list.slice();
         var html = '<div class="caption-results-header"><p class="caption-results-title">' + escapeHtml(title) + "</p>";
         if (!isMobileViewport()) {
@@ -207,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var picked = resultArea.querySelectorAll(".caption-pick:checked");
         if (!picked.length) {
             if (resultArea.querySelector(".caption-pick")) {
-                showTextToolInlineError(resultArea, gt("Select at least one username to copy."));
+                showTextToolInlineError(resultArea, gettext("Select at least one username to copy."));
             }
             return;
         }

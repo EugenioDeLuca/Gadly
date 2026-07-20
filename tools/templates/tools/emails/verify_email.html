@@ -4,7 +4,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{% if email_change %}{% trans "Confirm your new email - Gadly" %}{% else %}{% trans "Verify your email - Gadly" %}{% endif %}</title>
+  <title>{% if email_change %}{% if is_drose_brand %}{% trans "Confirm your new email - Drose Drone Services" %}{% else %}{% trans "Confirm your new email - Gadly" %}{% endif %}{% else %}{% if is_drose_brand %}{% trans "Verify your email - Drose Drone Services" %}{% else %}{% trans "Verify your email - Gadly" %}{% endif %}{% endif %}</title>
+  <style>
+    a.transactional-email-btn {
+      transition: transform 0.18s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      a.transactional-email-btn:hover {
+        transform: scale(1.04);
+      }
+    }
+  </style>
 </head>
 <body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a;">
   <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f8fafc;padding:24px 12px;">
@@ -16,10 +26,17 @@
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="vertical-align:middle;">
-                    <img src="{{ brand_logo_url }}" width="42" height="42" alt="Gadly logo" style="display:block;border:0;outline:none;text-decoration:none;">
+                    {% if is_drose_brand %}
+                    {% include "tools/emails/includes/drose_brand_logo.html" %}
+                    {% else %}
+                    <img src="{{ brand_logo_url }}" width="{{ brand_logo_size }}" height="{{ brand_logo_size }}" alt="{% trans 'Gadly logo' %}" style="display:block;border:0;outline:none;text-decoration:none;width:{{ brand_logo_size }}px;height:{{ brand_logo_size }}px;max-width:{{ brand_logo_size }}px;">
+                    {% endif %}
                   </td>
-                  <td style="padding-left:12px;vertical-align:middle;">
-                    <h1 style="margin:0;font-size:24px;line-height:1.3;color:#003f7f;">Gadly</h1>
+                  <td style="padding-left:{{ brand_header_gap }}px;vertical-align:middle;">
+                    <h1 style="margin:0;font-size:24px;line-height:1.2;color:{{ brand_color }};">{{ brand_name }}</h1>
+                    {% if brand_tagline %}
+                    <p style="margin:{{ brand_tagline_spacing }};font-size:{{ brand_tagline_font_size }}px;line-height:1.3;color:#64748b;font-weight:600;">{{ brand_tagline }}</p>
+                    {% endif %}
                   </td>
                 </tr>
               </table>
@@ -35,7 +52,13 @@
               </p>
               <p style="margin:0 0 18px;font-size:15px;line-height:1.7;">
                 {% if email_change %}
-                {% trans "You updated the email on your Gadly account. Please confirm this address so we can keep your account secure and use it for password recovery." %}
+                  {% if is_drose_brand %}
+                  {% trans "You updated the email on your Gadly account (used for Gadly tools and Drose Drone Services). Please confirm this address so we can keep your account secure and use it for password recovery." %}
+                  {% else %}
+                  {% trans "You updated the email on your Gadly account. Please confirm this address so we can keep your account secure and use it for password recovery." %}
+                  {% endif %}
+                {% elif is_drose_brand %}
+                {% trans "Thanks for signing up from Drose Drone Services. Please confirm your email address to complete your account setup. The same login works for Gadly tools and Drose pages." %}
                 {% else %}
                 {% trans "Please confirm your email address to activate your account security features and complete your account setup." %}
                 {% endif %}
@@ -47,7 +70,7 @@
           </tr>
           <tr>
             <td style="padding:0 26px 8px;">
-              <a href="{{ verify_url }}" style="display:inline-block;background:#003f7f;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:8px;font-weight:700;">
+              <a href="{{ verify_url }}" class="transactional-email-btn" style="display:inline-block;background:{{ button_bg }};color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:8px;font-weight:700;">
                 {% trans "Verify Email" %}
               </a>
             </td>
@@ -64,14 +87,18 @@
             <td style="padding:0 26px 26px;">
               <p style="margin:0;font-size:15px;line-height:1.6;color:#64748b;">
                 {% if email_change %}
-                {% trans "If you did not change the email on your Gadly account, you can ignore this email." %}
+                  {% if is_drose_brand %}
+                  {% trans "If you did not change the email on your account, you can ignore this message." %}
+                  {% else %}
+                  {% trans "If you did not change the email on your Gadly account, you can ignore this email." %}
+                  {% endif %}
                 {% else %}
                 {% trans "If you did not create this account, you can ignore this email." %}
                 {% endif %}
               </p>
               <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#0f172a;">
                 {% trans "Best regards," %}<br>
-                <strong>Gadly Support</strong>
+                <strong>{% if is_drose_brand %}{% trans "Drose Drone Services" %}{% else %}Gadly Support{% endif %}</strong>
               </p>
             </td>
           </tr>

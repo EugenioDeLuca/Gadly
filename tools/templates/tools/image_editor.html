@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}{% endblock %}
 {% block body_class %}image-editor{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Edit images in your browser with Gadly: crop, resize, filters, text, drawing, and export—desktop editor.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/image-editor.css' %}?v=13">
+<link rel="stylesheet" href="{% static 'tools/css/image-editor.css' %}?v=16">
 {% endblock %}
 {% block content %}
 <div class="image-editor">
@@ -243,5 +246,5 @@ window.IMAGE_EDITOR_API = {
     upscale: "{% url 'image_upscale_api' %}"
 };
 </script>
-<script src="{% static 'tools/js/image-editor.js' %}?v=50"></script>
+<script src="{% static 'tools/js/image-editor.js' %}?v=52"></script>
 {% endblock %}

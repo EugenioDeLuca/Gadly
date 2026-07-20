@@ -2,7 +2,7 @@
 .data-viz .container {
     max-width: 900px;
     width: 100%;
-    margin: 30px auto;
+    margin: 24px auto;
     padding: 40px;
     box-sizing: border-box;
     box-shadow: 0 20px 40px rgba(0, 123, 255, 0.25);
@@ -19,9 +19,15 @@
 
 .data-viz .tool-desc {
     text-align: center;
-    color: #666;
+    color: #555;
     margin: 0 0 24px 0;
     font-size: 1rem;
+}
+
+body.data-viz:not(.dark-mode) .data-viz .tool-desc,
+body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
 }
 
 .viz-controls {
@@ -37,6 +43,101 @@
     font-weight: 600;
     color: #333;
     margin-bottom: 8px;
+    text-align: center;
+}
+
+.viz-data-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    overflow: visible;
+    padding: 6px 0;
+}
+
+.viz-action-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+    padding: 4px 8px;
+}
+
+.data-viz .viz-action-buttons .viz-template-btn {
+    flex: 0 0 auto;
+    min-width: auto;
+    max-width: none;
+    padding: 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    text-align: center;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+}
+
+/* Stesso aspetto di #btn-generate (desktop) */
+.data-viz .viz-template-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    padding: 0 16px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    box-sizing: border-box;
+    border-radius: 12px;
+    min-height: 44px;
+    height: 44px;
+    max-height: 44px;
+    border: 2px solid #003f7f;
+    background: var(--btn-primary, #003f7f);
+    color: white;
+    -webkit-text-fill-color: white;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: none;
+    outline: none;
+    text-align: center;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.data-viz .viz-template-btn:hover {
+    background: #0056b3;
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.viz-file-name {
+    width: 100%;
+    font-size: 0.88rem;
+    color: #555;
+    text-align: center;
+    word-break: break-all;
+}
+
+.viz-data-hint {
+    margin: 0 0 10px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #555;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    body.dark-mode.data-viz .viz-file-name {
+        color: #b0c4de;
+    }
 }
 
 .chart-options label {
@@ -50,6 +151,7 @@
 #data-input {
     width: 100%;
     min-height: 120px;
+    height: 160px;
     padding: 20px;
     font-family: Arial, sans-serif;
     font-size: 1rem;
@@ -82,12 +184,14 @@
     gap: 15px;
 }
 
-/* Custom select per Chart type (menu con stessa curvatura del bottone) */
-.chart-select-wrap {
+/* Custom select — stesso pattern text-tool-select (text-tools.css) */
+.data-viz .text-tool-select {
     position: relative;
+    width: 100%;
+    max-width: 320px;
 }
 
-.chart-select-wrap select {
+.data-viz .text-tool-select > select {
     position: absolute;
     width: 0;
     height: 0;
@@ -95,85 +199,97 @@
     pointer-events: none;
 }
 
-.chart-select-trigger {
-    min-width: 180px;
-    padding: 10px 36px 10px 24px;
+.data-viz .viz-opt-field .text-tool-select {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Input e dropdown opzioni grafico: stesse dimensioni */
+.data-viz .viz-opt-field input[type="text"],
+.data-viz .viz-opt-field input[type="number"],
+.data-viz .viz-opt-field .text-tool-select-trigger {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    font-size: 1rem;
+    line-height: 1.25;
+    font-family: Arial, sans-serif;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    min-height: 44px;
+}
+
+.data-viz .viz-opt-field input[type="text"],
+.data-viz .viz-opt-field input[type="number"],
+.data-viz .viz-opt-field .text-tool-select-trigger,
+.data-viz .viz-opt-field .text-tool-select-menu li,
+.data-viz .viz-opt-field .text-tool-select-menu li.selected {
+    text-align: left;
+    font-weight: 400;
+    color: #333;
+    -webkit-text-fill-color: #333;
+}
+
+.data-viz .viz-opt-field input[type="text"],
+.data-viz .viz-opt-field input[type="number"] {
+    text-align: left;
+}
+
+.data-viz .viz-opt-field .text-tool-select-trigger {
+    justify-content: space-between;
+}
+
+.data-viz .viz-opt-field .text-tool-select-menu li,
+.data-viz .viz-opt-field .text-tool-select-menu li.selected {
+    padding: 10px 14px;
+}
+
+.data-viz .viz-opt-field .text-tool-select-trigger::after {
+    border-top-color: #555;
+}
+
+.data-viz .viz-opt-field input[type="text"]::placeholder,
+.data-viz .viz-opt-field input[type="number"]::placeholder {
+    color: #999;
+    -webkit-text-fill-color: #999;
+    opacity: 1;
+}
+
+.data-viz .viz-opt-field input[type="text"]:hover,
+.data-viz .viz-opt-field input[type="number"]:hover,
+.data-viz .viz-opt-field .text-tool-select-trigger:hover {
+    border-color: #007BFF;
+    background: #f8fcff;
+}
+
+.data-viz .viz-opt-field input[type="text"]:focus,
+.data-viz .viz-opt-field input[type="number"]:focus {
+    outline: none;
+    border-color: #007BFF;
+    background: #f8fcff;
+}
+
+.data-viz #chart-type-wrap.text-tool-select {
+    width: auto;
+    max-width: none;
+}
+
+.data-viz #chart-type-wrap .text-tool-select-trigger {
+    min-width: 160px;
+    width: auto;
+    max-width: none;
+    min-height: 44px;
+    height: 44px;
+    padding: 12px 24px;
     font-size: 1rem;
     font-weight: 600;
     box-sizing: border-box;
     border-radius: 12px;
-    min-height: 44px;
-}
-
-.chart-select-trigger {
-    position: relative;
-    border: 2px solid #ddd;
-    background: white;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-}
-
-.chart-select-trigger::after {
-    content: "▼";
-    position: absolute;
-    right: 12px;
-    font-size: 0.7em;
-    color: #666;
-}
-
-.chart-select-wrap.open .chart-select-trigger {
-    border-color: #007BFF;
-}
-
-.chart-select-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 100%;
-    width: max-content;
-    margin-top: 4px;
-    background: white;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    z-index: 100;
-}
-
-.chart-select-option {
-    padding: 10px 14px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.chart-select-option:first-child {
-    border-radius: 10px 10px 0 0;
-}
-
-.chart-select-option:last-child {
-    border-radius: 0 0 10px 10px;
-}
-
-.chart-select-option:hover {
-    background: #f0f7ff;
-}
-
-.chart-select-option.selected {
-    background: var(--btn-primary, #003f7f);
-    color: white;
-}
-
-.chart-select-wrap.open .chart-select-dropdown {
-    display: block;
-}
-
-/* Nel menu non mostrare l’opzione già selezionata (es. Bar di default) */
-.data-viz .chart-select-wrap.open .chart-select-dropdown .chart-select-option.selected {
-    display: none;
-}
-.data-viz .chart-select-wrap.open .chart-select-dropdown .chart-select-option:not(.selected) {
-    border-radius: 10px;
+    justify-content: space-between;
 }
 
 /* Errore sopra Chart type + Generate (stesso stile degli altri tool) */
@@ -247,9 +363,274 @@
     text-align: center;
 }
 
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+    body.data-viz #btn-generate,
+    body.data-viz .chart-download-btn,
+    body.data-viz .text-tool-select-trigger,
+    body.data-viz .viz-template-btn {
+        transition: background 0.2s, transform 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    body.data-viz #btn-generate:hover,
+    body.data-viz .chart-download-btn:hover,
+    body.data-viz .text-tool-select-trigger:hover,
+    body.data-viz .viz-action-buttons .viz-template-btn:hover {
+        transform: scale(1.03) !important;
+    }
+
+    /* Copia link desktop: hover, click e «Copiato!» restano a scale 1.03 */
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
+        transform: scale(1.03) !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:focus,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:focus-visible,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active {
+        background: #28a745 !important;
+        background-color: #28a745 !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1.03) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:focus,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:focus-visible,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active {
+        background: #28a745 !important;
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(1.03) !important;
+    }
+
+    body.data-viz .viz-example-buttons {
+        flex-wrap: nowrap;
+    }
+
+    body.data-viz .viz-example-btn {
+        transition: background 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    body.data-viz .viz-example-btn:hover {
+        transform: scale(1.02);
+    }
+
+    body.data-viz .viz-example-btn.selected {
+        transform: scale(1.02);
+    }
+
+    body.data-viz .viz-example-btn.selected:hover {
+        transform: scale(1.02);
+    }
+}
+
 @media (min-width: 769px) {
+    /* Stesso distacco header/footer della home: site-main riempie l’altezza viewport
+       ma il container si estende in basso così il margine inferiore resta fisso. */
+    body.data-viz .site-main {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 24px !important;
+    }
+
+    body.data-viz .site-main .data-viz {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
+    }
+
+    body.data-viz .site-main .data-viz > .container {
+        flex: 1 1 auto;
+        margin-top: 24px !important;
+        margin-bottom: 24px !important;
+        min-height: 0;
+    }
+
     .data-viz .chart-options #btn-generate {
         margin-left: auto;
+    }
+
+    body.data-viz .viz-example-buttons {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        justify-content: center;
+        gap: 12px;
+        width: auto;
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.data-viz .viz-example-btn {
+        flex: 0 0 200px;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        padding: 0 10px;
+        font-size: 16px;
+        min-height: 44px;
+        height: 44px;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-example-btn:not(.selected) {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
+        border: 2px solid #003f7f;
+        color: #003f7f;
+        -webkit-text-fill-color: #003f7f;
+        box-shadow: none;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-example-btn:not(.selected):hover {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
+        border-color: #003f7f;
+        color: #003f7f;
+        -webkit-text-fill-color: #003f7f;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-example-btn.selected {
+        background: #003f7f;
+        border: 2px solid #003f7f;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+        font-weight: 700;
+        box-shadow:
+            0 0 0 1px #fff,
+            0 0 0 3px #003f7f,
+            0 3px 10px rgba(0, 63, 127, 0.28);
+    }
+
+    body.data-viz:not(.dark-mode) .viz-example-btn.selected:hover {
+        background: #003f7f;
+        border-color: #003f7f;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+
+    body.data-viz .viz-action-buttons {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    body.data-viz .viz-action-buttons .viz-template-btn {
+        flex: 0 0 auto;
+        min-width: auto;
+        width: auto;
+        max-width: none;
+        padding: 0 16px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+        white-space: nowrap;
+        min-height: 44px !important;
+        height: 44px !important;
+        max-height: 44px !important;
+        border-width: 2px !important;
+        border-style: solid !important;
+        box-sizing: border-box !important;
+    }
+
+    body.data-viz .viz-export-buttons {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    body.data-viz .viz-export-buttons .chart-download-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 25%;
+        white-space: nowrap;
+        padding: 0 10px !important;
+        font-size: 16px;
+    }
+
+    body.data-viz .viz-data-hint,
+    body.dark-mode.data-viz .viz-data-hint {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .chart-download-btn,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .chart-download-btn:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .chart-download-btn:focus,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .chart-download-btn:focus-visible,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .chart-download-btn:active {
+        min-height: 44px !important;
+        height: 44px !important;
+        max-height: 44px !important;
+        box-sizing: border-box !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 20px !important;
+    }
+
+    /* Desktop: chart type come prima (riga, trigger compatto, stili base) */
+    body.data-viz .chart-options {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 15px !important;
+    }
+
+    body.data-viz #chart-type-wrap.text-tool-select {
+        width: auto !important;
+        max-width: none !important;
+        min-height: 0 !important;
+    }
+
+    body.data-viz #chart-type-wrap .text-tool-select-trigger {
+        width: auto !important;
+        min-width: 160px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
+        padding: 12px 24px !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        box-sizing: border-box !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        text-align: left !important;
+    }
+
+    body.data-viz .viz-opt-field .text-tool-select {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .chart-options #btn-generate:hover,
+    body.dark-mode.data-viz .site-main .container .chart-options #btn-generate:hover {
+        background: #0056b3 !important;
+        border-color: #0056b3 !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+        transform: scale(1.03) !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .chart-options #btn-generate,
+    body.dark-mode.data-viz .site-main .container .chart-options #btn-generate {
+        transition: background 0.2s, transform 0.2s, border-color 0.2s, color 0.2s;
     }
 }
 
@@ -278,9 +659,15 @@
     width: 100%;
     min-height: 350px;
     max-height: 450px;
+    /* La preview deve mantenere altezza stabile durante restore:
+       prima mostriamo un PNG di boot (img) e poi Chart.js (canvas).
+       Con aspect-ratio l'altezza dipende dalla larghezza (non dall'altezza intrinseca dell'img),
+       evitando il "resize per un attimo" al refresh. */
+    aspect-ratio: 2 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 #chart-canvas {
@@ -288,80 +675,625 @@
     max-height: 450px;
 }
 
+.viz-boot-chart-img {
+    display: block;
+    max-width: 100%;
+    max-height: 450px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.data-viz .viz-export-buttons .chart-download-btn {
+    font-size: 16px;
+}
+
 .chart-download-btn {
     padding: 10px 20px;
     font-size: 14px;
     font-weight: 600;
-    background: #28a745;
+    background: #003f7f;
     color: white;
-    border: none;
+    border: 2px solid #003f7f;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    box-sizing: border-box;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
 }
 
 .chart-download-btn:hover {
-    background: #218838;
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.viz-export-buttons .viz-download-btn:active,
+.viz-export-buttons .viz-download-btn.tap-active,
+.viz-export-buttons .viz-download-btn.downloaded,
+.viz-export-buttons .viz-download-btn.downloaded:hover {
+    background: #28a745 !important;
+    border: 2px solid #28a745 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
 }
 
 @media (max-width: 768px) {
-    .site-main .data-viz {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        padding: 0 16px;
-        box-sizing: border-box;
+    /* Mobile: niente card esterna — contenuto centrato a 338px (come File Analyzer) */
+    body.data-viz .site-main {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
-    .data-viz .container {
-        margin: 20px 0;
-        padding: 28px 24px;
-        width: 100%;
-        max-width: 100%;
-        align-self: stretch;
-        box-sizing: border-box;
+
+    body.data-viz .site-main .data-viz {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
     }
-    .data-viz h1 {
+
+    body.data-viz .site-main .data-viz > .container,
+    body.dark-mode.data-viz .site-main .data-viz > .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 16px auto 24px !important;
+        padding: 16px 8px 24px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > h1,
+    body.data-viz .site-main .data-viz > .container > .tool-desc,
+    body.data-viz .site-main .data-viz > .container > .tool-help,
+    body.data-viz .site-main .data-viz > .container > .viz-controls,
+    body.data-viz .site-main .data-viz > .container .viz-data-actions,
+    body.data-viz .site-main .data-viz > .container .viz-action-buttons,
+    body.data-viz .site-main .data-viz > .container > #data-viz-result,
+    body.data-viz .site-main .data-viz > .container > .chart-options,
+    body.data-viz .site-main .data-viz > .container > .chart-container,
+    body.data-viz .site-main .data-viz > .container > .home-link-wrap {
+        width: 100% !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        box-sizing: border-box !important;
+    }
+
+    body.data-viz #data-input,
+    body.data-viz #data-input:focus {
+        min-height: 130px !important;
+        height: 152px !important;
+        padding: 12px !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        overflow-y: hidden !important;
+    }
+
+    body.data-viz #data-input::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+
+    body.data-viz .text-tool-select {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 47.5px !important;
+    }
+
+    body.data-viz .text-tool-select-trigger {
+        width: 100% !important;
+        min-width: 100% !important;
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 36px 0 16px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    body.data-viz .viz-opt-field input[type="text"],
+    body.data-viz .viz-opt-field input[type="number"],
+    body.data-viz .viz-opt-field .text-tool-select-trigger {
+        width: 100% !important;
+        min-width: 100% !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.data-viz .viz-opt-field input[type="text"],
+    body.data-viz .viz-opt-field input[type="number"] {
+        text-align: left !important;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-opt-field input[type="text"],
+    body.data-viz:not(.dark-mode) .viz-opt-field input[type="number"],
+    body.data-viz:not(.dark-mode) .viz-opt-field .text-tool-select-trigger,
+    body.data-viz:not(.dark-mode) .viz-opt-field .text-tool-select-menu li,
+    body.data-viz:not(.dark-mode) .viz-opt-field .text-tool-select-menu li.selected {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-opt-field .text-tool-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+
+    body.data-viz .viz-opt-field .text-tool-select-trigger {
+        justify-content: space-between !important;
+        text-align: left !important;
+        padding: 0 36px 0 16px !important;
+        font-weight: 400 !important;
+    }
+
+    body.data-viz .viz-opt-field .text-tool-select-menu li,
+    body.data-viz .viz-opt-field .text-tool-select-menu li.selected {
+        text-align: left !important;
+        padding: 10px 14px !important;
+        font-weight: 400 !important;
+    }
+
+    /* Chart type mobile — come Username Generator */
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger,
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger:hover,
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger:focus,
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger:focus-visible,
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger:active,
+    body.data-viz:not(.dark-mode) .text-tool-select.open .text-tool-select-trigger {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger::after {
+        color: #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .text-tool-select-menu {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: 0 6px 20px rgba(0, 63, 127, 0.15) !important;
+    }
+
+    body.data-viz .text-tool-select-menu {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.data-viz .text-tool-select-menu li {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        font-weight: 600 !important;
+        -webkit-tap-highlight-color: transparent !important;
+        outline: none !important;
+    }
+
+    body.data-viz:not(.dark-mode) .text-tool-select-menu li {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    body.data-viz:not(.dark-mode) .text-tool-select-menu li:hover,
+    body.data-viz:not(.dark-mode) .text-tool-select-menu li:active {
+        background: rgba(0, 63, 127, 0.08) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field input[type="text"],
+    body.dark-mode.data-viz .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-trigger,
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li,
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li.selected {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-trigger,
+    body.dark-mode.data-viz .text-tool-select-trigger:hover,
+    body.dark-mode.data-viz .text-tool-select-trigger:focus,
+    body.dark-mode.data-viz .text-tool-select-trigger:focus-visible,
+    body.dark-mode.data-viz .text-tool-select-trigger:active,
+    body.dark-mode.data-viz .text-tool-select.open .text-tool-select-trigger {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-trigger::after {
+        color: var(--text-secondary, #b0c4de) !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu {
+        background: #1e2a3a !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li {
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li:hover,
+    body.dark-mode.data-viz .text-tool-select-menu li:active {
+        background: rgba(0, 63, 127, 0.2) !important;
+    }
+
+    /* Errore: 12px sopra select + Genera (base.css azzera i margin su mobile) */
+    body.data-viz .site-main .data-viz > .container > #data-viz-result.result-area.error:not(.hidden) {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > #data-viz-result.result-area.error:not(.hidden) + .chart-options {
+        margin-top: 12px !important;
+    }
+
+    /* Light mobile: textarea bordo sottile (1px), focus senza ingrossamento */
+    body.data-viz:not(.dark-mode) .site-main .container #data-input {
+        border: 1px solid #ddd !important;
+        background: #f8f9fa !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container #data-input:focus {
+        border: 1px solid #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz .data-viz h1 {
         margin-bottom: 18px;
+        text-align: center;
     }
-    .chart-options {
+
+    body.data-viz:not(.dark-mode) .data-viz .tool-desc,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container > .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+        text-align: center;
+    }
+
+
+    body.data-viz .data-input-section label {
+        text-align: center;
+    }
+
+    body.data-viz .chart-options {
         flex-direction: column;
         align-items: stretch;
         gap: 6px 8px;
     }
-    .chart-options label {
+
+    body.data-viz .chart-options label {
         display: block;
         margin-bottom: 0;
+        text-align: center;
     }
-    #btn-generate {
+
+    body.data-viz #btn-generate {
         width: 100%;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Mobile bottoni — colore fisso + scale(0.96) al tap (come CV Generator) */
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate:hover,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate:focus,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate:focus-visible,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate:active,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate.tap-active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate:active,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-generate.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.data-viz .viz-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    body.data-viz .viz-template-btn {
+        width: 100%;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        line-height: 1.25 !important;
+        box-sizing: border-box !important;
+        border-width: 2px !important;
+        border-style: solid !important;
+    }
+
+    body.data-viz .viz-example-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    body.data-viz .viz-example-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 47.5px;
+        height: auto;
+        padding: 10px 14px;
+        font-size: 16px;
+        white-space: normal;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected {
+        background: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        box-shadow: inset 0 0 0 1px #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-example-btn,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn:hover,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn:focus,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn:focus-visible {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected {
+        background: rgba(176, 196, 222, 0.12) !important;
+        border: 2px solid #b0c4de !important;
+        box-shadow: inset 0 0 0 1px #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-example-btn:active,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-template-btn,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:hover,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:focus,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:focus-visible {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border-color: #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:active,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    /* Download — dimensioni (mobile light) */
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn {
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: none !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+        background: #28a745 !important;
+        background-color: #28a745 !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(0.96) !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied) {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
+        background: #dc3545 !important;
+        background-color: #dc3545 !important;
+        border: 2px solid #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        font-weight: 700 !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.tap-active {
+        background: #ffe6e6 !important;
+        background-color: #ffe6e6 !important;
+        border: 2px solid #e8a5a5 !important;
+        border-color: #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz .text-tool-select-trigger:active,
+    body.data-viz .text-tool-select-trigger.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.data-viz .home-link-wrap {
+        text-align: center;
+    }
+
+    /* Light mobile: niente card/contenitore sul risultato grafico */
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container > .chart-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
     }
 }
 
 @media (max-width: 600px) {
-    .site-main .data-viz {
-        padding: 0 10px;
-    }
-    .data-viz .container {
-        margin: 12px 0;
-        padding: 24px 18px;
-    }
-    .data-viz h1 {
+    body.data-viz .data-viz h1 {
         font-size: 1.4em;
-    }
-    #data-input {
-        min-height: 130px;
-        font-size: 16px; /* prevent zoom on iOS */
-    }
-    #data-input::placeholder {
-        font-size: 16px;
-    }
-    .chart-select-trigger {
-        min-width: 100%;
     }
     #btn-generate {
         min-width: 100%;
-        min-height: 48px;
     }
     .chart-container {
         padding: 16px;
@@ -375,26 +1307,997 @@
     }
 }
 
-@media (max-width: 480px) {
-    .site-main .data-viz {
-        padding: 0 8px;
+
+/* Dark mode mobile — testi e controlli allineati agli altri tool */
+@media (max-width: 768px) {
+    body.dark-mode.data-viz .data-viz h1,
+    body.dark-mode.data-viz .site-main .data-viz .container h1 {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
-    .data-viz .container {
-        margin: 8px 0;
-        padding: 20px 14px;
+
+    body.dark-mode.data-viz .data-viz .tool-desc,
+    body.dark-mode.data-viz .data-input-section label,
+    body.dark-mode.data-viz .chart-options label {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
-    #data-input,
-    #data-input:focus {
-        font-family: Arial, sans-serif !important;
-        font-size: 17px !important;
-        line-height: 1.5 !important;
-        padding: 12px !important;
+
+    body.dark-mode.data-viz .site-main .container #data-input,
+    body.dark-mode.data-viz .site-main .container #data-input:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
     }
-    #data-input::placeholder {
-        font-family: Arial, sans-serif !important;
-        font-size: 17px !important;
-        line-height: 1.5 !important;
-        color: #999 !important;
+
+    body.dark-mode.data-viz .site-main .container #data-input::placeholder {
+        color: #555 !important;
         opacity: 1 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #data-input:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #btn-generate,
+    body.dark-mode.data-viz .site-main .container #btn-generate:hover,
+    body.dark-mode.data-viz .site-main .container #btn-generate:focus,
+    body.dark-mode.data-viz .site-main .container #btn-generate:focus-visible,
+    body.dark-mode.data-viz .site-main .container #btn-generate:active,
+    body.dark-mode.data-viz .site-main .container #btn-generate.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #btn-generate:active,
+    body.dark-mode.data-viz .site-main .container #btn-generate.tap-active {
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .result-area:not(.error) {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 2px dashed rgba(176, 196, 222, 0.45) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .result-area.error {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container > .chart-container {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(176, 196, 222, 0.35) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container > .chart-container .chart-preview {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container > #data-viz-result.result-area:not(.error):not(.hidden) {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn {
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+        background: #28a745 !important;
+        background-color: #28a745 !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied) {
+        background: #1e2a3a !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active {
+        background: #1e2a3a !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.dark-mode.data-viz .home-link-wrap svg path {
+        fill: #b0c4de !important;
+    }
+}
+
+/* --- Extended features (examples, preview, options, export) --- */
+.viz-examples {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    width: 100%;
+}
+
+.viz-example-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.viz-examples-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    text-align: center;
+}
+
+/* Stesso aspetto dei bottoni template / Genera grafico */
+.data-viz .viz-example-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    box-sizing: border-box;
+    border-radius: 12px;
+    min-height: 44px;
+    height: 44px;
+    white-space: nowrap;
+    border: 2px solid #003f7f;
+    background: var(--btn-primary, #003f7f);
+    color: white;
+    -webkit-text-fill-color: white;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: none;
+    outline: none;
+    text-align: center;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.data-viz .viz-example-btn:hover {
+    background: var(--btn-primary, #003f7f);
+    border-color: #003f7f;
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.data-viz .viz-example-btn.selected {
+    background: #0056b3;
+    border-color: #0056b3;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.viz-data-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 14px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.viz-data-toolbar .viz-mini-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 9.5rem;
+    width: 9.5rem;
+    min-height: 38px;
+    line-height: 1.25;
+    box-sizing: border-box;
+}
+
+.viz-data-toolbar .viz-inline-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    margin: 0;
+    line-height: 1.25;
+    box-sizing: border-box;
+}
+
+.viz-data-toolbar .viz-inline-check input[type="checkbox"] {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.viz-mini-btn {
+    padding: 8px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 2px solid #b8d4f0;
+    background: #fff;
+    color: #003f7f;
+    cursor: pointer;
+}
+
+.viz-mini-btn:hover {
+    background: #e8f4fd;
+}
+
+.viz-data-toolbar .viz-reset-btn {
+    color: #000;
+    -webkit-text-fill-color: #000;
+}
+
+.viz-data-toolbar .viz-reset-btn:hover {
+    border-color: #e8a5a5;
+    background: #ffe6e6;
+    color: #c82333;
+    -webkit-text-fill-color: #c82333;
+}
+
+.viz-inline-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+}
+
+.viz-data-preview {
+    width: 100%;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.viz-data-preview.hidden {
+    display: none;
+}
+
+.viz-preview-title {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.viz-preview-scroll {
+    overflow-x: auto;
+    border: 2px solid #e2ebf7;
+    border-radius: 10px;
+    background: #fafcff;
+}
+
+.viz-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    table-layout: fixed;
+}
+
+.viz-preview-table th,
+.viz-preview-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2ebf7;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.viz-preview-table th:not(:last-child),
+.viz-preview-table td:not(:last-child) {
+    border-right: 2px solid #b8d4f0;
+}
+
+.viz-preview-table th {
+    background: #e8f4fd;
+    color: #003f7f;
+    font-weight: 600;
+}
+
+.viz-preview-more {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.viz-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 20px;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #f8fcff;
+    border: 2px dashed #b8d4f0;
+    font-size: 0.88rem;
+    color: #003f7f;
+    box-sizing: border-box;
+}
+
+.viz-stats.hidden {
+    display: none;
+}
+
+.viz-options-panel {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #e2ebf7;
+    background: #fafcff;
+    box-sizing: border-box;
+}
+
+.viz-options-title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #003f7f;
+    text-align: center;
+}
+
+.viz-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+@media (min-width: 769px) {
+    .viz-options-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        justify-items: stretch;
+    }
+
+    .viz-options-grid .viz-opt-field:nth-child(1) {
+        grid-column: 1 / 3;
+    }
+
+    .viz-options-grid .viz-opt-field:nth-child(2) {
+        grid-column: 3 / 5;
+    }
+
+    .viz-options-grid .viz-opt-field:nth-child(3) {
+        grid-column: 5 / 7;
+    }
+
+    .viz-options-grid .viz-opt-field:nth-child(4) {
+        grid-column: 2 / 4;
+    }
+
+    .viz-options-grid .viz-opt-field:nth-child(5) {
+        grid-column: 4 / 6;
+    }
+
+    .viz-options-grid .viz-opt-field {
+        text-align: center;
+    }
+
+    .data-viz .viz-options-checks-row {
+        flex-wrap: nowrap;
+    }
+
+    .data-viz .viz-options-checks-row .viz-inline-check {
+        white-space: nowrap;
+    }
+
+    .data-viz .viz-stats {
+        font-size: 15px;
+    }
+}
+
+.viz-opt-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.viz-options-checks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.viz-options-checks-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px 16px;
+    width: 100%;
+}
+
+.viz-export-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.chart-download-btn.viz-export-secondary,
+.viz-export-buttons .viz-copy-btn {
+    background: #003f7f;
+    border: 2px solid #003f7f;
+    box-sizing: border-box;
+}
+
+.chart-download-btn.viz-export-secondary:hover,
+.viz-export-buttons .viz-copy-btn:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Copia link mobile: niente scale al tap */
+body.data-viz .viz-export-buttons .viz-copy-btn.tap-active,
+body.data-viz .viz-export-buttons #btn-share-link.tap-active,
+body.data-viz .viz-data-toolbar #btn-copy-data.tap-active,
+body.data-viz .viz-data-toolbar #btn-copy-data.copied,
+body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
+    transform: none !important;
+}
+
+.viz-export-buttons .viz-copy-btn.copied,
+.viz-export-buttons .viz-copy-btn.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+.viz-data-toolbar .viz-mini-btn.copied,
+.viz-data-toolbar .viz-mini-btn.copied:hover {
+    background: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+@media (max-width: 768px) {
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn {
+        background: #1e2a3a;
+        border: 2px solid #b0c4de;
+        color: #b0c4de;
+        -webkit-text-fill-color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn:hover {
+        background: rgba(176, 196, 222, 0.12);
+        border-color: #b0c4de;
+        color: #b0c4de;
+        -webkit-text-fill-color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied,
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied:hover {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active) {
+        background: #1e2a3a;
+        border: 2px solid #b0c4de;
+        color: #b0c4de;
+        -webkit-text-fill-color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:active,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.tap-active,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded:hover {
+        background: #28a745 !important;
+        border: 2px solid #28a745 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.data-viz:not(.dark-mode) .viz-mini-btn.copied,
+    body.data-viz:not(.dark-mode) .viz-mini-btn.copied:hover {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.dark-mode.data-viz .viz-examples-label,
+    body.dark-mode.data-viz .viz-inline-check,
+    body.dark-mode.data-viz .viz-opt-field {
+        color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn {
+        background: #1e2a3a;
+        border: 2px solid #b0c4de;
+        color: #b0c4de;
+        -webkit-text-fill-color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn:hover,
+    body.dark-mode.data-viz .viz-example-btn.selected {
+        background: rgba(176, 196, 222, 0.12);
+        border-color: #b0c4de;
+        color: #b0c4de;
+        -webkit-text-fill-color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-mini-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(176, 196, 222, 0.45);
+        color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-preview-scroll,
+    body.dark-mode.data-viz .viz-options-panel,
+    body.dark-mode.data-viz .viz-stats {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(176, 196, 222, 0.35);
+        color: #b0c4de;
+    }
+
+    body.dark-mode.data-viz .viz-preview-table th {
+        background: rgba(255, 255, 255, 0.08);
+        color: #b0c4de;
+    }
+}
+
+@media (min-width: 769px) {
+    /* Desktop: dark mode identico al light (layout e colori) */
+    body.dark-mode.data-viz .data-viz h1,
+    body.dark-mode.data-viz .site-main .data-viz .container h1,
+    body.dark-mode.data-viz .viz-options-title,
+    body.dark-mode.data-viz .viz-preview-title {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .tool-desc,
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-desc,
+    body.dark-mode.data-viz .data-input-section label,
+    body.dark-mode.data-viz .chart-options label,
+    body.dark-mode.data-viz .viz-examples-label,
+    body.dark-mode.data-viz .viz-inline-check,
+    body.dark-mode.data-viz .viz-opt-field,
+    body.dark-mode.data-viz .viz-file-name,
+    body.dark-mode.data-viz .viz-data-hint,
+    body.dark-mode.data-viz .viz-preview-more {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+
+    body.dark-mode.data-viz .chart-options label {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .viz-preview-title {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .container,
+    body.dark-mode.data-viz .site-main .data-viz > .container {
+        background: white !important;
+        box-shadow: 0 20px 40px rgba(0, 123, 255, 0.25) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #data-input,
+    body.dark-mode.data-viz .site-main .container #data-input:focus {
+        background: #fff !important;
+        border: 2px solid #ddd !important;
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #data-input::placeholder {
+        color: #999 !important;
+        -webkit-text-fill-color: #999 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #data-input:focus {
+        border-color: #007BFF !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-trigger,
+    body.dark-mode.data-viz .text-tool-select-trigger:hover,
+    body.dark-mode.data-viz .text-tool-select-trigger:focus,
+    body.dark-mode.data-viz .text-tool-select-trigger:focus-visible,
+    body.dark-mode.data-viz .text-tool-select-trigger:active,
+    body.dark-mode.data-viz .text-tool-select.open .text-tool-select-trigger {
+        background: white !important;
+        border: 2px solid #ddd !important;
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select.open .text-tool-select-trigger {
+        border-color: #007BFF !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-trigger::after {
+        color: #666 !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu {
+        background: white !important;
+        border: 2px solid #ddd !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li:hover {
+        background: #f0f7ff !important;
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li.selected {
+        background: #d0e8f9 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li.selected {
+        font-weight: 400 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a,
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:visited {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:hover,
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:focus,
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:focus-visible,
+    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:active {
+        color: #0056b3 !important;
+        -webkit-text-fill-color: #0056b3 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #btn-generate,
+    body.dark-mode.data-viz .site-main .container #btn-generate:focus,
+    body.dark-mode.data-viz .site-main .container #btn-generate:focus-visible {
+        background: #003f7f !important;
+        border: none !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+        min-height: 44px !important;
+        height: 44px !important;
+        max-height: none !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container #btn-generate:hover {
+        background: #0056b3 !important;
+        border-color: #0056b3 !important;
+        transform: scale(1.03) !important;
+    }
+
+    /* Desktop: template CSV — stesse dimensioni light/dark */
+    body.data-viz .site-main .container .viz-template-btn {
+        min-height: 44px !important;
+        height: 44px !important;
+        max-height: 44px !important;
+        padding: 0 16px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+        box-sizing: border-box !important;
+        border-width: 2px !important;
+        border-style: solid !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:focus-visible,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:focus,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:focus-visible {
+        background: #003f7f !important;
+        border-color: #003f7f !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-template-btn:hover,
+    body.dark-mode.data-viz .site-main .container .viz-template-btn:hover {
+        background: #0056b3 !important;
+        border-color: #0056b3 !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn:not(.selected) {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn:not(.selected):hover {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn.selected {
+        background: #003f7f !important;
+        border: 2px solid #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        font-weight: 700 !important;
+        box-shadow:
+            0 0 0 1px #fff,
+            0 0 0 3px #003f7f,
+            0 3px 10px rgba(0, 63, 127, 0.28) !important;
+    }
+
+    body.dark-mode.data-viz .viz-example-btn.selected:hover {
+        background: #003f7f !important;
+        border-color: #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn {
+        background: #003f7f !important;
+        border: 2px solid #003f7f !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn:hover,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:hover {
+        background: #0056b3 !important;
+        border-color: #0056b3 !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:active,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.tap-active {
+        background: #003f7f !important;
+        border-color: #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: none !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied,
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied:hover {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        transform: none !important;
+    }
+
+    body.dark-mode.data-viz .viz-mini-btn {
+        background: #fff !important;
+        border: 2px solid #b8d4f0 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .viz-mini-btn:hover {
+        background: #e8f4fd !important;
+    }
+
+    body.dark-mode.data-viz .viz-data-toolbar .viz-reset-btn:not(:hover):not(:active):not(.tap-active) {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+
+    body.dark-mode.data-viz .viz-data-toolbar .viz-reset-btn:hover,
+    body.dark-mode.data-viz .viz-data-toolbar .viz-reset-btn:active,
+    body.dark-mode.data-viz .viz-data-toolbar .viz-reset-btn.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
+    }
+
+    body.dark-mode.data-viz .viz-preview-scroll {
+        background: #fafcff !important;
+        border: 2px solid #e2ebf7 !important;
+    }
+
+    body.dark-mode.data-viz .viz-preview-table th {
+        background: #e8f4fd !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .viz-preview-table td {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .viz-options-panel {
+        background: #fafcff !important;
+        border: 2px solid #e2ebf7 !important;
+    }
+
+    body.dark-mode.data-viz .viz-stats {
+        background: #f8fcff !important;
+        border: 2px dashed #b8d4f0 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field input,
+    body.dark-mode.data-viz .viz-opt-field select {
+        background: #fff !important;
+        border: 2px solid #ddd !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field input[type="text"],
+    body.dark-mode.data-viz .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-trigger,
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field .text-tool-select-trigger::after {
+        border-top-color: #555 !important;
+    }
+
+    body.dark-mode.data-viz .chart-container {
+        background: #fafafa !important;
+        border: 1px solid #eee !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .result-area:not(.error) {
+        background: #f8fcff !important;
+        border: 2px dashed #b8d4f0 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.data-viz .data-viz .result-area.error {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+    }
+
+    body.dark-mode.data-viz .home-link-wrap svg path {
+        fill: #003f7f !important;
+    }
+
+    body.data-viz .viz-export-buttons .chart-download-btn {
+        min-height: 44px;
+        height: 44px;
+        padding: 0 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    body.data-viz .site-main .data-viz > .container .viz-examples,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel,
+    body.data-viz .site-main .data-viz > .container .viz-data-preview,
+    body.data-viz .site-main .data-viz > .container .viz-stats {
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.data-viz .viz-export-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.data-viz .viz-export-buttons .chart-download-btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
+        transform: scale(1.03) !important;
     }
 }

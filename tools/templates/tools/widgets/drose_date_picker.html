@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="drose-date-picker" data-drose-date-picker>
+    <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+    <button type="button" class="drose-date-picker__trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="drose-date-panel-{{ widget.name }}">
+        <span class="drose-date-picker__display" data-placeholder="{% trans 'Select a date' %}"></span>
+        <svg class="drose-date-picker__icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <div class="drose-date-picker__panel" id="drose-date-panel-{{ widget.name }}" hidden role="dialog" aria-label="{% trans 'Choose a date' %}">
+        <div class="drose-date-picker__header">
+            <button type="button" class="drose-date-picker__nav" data-nav="-1" aria-label="{% trans 'Previous month' %}">‹</button>
+            <p class="drose-date-picker__month-label" aria-live="polite"></p>
+            <button type="button" class="drose-date-picker__nav" data-nav="1" aria-label="{% trans 'Next month' %}">›</button>
+        </div>
+        <div class="drose-date-picker__weekdays" aria-hidden="true"></div>
+        <div class="drose-date-picker__grid" role="grid"></div>
+        <div class="drose-date-picker__footer">
+            <button type="button" class="drose-date-picker__today">{% trans "Today" %}</button>
+            <button type="button" class="drose-date-picker__clear">{% trans "Clear" %}</button>
+        </div>
+    </div>
+</div>

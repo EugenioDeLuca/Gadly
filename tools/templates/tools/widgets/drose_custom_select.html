@@ -1,0 +1,11 @@
+<div class="text-tool-select" data-field="{{ widget.name }}">
+<input type="hidden" name="{{ widget.name }}" value="{{ display_value }}"{% include "django/forms/widgets/attrs.html" %}>
+<button type="button" class="text-tool-select-trigger" aria-haspopup="listbox">{{ display_label }}</button>
+<ul class="text-tool-select-menu" role="listbox">
+{% for group_name, group_choices, index in widget.optgroups %}
+{% for option in group_choices %}
+<li data-value="{{ option.value|stringformat:'s' }}"{% if option.value == display_value %} class="selected"{% endif %}>{{ option.label }}</li>
+{% endfor %}
+{% endfor %}
+</ul>
+</div>

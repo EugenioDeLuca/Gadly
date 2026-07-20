@@ -1,0 +1,343 @@
+.drose-float-entry {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    :root {
+        --drose-size: 168px;
+        --drose-gap: 24px;
+        --drose-label-top: calc(var(--drose-size) * 179 / 240 + 15px);
+        /* Allineato a .site-main .container in theme.css (900 / 1040 / 1120) */
+        --gadly-main-half: 450px;
+    }
+
+    @media (min-width: 2200px) {
+        :root {
+            --gadly-main-half: 520px;
+        }
+    }
+
+    @media (min-width: 3400px) {
+        :root {
+            --gadly-main-half: 560px;
+        }
+    }
+
+    .drose-float-entry {
+        position: fixed;
+        left: max(8px, calc(50% - var(--gadly-main-half) - var(--drose-size) - var(--drose-gap)));
+        top: 192px;
+        z-index: 100;
+        display: block;
+        width: var(--drose-size);
+        height: var(--drose-size);
+        text-decoration: none;
+        border: 0;
+        background: transparent;
+        pointer-events: none;
+        visibility: hidden;
+        opacity: 0;
+        --drose-label-color: #b45309;
+    }
+
+    .drose-float-entry.is-layout-resizing {
+        transition: none !important;
+    }
+
+    .drose-float-entry.is-layout-hidden {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    html.drose-layout-pending .drose-float-entry {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    html.drose-layout-ready .drose-float-entry:not(.is-layout-hidden) {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    body.homepage .site-main .container {
+        position: relative;
+        z-index: 110;
+    }
+
+    /* Home: se il pannello All tools / Top 15 è a sinistra, spostiamo il drone a destra */
+    html.gadly-qn-anchor-left .drose-float-entry,
+    body.gadly-qn-anchor-left .drose-float-entry {
+        left: auto;
+        right: max(8px, calc(50% - var(--gadly-main-half) - var(--drose-size) - var(--drose-gap)));
+    }
+
+    html.gadly-qn-anchor-right .drose-float-entry,
+    body.gadly-qn-anchor-right .drose-float-entry {
+        right: auto;
+        left: max(8px, calc(50% - var(--gadly-main-half) - var(--drose-size) - var(--drose-gap)));
+    }
+
+    .drose-float-entry__lift {
+        display: block;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .drose-float-entry__label {
+        position: absolute;
+        top: var(--drose-label-top);
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: max-content;
+        max-width: 220px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-50%) translateY(-4px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+    }
+
+    .drose-float-entry.is-drone-label-visible .drose-float-entry__label {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s;
+    }
+
+    .drose-float-entry__label-brand,
+    .drose-float-entry__label-tagline {
+        color: var(--drose-label-color, #b45309);
+        -webkit-text-fill-color: var(--drose-label-color, #b45309);
+    }
+
+    .drose-float-entry__label-brand {
+        font-size: 16px;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .drose-float-entry__label-tagline {
+        margin-top: 1px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+    }
+
+    /* Dark mode Gadly: sfondo sempre scuro → oro fisso (niente mix scroll). */
+    body.dark-mode .drose-float-entry__label-brand,
+    body.dark-mode .drose-float-entry__label-tagline {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    .drose-float-entry__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        pointer-events: none;
+    }
+
+    .drose-float-entry.is-drone-hover,
+    .drose-float-entry.is-drone-hover .drose-float-entry__lift,
+    .drose-float-entry.is-drone-hover .drose-float-entry__svg,
+    .drose-float-entry__svg .drose-icon-hit,
+    .drose-float-entry__svg .drose-icon-hit * {
+        cursor: pointer;
+    }
+
+    .drose-float-entry__svg .drose-icon-hit {
+        pointer-events: visiblePainted;
+        transform-box: view-box;
+        transform-origin: 120px 120px;
+        transition: transform 0.22s ease;
+    }
+
+    .drose-float-entry__svg .drose-icon-hit-pad {
+        pointer-events: all;
+        cursor: pointer;
+    }
+
+    .drose-float-entry__svg .drose-icon-shadow,
+    .drose-float-entry__svg .drose-icon-speck {
+        pointer-events: none;
+    }
+
+    .drose-float-entry__svg .drose-icon-shadow {
+        fill: #003f7f;
+        opacity: 0.24;
+        transform-box: view-box;
+        transform-origin: 120px 200px;
+        transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+
+    .drose-float-entry.is-drone-hover .drose-float-entry__svg .drose-icon-shadow {
+        transform: translate(0, 3px) scale(0.75, 0.6);
+        opacity: 0.14;
+    }
+
+    .drose-float-entry__svg .drose-icon-root {
+        pointer-events: none;
+        filter: url(#droseGlowLight);
+        transition: filter 0.2s ease;
+    }
+
+    .drose-float-entry.is-active .drose-float-entry__svg .drose-icon-root {
+        filter: url(#droseGlowLightActive);
+    }
+
+    .drose-float-entry.is-drone-hover .drose-float-entry__svg .drose-icon-hit {
+        transform: translate(0, -4px) scale(1.02);
+    }
+
+    .drose-float-entry.is-drone-hover .drose-float-entry__svg .drose-icon-root {
+        filter: none;
+    }
+
+    .drose-propeller-spin {
+        transform-box: fill-box;
+        transform-origin: center center;
+    }
+
+    html:not(.drose-propellers-ready) .drose-float-entry__svg .drose-propeller-spin {
+        visibility: hidden;
+    }
+
+    /* Dark mode: palette armonizzata con Gadly (oro più morbido + accenti blu) */
+    body.dark-mode .drose-float-entry__svg #droseBodyA stop:nth-child(1) { stop-color: #e8c45a; }
+    body.dark-mode .drose-float-entry__svg #droseBodyA stop:nth-child(2) { stop-color: #c9921a; }
+    body.dark-mode .drose-float-entry__svg #droseBodyA stop:nth-child(3) { stop-color: #9a6510; }
+
+    body.dark-mode .drose-float-entry__svg #droseBodyShade stop:nth-child(1) { stop-color: #c9921a; }
+    body.dark-mode .drose-float-entry__svg #droseBodyShade stop:nth-child(2) { stop-color: #7a4e0c; }
+
+    body.dark-mode .drose-float-entry__svg #droseArmA stop:nth-child(1) { stop-color: #e0b840; }
+    body.dark-mode .drose-float-entry__svg #droseArmA stop:nth-child(2) { stop-color: #a87212; }
+
+    body.dark-mode .drose-float-entry__svg #droseLensA stop:nth-child(1) { stop-color: #6a8098; }
+    body.dark-mode .drose-float-entry__svg #droseLensA stop:nth-child(2) { stop-color: #2e4058; }
+    body.dark-mode .drose-float-entry__svg #droseLensA stop:nth-child(3) { stop-color: #1a2838; }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-outline,
+    body.dark-mode .drose-float-entry__svg .drose-icon-body,
+    body.dark-mode .drose-float-entry__svg .drose-icon-body-dome,
+    body.dark-mode .drose-float-entry__svg .drose-icon-joint,
+    body.dark-mode .drose-float-entry__svg .drose-icon-vent,
+    body.dark-mode .drose-float-entry__svg .drose-motor-body,
+    body.dark-mode .drose-float-entry__svg .drose-motor-cap,
+    body.dark-mode .drose-float-entry__svg .drose-motor-band,
+    body.dark-mode .drose-float-entry__svg .drose-icon-gimbal,
+    body.dark-mode .drose-float-entry__svg .drose-icon-camera,
+    body.dark-mode .drose-float-entry__svg .drose-icon-camera-strip,
+    body.dark-mode .drose-float-entry__svg .drose-icon-lens,
+    body.dark-mode .drose-float-entry__svg .drose-propeller {
+        stroke: #3d5f82;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-joint,
+    body.dark-mode .drose-float-entry__svg .drose-icon-vent {
+        fill: #4a6278;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-motor-body {
+        fill: #c9921a;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-motor-cap {
+        fill: #b8cee8;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-motor-band {
+        fill: #6e8aa8;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-gimbal {
+        fill: #8faec8;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-camera {
+        fill: #2a3d52;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-camera-strip {
+        fill: #1e2d3d;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-lens-inner {
+        fill: #152030;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-lens-dot {
+        fill: #f87171;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-propeller {
+        fill: #1e2a38;
+        stroke: #5a7a9a;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-propeller-shine {
+        stroke: #a8c8e8;
+        opacity: 0.7;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-gloss[stroke] {
+        stroke: #d8e8f8;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-shadow {
+        fill: #7eb8f0;
+        opacity: 0.22;
+    }
+
+    body.dark-mode .drose-float-entry.is-drone-hover .drose-float-entry__svg .drose-icon-shadow {
+        opacity: 0.12;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-speck {
+        stroke: #7eb8f0;
+        opacity: 0.35;
+    }
+
+    body.dark-mode .drose-float-entry__svg .drose-icon-root {
+        filter: url(#droseGlowDark);
+    }
+
+    body.dark-mode .drose-float-entry.is-active .drose-float-entry__svg .drose-icon-root {
+        filter: url(#droseGlowDarkActive);
+    }
+
+    body.dark-mode .drose-float-entry.is-drone-hover .drose-float-entry__svg .drose-icon-root {
+        filter: none;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1280px) {
+    .drose-float-entry {
+        left: 8px;
+        top: 192px;
+        width: var(--drose-size);
+        height: var(--drose-size);
+    }
+
+    html.gadly-qn-anchor-left .drose-float-entry,
+    body.gadly-qn-anchor-left .drose-float-entry {
+        left: auto;
+        right: 8px;
+    }
+
+    html.gadly-qn-anchor-right .drose-float-entry,
+    body.gadly-qn-anchor-right .drose-float-entry {
+        right: auto;
+        left: 8px;
+    }
+}

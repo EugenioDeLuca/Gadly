@@ -20,9 +20,23 @@
 
 .text-tool .tool-desc {
     text-align: center;
-    color: #666;
+    color: #555;
     margin: 0 0 24px 0;
     font-size: 1rem;
+}
+
+/* Desktop: descrizione sotto il titolo #555 (light; cover letter anche in dark) */
+@media (min-width: 769px) {
+    body.text-tool:not(.dark-mode) .site-main .container .tool-desc,
+    body.text-tool:not(.dark-mode) .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+    body.text-tool.cover-letter-generator .site-main .container > h1 + p.tool-desc,
+    body.text-tool.cover-letter-generator .site-main .container .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
 }
 
 /* Small helper links under titles/descriptions */
@@ -220,33 +234,67 @@
     margin-bottom: 20px;
 }
 
-.text-tool .button-group button {
+/* Desktop: blu pieno; CV Generator mobile dark usa gradiente in cv_generator.html */
+@media (min-width: 769px) {
+    .text-tool .button-group button:not(.format-toggle) {
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+        background: #003f7f;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+        min-height: 44px;
+    }
+}
+.text-tool .button-group button:not(.format-toggle) {
     padding: 12px 24px;
     font-size: 1rem;
     font-weight: 600;
     border-radius: 12px;
-    border: none;
-    background: #003f7f;
-    color: white;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
     min-height: 44px;
+    box-sizing: border-box;
 }
 
-.text-tool .button-group button:hover {
-    background: #0056b3;
-    transform: scale(1.03);
+.text-tool .button-group button.format-toggle {
+    min-height: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    transition: transform 0.2s, background 0.2s;
 }
-/* Username gen: MAI blu/scale al hover */
-body.username-gen .text-tool .button-group button:hover {
-    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-    transform: none !important;
-    transition: none !important;
+
+@media (min-width: 769px) {
+    .text-tool .button-group button:not(.format-toggle):hover,
+    .text-tool .button-group button.format-toggle:not(.active):not(.export-active):hover {
+        background: #0056b3;
+        transform: scale(1.03);
+    }
 }
-body.dark-mode.username-gen .text-tool .button-group button:hover {
-    background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-    transform: none !important;
-    transition: none !important;
+@media (max-width: 768px) {
+    body.cv-generator.text-tool .site-main .container .button-group button:not(.format-toggle):hover,
+    body.cv-generator.text-tool .site-main .container .button-group button:not(.format-toggle):focus,
+    body.remove-spaces.text-tool .site-main .container .button-group button:hover,
+    body.remove-spaces.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.username-gen.text-tool .site-main .container .button-group button:hover,
+    body.username-gen.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.diff-checker.text-tool .site-main .container .button-group button:hover,
+    body.diff-checker.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.case-converter.text-tool .site-main .container .button-group button:hover,
+    body.case-converter.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.uuid-generator.text-tool .site-main .container .button-group button:hover,
+    body.uuid-generator.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.bio-gen.text-tool .site-main .container .button-group button:hover,
+    body.bio-gen.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.hashtag-gen.text-tool .site-main .container .button-group button:hover,
+    body.hashtag-gen.text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.caption-gen.text-tool .site-main .container .button-group button:hover,
+    body.caption-gen.text-tool .site-main .container .button-group button:focus:not(.tap-active) {
+        transform: scale(1) !important;
+    }
 }
 
 .text-tool .button-group button.copied {
@@ -394,35 +442,54 @@ body.text-tool.bio-gen .result-area .caption-pick {
         margin: 20px 16px;
         padding: 28px 24px;
     }
-    /* Username gen: nessun effetto hover (no scale, no blu), effetto solo al tap */
-    body.username-gen .text-tool .button-group button,
-    body.username-gen .text-tool .button-group button:hover,
-    body.username-gen .text-tool .button-group button:focus {
+    /* Username Generator: .text-tool è su <body>, non discendente */
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+    body.dark-mode.username-gen.text-tool .site-main .container .tool-desc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.username-gen.text-tool .site-main .container .button-group {
+        overflow: visible !important;
+    }
+    body.username-gen.text-tool .site-main .container .button-group button:not(.copied) {
+        transform-origin: center center !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button:hover:not(.tap-active):not(.copied),
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button:focus:not(.tap-active):not(.copied),
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button:focus-visible:not(.tap-active):not(.copied) {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         border: 2px solid #003f7f !important;
         color: #003f7f !important;
-        transform: none !important;
+        -webkit-text-fill-color: #003f7f !important;
+        transform: scale(1) !important;
         transition: none !important;
     }
-    body.username-gen .text-tool .button-group button:active {
-        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
-        border-color: #002d5c !important;
-        transform: scale(1.03) !important;
-        transition: transform 0.05s ease-out !important;
-    }
-    body.dark-mode.username-gen .text-tool .button-group button,
-    body.dark-mode.username-gen .text-tool .button-group button:hover,
-    body.dark-mode.username-gen .text-tool .button-group button:focus {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border-color: var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
-        transform: none !important;
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:not(.copied),
+    body.username-gen.text-tool:not(.dark-mode) .site-main .container .button-group button:active:not(.copied) {
+        transform: scale(0.96) !important;
         transition: none !important;
     }
-    body.dark-mode.username-gen .text-tool .button-group button:active {
-        background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%) !important;
-        transform: scale(1.03) !important;
-        transition: transform 0.05s ease-out !important;
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button:hover:not(.tap-active):not(.copied),
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button:focus:not(.tap-active):not(.copied),
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button:focus-visible:not(.tap-active):not(.copied) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.username-gen.text-tool .site-main .container .button-group button:active:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: none !important;
     }
     /* Mobile: input e select larghi come il bottone Copy (stessa larghezza del button-group) */
     .username-gen .form-group input,
@@ -500,6 +567,232 @@ body.text-tool.bio-gen .result-area .caption-pick {
     }
 }
 
+@media (max-width: 768px) {
+    /* Username Generator: campi testo + Style 47.5px; frecce come Translator */
+    body.username-gen .site-main .container .form-group input,
+    body.username-gen .site-main .container #username-base-name,
+    body.username-gen .site-main .container #username-count,
+    body.username-gen #username-style-wrap .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+    body.username-gen .site-main .container .form-group input {
+        padding: 0 14px !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.username-gen .site-main .container .form-group input:focus,
+    body.username-gen .site-main .container #username-base-name:focus,
+    body.username-gen .site-main .container #username-count:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.username-gen .site-main .container .form-group input,
+    body.dark-mode.username-gen .site-main .container #username-base-name,
+    body.dark-mode.username-gen .site-main .container #username-count {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.username-gen .site-main .container .form-group input:focus,
+    body.dark-mode.username-gen .site-main .container #username-base-name:focus,
+    body.dark-mode.username-gen .site-main .container #username-count:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-trigger {
+        padding: 0 36px 0 16px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    body.username-gen #username-style-wrap .text-tool-select-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+    body.dark-mode.username-gen #username-style-wrap .text-tool-select-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    /* UUID Generator mobile: descrizione light #555 / dark #b0c4de */
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+    body.dark-mode.uuid-generator.text-tool .site-main .container .tool-desc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+    body.uuid-generator .site-main .container #uuid-count,
+    body.uuid-generator .site-main .container .form-group input[type="number"] {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding: 0 14px !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+    }
+    /* Bio Generator: campo nicchia 47.5px + focus light #007BFF */
+    body.bio-gen .site-main .container #bio-niche {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding: 0 14px !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.bio-gen .site-main .container #bio-niche:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.bio-gen .site-main .container #bio-niche,
+    body.dark-mode.bio-gen .site-main .container #bio-niche:focus {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.bio-gen .site-main .container #bio-niche:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.bio-gen #bio-type-wrap .text-tool-select-trigger,
+    body.bio-gen #bio-platform-wrap .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        font-weight: 700 !important;
+    }
+    body.bio-gen #bio-type-trigger::after,
+    body.bio-gen #bio-platform-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+    body.dark-mode.bio-gen #bio-type-trigger::after,
+    body.dark-mode.bio-gen #bio-platform-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    /* Hashtag Generator: campi 47.5px + focus light #007BFF */
+    body.hashtag-gen.text-tool .site-main .container .tool-desc {
+        color: #555 !important;
+    }
+    body.hashtag-gen .site-main .container #hashtag-niche,
+    body.hashtag-gen .site-main .container #hashtag-count {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding: 0 14px !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.hashtag-gen .site-main .container #hashtag-niche:focus,
+    body.hashtag-gen .site-main .container #hashtag-count:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.hashtag-gen .site-main .container #hashtag-niche,
+    body.dark-mode.hashtag-gen .site-main .container #hashtag-count {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.hashtag-gen .site-main .container #hashtag-niche:focus,
+    body.dark-mode.hashtag-gen .site-main .container #hashtag-count:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    /* Caption Generator: campo topic 47.5px + focus; select trigger grassetto */
+    body.caption-gen:not(.dark-mode).text-tool .site-main .container .tool-desc {
+        color: #555 !important;
+    }
+    body.dark-mode.caption-gen.text-tool .site-main .container .tool-desc {
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    }
+    body.caption-gen .site-main .container #caption-topic {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding: 0 14px !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.caption-gen .site-main .container #caption-topic:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.caption-gen .site-main .container #caption-topic {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.dark-mode.caption-gen .site-main .container #caption-topic:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.caption-gen #caption-platform-wrap .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        font-weight: 700 !important;
+    }
+    body.caption-gen #caption-platform-trigger::after {
+        border-top-color: #003f7f !important;
+    }
+    body.dark-mode.caption-gen #caption-platform-trigger::after {
+        border-top-color: #b0c4de !important;
+    }
+    /* Caption mobile: più spazio tra Platform e Topic (dropdown non copre il campo sotto) */
+    body.caption-gen .site-main .container .form-group:has(#caption-platform-wrap) {
+        margin-bottom: 48px !important;
+        overflow: visible !important;
+    }
+    body.caption-gen #caption-platform-wrap {
+        overflow: visible !important;
+    }
+    body.caption-gen #caption-platform-wrap.open {
+        z-index: 50;
+    }
+    body.caption-gen #caption-platform-wrap.open .text-tool-select-menu {
+        z-index: 51;
+    }
+}
+
 @media (max-width: 480px) {
     /* Stesso stack tipografico textarea Translator su mobile (translator.css @ 480px) */
     .text-tool textarea,
@@ -523,20 +816,11 @@ body.text-tool.bio-gen .result-area .caption-pick {
         margin: 8px 8px;
         padding: 20px 14px;
     }
-    /* Username Generator: nessun effetto hover (no scale), effetto solo al tap */
-    body.username-gen .text-tool .button-group button,
-    body.username-gen .text-tool .button-group button:hover,
-    body.username-gen .text-tool .button-group button:focus {
-        transform: none !important;
+    /* Username Generator: tap scale (colori in blocco 768px sopra) */
+    body.username-gen.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.username-gen.text-tool .site-main .container .button-group button:active:not(.copied) {
+        transform: scale(0.96) !important;
         transition: none !important;
-    }
-    body.username-gen .text-tool .button-group button:active {
-        transform: scale(1.03) !important;
-        transition: transform 0.05s ease-out !important;
-    }
-    body.dark-mode.username-gen .text-tool .button-group button:active {
-        transform: scale(1.03) !important;
-        transition: transform 0.05s ease-out !important;
     }
     /* Username Generator: stessa larghezza container e bottoni del Word Counter (solo mobile) */
     body.username-gen .site-main .container {
@@ -546,24 +830,45 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.username-gen .site-main .container .text-tool-row {
         margin-top: 40px !important;
     }
-    /* Username Generator: input come textarea Word Counter (stesso sfondo, font più scuro) */
-    body.username-gen .site-main .container input {
+    /* Username Generator: input come textarea Word Counter (bordo grigio + alone blu al focus) */
+    body.username-gen .site-main .container .form-group input,
+    body.username-gen .site-main .container #username-base-name,
+    body.username-gen .site-main .container #username-count {
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
-        color: #0f2f55 !important;
-        -webkit-text-fill-color: #0f2f55 !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
-    body.username-gen .site-main .container input::placeholder {
-        color: #444 !important;
+    body.username-gen .site-main .container .form-group input:focus,
+    body.username-gen .site-main .container #username-base-name:focus,
+    body.username-gen .site-main .container #username-count:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
-    body.dark-mode.username-gen .site-main .container input {
+    body.username-gen .site-main .container .form-group input::placeholder,
+    body.username-gen .site-main .container #username-base-name::placeholder {
+        color: #999 !important;
+    }
+    body.dark-mode.username-gen .site-main .container .form-group input,
+    body.dark-mode.username-gen .site-main .container #username-base-name,
+    body.dark-mode.username-gen .site-main .container #username-count {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
-        color: #0d0d1a !important;
-        -webkit-text-fill-color: #0d0d1a !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
     }
-    body.dark-mode.username-gen .site-main .container input::placeholder {
-        color: #333 !important;
+    body.dark-mode.username-gen .site-main .container .form-group input:focus,
+    body.dark-mode.username-gen .site-main .container #username-base-name:focus,
+    body.dark-mode.username-gen .site-main .container #username-count:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.dark-mode.username-gen .site-main .container .form-group input::placeholder,
+    body.dark-mode.username-gen .site-main .container #username-base-name::placeholder {
+        color: #555 !important;
     }
     /* Username Generator: Style button e menu - stesso sfondo/colore del bottone Generate, MAI blu */
     body.username-gen #username-style-wrap .text-tool-select-trigger,
@@ -626,15 +931,53 @@ body.text-tool.bio-gen .result-area .caption-pick {
         margin: 8px 6px 24px 6px !important;
         padding: 16px 8px 24px 8px !important;
     }
-    body.diff-checker .site-main .container .diff-column textarea {
+    body.diff-checker.text-tool .site-main .container .diff-column textarea,
+    body.diff-checker.text-tool .site-main .container .diff-column textarea:focus {
         background: #f8f9fa !important;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
     }
-    body.diff-checker .site-main .container .diff-result {
+    body.diff-checker.text-tool .site-main .container .diff-columns {
+        margin-bottom: 12px !important;
+        gap: 12px !important;
+    }
+    body.diff-checker.diff-checker-has-error.text-tool .site-main .container .diff-columns {
+        margin-bottom: 0 !important;
+    }
+    body.diff-checker.text-tool .site-main .container #diff-result.diff-result.error {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        height: auto !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.diff-checker.text-tool .site-main .container #diff-result.diff-result.error {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    body.diff-checker.text-tool .site-main .container #diff-result.diff-result:not(.error) {
         background: #f8f9fa !important;
-        border: 1px solid #ddd;
+        border: 1px solid #ddd !important;
     }
-    body.diff-checker .site-main .container .diff-result.error {
-        margin-bottom: 20px !important;
+    body.diff-checker.text-tool .site-main .container .button-group {
+        gap: 12px !important;
+        row-gap: 12px !important;
     }
     body.dark-mode.diff-checker .site-main .container .diff-column textarea {
         background: rgba(240, 242, 245, 0.95) !important;
@@ -643,23 +986,24 @@ body.text-tool.bio-gen .result-area .caption-pick {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9);
     }
-    /* Diff Checker mobile: bottoni come Translator (no blu hover/tap, Copy rosso quando copiato) */
-    body.diff-checker .site-main .container .button-group button,
-    body.diff-checker .site-main .container .button-group button:hover,
-    body.diff-checker .site-main .container .button-group button:focus {
+    /* Diff Checker mobile: tap come CV Generator (mobile-tap.js) */
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:hover:not(.copied),
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:focus:not(.copied) {
         border: 2px solid #003f7f !important;
         border-radius: 12px !important;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
         font-weight: 700 !important;
         min-height: 52px !important;
-        transform: none !important;
+        transform: scale(1) !important;
         transition: none !important;
     }
-    body.diff-checker .site-main .container .button-group button:active {
-        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
-        border-color: #002d5c !important;
-        transform: scale(1.03) !important;
+    body.diff-checker .site-main .container .button-group button.tap-active:not(.copied),
+    body.diff-checker .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.diff-checker .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
         transition: transform 0.05s ease-out !important;
     }
     body.diff-checker .site-main .container .button-group button.copied,
@@ -668,27 +1012,44 @@ body.text-tool.bio-gen .result-area .caption-pick {
         border: 2px solid #fcc !important;
         color: #c00 !important;
     }
-    body.dark-mode.diff-checker .site-main .container .button-group button,
-    body.dark-mode.diff-checker .site-main .container .button-group button:hover,
-    body.dark-mode.diff-checker .site-main .container .button-group button:focus {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid var(--text-secondary) !important;
-        transform: none !important;
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:hover:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:focus:not(.copied) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
+        transform: scale(1) !important;
         transition: none !important;
     }
-    body.dark-mode.diff-checker .site-main .container .button-group button:active {
-        background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%) !important;
-        transform: scale(1.03) !important;
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
         transition: transform 0.05s ease-out !important;
     }
-    body.dark-mode.diff-checker .site-main .container .button-group button.copied,
-    body.dark-mode.diff-checker .site-main .container .button-group button.copied:hover {
-        background: #fff5f5 !important;
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.copied,
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
         border: 2px solid #fcc !important;
-        color: #c00 !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
     }
     body.diff-checker.help-page .container h1,
     body.diff-checker.help-page .container .tool-desc {
+        text-align: left;
+    }
+    body.cover-letter-generator.help-page .container h1,
+    body.cover-letter-generator.help-page .container .tool-desc {
+        text-align: left;
+    }
+    body.cv-generator.help-page .container h1,
+    body.cv-generator.help-page .container .tool-desc {
+        text-align: left;
+    }
+    body.cv-optimizer.help-page .container h1,
+    body.cv-optimizer.help-page .container .tool-desc {
         text-align: left;
     }
     /* JSON help page mobile: allineamento a sinistra */
@@ -732,6 +1093,21 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
     }
+    /* Help mobile light: #003f7f su titoli e corpo; descrizione resta grigia */
+    body.help-page:not(.dark-mode) .site-main .container h1,
+    body.help-page:not(.dark-mode) .site-main .container .help-section,
+    body.help-page:not(.dark-mode) .site-main .container .help-section h2,
+    body.help-page:not(.dark-mode) .site-main .container .help-section p,
+    body.help-page:not(.dark-mode) .site-main .container .help-section ul,
+    body.help-page:not(.dark-mode) .site-main .container .help-section li,
+    body.help-page:not(.dark-mode) .site-main .container .help-section strong,
+    body.help-page:not(.dark-mode) .site-main .container .help-section pre,
+    body.help-page:not(.dark-mode) .site-main .container .help-section code {
+        color: #003f7f !important;
+    }
+    body.help-page:not(.dark-mode) .site-main .container .tool-desc {
+        color: #666 !important;
+    }
     /* JSON Formatter mobile: container stessa larghezza textarea Word Counter */
     body.json-formatter .site-main .container {
         margin: 8px 6px 24px 6px !important;
@@ -772,7 +1148,7 @@ body.text-tool.bio-gen .result-area .caption-pick {
     }
     body.json-formatter .site-main .container .button-group button:active,
     body.json-formatter .site-main .container .button-group button.tap-active {
-        transform: scale(1.03) !important;
+        transform: scale(0.96) !important;
     }
     body.json-formatter .site-main .container .button-group button.copied,
     body.json-formatter .site-main .container .button-group button.copied:hover,
@@ -801,16 +1177,42 @@ body.text-tool.bio-gen .result-area .caption-pick {
         color: #c00 !important;
         transform: scale(1) !important;
     }
-    body.json-formatter .site-main .container .json-result.error {
+    body.json-formatter.json-formatter-has-error .site-main .container .form-group {
+        margin-bottom: 0 !important;
+    }
+    body.json-formatter .site-main .container #json-result.json-result.error {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 12px !important;
         margin-bottom: 12px !important;
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.json-formatter .site-main .container #json-result.json-result.error {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
     }
     body.json-formatter .site-main .container .form-group label {
         display: block !important;
         width: 100% !important;
         text-align: center !important;
     }
-    body.json-formatter .site-main .container .form-group textarea,
-    body.json-formatter .site-main .container .form-group textarea:focus {
+    body.json-formatter .site-main .container .form-group textarea {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -823,7 +1225,18 @@ body.text-tool.bio-gen .result-area .caption-pick {
         font-size: 17px !important;
         line-height: 1.5 !important;
         padding: 16px !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 0 !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.json-formatter .site-main .container .form-group textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.json-formatter .site-main .container .form-group textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
     }
     body.json-formatter .site-main .container .form-group textarea::placeholder {
         font-family: Arial, sans-serif !important;
@@ -890,82 +1303,39 @@ body.text-tool.bio-gen .result-area .caption-pick {
         font-size: 17px !important;
         line-height: 1.5 !important;
         color: #555 !important;
-        opacity: 1 !important;
     }
-    body.remove-spaces .site-main .container .button-group button {
-        border: 2px solid #003f7f !important;
-        border-radius: 12px !important;
-        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-        color: #003f7f !important;
-        font-weight: 700 !important;
-        min-height: 52px !important;
-        transform: scale(1) !important;
-        transition: transform 0.05s ease-out !important;
-    }
-    body.remove-spaces .site-main .container .button-group button:focus {
-        transform: scale(1) !important;
-    }
-    body.remove-spaces .site-main .container .button-group button:active {
-        transform: scale(1.03) !important;
-    }
-    body.dark-mode.remove-spaces .site-main .container .button-group button {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid var(--text-secondary) !important;
-    }
-    /* Remove Spaces mobile: Copy come Markdown Preview (tap scale + niente evidenziazione persistente) */
-    body.remove-spaces .site-main .container .button-group #btn-copy {
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        -webkit-appearance: none;
-        appearance: none;
-        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
-    }
-    body.remove-spaces .site-main .container .button-group #btn-copy:focus {
-        outline: none !important;
-        box-shadow: none !important;
-        transform: scale(1) !important;
-    }
-    body.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
-        outline: 2px solid #c00;
-        outline-offset: 2px;
-        box-shadow: none !important;
-    }
-    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
-        outline-color: #e88;
-    }
-    body.remove-spaces .site-main .container .button-group #btn-copy.copied,
-    body.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: min(100%, var(--mobile-btn-width, 352px)) !important;
-        max-width: var(--mobile-btn-width, 352px) !important;
-        min-height: var(--mobile-btn-height, 52px) !important;
-        height: var(--mobile-btn-height, 52px) !important;
-        box-sizing: border-box !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding: 12px 20px !important;
-        border-radius: 12px !important;
-        border: 2px solid #fcc !important;
-        background: #fff5f5 !important;
-        color: #c00 !important;
+    /* Cover letter: textarea/input dark come Remove Spaces */
+    body.cover-letter-generator .site-main .container .form-group textarea,
+    body.cover-letter-generator .site-main .container .form-group textarea:focus {
         font-family: Arial, sans-serif !important;
-        font-size: 1.05rem !important;
-        font-weight: 600 !important;
-        text-align: center !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        padding: 12px !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        box-sizing: border-box !important;
     }
-    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied,
-    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
-        background: rgba(220, 80, 80, 0.15) !important;
-        border-color: #fcc !important;
-        color: #e88 !important;
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:focus,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea:not(:focus),
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]),
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):focus,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input:not([type="submit"]):not([type="button"]):not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
     }
-    body.remove-spaces .site-main .container .button-group #btn-copy:active,
-    body.remove-spaces .site-main .container .button-group #btn-copy.copied:active,
-    body.remove-spaces .site-main .container .button-group #btn-copy:focus:active,
-    body.remove-spaces .site-main .container .button-group #btn-copy.copied:focus:active {
-        transform: scale(1.03) !important;
+    body.dark-mode.cover-letter-generator .site-main .container .form-group textarea::placeholder,
+    body.dark-mode.cover-letter-generator .site-main .container .form-group input::placeholder {
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        color: #555 !important;
+        opacity: 1 !important;
     }
     body.remove-spaces .site-main .container .remove-spaces-error:not(.hidden) {
         display: flex !important;
@@ -1018,6 +1388,690 @@ body.text-tool.bio-gen .result-area .caption-pick {
         border: 2px solid #fcc !important;
         color: #c00 !important;
     }
+}
+
+/* Case Converter ≤768px: tap come CV Generator (mobile-tap.js) */
+@media (max-width: 768px) {
+    body.case-converter .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button:hover:not(.copied),
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button:focus:not(.copied) {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        margin-left: 0 !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:not(.copied),
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.case-converter.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.case-converter .site-main .container .button-group #btn-copy.copied,
+    body.case-converter .site-main .container .button-group #btn-copy.copied:hover,
+    body.case-converter .site-main .container .button-group #btn-copy.copied:focus:not(.tap-active) {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button:hover:not(.copied),
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button:focus:not(.copied) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.case-converter.text-tool .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+    }
+    /* UUID Generator mobile: tap come CV Generator (mobile-tap.js) */
+    body.uuid-generator .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button:hover:not(.copied),
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button:focus:not(.copied) {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 12px 20px !important;
+        box-sizing: border-box !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        margin-left: 0 !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:not(.copied),
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.uuid-generator .site-main .container .button-group #btn-copy.copied,
+    body.uuid-generator .site-main .container .button-group #btn-copy.copied:hover,
+    body.uuid-generator .site-main .container .button-group #btn-copy.copied:focus:not(.tap-active) {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button:hover:not(.copied),
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button:focus:not(.copied) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.uuid-generator.text-tool .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+    }
+    /* JSON Formatter / Case Converter / Markdown Preview / Username Generator: focus light #007BFF (dark: sotto) */
+    body.json-formatter.text-tool .site-main .container .form-group textarea,
+    body.case-converter.text-tool .site-main .container .form-group textarea,
+    body.case-converter.text-tool .site-main .container #case-input,
+    body.markdown-preview.text-tool .site-main .container .preview-panel textarea,
+    body.markdown-preview.text-tool .site-main .container #md-input,
+    body.username-gen.text-tool .site-main .container .form-group input,
+    body.username-gen.text-tool .site-main .container #username-base-name,
+    body.username-gen.text-tool .site-main .container #username-count,
+    body.bio-gen.text-tool .site-main .container #bio-niche,
+    body.hashtag-gen.text-tool .site-main .container #hashtag-niche,
+    body.hashtag-gen.text-tool .site-main .container #hashtag-count,
+    body.caption-gen.text-tool .site-main .container #caption-topic {
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.json-formatter.text-tool .site-main .container .form-group textarea:focus,
+    body.case-converter.text-tool .site-main .container .form-group textarea:focus,
+    body.case-converter.text-tool .site-main .container #case-input:focus,
+    body.markdown-preview.text-tool .site-main .container .preview-panel textarea:focus,
+    body.markdown-preview.text-tool .site-main .container #md-input:focus,
+    body.username-gen.text-tool .site-main .container .form-group input:focus,
+    body.username-gen.text-tool .site-main .container #username-base-name:focus,
+    body.username-gen.text-tool .site-main .container #username-count:focus,
+    body.bio-gen.text-tool .site-main .container #bio-niche:focus,
+    body.hashtag-gen.text-tool .site-main .container #hashtag-niche:focus,
+    body.hashtag-gen.text-tool .site-main .container #hashtag-count:focus,
+    body.caption-gen.text-tool .site-main .container #caption-topic:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.json-formatter.text-tool .site-main .container .form-group textarea:focus,
+    body.dark-mode.case-converter.text-tool .site-main .container .form-group textarea:focus,
+    body.dark-mode.case-converter.text-tool .site-main .container #case-input:focus,
+    body.dark-mode.markdown-preview.text-tool .site-main .container .preview-panel textarea:focus,
+    body.dark-mode.markdown-preview.text-tool .site-main .container #md-input:focus,
+    body.dark-mode.username-gen.text-tool .site-main .container .form-group input:focus,
+    body.dark-mode.username-gen.text-tool .site-main .container #username-base-name:focus,
+    body.dark-mode.username-gen.text-tool .site-main .container #username-count:focus,
+    body.dark-mode.bio-gen.text-tool .site-main .container #bio-niche:focus,
+    body.dark-mode.hashtag-gen.text-tool .site-main .container #hashtag-niche:focus,
+    body.dark-mode.hashtag-gen.text-tool .site-main .container #hashtag-count:focus,
+    body.dark-mode.caption-gen.text-tool .site-main .container #caption-topic:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    /* Bio Generator ≤768px: layout + tap come CV Generator (mobile-tap.js + :active 0.96) */
+    body.bio-gen .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+    body.bio-gen .site-main .container .button-group button,
+    body.bio-gen .site-main .container .button-group #btn-generate,
+    body.bio-gen .site-main .container .button-group #btn-copy {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transform: scale(1) !important;
+        transform-origin: center center !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    /* Light mobile: colori (solo :not(.dark-mode) — gli #id battono i selettori dark senza id) */
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-generate,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-copy {
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+    }
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button:hover,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button:focus,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button:focus-visible,
+    body.bio-gen:not(.dark-mode).text-tool .site-main .container .button-group button:hover,
+    body.bio-gen:not(.dark-mode).text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:hover,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:hover {
+        transform: scale(1) !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button:active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button.tap-active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group button:focus.tap-active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-generate.tap-active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:active,
+    body.bio-gen:not(.dark-mode) .site-main .container .button-group #btn-copy.tap-active {
+        transform: scale(0.96) !important;
+        transition: none !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    /* Dark mobile: come theme.css — serve #btn-generate/#btn-copy per specificità */
+    body.dark-mode.bio-gen .site-main .container .button-group button,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy,
+    body.dark-mode.bio-gen .site-main .container .button-group button:hover,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:hover,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:hover,
+    body.dark-mode.bio-gen .site-main .container .button-group button:focus:not(.tap-active),
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:focus:not(.tap-active),
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:focus:not(.tap-active),
+    body.dark-mode.bio-gen .site-main .container .button-group button:focus-visible:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.bio-gen .site-main .container .button-group button:active,
+    body.dark-mode.bio-gen .site-main .container .button-group button.tap-active,
+    body.dark-mode.bio-gen .site-main .container .button-group button:focus.tap-active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate:active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-generate.tap-active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy:active,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        transform: scale(0.96) !important;
+        transition: none !important;
+    }
+    /* Bio mobile: più spazio tra Type e Platform solo a menu chiuso (default) */
+    body.bio-gen .site-main .container .text-tool-row > .form-group:first-child {
+        margin-bottom: 44px !important;
+    }
+    body.bio-gen .site-main .container .button-group #btn-copy.copied,
+    body.bio-gen .site-main .container .button-group #btn-copy.copied:hover,
+    body.bio-gen .site-main .container .button-group #btn-copy.copied:focus:not(.tap-active) {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.bio-gen .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    /* Hashtag Generator ≤768px: tap come CV Generator (mobile-tap.js + :active 0.96) */
+    body.hashtag-gen .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+    body.hashtag-gen .site-main .container .button-group button,
+    body.hashtag-gen .site-main .container .button-group #btn-generate,
+    body.hashtag-gen .site-main .container .button-group #btn-copy {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transform: scale(1) !important;
+        transform-origin: center center !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-generate,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-copy {
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+    }
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button:hover,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button:focus,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button:focus-visible,
+    body.hashtag-gen:not(.dark-mode).text-tool .site-main .container .button-group button:hover,
+    body.hashtag-gen:not(.dark-mode).text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:hover,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:hover {
+        transform: scale(1) !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button:active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button.tap-active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group button:focus.tap-active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-generate.tap-active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:active,
+    body.hashtag-gen:not(.dark-mode) .site-main .container .button-group #btn-copy.tap-active {
+        transform: scale(0.96) !important;
+        transition: none !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.dark-mode.hashtag-gen .site-main .container .button-group button,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-generate,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy,
+    body.dark-mode.hashtag-gen .site-main .container .button-group button:hover,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-generate:hover,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy:hover,
+    body.dark-mode.hashtag-gen .site-main .container .button-group button:focus:not(.tap-active),
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-generate:focus:not(.tap-active),
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy:focus:not(.tap-active),
+    body.dark-mode.hashtag-gen .site-main .container .button-group button:focus-visible:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.hashtag-gen .site-main .container .button-group button:active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group button.tap-active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group button:focus.tap-active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-generate:active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-generate.tap-active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy:active,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        transform: scale(0.96) !important;
+        transition: none !important;
+    }
+    body.hashtag-gen .site-main .container .button-group #btn-copy.copied,
+    body.hashtag-gen .site-main .container .button-group #btn-copy.copied:hover,
+    body.hashtag-gen .site-main .container .button-group #btn-copy.copied:focus:not(.tap-active) {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.hashtag-gen .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    /* Caption Generator ≤768px: tap come CV Generator (mobile-tap.js + :active 0.96) */
+    body.caption-gen .site-main .container .button-group {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+    body.caption-gen .site-main .container .button-group button,
+    body.caption-gen .site-main .container .button-group #btn-generate,
+    body.caption-gen .site-main .container .button-group #btn-copy {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        max-height: 52px !important;
+        padding: 12px 20px !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-focus-ring-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transform: scale(1) !important;
+        transform-origin: center center !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-generate,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-copy {
+        border: 2px solid #003f7f !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+    }
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button:hover,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button:focus,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button:focus-visible,
+    body.caption-gen:not(.dark-mode).text-tool .site-main .container .button-group button:hover,
+    body.caption-gen:not(.dark-mode).text-tool .site-main .container .button-group button:focus:not(.tap-active),
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:hover,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:hover {
+        transform: scale(1) !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button:active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button.tap-active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group button:focus.tap-active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-generate:active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-generate.tap-active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-copy:active,
+    body.caption-gen:not(.dark-mode) .site-main .container .button-group #btn-copy.tap-active {
+        transform: scale(0.96) !important;
+        transition: none !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+    }
+    body.dark-mode.caption-gen .site-main .container .button-group button,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy,
+    body.dark-mode.caption-gen .site-main .container .button-group button:hover,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:hover,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:hover,
+    body.dark-mode.caption-gen .site-main .container .button-group button:focus:not(.tap-active),
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:focus:not(.tap-active),
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:focus:not(.tap-active),
+    body.dark-mode.caption-gen .site-main .container .button-group button:focus-visible:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.caption-gen .site-main .container .button-group button:active,
+    body.dark-mode.caption-gen .site-main .container .button-group button.tap-active,
+    body.dark-mode.caption-gen .site-main .container .button-group button:focus.tap-active,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate:active,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-generate.tap-active,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy:active,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        transform: scale(0.96) !important;
+        transition: none !important;
+    }
+    body.caption-gen .site-main .container .button-group #btn-copy.copied,
+    body.caption-gen .site-main .container .button-group #btn-copy.copied:hover,
+    body.caption-gen .site-main .container .button-group #btn-copy.copied:focus:not(.tap-active) {
+        background: #fff5f5 !important;
+        border: 2px solid #fcc !important;
+        color: #c00 !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.caption-gen .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+}
+
+/* Remove Spaces ≤768px: tap come CV Generator (mobile-tap.js). body.text-tool — non .text-tool discendente. */
+@media (max-width: 768px) {
+    body.remove-spaces.text-tool .site-main .container .button-group button:not(.copied),
+    body.remove-spaces.text-tool .site-main .container .button-group button:hover:not(.copied),
+    body.remove-spaces.text-tool .site-main .container .button-group button:focus:not(.copied) {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        min-height: 52px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        -webkit-appearance: none;
+        appearance: none;
+        transform: scale(1) !important;
+        transform-origin: center center !important;
+        transition: none !important;
+    }
+    body.remove-spaces.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.remove-spaces.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.remove-spaces.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:hover:not(.copied),
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:focus:not(.copied) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        transform: scale(1) !important;
+        transition: none !important;
+    }
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+    body.dark-mode.remove-spaces.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy {
+        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy:focus:not(.tap-active) {
+        outline: none !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
+        outline: 2px solid #c00;
+        outline-offset: 2px;
+        box-shadow: none !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy:focus-visible {
+        outline-color: #e88;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied,
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: min(100%, var(--mobile-btn-width, 352px)) !important;
+        max-width: var(--mobile-btn-width, 352px) !important;
+        min-height: var(--mobile-btn-height, 52px) !important;
+        height: var(--mobile-btn-height, 52px) !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        transform: scale(1) !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied,
+    body.dark-mode.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    body.remove-spaces .site-main .container .button-group #btn-copy.tap-active:not(.copied),
+    body.remove-spaces .site-main .container .button-group #btn-copy:active.tap-active:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: none !important;
+    }
+    body.remove-spaces.text-tool .site-main .container textarea,
+    body.remove-spaces.text-tool .site-main .container textarea:focus {
+        font-size: 17px !important;
+        -webkit-text-size-adjust: 100%;
+        resize: none !important;
+        margin-bottom: 0 !important;
+        padding: 12px !important;
+        min-height: 280px !important;
+        height: 280px !important;
+        max-height: 280px !important;
+        border: 1px solid #ddd !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    /* Light mobile Remove Spaces: focus #007BFF come desktop */
+    body.remove-spaces .site-main .container textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.remove-spaces.text-tool .site-main .container textarea,
+    body.dark-mode.remove-spaces.text-tool .site-main .container textarea:focus {
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode.remove-spaces .site-main .container textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+}
+
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+    body.remove-spaces.text-tool .site-main .container .button-group button:hover,
+    body.remove-spaces .site-main .container .button-group button:focus:not(.tap-active),
+    body.remove-spaces .site-main .container .button-group #btn-copy.copied:hover {
+        transform: scale(1) !important;
+    }
+}
+
+@media (max-width: 480px) {
     /* Markdown Preview: stessa larghezza e colori di Word Counter */
     /* Mobile: “Anteprima” (.preview-title) = stesso colore della label “Markdown” (in dark la label è #b0c4de dal theme) */
     body.markdown-preview .site-main .container .preview-panel label,
@@ -1035,7 +2089,8 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.markdown-preview .preview-layout {
         gap: 10px !important;
     }
-    body.markdown-preview .site-main .container .preview-panel textarea {
+    body.markdown-preview .site-main .container .preview-panel textarea,
+    body.markdown-preview .site-main .container #md-input {
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
         color: #1a1a2e !important;
@@ -1047,6 +2102,19 @@ body.text-tool.bio-gen .result-area .caption-pick {
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.markdown-preview .site-main .container .preview-panel textarea:focus,
+    body.markdown-preview .site-main .container #md-input:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-panel textarea:focus,
+    body.dark-mode.markdown-preview .site-main .container #md-input:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
     }
     body.markdown-preview .site-main .container .preview-panel textarea::placeholder {
         font-family: Arial, sans-serif !important;
@@ -1105,6 +2173,42 @@ body.text-tool.bio-gen .result-area .caption-pick {
         background: rgba(220, 224, 230, 0.5) !important;
     }
 
+    /* Copia: colori mobile come Word Counter (il .text-tool button blu pieno non deve vincere). */
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied),
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied):hover,
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied):focus:not(.tap-active) {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied),
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):hover,
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):focus:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied).tap-active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):active.tap-active {
+        background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+        border: 2px solid #002d5c !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied).tap-active,
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):active.tap-active {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
     /* Copia: stesso ordine di Word Counter — :focus prima, :active dopo (altrimenti Safari con focus+active vince :focus e non scala). */
     body.markdown-preview .site-main .container .preview-actions #btn-copy {
         -webkit-tap-highlight-color: transparent;
@@ -1160,6 +2264,45 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:active,
     body.markdown-preview .site-main .container .preview-actions #btn-copy:focus:active,
     body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:focus:active {
-        transform: scale(1.03) !important;
+        transform: scale(1) !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.tap-active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied.tap-active {
+        transform: scale(0.96) !important;
+    }
+}
+
+/* Markdown Preview ≤768px: colori Copia (tablet + telefono) */
+@media (max-width: 768px) {
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied),
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied):hover,
+    body.markdown-preview:not(.dark-mode) .site-main .container .preview-actions #btn-copy:not(.copied):focus:not(.tap-active) {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied),
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):hover,
+    body.dark-mode.markdown-preview .site-main .container .preview-actions #btn-copy:not(.copied):focus:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
+    }
+}
+
+/* Markdown Preview 481–768px: tap come CV Generator (mobile-tap.js) */
+@media (min-width: 481px) and (max-width: 768px) {
+    body.markdown-preview .site-main .container .preview-actions #btn-copy:active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied:active {
+        transform: scale(1) !important;
+    }
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.tap-active,
+    body.markdown-preview .site-main .container .preview-actions #btn-copy.copied.tap-active {
+        transform: scale(0.96) !important;
     }
 }

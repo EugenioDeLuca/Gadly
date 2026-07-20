@@ -1,0 +1,26 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "About - Drose" %}{% endblock %}
+{% block body_class %}drose-page static-page about-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'About Drose Drone Services: professional aerial imaging, inspections, mapping, and event coverage.' %}">
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260529h">
+{% endblock %}
+{% block content %}
+<div class="static-container">
+    <h1>{% trans "About Drose" %}</h1>
+
+    <p>{% blocktrans trimmed %}Drose Drone Services provides aerial photography, video, inspections, mapping, and event coverage for businesses, professionals, and private clients. Every mission is planned around safety, compliance, and the results you need on the ground—not just footage from the air.{% endblocktrans %}</p>
+
+    <p>{% blocktrans trimmed %}We focus on practical outcomes: marketing visuals, inspection records, site overviews, and event highlights delivered in formats you can use immediately. Before each flight we align on location, timing, airspace constraints, and the files you expect to receive.{% endblocktrans %}</p>
+
+    <p>{% blocktrans trimmed %}We prioritize compliant flight planning, clear communication before take-off, deliverables matched to your use case, and flexible packages for one-off missions or recurring site work. Quotes and contact stay with Drose—through our own contact and quote pages.{% endblocktrans %}</p>
+
+    <p>{% blocktrans trimmed %}Drose shares the same website platform as Gadly’s free online tools, but the brands remain separate: aerial work is quoted and scheduled by Drose per project, while Gadly tools stay free for everyday use in the browser.{% endblocktrans %}</p>
+
+    <p>{% trans "If you have questions or would like a quote, feel free to" %} <a href="{% url 'drose_contact' %}">{% trans "contact us" %}</a>.</p>
+</div>
+{% endblock %}

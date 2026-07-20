@@ -9,3 +9,4 @@ httpx
 gunicorn
 whitenoise
 polib>=1.2.0
+django-axes>=7.0,<9

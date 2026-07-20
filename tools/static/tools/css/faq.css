@@ -80,19 +80,103 @@ body.faq-page .site-main .faq-container {
 }
 
 .faq-item p a {
-    color: #003f7f;
+    color: #002d5c;
     font-weight: 600;
     text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(0, 45, 92, 0.65);
 }
 
-.faq-item p a:hover {
-    color: #0056b3;
+/* Mouse / trackpad: solo la sottolineatura più marcata (niente ingrandimento testo) */
+@media (hover: hover) and (pointer: fine) {
+    .faq-page .faq-item p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    .faq-page .faq-item p a:hover,
+    .faq-page .faq-item p a:focus-visible {
+        color: #003f7f;
+        text-decoration-color: #003f7f;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+    }
+}
+
+/* Dark mode: blu scuro come titoli FAQ, hover leggermente più chiaro */
+body.dark-mode.faq-page .faq-item p a,
+body.dark-mode.faq-page .faq-item p a:visited {
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(0, 63, 127, 0.75);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.dark-mode.faq-page .faq-item p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            -webkit-text-fill-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    body.dark-mode.faq-page .faq-item p a:hover,
+    body.dark-mode.faq-page .faq-item p a:focus-visible {
+        color: #0056b3;
+        -webkit-text-fill-color: #0056b3;
+        text-decoration-color: #0056b3;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+    }
 }
 
 .faq-footer {
     margin-top: 28px;
     padding-top: 8px;
     text-align: center;
+}
+
+/* FAQ mobile/tablet: light = colori desktop; dark = #7eb8ff */
+@media (max-width: 768px) {
+    body:not(.dark-mode).faq-page .faq-item p a,
+    body:not(.dark-mode).faq-page .faq-item p a:visited,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a:visited,
+    body:not(.dark-mode).faq-page .faq-item p a:hover,
+    body:not(.dark-mode).faq-page .faq-item p a:focus,
+    body:not(.dark-mode).faq-page .faq-item p a:focus-visible,
+    body:not(.dark-mode).faq-page .faq-item p a:active,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a:hover,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a:focus,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a:focus-visible,
+    body:not(.dark-mode).faq-page .faq-container .faq-item p a:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 2px;
+        text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+    }
+
+    body.dark-mode.faq-page .faq-item p a,
+    body.dark-mode.faq-page .faq-item p a:visited,
+    body.dark-mode.faq-page .faq-container .faq-item p a,
+    body.dark-mode.faq-page .faq-container .faq-item p a:visited,
+    body.dark-mode.faq-page .faq-item p a:hover,
+    body.dark-mode.faq-page .faq-item p a:focus,
+    body.dark-mode.faq-page .faq-item p a:focus-visible,
+    body.dark-mode.faq-page .faq-item p a:active,
+    body.dark-mode.faq-page .faq-container .faq-item p a:hover,
+    body.dark-mode.faq-page .faq-container .faq-item p a:focus,
+    body.dark-mode.faq-page .faq-container .faq-item p a:focus-visible,
+    body.dark-mode.faq-page .faq-container .faq-item p a:active {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 2px;
+        text-decoration-color: rgba(126, 184, 255, 0.85) !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -153,38 +237,5 @@ body.faq-page .site-main .faq-container {
     .faq-page .faq-container .faq-item h3,
     .faq-page .faq-container .faq-item p {
         text-align: center !important;
-    }
-    /* Link più visibili in mobile (stile help/json formatter) */
-    .faq-page .faq-container .faq-item p a,
-    .faq-page .faq-container .faq-item p a:visited {
-        color: #0056b3 !important;
-        font-weight: 700 !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px;
-        text-decoration-thickness: 2px;
-    }
-    .faq-page .faq-container .faq-item p a:hover,
-    .faq-page .faq-container .faq-item p a:focus,
-    .faq-page .faq-container .faq-item p a:focus-visible,
-    .faq-page .faq-container .faq-item p a:active {
-        color: #007bff !important;
-        text-decoration: underline !important;
-    }
-    body.dark-mode.faq-page .faq-container .faq-item p a,
-    body.dark-mode.faq-page .faq-container .faq-item p a:visited {
-        color: #7eb8ff !important;
-        -webkit-text-fill-color: #7eb8ff !important;
-        font-weight: 700 !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px;
-        text-decoration-thickness: 2px;
-    }
-    body.dark-mode.faq-page .faq-container .faq-item p a:hover,
-    body.dark-mode.faq-page .faq-container .faq-item p a:focus,
-    body.dark-mode.faq-page .faq-container .faq-item p a:focus-visible,
-    body.dark-mode.faq-page .faq-container .faq-item p a:active {
-        color: #a9d1ff !important;
-        -webkit-text-fill-color: #a9d1ff !important;
-        text-decoration: underline !important;
     }
 }

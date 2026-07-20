@@ -1,31 +1,87 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% blocktrans with username=user.username %}Account - {{ username }} - Gadly{% endblocktrans %}{% endblock %}
+{% load user_extras %}
+{% block title %}{% if is_drose_site %}{% blocktrans with username=user.username %}Account - {{ username }} - Drose{% endblocktrans %}{% else %}{% blocktrans with username=user.username %}Account - {{ username }} - Gadly{% endblocktrans %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page account-page{% endblock %}
+{% block extrahead %}
+<script>
+(function () {
+    var path = location.pathname || "/";
+    if (path.length > 1 && path.charAt(path.length - 1) === "/") {
+        path = path.slice(0, -1);
+    }
+    if (path !== "/accounts/profile") return;
+
+    var root = document.documentElement;
+
+    function pinAccountTop() {
+        try {
+            if ("scrollRestoration" in history) {
+                history.scrollRestoration = "manual";
+            }
+        } catch (eScroll) { /* ignore */ }
+        root.scrollTop = 0;
+        window.scrollTo(0, 0);
+        if (document.body) {
+            document.body.scrollTop = 0;
+        }
+    }
+
+    pinAccountTop();
+    root.classList.add("gadly-account-reload-top");
+
+    document.addEventListener("DOMContentLoaded", function () {
+        pinAccountTop();
+        requestAnimationFrame(function () {
+            pinAccountTop();
+            root.classList.remove("gadly-account-reload-top");
+        });
+    }, { once: true });
+
+    window.addEventListener("load", pinAccountTop, { once: true });
+})();
+</script>
+<style id="gadly-account-reload-top-shield">
+html.gadly-account-reload-top {
+    scroll-behavior: auto !important;
+}
+</style>
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
 <link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/account.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/account.css' %}?v=39">
 {% endblock %}
 {% block content %}
 {% trans "Choose image" as choose_image_label %}
 {% trans "Save" as save_label %}
+{% blocktrans asvar account_pending_email_tpl %}We sent a confirmation link to %(pending)s. Your account still uses %(current)s until you confirm the new address.{% endblocktrans %}
 <div class="static-container account-container">
     <h1>{% trans "Account" %}</h1>
+    <p class="account-intro">{% trans "Manage your profile photo, username, email, and password." %}</p>
+    <p class="account-home-sync-note">{% trans "When you are signed in, tools removed from the home page stay hidden on all your devices and sync automatically when you log in or the next time you load a page." %}</p>
 
-    {% if msg %}
-    <div class="account-msg account-msg--ok">{{ msg }}</div>
-    {% endif %}
+    <div class="account-flash-slot" id="account-flash-slot" aria-live="polite">
+        {% if avatar_removed %}
+        <p class="account-avatar-removed-msg" id="account-avatar-removed-msg" role="status">{% trans "Profile image removed." %}</p>
+        {% elif profile_saved %}
+        <div class="account-msg account-msg--ok" id="account-profile-saved-msg" role="status">
+            {% trans "Profile updated." %}
+        </div>
+        {% elif msg %}
+        <div class="account-msg account-msg--ok">{{ msg }}</div>
+        {% endif %}
+    </div>
 
     <!-- Avatar -->
-    <section class="account-section">
+    <section class="account-section" id="account-avatar">
         <h2 class="account-section-title--center">{% trans "Profile image" %}</h2>
         <div class="account-avatar-wrap">
             {% if profile.avatar %}
-            <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="account-avatar">
+            <img src="{{ user_avatar_inline_account }}" alt="{{ user.username }}" class="account-avatar" width="80" height="80" decoding="sync">
             {% else %}
-            <div class="account-avatar account-avatar--placeholder">{{ user.username|slice:":1"|upper }}</div>
+            <div class="account-avatar account-avatar--placeholder">{{ user|user_initials }}</div>
             {% endif %}
         </div>
         <form method="post" enctype="multipart/form-data" class="account-form">
@@ -45,17 +101,21 @@
             </div>
             <div class="account-avatar-buttons">
                 <button type="submit" class="login-btn" name="avatar_action" value="upload">{% trans "Upload" %}</button>
-                <button type="submit" class="login-btn login-btn--save-avatar {% if avatar_saved %}login-btn--saved{% endif %}" name="avatar_action" value="save">
-                    {{ save_label }}{% if avatar_saved %} <span class="save-check" aria-hidden="true">✓</span>{% endif %}
+                <button type="submit" class="login-btn login-btn--save-avatar{% if avatar_saved %} login-btn--saved{% endif %}" name="avatar_action" value="save">
+                    <span class="login-btn-save-label">{{ save_label }}</span>
+                    <span class="save-check" aria-hidden="true">{% if avatar_saved %}✓{% endif %}</span>
                 </button>
+            </div>
+            <div class="account-avatar-remove">
+                <button type="submit" class="login-btn login-btn--danger login-btn--remove-avatar" name="avatar_action" value="remove"{% if not profile.avatar %} disabled{% endif %}>{% trans "Remove" %}</button>
             </div>
         </form>
     </section>
 
     <!-- Username & Email -->
-    <section class="account-section">
+    <section class="account-section" id="account-profile">
         <h2>{% trans "Profile" %}</h2>
-        <form method="post" class="account-form">
+        <form method="post" class="account-form" id="account-profile-form" action="{% url 'account_profile' %}" data-pending-email-tpl="{{ account_pending_email_tpl|escapejs }}">
             {% csrf_token %}
             <input type="hidden" name="update_profile" value="1">
             <div class="form-group">
@@ -72,8 +132,18 @@
                 <input type="email" name="email" id="id_email" required
                        value="{{ profile_form.email.value|default:user.email }}"
                        class="login-input" autocomplete="email">
+                {% if profile.pending_email %}
+                <p class="account-pending-email-note" id="account-pending-email-note">
+                    {% blocktrans with pending=profile.pending_email current=user.email %}
+                    We sent a confirmation link to {{ pending }}. Your account still uses {{ current }} until you confirm the new address.
+                    {% endblocktrans %}
+                </p>
+                {% endif %}
                 {% if profile_form.email.errors %}
                 <span class="field-error">{{ profile_form.email.errors.0 }}</span>
+                {% endif %}
+                {% if profile_form.non_field_errors %}
+                <span class="field-error">{{ profile_form.non_field_errors.0 }}</span>
                 {% endif %}
             </div>
             <button type="submit" class="login-btn">{% trans "Save" %}</button>
@@ -99,6 +169,7 @@
     </section>
 
 </div>
+<script src="{% static 'tools/js/account-profile-form.js' %}?v=1"></script>
 <script>
 (function() {
     var chooseImageLabel = "{{ choose_image_label|escapejs }}";
@@ -112,6 +183,47 @@
                 btnLabel.textContent = chooseImageLabel;
             }
         });
+    }
+
+    var removedMsg = document.getElementById('account-avatar-removed-msg');
+    if (removedMsg) {
+        window.setTimeout(function() {
+            removedMsg.classList.add('account-avatar-removed-msg--hide');
+            window.setTimeout(function() {
+                removedMsg.hidden = true;
+            }, 350);
+        }, 2500);
+        try {
+            var cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('avatar_removed');
+            var next = cleanUrl.pathname + cleanUrl.search + cleanUrl.hash;
+            window.history.replaceState({}, '', next);
+        } catch (e) {}
+    }
+
+    var profileSavedMsg = document.getElementById('account-profile-saved-msg');
+    if (profileSavedMsg) {
+        window.setTimeout(function() {
+            profileSavedMsg.classList.add('account-avatar-removed-msg--hide');
+            window.setTimeout(function() {
+                profileSavedMsg.hidden = true;
+            }, 350);
+        }, 2500);
+        try {
+            var profileUrl = new URL(window.location.href);
+            profileUrl.searchParams.delete('profile_saved');
+            profileUrl.searchParams.delete('pending_cancelled');
+            profileUrl.hash = '';
+            var profileNext = profileUrl.pathname + profileUrl.search;
+            window.history.replaceState({}, '', profileNext);
+        } catch (e) {}
+    }
+
+    if (window.location.hash === '#account-profile' || window.location.hash === '#account-avatar') {
+        try {
+            var bareUrl = window.location.pathname + window.location.search;
+            window.history.replaceState({}, '', bareUrl);
+        } catch (e2) {}
     }
 })();
 </script>

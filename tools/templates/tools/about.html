@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "About - Gadly" %}{% endblock %}
 {% block body_class %}static-page about-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'What Gadly is: free online tools for text, social, finance, the web, and files—fast and simple to use.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260428c">
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260529h">
 {% endblock %}
 {% block content %}
 <div class="static-container">

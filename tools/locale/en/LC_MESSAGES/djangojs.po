@@ -1,0 +1,869 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-12 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\tools\static\tools\js\application_email_generator.js:60
+msgid "Please fill in name, role, and company."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:64
+msgid "Relevant experience, strong communication, and motivation for the role."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:73
+msgid "Application for %(role)s - %(name)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:74
+msgid "Application: %(role)s position — %(name)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:75
+msgid "%(name)s — application for %(role)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:82
+msgid "Dear Hiring Team"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:83
+msgid "Dear Recruiting Team"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:84
+msgid "Hello"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:88
+msgid "I am applying for the %(role)s role at %(company)s."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:91
+msgid "I am writing to apply for the %(role)s position at %(company)s."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:94
+msgid ""
+"I would like to express my interest in the %(role)s role at %(company)s."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:100
+msgid "I believe my profile is a strong fit. Key points: %(points)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:101
+msgid "Here is a brief summary of how I match the role: %(points)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:102
+msgid "My strengths for this position include: %(points)s"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:106
+msgid "I have attached my CV and would be glad to discuss my application."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:107
+msgid ""
+"Please find my CV attached; I would welcome the opportunity to discuss my "
+"application."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:108
+msgid ""
+"My CV is attached for your review. I would be happy to discuss how I can "
+"contribute."
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:112
+msgid "Kind regards"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:113
+msgid "Best regards"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:114
+msgid "Sincerely"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:118
+msgid "Subject"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:139
+#: .\tools\static\tools\js\base64_encoder.js:74
+#: .\tools\static\tools\js\base64_encoder.js:85
+#: .\tools\static\tools\js\case_converter.js:13
+#: .\tools\static\tools\js\color_converter.js:215
+#: .\tools\static\tools\js\data-viz.js:757
+#: .\tools\static\tools\js\diff_checker.js:95
+#: .\tools\static\tools\js\hash_generator.js:128
+#: .\tools\static\tools\js\hash_generator.js:139
+#: .\tools\static\tools\js\hashtag_generator.js:96
+#: .\tools\static\tools\js\json_formatter.js:139
+#: .\tools\static\tools\js\json_formatter.js:150
+#: .\tools\static\tools\js\lorem_ipsum.js:98
+#: .\tools\static\tools\js\password.js:168
+#: .\tools\static\tools\js\qr-decoder.js:133
+#: .\tools\static\tools\js\qr-decoder.js:154
+#: .\tools\static\tools\js\remove_spaces.js:99
+#: .\tools\static\tools\js\robots_txt_generator.js:312
+#: .\tools\static\tools\js\uuid_generator.js:44
+#: .\tools\static\tools\js\uuid_generator.js:55
+msgid "Copied!"
+msgstr ""
+
+#: .\tools\static\tools\js\application_email_generator.js:142
+#: .\tools\static\tools\js\base64_encoder.js:76
+#: .\tools\static\tools\js\base64_encoder.js:87
+#: .\tools\static\tools\js\case_converter.js:13
+#: .\tools\static\tools\js\diff_checker.js:98
+#: .\tools\static\tools\js\hash_generator.js:130
+#: .\tools\static\tools\js\hash_generator.js:141
+#: .\tools\static\tools\js\hashtag_generator.js:98
+#: .\tools\static\tools\js\json_formatter.js:141
+#: .\tools\static\tools\js\json_formatter.js:152
+#: .\tools\static\tools\js\lorem_ipsum.js:101
+#: .\tools\static\tools\js\password.js:171
+#: .\tools\static\tools\js\qr-decoder.js:136
+#: .\tools\static\tools\js\qr-decoder.js:157
+#: .\tools\static\tools\js\remove_spaces.js:108
+#: .\tools\static\tools\js\robots_txt_generator.js:90
+#: .\tools\static\tools\js\robots_txt_generator.js:316
+#: .\tools\static\tools\js\uuid_generator.js:46
+#: .\tools\static\tools\js\uuid_generator.js:57
+msgid "Copy"
+msgstr ""
+
+#: .\tools\static\tools\js\base64_encoder.js:41
+msgid "Enter text to encode"
+msgstr ""
+
+#: .\tools\static\tools\js\base64_encoder.js:46
+msgid "Encoding failed"
+msgstr ""
+
+#: .\tools\static\tools\js\base64_encoder.js:55
+msgid "Enter Base64 string to decode"
+msgstr ""
+
+#: .\tools\static\tools\js\base64_encoder.js:60
+msgid "Invalid Base64 or decoding failed"
+msgstr ""
+
+#: .\tools\static\tools\js\bio_generator.js:302
+msgid "Suggested bios"
+msgstr ""
+
+#: .\tools\static\tools\js\bio_generator.js:303
+#: .\tools\static\tools\js\caption_generator.js:341
+#: .\tools\static\tools\js\username_generator.js:173
+msgid "Select all"
+msgstr ""
+
+#: .\tools\static\tools\js\bio_generator.js:304
+#: .\tools\static\tools\js\caption_generator.js:342
+#: .\tools\static\tools\js\username_generator.js:174
+msgid "Deselect all"
+msgstr ""
+
+#: .\tools\static\tools\js\bio_generator.js:305
+msgid "The Copy button copies only the bios you have selected."
+msgstr ""
+
+#: .\tools\static\tools\js\bio_generator.js:353
+msgid "Select at least one bio to copy."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:40
+#: .\tools\static\tools\js\calculator.js:415
+#: .\tools\static\tools\js\calculator.js:538
+#: .\tools\static\tools\js\calculator.js:578
+#: .\tools\static\tools\js\calculator.js:649
+msgid "Please enter valid values."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:44
+msgid "Result:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:44
+msgid "of"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:44
+msgid "is"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:136
+msgid "(standard)"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:140
+msgid "(reduced)"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:224
+#: .\tools\static\tools\js\calculator.js:261
+msgid "Italy (IT)"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:301
+#: .\tools\static\tools\js\calculator.js:320
+#: .\tools\static\tools\js\calculator.js:461
+msgid "Please enter a valid amount."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:308
+#: .\tools\static\tools\js\calculator.js:329
+msgid "Net amount:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:309
+#: .\tools\static\tools\js\calculator.js:328
+msgid "VAT"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:310
+#: .\tools\static\tools\js\calculator.js:327
+msgid "Gross amount:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:374
+msgid "Please enter a valid gross salary."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:379
+msgid "Gross annual:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:380
+msgid "Social security (approx.):"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:381
+msgid "Income tax (estimate):"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:382
+msgid "Net annual:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:383
+msgid "Net monthly (%(months)s payments):"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:384
+msgid ""
+"Indicative estimate for Italy. Does not include deductions, regional or "
+"municipal taxes, or other charges."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:426
+msgid "Principal:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:427
+msgid "Interest:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:428
+#: .\tools\static\tools\js\calculator.js:653
+msgid "Total:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:458
+msgid "Convert"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:465
+msgid "Select two different currencies."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:470
+#: .\tools\static\tools\js\robots_txt_generator.js:396
+#: .\tools\static\tools\js\web_seo_result_area.js:37
+msgid "Loading…"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:489
+msgid "Exchange rate as of %(date)s (ECB)."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:507
+msgid "Error fetching rates. Check your connection."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:548
+msgid "Monthly payment:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:549
+msgid "Total paid:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:550
+msgid "Total interest:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:582
+msgid "Discount"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:583
+msgid "Original price:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:585
+msgid "Final price:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:613
+msgid "Please enter valid values. The margin must be below 100%."
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:618
+msgid "Cost:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:619
+msgid "Margin"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:620
+msgid "Selling price:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:654
+msgid "With %(tip)s tip:"
+msgstr ""
+
+#: .\tools\static\tools\js\calculator.js:655
+msgid "Per person (%(n)s):"
+msgstr ""
+
+#: .\tools\static\tools\js\caption_generator.js:340
+msgid "Suggested captions"
+msgstr ""
+
+#: .\tools\static\tools\js\caption_generator.js:343
+msgid "The Copy button copies only the captions you have selected."
+msgstr ""
+
+#: .\tools\static\tools\js\caption_generator.js:391
+msgid "Select at least one caption to copy."
+msgstr ""
+
+#: .\tools\static\tools\js\case_converter.js:35
+#: .\tools\static\tools\js\case_converter.js:43
+#: .\tools\static\tools\js\case_converter.js:51
+msgid "Please enter some text to convert"
+msgstr ""
+
+#: .\tools\static\tools\js\color_converter.js:156
+msgid "This is not a hexadecimal code"
+msgstr ""
+
+#: .\tools\static\tools\js\cv_optimizer.js:31
+#: .\tools\static\tools\js\file-analyzer.js:120
+#: .\tools\static\tools\js\pdf-merge.js:15
+#: .\tools\static\tools\js\pdf-merge.js:111
+#: .\tools\static\tools\js\pdf-split.js:22
+#: .\tools\static\tools\js\qr-decoder.js:55
+#: .\tools\static\tools\js\qr-decoder.js:60
+msgid "Choose file"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:38
+msgid "Monthly sales"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:365
+msgid "January"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:366
+msgid "February"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:367
+msgid "March"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:368
+msgid "April"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+msgid "May"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:39
+msgid "June"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:42
+msgid "Budget vs actual"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:43
+#: .\tools\static\tools\js\data-viz.js:350
+#: .\tools\static\tools\js\data-viz.js:361
+#: .\tools\static\tools\js\data-viz.js:429
+msgid "Label"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:43
+msgid "Planned"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:43
+msgid "Actual"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:46
+msgid "Survey results"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "Yes"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "No"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "Maybe"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "No answer"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:246
+#: .\tools\static\tools\js\data-viz.js:250
+msgid "Series"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:253
+#: .\tools\static\tools\js\data-viz.js:284
+#: .\tools\static\tools\js\data-viz.js:361
+msgid "Value"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:271
+msgid "Item"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:329
+msgid "Other"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:441
+msgid "… and %(count)s more rows"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:483
+msgid "Total"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:484
+msgid "Average"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:485
+msgid "Min"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:486
+msgid "Max"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:554
+msgid "Please enter valid data (format: label,value per line)"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:713
+msgid "Generate a chart first, then download the PNG."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:723
+#: .\tools\static\tools\js\data-viz.js:735
+msgid "Generate a chart first, then download."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:739
+msgid "PDF export is not available. Try PNG or SVG."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:749
+msgid "Nothing to copy."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:761
+msgid "Could not copy to clipboard."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:857
+msgid "Data is too large to share in a link. Try fewer rows."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:865
+msgid "Link copied!"
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:876
+#: .\tools\static\tools\js\data-viz.js:895
+#: .\tools\static\tools\js\robots_txt_generator.js:384
+msgid "Could not read the selected file."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:884
+msgid "Excel support is not loaded. Save as CSV or try again."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:892
+msgid "Could not read this Excel file."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:927
+msgid "CSV file is too large. Maximum size is 256 KB."
+msgstr ""
+
+#: .\tools\static\tools\js\data-viz.js:934
+msgid ""
+"Could not read chart data from this file. Use the template format: "
+"label,value per line."
+msgstr ""
+
+#: .\tools\static\tools\js\diff_checker.js:52
+msgid "Enter or paste text in both boxes"
+msgstr ""
+
+#: .\tools\static\tools\js\diff_checker.js:59
+msgid "Diff library not loaded"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:36
+msgid "All selected"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:37
+msgid "None selected"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:129
+msgid "Please select a file to analyze"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:141
+msgid "Analyzing..."
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:169
+msgid "File name"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:170
+msgid "Size"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:171
+msgid "Type"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:172
+msgid "Extension"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:173
+msgid "MD5"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:174
+msgid "SHA-256"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:175
+msgid "Last modified"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:176
+msgid "Lines"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:177
+msgid "Words"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:178
+msgid "Characters"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:179
+msgid "Characters (no spaces)"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:180
+msgid "Reading time (min)"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:204
+msgid "min"
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:210
+msgid "Select at least one option to show in results."
+msgstr ""
+
+#: .\tools\static\tools\js\file-analyzer.js:218
+msgid "An error occurred while analyzing the file"
+msgstr ""
+
+#: .\tools\static\tools\js\home.js:237
+#: .\tools\static\tools\js\tool-favorites.js:34
+msgid "You cannot use this feature. Please log in."
+msgstr ""
+
+#: .\tools\static\tools\js\json_formatter.js:101
+msgid "Paste JSON to format"
+msgstr ""
+
+#: .\tools\static\tools\js\json_formatter.js:106
+#: .\tools\static\tools\js\json_formatter.js:121
+msgid "Invalid JSON"
+msgstr ""
+
+#: .\tools\static\tools\js\json_formatter.js:116
+msgid "Paste JSON to minify"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:5
+msgid "Title"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:6
+msgid "Description"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:7
+msgid "Keywords"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:8
+msgid "Author"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:22
+#: .\tools\static\tools\js\site_speed_check.js:42
+msgid "Please enter a URL"
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:41
+msgid "No meta tags found."
+msgstr ""
+
+#: .\tools\static\tools\js\meta_tag_checker.js:44
+#: .\tools\static\tools\js\robots_txt_generator.js:420
+#: .\tools\static\tools\js\site_speed_check.js:62
+#: .\tools\static\tools\js\sitemap_extractor.js:35
+msgid "Request failed"
+msgstr ""
+
+#: .\tools\static\tools\js\password.js:32
+msgid "Please enter a number of characters."
+msgstr ""
+
+#: .\tools\static\tools\js\password.js:38
+msgid "Password must be at least 14 characters."
+msgstr ""
+
+#: .\tools\static\tools\js\password.js:42
+msgid "Password cannot exceed 128 characters."
+msgstr ""
+
+#: .\tools\static\tools\js\password.js:47
+msgid "You must select all options to generate a password!"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:19
+msgid "files selected"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:57
+msgid "Move up"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:64
+msgid "Move down"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:111
+msgid "Choose PDF files to merge"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:120
+msgid "Please select at least two PDF files"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:139
+#: .\tools\static\tools\js\pdf-merge.js:154
+msgid "Error while processing the PDFs"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-merge.js:149
+msgid "PDF merged successfully!"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-split.js:63
+#: .\tools\static\tools\js\pdf-split.js:76
+msgid "Please select a PDF file"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-split.js:99
+#: .\tools\static\tools\js\pdf-split.js:118
+msgid "Error processing PDF"
+msgstr ""
+
+#: .\tools\static\tools\js\pdf-split.js:112
+msgid "PDF split successfully!"
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:59
+msgid "Please select a valid image."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:74
+msgid "Decoding library not loaded. Refresh the page and try again."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:83
+msgid "QR code read successfully."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:85
+msgid "No QR code found in this image."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:89
+msgid "Could not decode this image. Try another file or a clearer photo."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:121
+msgid "Unable to load image."
+msgstr ""
+
+#: .\tools\static\tools\js\qr-decoder.js:160
+msgid "Copy not supported"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:108
+msgid "Enter a site URL"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:109
+msgid "No robots.txt found"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:110
+msgid "URL unreachable"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:111
+msgid "Load failed"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:279
+msgid "Please enter a User-agent before generating robots.txt"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:378
+msgid "The selected file is empty."
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:381
+msgid "Loaded file"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:393
+msgid "Please enter a site URL for web import"
+msgstr ""
+
+#: .\tools\static\tools\js\robots_txt_generator.js:410
+#: .\tools\static\tools\js\robots_txt_generator.js:411
+msgid "Loaded from the web"
+msgstr ""
+
+#: .\tools\static\tools\js\site_speed_check.js:31
+msgid "Response time:"
+msgstr ""
+
+#: .\tools\static\tools\js\sitemap_extractor.js:11
+msgid "Please enter a sitemap URL"
+msgstr ""
+
+#: .\tools\static\tools\js\sitemap_extractor.js:27
+msgid "No URLs found in sitemap."
+msgstr ""
+
+#: .\tools\static\tools\js\tool-favorites.js:36
+msgid "Log in"
+msgstr ""
+
+#: .\tools\static\tools\js\tool-favorites.js:37
+msgid "Close"
+msgstr ""
+
+#: .\tools\static\tools\js\tool-favorites.js:78
+msgid "Add to favorites"
+msgstr ""
+
+#: .\tools\static\tools\js\tool-favorites.js:79
+msgid "Favorite"
+msgstr ""
+
+#: .\tools\static\tools\js\translator.js:84
+msgid "Please enter text to translate"
+msgstr ""
+
+#: .\tools\static\tools\js\translator.js:111
+msgid "An unknown error occurred while translating"
+msgstr ""
+
+#: .\tools\static\tools\js\translator.js:117
+msgid "An error occurred while translating"
+msgstr ""
+
+#: .\tools\static\tools\js\username_generator.js:172
+msgid "Suggested usernames"
+msgstr ""
+
+#: .\tools\static\tools\js\username_generator.js:175
+msgid "The Copy button copies only the usernames you have selected."
+msgstr ""
+
+#: .\tools\static\tools\js\username_generator.js:222
+msgid "Select at least one username to copy."
+msgstr ""

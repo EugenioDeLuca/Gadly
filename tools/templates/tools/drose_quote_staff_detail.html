@@ -1,0 +1,98 @@
+{% extends "tools/base.html" %}
+{% load i18n static %}
+{% block title %}{{ quote.reference }} — {% trans "Drose quote" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage drose-quote-staff-page{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/drose-date-picker.js' %}?v=1"></script>
+{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-subpage__head">
+            <h1 class="drose-quote-staff-ref">{{ quote.reference }}</h1>
+            <p>
+                <span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span>
+                · {{ quote.full_name }} · {{ quote.email }}
+            </p>
+        </header>
+
+        {% if offer_sent %}
+        <div class="drose-quote-success" role="status">
+            {% trans "Quote email sent to the client successfully." %}
+        </div>
+        {% endif %}
+        {% if offer_error %}
+        <div class="drose-quote-errors" role="alert"><p>{{ offer_error }}</p></div>
+        {% endif %}
+
+        <section class="drose-section">
+            <h2>{% trans "Request details" %}</h2>
+            <dl class="drose-quote-staff-dl">
+                <dt>{% trans "Service needed" %}</dt><dd>{{ quote.service_label }}</dd>
+                <dt>{% trans "Estimated budget range" %}</dt><dd>{{ quote.budget_label }}</dd>
+                <dt>{% trans "Requested deliverables" %}</dt><dd>{{ quote.deliverables_label }}</dd>
+                <dt>{% trans "Location" %}</dt><dd>{{ quote.location|default:"—" }}</dd>
+                <dt>{% trans "Preferred timeline (optional)" %}</dt><dd>{{ quote.preferred_timeline|default:"—" }}</dd>
+                <dt>{% trans "Phone" %}</dt><dd>{{ quote.phone|default:"—" }}</dd>
+                <dt>{% trans "Company name (optional)" %}</dt><dd>{{ quote.company_name|default:"—" }}</dd>
+                <dt>{% trans "Project details" %}</dt><dd>{{ quote.project_details|linebreaksbr }}</dd>
+                {% if quote.reference_links %}
+                <dt>{% trans "Reference links (optional)" %}</dt><dd>{{ quote.reference_links|linebreaksbr }}</dd>
+                {% endif %}
+            </dl>
+        </section>
+
+        <section class="drose-section drose-cta">
+            <h2>{% trans "Send quote proposal" %}</h2>
+            <p>{% trans "Fill in the offer details below. The client will receive the HTML email with Accept and Decline buttons." %}</p>
+
+            <form method="post" class="drose-quote-form" novalidate>
+                {% csrf_token %}
+                <div class="drose-quote-grid">
+                    <div class="drose-quote-field">
+                        <label for="{{ offer_form.valid_until.id_for_label }}">{{ offer_form.valid_until.label }}</label>
+                        {{ offer_form.valid_until }}
+                        {% for err in offer_form.valid_until.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field">
+                        <label for="{{ offer_form.price_subtotal.id_for_label }}">{{ offer_form.price_subtotal.label }}</label>
+                        {{ offer_form.price_subtotal }}
+                        {% for err in offer_form.price_subtotal.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field">
+                        <label for="{{ offer_form.price_total.id_for_label }}">{{ offer_form.price_total.label }}</label>
+                        {{ offer_form.price_total }}
+                        {% for err in offer_form.price_total.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full">
+                        <label for="{{ offer_form.offer_scope.id_for_label }}">{{ offer_form.offer_scope.label }}</label>
+                        {{ offer_form.offer_scope }}
+                        {% for err in offer_form.offer_scope.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full">
+                        <label for="{{ offer_form.offer_deliverables_text.id_for_label }}">{{ offer_form.offer_deliverables_text.label }}</label>
+                        {{ offer_form.offer_deliverables_text }}
+                        {% if offer_form.offer_deliverables_text.help_text %}<p class="drose-quote-field-hint">{{ offer_form.offer_deliverables_text.help_text }}</p>{% endif %}
+                        {% for err in offer_form.offer_deliverables_text.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full">
+                        <label for="{{ offer_form.offer_timeline.id_for_label }}">{{ offer_form.offer_timeline.label }}</label>
+                        {{ offer_form.offer_timeline }}
+                        {% for err in offer_form.offer_timeline.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full">
+                        <label for="{{ offer_form.offer_notes.id_for_label }}">{{ offer_form.offer_notes.label }}</label>
+                        {{ offer_form.offer_notes }}
+                        {% for err in offer_form.offer_notes.errors %}<p class="drose-quote-error">{{ err }}</p>{% endfor %}
+                    </div>
+                </div>
+                <button type="submit" class="drose-btn drose-btn--primary">{% trans "Send quote email to client" %}</button>
+            </form>
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose_quote_staff_list' %}">{% trans "Back to quote list" %}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

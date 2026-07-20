@@ -1,7 +1,8 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Register - Gadly" %}{% endblock %}
+{% load auth_brand_tags %}
+{% block title %}{% if is_drose_site %}{% trans "Register - Drose" %}{% else %}{% trans "Register - Gadly" %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
@@ -14,7 +15,11 @@
 <div class="static-container login-container">
     <h1>{% trans "Register" %}</h1>
     <p style="margin: 16px 0; color: #555; line-height: 1.6;">
+        {% if is_drose_site %}
+        {% trans "Create your Gadly account. The same login works for Gadly tools and Drose pages." %}
+        {% else %}
         {% trans "Create your account to save favorites and access all Gadly features." %}
+        {% endif %}
     </p>
 
     {% if form.non_field_errors %}
@@ -27,6 +32,7 @@
 
     <form method="post" class="login-form">
         {% csrf_token %}
+        {% if auth_next %}<input type="hidden" name="next" value="{{ auth_next }}">{% endif %}
         <div class="form-group">
             <div class="username-input-wrap">
                 <input type="text" name="username" id="id_username" autofocus required maxlength="150"
@@ -64,7 +70,7 @@
         <button type="submit" class="login-btn">{% trans "Sign up" %}</button>
     </form>
 
-    <p class="login-hint">{% trans "Already have an account?" %} <a href="{% url 'login' %}">{% trans "Sign in" %}</a></p>
+    <p class="login-hint">{% trans "Already have an account?" %} <a href="{% auth_link 'login' %}">{% trans "Sign in" %}</a></p>
 
 </div>
 <script>

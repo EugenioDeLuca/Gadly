@@ -1,0 +1,14 @@
+{% load i18n %}
+<nav class="career-kit-flow" aria-label="{% trans 'Application kit navigation' %}">
+    <p class="career-kit-flow__progress">
+        {% blocktrans with step=step_number total=total_steps %}Application kit · Step {{ step }} of {{ total }}{% endblocktrans %}
+    </p>
+    <div class="career-kit-flow__actions{% if not next_url %} career-kit-flow__actions--last{% endif %}">
+        <a class="career-kit-flow__kit" href="{{ kit_url }}">{% trans "Application kit" %}</a>
+        {% if next_url %}
+        <a class="career-kit-flow__next" href="{{ next_url }}">
+            {% trans "Next step" %}: {{ next_label }} →
+        </a>
+        {% endif %}
+    </div>
+</nav>

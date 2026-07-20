@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Anteprime email Drose — Tools_Site</title>
+  <style>
+    body { margin: 0; padding: 32px 20px 48px; font-family: Arial, sans-serif; background: #e2e8f0; color: #0f172a; }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; color: #b45309; }
+    .lead { margin: 0 0 20px; color: #475569; line-height: 1.6; font-size: 15px; }
+    .note { margin: 0 0 28px; padding: 14px 16px; background: #fff9f5; border: 1px solid #fbbf24; border-radius: 10px; font-size: 14px; line-height: 1.55; color: #78350f; }
+    .note code { font-size: 13px; }
+    section { margin-bottom: 28px; }
+    section h2 { margin: 0 0 12px; font-size: 1.05rem; color: #003f7f; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    li { margin: 0 0 10px; }
+    a.file-link {
+      display: block;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      color: #003f7f;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    a.file-link:hover { border-color: #b45309; color: #b45309; }
+    a.file-link span { display: block; margin-top: 4px; font-weight: 400; font-size: 13px; color: #64748b; }
+    a.live-link { display: inline-block; margin-top: 8px; font-size: 13px; color: #b45309; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Anteprime email Drose</h1>
+    <p class="lead">File HTML nella cartella <strong>Tools_Site</strong>. Doppio clic su un link (o sul file) per aprire l’anteprima nel browser.</p>
+    <p class="note">
+      <strong>Cartella:</strong> <code>Tools_Site</code><br>
+      Logo light: <code>tools/static/tools/images/drose-logo-email.png?v=30</code> · dark: <code>tools/static/tools/images/drose-logo-email-dark.png?v=30</code> (68×68 px, PNG 512 px). SVG: <code>tools/static/tools/images/drose-logo.svg?v=30</code>, <code>tools/static/tools/images/drose-logo-dark.svg?v=30</code>. Rigenera con <code>python scripts/export_drose_email_previews.py</code>.<br>
+      Con il server in esecuzione (<code>DEBUG=True</code>) usa anche <code>/drose/email-preview/</code> (template live).
+    </p>
+
+    <section>
+      <h2>Richiesta preventivo ricevuta</h2>
+      <ul>
+        <li>
+          <a class="file-link" href="email-preview-drose-quote-received.html">
+            email-preview-drose-quote-received.html
+            <span>Conferma ricezione richiesta EN/IT</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Proposta preventivo</h2>
+      <ul>
+        <li>
+          <a class="file-link" href="email-preview-drose-quote-offer.html">
+            email-preview-drose-quote-offer.html
+            <span>Proposta preventivo EN/IT · Accetta / Rifiuta</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Verifica email e conferma indirizzo</h2>
+      <ul>
+        <li>
+          <a class="file-link" href="email-preview-drose-verify-email.html">
+            email-preview-drose-verify-email.html
+            <span>Registrazione EN/IT · Cambio email EN/IT</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Reset password</h2>
+      <ul>
+        <li>
+          <a class="file-link" href="email-preview-drose-password-reset.html">
+            email-preview-drose-password-reset.html
+            <span>Reset password EN/IT</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

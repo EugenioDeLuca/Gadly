@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     padding: 16px 24px;
-    background: rgba(0, 63, 127, 0.95);
+    background: #003f7f;
     color: white;
     display: flex;
     align-items: center;
@@ -13,13 +13,11 @@
     flex-wrap: wrap;
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    contain: layout;
 }
 
 .cookie-banner.hidden {
     display: none;
-}
-.cookie-banner[data-ready="0"] {
-    display: none !important;
 }
 
 .cookie-banner p {

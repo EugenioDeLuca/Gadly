@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}FAQ{% endblock %}
 {% block body_class %}faq-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly FAQ: account, privacy, preferences, and how to use the online tools.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/faq.css' %}?v=8">
+<link rel="stylesheet" href="{% static 'tools/css/faq.css' %}?v=15">
 {% endblock %}
 {% block content %}
 <div class="faq-container">

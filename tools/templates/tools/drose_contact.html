@@ -1,0 +1,28 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Contact - Drose" %}{% endblock %}
+{% block body_class %}drose-page static-page contact-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Contact Drose Drone Services for quotes and aerial projects: email, phone, and WhatsApp.' %}">
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260529i">
+{% endblock %}
+{% block content %}
+<div class="static-container">
+    <h1>{% trans "Contact" %}</h1>
+
+    <p>{% blocktrans trimmed %}For quotes, drone projects, or questions about Drose Drone Services, write to us using the details below. Include location, dates, and the type of aerial work you need so we can reply with useful next steps.{% endblocktrans %}</p>
+
+    <p>{% trans "Email:" %} <a href="mailto:eu.deluca@proton.me">eu.deluca@proton.me</a></p>
+
+    <p>{% trans "Phone:" %} <a href="tel:+39329568378">+39 329568378</a></p>
+
+    <p>{% blocktrans trimmed %}For detailed project briefs, attachments, or formal quote requests, email is usually best. If you prefer to talk through location, timing, and deliverables by voice, call us on the number above.{% endblocktrans %}</p>
+
+    <p>{% blocktrans trimmed %}You can also contact us directly on <a href="https://wa.me/39329568378" target="_blank" rel="noopener noreferrer">WhatsApp</a> for a quick reply—handy for sharing a site address, preferred dates, or a short clip of the area you want filmed.{% endblocktrans %}</p>
+
+    <p>{% blocktrans trimmed %}We usually reply within 1–2 business days, Monday to Friday. After your first message we confirm what we understood, note any site or airspace checks, and send a tailored quote when the scope is clear.{% endblocktrans %}</p>
+</div>
+{% endblock %}

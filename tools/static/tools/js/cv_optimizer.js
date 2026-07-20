@@ -40,8 +40,20 @@ document.addEventListener("DOMContentLoaded", function () {
         result.classList.remove("hidden");
         result.classList.add("error");
         if (exportControls) exportControls.classList.add("hidden");
+        clearExportActive();
     }
 
+    var exportButtons = [btnExportPdf, btnExportDocx, btnExportTxt].filter(function (b) { return !!b; });
+
+    function clearExportActive() {
+        exportButtons.forEach(function (b) { b.classList.remove("export-active"); });
+    }
+
+    function setExportActive(btn) {
+        if (!btn) return;
+        exportButtons.forEach(function (b) { b.classList.remove("export-active"); });
+        btn.classList.add("export-active");
+    }
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
     }
@@ -508,12 +520,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function exportTxt() {
         if (!latestAnalysis) return;
+        setExportActive(btnExportTxt);
         var txt = buildPlainTextExport(latestAnalysis);
         downloadBlob(new Blob([txt], { type: "text/plain;charset=utf-8" }), getExportBaseName() + ".txt");
     }
 
     async function exportDocx() {
         if (!latestAnalysis) return;
+        setExportActive(btnExportDocx);
         if (!window.docx) {
             showError(t("Export DOCX non disponibile.", "DOCX export unavailable."));
             return;
@@ -530,6 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function exportPdf() {
         if (!latestAnalysis) return;
+        setExportActive(btnExportPdf);
         if (!window.jspdf || !window.jspdf.jsPDF) {
             showError(t("Export PDF non disponibile.", "PDF export unavailable."));
             return;
@@ -571,6 +586,7 @@ document.addEventListener("DOMContentLoaded", function () {
         result.classList.remove("error");
         renderLoadingSkeleton();
         if (exportControls) exportControls.classList.add("hidden");
+        clearExportActive();
 
         fetch("/api/cv-optimize/", {
             method: "POST",

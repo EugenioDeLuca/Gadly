@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "Privacy Policy - Gadly" %}{% endblock %}
 {% block body_class %}static-page privacy-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly privacy policy: data we collect, cookies, accounts, and your rights.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260428d">
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260529j">
 {% endblock %}
 {% block content %}
 <div class="static-container">
@@ -13,7 +16,12 @@
 
     <section>
         <h2>{% trans "Data collection" %}</h2>
-        <p>{% blocktrans %}Gadly processes most data locally in your browser. Data sent to our servers (e.g. for translation or meta tag checks) is used only for the requested operation and is not stored or logged.{% endblocktrans %}</p>
+        <p>{% blocktrans trimmed %}Gadly processes most data locally in your browser. Data sent to our servers (e.g. for translation, CV optimization uploads, or meta tag checks) is used only for the requested operation and is not stored or logged for reuse.{% endblocktrans %}</p>
+    </section>
+
+    <section>
+        <h2>{% trans "Career and CV tools" %}</h2>
+        <p>{% blocktrans trimmed %}The CV Generator and related career helpers (cover letters, application emails, interview practice) work mainly in your browser: information you type is used locally to build documents or guidance. The CV Optimizer may upload a CV file (PDF, DOCX, or TXT) and optional job text so our server can extract content once and return scores and suggestions for that request only. We do not use career or CV content for marketing or profiling, and we do not keep it for purposes beyond responding to the tool, consistent with the section above.{% endblocktrans %}</p>
     </section>
 
     <section>

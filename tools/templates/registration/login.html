@@ -1,18 +1,33 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Login - Gadly" %}{% endblock %}
+{% load auth_brand_tags %}
+{% block title %}{% if is_drose_site %}{% trans "Login - Drose" %}{% else %}{% trans "Login - Gadly" %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=23">
 {% endblock %}
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Login" %}</h1>
     <p style="margin: 16px 0; color: #555; line-height: 1.6;">
+        {% if is_drose_site %}
+        {% trans "Sign in with your Gadly account. The same login works for Gadly tools and Drose pages." %}
+        {% else %}
         {% trans "Sign in to manage your account and continue using Gadly tools." %}
+        {% endif %}
     </p>
+
+    {% if request.GET.email_changed %}
+    <p class="login-email-changed-msg" role="status">
+        {% if request.GET.email %}
+        {% blocktrans with email=request.GET.email %}Your new email address {{ email }} is confirmed. Sign in with your username or email and your password.{% endblocktrans %}
+        {% else %}
+        {% trans "Your new email address is confirmed. Sign in with your username or email and your password." %}
+        {% endif %}
+    </p>
+    {% endif %}
 
     {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
@@ -22,10 +37,11 @@
 
     <form method="post" class="login-form">
         {% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% elif auth_next %}<input type="hidden" name="next" value="{{ auth_next }}">{% endif %}
         <div class="form-group">
             <input type="text" name="username" id="id_username" autofocus required
-                   placeholder="{% trans 'Username' %}" class="login-input"
-                   value="{{ form.username.value|default:'' }}" autocomplete="username">
+                   placeholder="{% trans 'Username or email' %}" class="login-input"
+                   value="{% firstof form.username.value request.GET.email '' %}" autocomplete="username email">
             {% if form.username.errors %}
             <span class="field-error">{{ form.username.errors.0 }}</span>
             {% endif %}
@@ -41,12 +57,12 @@
     </form>
 
     <p class="login-hint">
-        <a href="{% url 'password_reset' %}">{% trans "Forgot password?" %}</a>
+        <a href="{% auth_link 'password_reset' %}">{% trans "Forgot password?" %}</a>
     </p>
     <p class="login-hint">
-        <a href="{% url 'request_verification_email_page' %}">{% trans "Didn't receive the verification email?" %}</a>
+        <a href="{% auth_link 'request_verification_email_page' %}">{% trans "Didn't receive the verification email?" %}</a>
     </p>
-    <p class="login-hint">{% trans "Don't have an account?" %} <a href="{% url 'register' %}">{% trans "Sign up" %}</a></p>
+    <p class="login-hint">{% trans "Don't have an account?" %} <a href="{% auth_link 'register' %}">{% trans "Sign up" %}</a></p>
 
 </div>
 {% endblock %}

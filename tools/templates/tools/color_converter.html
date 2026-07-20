@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "Color Converter" %}{% endblock %}
 {% block body_class %}web-seo color-converter{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Convert colors between HEX, RGB, and HSL with live preview on Gadly’s color converter.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=32">
 <style>
 .color-converter .color-preview { width: 100%; max-width: 280px; height: 80px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 16px; }
 .color-converter .form-group input[type="text"] { font-family: monospace; }
@@ -31,22 +34,17 @@
         transform: translateX(-50%);
         z-index: 1;
     }
+    .color-converter .color-copy-group #btn-copy-rgb:hover {
+        transform: translateX(-50%) scale(1.03);
+    }
+    .color-converter .color-copy-group #btn-copy-rgb:active {
+        transform: translateX(-50%) scale(1.03);
+    }
     .color-converter .color-copy-group #btn-copy-hsl {
         position: absolute;
         right: 0;
         top: 0;
         z-index: 1;
-    }
-}
-/* Mobile: flex space-between, stesse dimensioni bottoni */
-@media (max-width: 768px) {
-    .color-converter .color-copy-group { justify-content: space-between; flex-wrap: nowrap; }
-    .color-converter .color-copy-group button {
-        flex: 0 0 auto !important;
-        min-width: 140px !important;
-        min-height: 48px !important;
-        padding: 12px 24px !important;
-        font-size: 1rem !important;
     }
 }
 </style>
@@ -57,28 +55,28 @@
     <p class="tool-desc">{% trans "Convert between HEX, RGB, and HSL. Pick a color or enter a HEX code." %}</p>
     <div class="form-group">
         <label>{% trans "Preview" %}</label>
-        <div id="color-preview" class="color-preview" style="background: #003f7f;"></div>
+        <div id="color-preview" class="color-preview" style="background: #800068;"></div>
     </div>
     <div class="form-group">
         <label for="color-picker">{% trans "Pick color" %}</label>
-        <input type="color" id="color-picker" value="#003f7f" style="width: 60px; height: 40px; padding: 2px; cursor: pointer; border-radius: 8px; border: 2px solid #ddd;" />
+        <input type="color" id="color-picker" value="#800068" style="width: 60px; height: 40px; padding: 2px; cursor: pointer; border-radius: 8px; border: 2px solid #ddd;" />
     </div>
     <div class="form-group">
         <label for="hex-input">{% trans "HEX" %}</label>
-        <input type="text" id="hex-input" value="#003f7f" placeholder="#003f7f" maxlength="9" />
+        <input type="text" id="hex-input" value="#800068" placeholder="#800068" maxlength="9" />
     </div>
     <div class="form-group">
         <label for="rgb-input">{% trans "RGB" %}</label>
-        <input type="text" id="rgb-input" value="rgb(0, 63, 127)" placeholder="rgb(0, 63, 127) or 0, 63, 127" />
+        <input type="text" id="rgb-input" value="rgb(128, 0, 104)" placeholder="rgb(128, 0, 104) or 128, 0, 104" />
     </div>
     <div class="form-group">
         <label for="hsl-input">{% trans "HSL" %}</label>
-        <input type="text" id="hsl-input" value="hsl(210, 100%, 25%)" placeholder="hsl(210, 100%, 25%) or 210, 100%, 25%" />
+        <input type="text" id="hsl-input" value="hsl(311, 100%, 25%)" placeholder="hsl(311, 100%, 25%) or 311, 100%, 25%" />
     </div>
     <div class="button-group color-copy-group" id="color-copy-group">
-        <button type="button" id="btn-copy-hex">{% trans "Copy HEX" %}</button>
-        <button type="button" id="btn-copy-rgb">{% trans "Copy RGB" %}</button>
-        <button type="button" id="btn-copy-hsl">{% trans "Copy HSL" %}</button>
+        <button type="button" id="btn-copy-hex" class="btn-copy">{% trans "Copy HEX" %}</button>
+        <button type="button" id="btn-copy-rgb" class="btn-copy">{% trans "Copy RGB" %}</button>
+        <button type="button" id="btn-copy-hsl" class="btn-copy">{% trans "Copy HSL" %}</button>
     </div>
     <div class="home-link-wrap">
         <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
@@ -86,5 +84,5 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/color_converter.js' %}"></script>
+<script src="{% static 'tools/js/color_converter.js' %}?v=8"></script>
 {% endblock %}

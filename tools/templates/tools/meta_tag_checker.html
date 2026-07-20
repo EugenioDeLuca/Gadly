@@ -3,8 +3,11 @@
 {% load i18n %}
 {% block title %}{% trans "Meta Tag Checker" %}{% endblock %}
 {% block body_class %}web-seo meta-tag-checker{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Fetch a URL and inspect title, meta description, Open Graph, and Twitter tags with Gadly’s meta tag checker.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
+<link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=93">
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -14,7 +17,7 @@
         <label for="url-input">{% trans "URL" %}</label>
         <input type="url" id="url-input" placeholder="https://example.com" />
     </div>
-    <div id="result-area" class="result-area hidden"></div>
+    <div id="result-area" class="result-area hidden" hidden aria-hidden="true"></div>
     <div class="button-group">
         <button type="button" id="btn-check">{% trans "Check" %}</button>
     </div>
@@ -24,5 +27,6 @@
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/meta_tag_checker.js' %}?v=20260422"></script>
+<script src="{% static 'tools/js/web_seo_result_area.js' %}?v=1"></script>
+<script src="{% static 'tools/js/meta_tag_checker.js' %}?v=20260603a"></script>
 {% endblock %}

@@ -299,10 +299,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var platform = platformWrap ? platformWrap.dataset.value : "instagram";
         var niche = resolveNicheKey((nicheInput.value || "").trim());
         var bios = generateUniqueBios(RESULT_COUNT, bioType, platform, niche);
-        var title = gt("Suggested bios");
-        var selAll = gt("Select all");
-        var selNone = gt("Deselect all");
-        var copyHint = gt("The Copy button copies only the bios you have selected.");
+        var title = gettext("Suggested bios");
+        var selAll = gettext("Select all");
+        var selNone = gettext("Deselect all");
+        var copyHint = gettext("The Copy button copies only the bios you have selected.");
         lastGeneratedBios = bios.slice();
         var html = '<div class="caption-results-header">';
         html += '<p class="caption-results-title">' + escapeHtml(title) + "</p>";
@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var picked = resultArea.querySelectorAll(".caption-pick:checked");
         if (!picked.length) {
             if (resultArea.querySelector(".caption-pick")) {
-                showTextToolInlineError(resultArea, gt("Select at least one bio to copy."));
+                showTextToolInlineError(resultArea, gettext("Select at least one bio to copy."));
             }
             return;
         }

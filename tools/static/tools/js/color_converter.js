@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-    var t = (typeof gettext === 'function') ? gettext : function (s) { return s; };
     var hexInput = document.getElementById('hex-input');
     var rgbInput = document.getElementById('rgb-input');
     var hslInput = document.getElementById('hsl-input');
@@ -154,7 +153,7 @@
         var normalized = raw.charAt(0) === '#' ? raw : ('#' + raw);
         var rgb = hex2rgb(normalized);
         if (!rgb) {
-            showError(t('This is not a hexadecimal code'));
+            showError(gettext("This is not a hexadecimal code"));
             return;
         }
         applyRgb(rgb);
@@ -179,34 +178,95 @@
         updateFromHsl(this.value);
     });
 
-    function copyText(text, btn) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(function () {}).catch(function () {});
-        } else {
-            var ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (e) {}
-            document.body.removeChild(ta);
+    var COPY_FLASH_MS = 2000;
+    var copyTimers = {};
+    var copyButtons = [
+        document.getElementById('btn-copy-hex'),
+        document.getElementById('btn-copy-rgb'),
+        document.getElementById('btn-copy-hsl')
+    ];
+
+    copyButtons.forEach(function (btn) {
+        if (!btn) return;
+        if (!btn.dataset.copyLabel) {
+            btn.dataset.copyLabel = btn.textContent.trim();
         }
-        var orig = btn.textContent;
-        btn.textContent = t('Copied!');
-        btn.classList.add('copied');
-        setTimeout(function () {
-            btn.textContent = orig;
-            btn.classList.remove('copied');
-        }, 2000);
+    });
+
+    function resetCopyButton(btn) {
+        if (!btn) return;
+        if (copyTimers[btn.id]) {
+            clearTimeout(copyTimers[btn.id]);
+            copyTimers[btn.id] = null;
+        }
+        btn.textContent = btn.dataset.copyLabel || btn.textContent;
+        btn.classList.remove('copied');
     }
 
-    document.getElementById('btn-copy-hex').addEventListener('click', function () {
-        copyText(hexInput.value, this);
-    });
-    document.getElementById('btn-copy-rgb').addEventListener('click', function () {
-        copyText(rgbInput.value, this);
-    });
-    document.getElementById('btn-copy-hsl').addEventListener('click', function () {
-        copyText(hslInput.value, this);
+    function resetOtherCopyButtons(activeBtn) {
+        copyButtons.forEach(function (b) {
+            if (b && b !== activeBtn) {
+                resetCopyButton(b);
+            }
+        });
+    }
+
+    function showCopiedFlash(btn) {
+        btn.textContent = gettext('Copied!');
+        btn.classList.add('copied');
+        if (copyTimers[btn.id]) {
+            clearTimeout(copyTimers[btn.id]);
+        }
+        copyTimers[btn.id] = setTimeout(function () {
+            resetCopyButton(btn);
+        }, COPY_FLASH_MS);
+    }
+
+    function fieldForCopyButton(btn) {
+        if (btn.id === 'btn-copy-hex') return hexInput;
+        if (btn.id === 'btn-copy-rgb') return rgbInput;
+        return hslInput;
+    }
+
+    function writeClipboard(text, btn) {
+        function onCopyFail() {
+            resetCopyButton(btn);
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).catch(onCopyFail);
+            return;
+        }
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            if (!document.execCommand('copy')) {
+                onCopyFail();
+            }
+        } catch (e) {
+            onCopyFail();
+        }
+        document.body.removeChild(ta);
+    }
+
+    function copyText(text, btn) {
+        resetOtherCopyButtons(btn);
+        showCopiedFlash(btn);
+        writeClipboard(text, btn);
+    }
+
+    var isMobileCopy = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+
+    copyButtons.forEach(function (btn) {
+        if (!btn) return;
+        if (isMobileCopy) {
+            btn.setAttribute('tabindex', '-1');
+        }
+        btn.addEventListener('click', function () {
+            copyText(fieldForCopyButton(btn).value, btn);
+        });
     });
 
 })();

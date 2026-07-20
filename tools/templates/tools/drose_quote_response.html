@@ -1,0 +1,64 @@
+{% extends "tools/base.html" %}
+{% load i18n %}
+{% block title %}{{ quote.reference }} — {% trans "Quote response" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-subpage__head">
+            <h1>{% trans "Quote response" %}</h1>
+            <p>{{ quote.reference }} — {{ quote.full_name }}</p>
+        </header>
+
+        <section class="drose-section drose-cta drose-cta--quote-response">
+            {% if completed and completed_action == "accepted" %}
+            <div class="drose-quote-success" role="status">
+                {% trans "Thank you. We have recorded your acceptance of this quote. Our team will contact you shortly to arrange the next steps." %}
+            </div>
+            {% elif completed and completed_action == "declined" %}
+            <div class="drose-quote-success" role="status">
+                {% trans "Thank you for letting us know. We have recorded that you declined this quote. If your plans change, you can contact us anytime." %}
+            </div>
+            {% elif quote.status == "accepted" %}
+            <p>{% trans "You have already accepted this quote." %}</p>
+            {% elif quote.status == "declined" %}
+            <p>{% trans "You have already declined this quote." %}</p>
+            {% elif not can_respond %}
+            <p>{% trans "This quote is not open for a response right now." %}</p>
+            {% else %}
+            <p>{% trans "Please review the summary below and confirm your decision." %}</p>
+
+            <dl class="drose-quote-staff-dl">
+                <dt>{% trans "Service" %}</dt><dd>{{ quote.service_label }}</dd>
+                <dt>{% trans "Total" %}</dt><dd><strong>{{ quote.price_total }}</strong></dd>
+                {% if quote.valid_until %}<dt>{% trans "Valid until" %}</dt><dd>{{ quote.valid_until|date:"d/m/Y" }}</dd>{% endif %}
+                <dt>{% trans "Project scope" %}</dt><dd>{{ quote.offer_scope|linebreaksbr }}</dd>
+            </dl>
+
+            {% if intent == "accept" %}
+            <p><strong>{% trans "You are about to accept this quote." %}</strong></p>
+            {% elif intent == "decline" %}
+            <p><strong>{% trans "You are about to decline this quote." %}</strong></p>
+            {% endif %}
+
+            <div class="drose-quote-response-actions">
+                <form method="post" class="drose-quote-response-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="accept">
+                    <button type="submit" class="drose-btn drose-btn--primary">{% trans "Confirm acceptance" %}</button>
+                </form>
+                <form method="post" class="drose-quote-response-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="decline">
+                    <button type="submit" class="drose-btn drose-btn--secondary">{% trans "Confirm decline" %}</button>
+                </form>
+            </div>
+            {% endif %}
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose' %}">{% trans "Back to Drose home" %}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

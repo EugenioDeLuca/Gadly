@@ -1,0 +1,178 @@
+/* Desktop: keep header/footer nav pill stable while pointer is over the link (incl. click). */
+@media (min-width: 769px) {
+    .site-header .header-link:not(.active),
+    .footer-links a,
+    .header-lang-btn,
+    .header-actions .theme-toggle,
+    .header-actions .warm-tone-toggle {
+        transition: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body:not(.dark-mode):not(.warm-tone) .site-header .header-link:not(.active):not(.header-link--logout):is(:hover, :focus, :active, .is-nav-link-hover),
+    body:not(.dark-mode):not(.warm-tone) .footer-links a:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: #e8f4fd !important;
+        color: #007bff !important;
+        -webkit-text-fill-color: #007bff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode:not(.warm-tone) .site-header .header-link:not(.active):not(.header-link--logout):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode:not(.warm-tone) .footer-links a:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: #e8f4fd !important;
+        color: #4a8ec2 !important;
+        -webkit-text-fill-color: #4a8ec2 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.warm-tone:not(.dark-mode) .site-header .header-link:not(.active):not(.header-link--logout):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.warm-tone:not(.dark-mode) .footer-links a:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: #e8f4fd !important;
+        color: #007bff !important;
+        -webkit-text-fill-color: #007bff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.warm-tone .site-header .header-link:not(.active):not(.header-link--logout):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode.warm-tone .footer-links a:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(232, 244, 253, 0.14) !important;
+        color: #5a9fd4 !important;
+        -webkit-text-fill-color: #5a9fd4 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Footer Gadly → Drose: pill ambra (non blu Gadly). */
+    body:not(.dark-mode):not(.warm-tone):not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: #fff4e0 !important;
+        color: #d97706 !important;
+        -webkit-text-fill-color: #d97706 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode:not(.warm-tone):not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(251, 191, 36, 0.18) !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.warm-tone:not(.dark-mode):not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: #fff4e0 !important;
+        color: #d97706 !important;
+        -webkit-text-fill-color: #d97706 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(251, 191, 36, 0.18) !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .site-header .header-link--logout:is(:hover, :focus, :active, .is-nav-link-hover),
+    .header-logout-form .header-link:is(:hover, :focus, :active, .is-nav-link-hover),
+    .header-nav-logout-form .header-link:is(:hover, :focus, :active, .is-nav-link-hover) {
+        color: #e84c4c !important;
+        -webkit-text-fill-color: #e84c4c !important;
+        background: rgba(232, 76, 76, 0.15) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode .site-header .header-link--logout:is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode .header-logout-form .header-link:is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode .header-nav-logout-form .header-link:is(:hover, :focus, :active, .is-nav-link-hover) {
+        color: #e84c4c !important;
+        -webkit-text-fill-color: #e84c4c !important;
+        background: rgba(232, 76, 76, 0.25) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body:not(.dark-mode):not(.warm-tone) .header-lang-btn:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover),
+    body:not(.dark-mode):not(.warm-tone) .header-actions .theme-toggle:not(.warm-tone-toggle):is(:hover, :focus, :active, .is-nav-link-hover),
+    body:not(.dark-mode):not(.warm-tone) .header-actions .warm-tone-toggle:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover) {
+        border-color: rgba(0, 63, 127, 0.45) !important;
+        background: #e8f4fd !important;
+        color: #007bff !important;
+        -webkit-text-fill-color: #007bff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode:not(.warm-tone) .header-lang-btn:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode:not(.warm-tone) .header-actions .theme-toggle:not(.warm-tone-toggle):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode:not(.warm-tone) .header-actions .warm-tone-toggle:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover) {
+        border-color: rgba(255, 255, 255, 0.35) !important;
+        background: #e8f4fd !important;
+        color: #4a8ec2 !important;
+        -webkit-text-fill-color: #4a8ec2 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.warm-tone:not(.dark-mode) .header-lang-btn:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.warm-tone:not(.dark-mode) .header-actions .theme-toggle:not(.warm-tone-toggle):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.warm-tone:not(.dark-mode) .header-actions .warm-tone-toggle:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover) {
+        border-color: rgba(0, 63, 127, 0.45) !important;
+        background: #e8f4fd !important;
+        color: #007bff !important;
+        -webkit-text-fill-color: #007bff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode.warm-tone .header-lang-btn:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode.warm-tone .header-actions .theme-toggle:not(.warm-tone-toggle):is(:hover, :focus, :active, .is-nav-link-hover),
+    body.dark-mode.warm-tone .header-actions .warm-tone-toggle:not(.is-active):is(:hover, :focus, :active, .is-nav-link-hover) {
+        border-color: rgba(255, 255, 255, 0.28) !important;
+        background: rgba(232, 244, 253, 0.14) !important;
+        color: #5a9fd4 !important;
+        -webkit-text-fill-color: #5a9fd4 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body:not(.dark-mode) .header-lang-btn.is-active:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(0, 123, 255, 0.15) !important;
+        border-color: rgba(0, 123, 255, 0.5) !important;
+        color: #007bff !important;
+        -webkit-text-fill-color: #007bff !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode .header-lang-btn.is-active:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(100, 180, 255, 0.2) !important;
+        border-color: rgba(100, 180, 255, 0.45) !important;
+        color: #4a8ec2 !important;
+        -webkit-text-fill-color: #4a8ec2 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body:not(.dark-mode) .header-actions .warm-tone-toggle.is-active:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(255, 180, 100, 0.35) !important;
+        color: #b86a00 !important;
+        -webkit-text-fill-color: #b86a00 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    body.dark-mode .header-actions .warm-tone-toggle.is-active:is(:hover, :focus, :active, .is-nav-link-hover) {
+        background: rgba(255, 200, 120, 0.25) !important;
+        color: #e8a040 !important;
+        -webkit-text-fill-color: #e8a040 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}

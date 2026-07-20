@@ -2,11 +2,141 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}Gadly{% endblock %}
+{% block title %}{% trans "Gadly - Free Online Tools" %}{% endblock %}
 {% block body_class %}homepage{% if user.is_authenticated %} user-authenticated{% endif %}{% endblock %}
 
+{% block extrahead %}
+<script>
+(function () {
+    try {
+        if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) return;
+        var key = "gadly-trash-onboarding-seen-v1:" + (window.GADLY_USER_STORAGE_KEY || "anon");
+        var root = document.documentElement;
+        if (localStorage.getItem(key) === "1") {
+            root.classList.add("gadly-home-trash-onboarding-dismissed");
+        } else {
+            root.classList.add("gadly-home-trash-onboarding-active");
+            root.classList.add("gadly-trash-onboarding-show");
+            root.classList.add("gadly-trash-onboarding-paint-ready");
+        }
+    } catch (e) { /* ignore */ }
+})();
+</script>
+<meta name="description" content="{% trans 'Gadly: free online tools for text, files, social media, finance, and everyday work. Search for a tool or browse by category.' %}">
+{% if user.is_authenticated %}
+<script>
+(function (uid) {
+    try {
+        var favs = JSON.parse(localStorage.getItem("gadly-favorites:" + uid) || "[]");
+        if (!favs.length) return;
+        var root = document.documentElement;
+        root.classList.add("gadly-has-shortcuts");
+        root.style.setProperty("--gadly-shortcuts-count", String(favs.length));
+    } catch (e) {}
+})("{{ user.id }}");
+</script>
+{% endif %}
+<script>
+(function () {
+    var PREFIX = "gadly-hidden-tools-v2:";
+    var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
+    var authenticated = !!window.GADLY_USER_AUTHENTICATED;
+    var urls = [];
+    var seen = {};
+
+    function normalizeUrl(raw) {
+        if (!raw) return "";
+        var u = String(raw).split("?")[0].split("#")[0];
+        if (u.length > 1 && u.charAt(u.length - 1) === "/") {
+            u = u.slice(0, -1);
+        }
+        return u;
+    }
+
+    function addUrl(u) {
+        u = normalizeUrl(u);
+        if (!u || seen[u]) return;
+        seen[u] = true;
+        urls.push(u);
+    }
+
+    function addFromKey(key) {
+        try {
+            var arr = JSON.parse(localStorage.getItem(key) || "[]");
+            if (!Array.isArray(arr)) return;
+            arr.forEach(function (item) {
+                if (!item || !item.url) return;
+                addUrl(item.url);
+            });
+        } catch (e) {}
+    }
+
+    if (authenticated) {
+        var serverEl = document.getElementById("gadly-server-hidden-tools");
+        if (serverEl) {
+            try {
+                var server = JSON.parse(serverEl.textContent);
+                if (Array.isArray(server)) {
+                    server.forEach(function (item) {
+                        if (item && item.url) addUrl(item.url);
+                    });
+                }
+            } catch (e) {}
+        }
+    } else {
+        addFromKey(PREFIX + suffix);
+        try {
+            for (var i = 0; i < localStorage.length; i++) {
+                var k = localStorage.key(i);
+                if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
+            }
+        } catch (e2) {}
+    }
+
+    if (!urls.length) return;
+
+    document.documentElement.classList.add("gadly-has-hidden-tools");
+
+    function cssEscapeAttr(value) {
+        if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
+            return CSS.escape(value);
+        }
+        return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    }
+
+    var rules = urls.map(function (u) {
+        var esc = cssEscapeAttr(u);
+        return 'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc + '"]){display:none!important}';
+    }).join("");
+
+    var style = document.createElement("style");
+    style.id = "gadly-hidden-tools-prehide";
+    style.textContent = rules;
+    document.head.appendChild(style);
+})();
+</script>
+<script>
+(function () {
+    if (window.innerWidth > 768) return;
+    var id;
+    try {
+        var ids = JSON.parse(sessionStorage.getItem("gadly-home-open-sections") || "[]");
+        id = ids.length ? ids[ids.length - 1] : null;
+    } catch (e) { return; }
+    if (!id) return;
+    document.documentElement.setAttribute("data-home-open", id);
+})();
+</script>
+{% endblock %}
+{% block og_head %}
+<meta property="og:title" content="{% trans 'Gadly - Free Online Tools' %}">
+<meta property="og:description" content="{% trans 'Free online tools for text, files, social media, and finance.' %}">
+{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=44">
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=100">
+<link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=73">
+<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=89">
 {% endblock %}
 
 {% block content %}
@@ -22,13 +152,27 @@
 </div>
 <div class="container">
 
+    <div class="home-hero">
     <h1 class="home-main-title">{% trans "Free tools for everyday tasks" %}</h1>
     <p class="intro">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</p>
+    </div>
     <div class="search-wrap">
         <input type="text" id="tool-search" placeholder="{% trans 'Search tools...' %}" class="tool-search-input" autocomplete="off">
     </div>
 
-    <section class="shortcuts-section" id="shortcuts-section" style="display:none">
+    <div class="home-drose-entry">
+        <a href="{% url 'drose' %}" class="home-drose-entry__link" draggable="false">
+            <img src="{% static 'tools/images/drose-favicon-96.png' %}" alt="" width="40" height="40" class="home-drose-entry__icon" decoding="async" draggable="false">
+            <span class="home-drose-entry__text">
+                <span class="home-drose-entry__title">{% trans "Drose - Drone Services" %}</span>
+                <span class="home-drose-entry__subtitle">{% trans "Drone photos and video for marketing, inspections, and events." %}</span>
+            </span>
+            <span class="home-drose-entry__chevron" aria-hidden="true">›</span>
+        </a>
+    </div>
+    <script src="{% static 'tools/js/home-drose-entry.js' %}?v=2"></script>
+
+    <section class="shortcuts-section" id="shortcuts-section"{% if user.is_authenticated %} hidden{% endif %}>
         <h2 class="shortcuts-title">{% trans "Quick access" %}</h2>
         <div class="shortcuts-grid" id="shortcuts-grid"></div>
     </section>
@@ -74,6 +218,10 @@
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-career">
+            <div class="tool-btn-wrap">
+                <a href="{% url 'career_cv_page' %}" class="tool-btn tool-btn--kit">{% trans "Application kit" %}</a>
+                <button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button>
+            </div>
             <div class="tool-btn-wrap"><a href="{% url 'cv_generator' %}" class="tool-btn">{% trans "CV Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'cv_optimizer' %}" class="tool-btn">{% trans "CV Optimizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
             <div class="tool-btn-wrap"><a href="{% url 'cover_letter_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
@@ -160,6 +308,208 @@
     </section>
 
     </div>
+
+    <script>
+    (function () {
+        var PREFIX = "gadly-hidden-tools-v2:";
+        var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
+        var authenticated = !!window.GADLY_USER_AUTHENTICATED;
+        var hidden = {};
+        var seen = {};
+
+        function normalizeUrl(raw) {
+            if (!raw) return "";
+            var u = String(raw).split("?")[0].split("#")[0];
+            if (u.length > 1 && u.charAt(u.length - 1) === "/") {
+                u = u.slice(0, -1);
+            }
+            return u;
+        }
+
+        function markUrl(raw) {
+            var u = normalizeUrl(raw);
+            if (!u || seen[u]) return;
+            seen[u] = true;
+            hidden[u] = true;
+        }
+
+        function addFromKey(key) {
+            try {
+                var arr = JSON.parse(localStorage.getItem(key) || "[]");
+                if (!Array.isArray(arr)) return;
+                arr.forEach(function (item) {
+                    if (!item || !item.url) return;
+                    markUrl(item.url);
+                });
+            } catch (e) {}
+        }
+
+        if (authenticated) {
+            var serverEl = document.getElementById("gadly-server-hidden-tools");
+            if (serverEl) {
+                try {
+                    var server = JSON.parse(serverEl.textContent);
+                    if (Array.isArray(server)) {
+                        server.forEach(function (item) {
+                            if (item && item.url) markUrl(item.url);
+                        });
+                    }
+                } catch (e) {}
+            }
+        } else {
+            addFromKey(PREFIX + suffix);
+            try {
+                for (var i = 0; i < localStorage.length; i++) {
+                    var k = localStorage.key(i);
+                    if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
+                }
+            } catch (e2) {}
+        }
+
+        if (!Object.keys(hidden).length) {
+            document.documentElement.classList.add("gadly-home-hidden-tools-ready");
+            return;
+        }
+
+        document.querySelectorAll("#home-categories-wrap .tool-section").forEach(function (section) {
+            var total = 0;
+            var visible = 0;
+            section.querySelectorAll(".tool-btn-wrap").forEach(function (wrap) {
+                total += 1;
+                var a = wrap.querySelector("a.tool-btn");
+                var u = a ? normalizeUrl(a.getAttribute("href")) : "";
+                if (u && hidden[u]) {
+                    wrap.classList.add("tool-btn-wrap--hidden-home");
+                } else {
+                    visible += 1;
+                }
+            });
+            if (total > 0 && visible === 0) {
+                section.classList.add("tool-section--all-hidden");
+            }
+        });
+
+        document.documentElement.classList.add("gadly-home-hidden-tools-ready");
+    })();
+    </script>
+
+    {% include "tools/includes/desktop_trash_bin.html" %}
+
+    <div id="gadly-trash-onboarding-slot" class="gadly-trash-onboarding-slot" aria-hidden="true">
+        <div id="home-trash-onboarding" class="home-trash-onboarding" role="dialog" aria-labelledby="home-trash-onboarding-title" hidden>
+            <h2 id="home-trash-onboarding-title" class="home-trash-onboarding__title">{% trans "Customize your homepage" %}</h2>
+            <p class="home-trash-onboarding__text">{% trans "Press and hold a tool or category name, then drag it to the trash to hide it. Tap the trash to open removed tools and restore them." %}</p>
+            <div class="home-trash-onboarding__actions">
+                <button type="button" class="home-trash-onboarding__close">{% trans "Close" %}</button>
+                <button type="button" class="home-trash-onboarding__ok">{% trans "Got it" %}</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function () {
+        if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) return;
+        if (!document.documentElement.classList.contains("gadly-home-trash-onboarding-active")) return;
+        var slot = document.getElementById("gadly-trash-onboarding-slot");
+        var panel = document.getElementById("home-trash-onboarding");
+        if (!slot || !panel) return;
+        slot.removeAttribute("aria-hidden");
+        panel.classList.add("home-trash-onboarding--visible");
+        panel.removeAttribute("hidden");
+        panel.removeAttribute("aria-hidden");
+    })();
+    </script>
+    <script>
+    (function () {
+        var PREFIX = "gadly-hidden-tools-v2:";
+        var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
+        var authenticated = !!window.GADLY_USER_AUTHENTICATED;
+        var seen = {};
+        var count = 0;
+
+        function markUrl(raw) {
+            var u = String(raw).split("?")[0].split("#")[0];
+            if (u.length > 1 && u.charAt(u.length - 1) === "/") u = u.slice(0, -1);
+            if (!u || seen[u]) return;
+            seen[u] = true;
+            count += 1;
+        }
+
+        function addFromKey(key) {
+            try {
+                var arr = JSON.parse(localStorage.getItem(key) || "[]");
+                if (!Array.isArray(arr)) return;
+                arr.forEach(function (item) {
+                    if (!item || !item.url) return;
+                    markUrl(item.url);
+                });
+            } catch (e) {}
+        }
+
+        if (authenticated) {
+            var serverEl = document.getElementById("gadly-server-hidden-tools");
+            if (serverEl) {
+                try {
+                    var server = JSON.parse(serverEl.textContent);
+                    if (Array.isArray(server)) {
+                        server.forEach(function (item) {
+                            if (item && item.url) markUrl(item.url);
+                        });
+                    }
+                } catch (e) {}
+            }
+        } else {
+            addFromKey(PREFIX + suffix);
+            try {
+                for (var i = 0; i < localStorage.length; i++) {
+                    var k = localStorage.key(i);
+                    if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
+                }
+            } catch (e2) {}
+        }
+
+        var badge = document.getElementById("desktop-trash-bin-count");
+        if (badge) {
+            if (count > 0) {
+                badge.textContent = String(count);
+                badge.classList.toggle("desktop-trash-bin__count--wide", count >= 10);
+                badge.removeAttribute("hidden");
+                badge.removeAttribute("aria-hidden");
+            } else {
+                badge.textContent = "";
+                badge.classList.remove("desktop-trash-bin__count--wide");
+                badge.setAttribute("hidden", "hidden");
+                badge.setAttribute("aria-hidden", "true");
+            }
+        }
+        document.documentElement.classList.toggle("gadly-home-has-hidden-tools", count > 0);
+    })();
+    </script>
+
+    <div id="home-trash-undo-toast" class="home-trash-undo-toast" role="status" aria-live="polite" hidden>
+        <span class="home-trash-undo-toast__msg"></span>
+        <button type="button" class="home-trash-undo-toast__undo">{% trans "Undo" %}</button>
+        <button type="button" class="home-trash-undo-toast__close" aria-label="{% trans 'Close' %}">×</button>
+    </div>
+    <script>
+    window.GADLY_TRASH_UNDO_LABEL = "{% filter escapejs %}{% trans 'Undo' %}{% endfilter %}";
+    {% if LANGUAGE_CODE|slice:":2" == "it" %}
+    window.GADLY_TRASH_UNDO_TOOL_SUFFIX = "rimosso dalla home";
+    window.GADLY_TRASH_UNDO_CATEGORY_MSG = function (count, category) {
+        return count + " tool rimossi · " + category;
+    };
+    {% else %}
+    window.GADLY_TRASH_UNDO_TOOL_SUFFIX = "removed from homepage";
+    window.GADLY_TRASH_UNDO_CATEGORY_MSG = function (count, category) {
+        return count + " tools removed · " + category;
+    };
+    {% endif %}
+    </script>
 </div>
-<script src="{% static 'tools/js/home.js' %}"></script>
+{% if user.is_authenticated %}
+<script src="{% static 'tools/js/home-shortcuts-sync.js' %}"></script>
+<script>window.gadlyRenderHomeShortcuts("{{ user.id }}");</script>
+{% endif %}
+<script src="{% static 'tools/js/desktop-trash-bin.js' %}?v=29"></script>
+<script src="{% static 'tools/js/home-trash.js' %}?v=88"></script>
+<script src="{% static 'tools/js/home.js' %}?v=20260604b"></script>
 {% endblock %}

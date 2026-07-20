@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-    var t = (typeof gettext === 'function') ? gettext : function (s) { return s; };
 
     var input = document.getElementById('base64-input');
     var resultEl = document.getElementById('base64-result');
@@ -39,12 +38,12 @@
     function doEncode() {
         var str = input.value;
         if (str === '') {
-            showResult(t('Enter text to encode'), true);
+            showResult(gettext("Enter text to encode"), true);
             return;
         }
         var out = encodeUTF8Base64(str);
         if (out === null) {
-            showResult(t('Encoding failed'), true);
+            showResult(gettext("Encoding failed"), true);
             return;
         }
         showResult(out, false);
@@ -53,12 +52,12 @@
     function doDecode() {
         var str = input.value.trim();
         if (str === '') {
-            showResult(t('Enter Base64 string to decode'), true);
+            showResult(gettext("Enter Base64 string to decode"), true);
             return;
         }
         var out = decodeBase64UTF8(str);
         if (out === null) {
-            showResult(t('Invalid Base64 or decoding failed'), true);
+            showResult(gettext("Invalid Base64 or decoding failed"), true);
             return;
         }
         showResult(out, false);
@@ -72,9 +71,9 @@
         if (!text || resultEl.classList.contains('hidden') || resultEl.classList.contains('error')) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
-                btnCopy.textContent = gettext('Copied!');
+                btnCopy.textContent = gettext("Copied!");
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = gettext("Copy"); btnCopy.classList.remove('copied'); }, 2000);
             }).catch(function () {});
         } else {
             var ta = document.createElement('textarea');
@@ -83,9 +82,9 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                btnCopy.textContent = gettext('Copied!');
+                btnCopy.textContent = gettext("Copied!");
                 btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext('Copy'); btnCopy.classList.remove('copied'); }, 2000);
+                setTimeout(function () { btnCopy.textContent = gettext("Copy"); btnCopy.classList.remove('copied'); }, 2000);
             } catch (e) {}
             document.body.removeChild(ta);
         }

@@ -3,9 +3,25 @@
 {% load i18n %}
 {% block title %}{% trans "UUID Generator" %}{% endblock %}
 {% block body_class %}text-tool uuid-generator{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Generate random UUID v4 identifiers; choose how many you need and copy with Gadly’s UUID generator.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260428g">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520n">
 <style>
+.text-tool.uuid-generator .tool-desc { color: #555; line-height: 1.55; }
+@media (max-width: 768px) {
+  body.dark-mode.uuid-generator.text-tool .site-main .container .tool-desc {
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+  /* Tap: solo scale, niente cambio colore (come CV Generator) */
+  body.uuid-generator.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+  body.uuid-generator.text-tool .site-main .container .button-group button:active.tap-active:not(.copied) {
+    transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
+  }
+}
 .uuid-generator .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
 .uuid-generator .form-group input[type="number"] { -moz-appearance: textfield; }
 .uuid-generator .form-group input[type="number"]::-webkit-outer-spin-button,
@@ -17,13 +33,13 @@
 @media (min-width: 769px) {
     .uuid-generator .uuid-result { margin-top: 12px !important; }
 }
-@media (max-width: 768px) {
-    .uuid-generator .form-group input { max-width: 100%; width: 100%; }
-    .uuid-generator .button-group { justify-content: space-between; }
-}
 body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d0e8f9; color: #003f7f; }
-@media (max-width: 480px) {
-    /* Mobile: layout compatto */
+@media (max-width: 768px) {
+    body.uuid-generator.text-tool:not(.dark-mode) .site-main .container .tool-desc {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+        line-height: 1.55;
+    }
     body.uuid-generator .site-main .container {
         margin: 8px 6px 24px 6px !important;
         padding: 16px 8px 24px 8px !important;
@@ -34,11 +50,53 @@ body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d
         order: 2;
         margin-bottom: 12px !important;
     }
+    body.uuid-generator .site-main .container #uuid-count,
+    body.uuid-generator .site-main .container .form-group input[type="number"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #0f2f55 !important;
+        -webkit-text-fill-color: #0f2f55 !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.uuid-generator .site-main .container #uuid-count:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.uuid-generator .site-main .container #uuid-count::placeholder {
+        color: #444 !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-count,
+    body.dark-mode.uuid-generator .site-main .container .form-group input[type="number"] {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #0d0d1a !important;
+        -webkit-text-fill-color: #0d0d1a !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-count:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
+    }
+    body.dark-mode.uuid-generator .site-main .container #uuid-count::placeholder {
+        color: #333 !important;
+    }
     body.uuid-generator .site-main .container #uuid-result {
         order: 3;
-        width: 338px !important;
-        max-width: 338px !important;
-        margin: 0 auto 12px auto !important; /* 12px dai bottoni */
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto 12px auto !important;
         padding: 16px !important;
         font-family: Arial, sans-serif !important;
         font-size: 0.9rem !important;
@@ -55,73 +113,20 @@ body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d
     }
     body.uuid-generator .site-main .container .button-group {
         order: 4;
-        align-items: center !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
         gap: 12px !important;
     }
-    body.uuid-generator .site-main .container .button-group button {
+}
+@media (max-width: 480px) {
+    body.uuid-generator .site-main .container #uuid-result {
         width: 338px !important;
         max-width: 338px !important;
-        min-height: 52px !important;
-        height: 52px !important;
-        padding: 12px 20px !important;
-        font-size: 1.05rem !important;
-        font-weight: 600 !important;
     }
-    /* Input numero: stessi colori del campo username generator */
     body.uuid-generator .site-main .container #uuid-count,
-    body.uuid-generator .site-main .container #uuid-count:focus {
+    body.uuid-generator .site-main .container .form-group input[type="number"] {
         width: 338px !important;
         max-width: 338px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        box-sizing: border-box !important;
-        background: #f8f9fa !important;
-        border: 1px solid #ddd !important;
-        color: #0f2f55 !important;
-        -webkit-text-fill-color: #0f2f55 !important;
-    }
-    body.uuid-generator .site-main .container #uuid-count::placeholder {
-        color: #444 !important;
-    }
-    body.dark-mode.uuid-generator .site-main .container #uuid-count,
-    body.dark-mode.uuid-generator .site-main .container #uuid-count:focus {
-        background: rgba(240, 242, 245, 0.95) !important;
-        border: 1px solid rgba(220, 224, 230, 0.9) !important;
-        color: #0d0d1a !important;
-        -webkit-text-fill-color: #0d0d1a !important;
-    }
-    body.dark-mode.uuid-generator .site-main .container #uuid-count::placeholder {
-        color: #333 !important;
-    }
-    /* Generate: mai blu persistente, tap come Word Counter */
-    body.uuid-generator .site-main .container #btn-generate,
-    body.uuid-generator .site-main .container #btn-generate:hover,
-    body.uuid-generator .site-main .container #btn-generate:focus,
-    body.uuid-generator .site-main .container #btn-generate:focus-visible {
-        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-        border: 2px solid #003f7f !important;
-        color: #003f7f !important;
-        outline: none !important;
-        box-shadow: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-        transform: scale(1) !important;
-    }
-    body.uuid-generator .site-main .container #btn-generate:active {
-        transform: scale(1.03) !important;
-    }
-    body.dark-mode.uuid-generator .site-main .container #btn-generate,
-    body.dark-mode.uuid-generator .site-main .container #btn-generate:hover,
-    body.dark-mode.uuid-generator .site-main .container #btn-generate:focus,
-    body.dark-mode.uuid-generator .site-main .container #btn-generate:focus-visible {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
-        outline: none !important;
-        box-shadow: none !important;
-        transform: scale(1) !important;
-    }
-    body.dark-mode.uuid-generator .site-main .container #btn-generate:active {
-        transform: scale(1.03) !important;
     }
 }
 </style>
@@ -150,5 +155,5 @@ body.dark-mode .uuid-generator .uuid-result { background: #fff; border-color: #d
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/uuid_generator.js' %}"></script>
+<script src="{% static 'tools/js/uuid_generator.js' %}?v=20260520e"></script>
 {% endblock %}

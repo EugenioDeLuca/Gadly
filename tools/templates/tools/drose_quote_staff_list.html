@@ -1,0 +1,70 @@
+{% extends "tools/base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Quotes" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage drose-quote-staff-page{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-subpage__head">
+            <h1>{% trans "Quotes" %}</h1>
+            <p class="drose-quote-staff-lead">{% trans "Review incoming requests, prepare the offer, and send the HTML quote email to the client." %}</p>
+        </header>
+
+        {% if quotes %}
+        <section class="drose-section drose-cta">
+            <div class="drose-quote-staff-table-wrap">
+                <table class="drose-quote-staff-table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Reference" %}</th>
+                            <th>{% trans "Client" %}</th>
+                            <th>{% trans "Service" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Received" %}</th>
+                            <th class="drose-quote-staff-actions-col"><span class="visually-hidden">{% trans "Actions" %}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quote in quotes %}
+                        <tr data-quote-id="{{ quote.pk }}"{% if quote.needs_staff_attention %} class="drose-quote-staff-row--new"{% endif %}>
+                            <td><span class="drose-quote-staff-ref">{{ quote.reference }}</span></td>
+                            <td>{{ quote.full_name }}<br><span class="drose-quote-staff-muted">{{ quote.email }}</span></td>
+                            <td>{{ quote.service_label }}</td>
+                            <td><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
+                            <td>{{ quote.created_at|date:"d/m/Y H:i" }}</td>
+                            <td class="drose-quote-staff-actions-col">
+                                {% if quote.needs_staff_attention %}
+                                <span class="drose-quote-staff-unread" title="{% trans 'Not yet viewed' %}" aria-label="{% trans 'Not yet viewed' %}"></span>
+                                {% endif %}
+                                <div class="drose-quote-staff-menu">
+                                    <button type="button" class="drose-quote-staff-menu__trigger" aria-label="{% trans 'Quote actions' %}" aria-expanded="false" aria-haspopup="true">
+                                        <span class="drose-quote-staff-menu__dots" aria-hidden="true"></span>
+                                    </button>
+                                    <div class="drose-quote-staff-menu__panel" hidden>
+                                        <a class="drose-quote-staff-menu__item" href="{% url 'drose_quote_staff_detail' quote.pk %}">{% trans "Open" %}</a>
+                                        <form method="post" action="{% url 'drose_quote_staff_delete' quote.pk %}" class="drose-quote-staff-menu__delete-form" onsubmit="return confirm('{% trans "Delete this quote request?" %}');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="drose-quote-staff-menu__item drose-quote-staff-menu__item--danger">{% trans "Delete" %}</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% else %}
+        <div class="drose-quote-staff-empty">
+            <p>{% trans "No quote requests yet." %}</p>
+        </div>
+        {% endif %}
+
+        {% include "tools/includes/drose_quote_trash_bin.html" %}
+    </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=5"></script>
+{% endblock %}

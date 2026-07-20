@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
+    'axes',
     'tools',
 ]
 
@@ -73,9 +75,46 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Login brute-force protection (django-axes)
+AXES_FAILURE_LIMIT_DEFAULT = 5
+AXES_FAILURE_LIMIT_STAFF = 3
+AXES_FAILURE_LIMIT = "tools.auth_throttle.axes_failure_limit"
+AXES_COOLOFF_TIME = 0.25  # 15 minutes
+AXES_LOCK_OUT_AT_FAILURE = True
+AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
+AXES_RESET_ON_SUCCESS = True
+AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = False
+AXES_COOLOFF_MESSAGE = _(
+    "Too many login attempts. Please try again in 15 minutes."
+)
+AXES_LOCKOUT_TEMPLATE = "registration/account_lockout.html"
+AXES_USERNAME_CALLABLE = "tools.auth_throttle.axes_username_callable"
+# Behind Render / reverse proxies, prefer X-Forwarded-For when present.
+AXES_IPWARE_META_PRECEDENCE_ORDER = (
+    "HTTP_X_FORWARDED_FOR",
+    "REMOTE_ADDR",
+)
+if _is_render:
+    AXES_IPWARE_PROXY_COUNT = 1
+    AXES_IPWARE_PROXY_ORDER = "left-most"
+
+# Password reset / verification email throttles (DB-backed, no Redis)
+AUTH_THROTTLE_PASSWORD_RESET_EMAIL_LIMIT = 5
+AUTH_THROTTLE_PASSWORD_RESET_IP_LIMIT = 10
+AUTH_THROTTLE_PASSWORD_RESET_WINDOW_SECONDS = 3600
+AUTH_THROTTLE_RESEND_VERIFY_EMAIL_LIMIT = 5
+AUTH_THROTTLE_RESEND_VERIFY_IP_LIMIT = 10
+AUTH_THROTTLE_RESEND_VERIFY_WINDOW_SECONDS = 3600
 
 ROOT_URLCONF = 'config.urls'
 
@@ -90,7 +129,10 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'tools.context_processors.canonical_url',
+                'tools.context_processors.drose_site',
                 'tools.context_processors.user_profile',
+                'tools.context_processors.drose_staff_quotes',
             ],
         },
     },
@@ -201,6 +243,14 @@ else:
     EMAIL_HOST_PASSWORD = _email_pass_raw or _sendgrid_key_raw
     EMAIL_TIMEOUT = int((os.environ.get('EMAIL_TIMEOUT') or '20').strip() or '20')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Gadly Support <contact@gadly.it>')
+DROSE_QUOTE_EMAIL = (os.environ.get('DROSE_QUOTE_EMAIL') or '').strip()
+try:
+    DROSE_QUOTE_TRASH_RETENTION_DAYS = max(
+        1,
+        int((os.environ.get('DROSE_QUOTE_TRASH_RETENTION_DAYS') or '60').strip()),
+    )
+except ValueError:
+    DROSE_QUOTE_TRASH_RETENTION_DAYS = 60
 
 # Require verified email before login for regular users.
 # In local dev (DEBUG=True) default is disabled to avoid lockout during testing.

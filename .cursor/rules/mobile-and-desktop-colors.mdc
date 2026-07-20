@@ -1,0 +1,12 @@
+---
+description: Non toccare mobile né i colori desktop salvo richiesta esplicita dell’utente.
+alwaysApply: true
+---
+
+# Vincoli UI (mobile e colori desktop)
+
+- **Mobile:** non modificare layout, comportamento, template o stili **per viewport mobile/tablet** (inclusi blocchi `@media` che riguardano telefono o tablet, tipicamente `max-width` ≤ 1024px o ≤ 768px / 480px, e file JS/CSS dedicati al comportamento su schermo stretto) **a meno che l’utente non chieda esplicitamente** di intervenire sul mobile.
+
+- **Colori desktop:** non modificare palette, token colore, contrasti o regole colore del tema **per la vista desktop** (es. `theme.css`, variabili colore in `base.css`, classi `dark-mode` / `warm-tone` legate ai colori della UI desktop) **a meno che l’utente non chieda esplicitamente** di cambiare i colori desktop.
+
+Se il task richiede inevitabilmente uno di questi ambiti, **fermarsi e chiedere conferma** prima di procedere.

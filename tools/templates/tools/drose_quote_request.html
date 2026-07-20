@@ -1,0 +1,239 @@
+{% extends "tools/base.html" %}
+{% load static i18n %}
+{% block title %}{% trans "Request a quote - Drose" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Send a detailed quote request to Drose Drone Services with project scope, deliverables, timing, and budget range.' %}">
+<style id="drose-quote-select-critical">
+.drose-quote-form .text-tool-select {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+.drose-quote-form .text-tool-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: normal;
+    border: 1px solid rgba(0, 63, 127, 0.22);
+    border-radius: 12px;
+    background: #fff;
+    color: #1a1a1a;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: left;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.drose-quote-form .text-tool-select-trigger::after {
+    content: "";
+    width: 0;
+    height: 0;
+    margin-left: 8px;
+    flex-shrink: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #003f7f;
+}
+.drose-quote-form .text-tool-select-menu {
+    display: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.drose-quote-form .text-tool-select.open .text-tool-select-menu {
+    display: block;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-subpage__head">
+            <h1>{% trans "Detailed quote request" %}</h1>
+            <p>{% trans "Tell us what you need and we will prepare a structured estimate with scope, deliverables, timeline, and price." %}</p>
+        </header>
+
+        <section class="drose-section drose-cta" aria-labelledby="drose-quote-title">
+            <h2 id="drose-quote-title">{% trans "Project brief" %}</h2>
+            <p>{% trans "Fill in as much detail as possible. More context helps us send a clearer and faster quote." %}</p>
+            <p class="drose-quote-required-note">{% trans "Fields marked with" %} <span class="drose-quote-required-star" aria-hidden="true">*</span> {% trans "are required." %}</p>
+
+            <div id="drose-quote-panel">
+            {% if quote_sent %}
+            <div class="drose-quote-success" role="status">
+                {% trans "Thanks, your quote request has been sent successfully." %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="drose-quote-form" id="drose-quote-form" novalidate>
+                {% csrf_token %}
+                {% if quote_form.non_field_errors %}
+                <div class="drose-quote-errors" role="alert">
+                    {% for err in quote_form.non_field_errors %}
+                    <p>{{ err }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="drose-quote-grid">
+                    <div class="drose-quote-field{% if quote_form.full_name.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.full_name.id_for_label }}">{{ quote_form.full_name.label }}</label>
+                        {{ quote_form.full_name }}
+                        {% for err in quote_form.full_name.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.email.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.email.id_for_label }}">{{ quote_form.email.label }}</label>
+                        {{ quote_form.email }}
+                        {% for err in quote_form.email.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.phone.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.phone.id_for_label }}">{{ quote_form.phone.label }}</label>
+                        {{ quote_form.phone }}
+                        {% for err in quote_form.phone.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.company_name.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.company_name.id_for_label }}">{{ quote_form.company_name.label }}</label>
+                        {{ quote_form.company_name }}
+                        {% for err in quote_form.company_name.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.service_type.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.service_type.id_for_label }}">{{ quote_form.service_type.label }}</label>
+                        {{ quote_form.service_type }}
+                        {% for err in quote_form.service_type.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.budget_range.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.budget_range.id_for_label }}">{{ quote_form.budget_range.label }}</label>
+                        {{ quote_form.budget_range }}
+                        {% for err in quote_form.budget_range.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.location.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.location.id_for_label }}">{{ quote_form.location.label }}</label>
+                        {{ quote_form.location }}
+                        {% for err in quote_form.location.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field{% if quote_form.preferred_timeline.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.preferred_timeline.id_for_label }}">{{ quote_form.preferred_timeline.label }}</label>
+                        {{ quote_form.preferred_timeline }}
+                        {% for err in quote_form.preferred_timeline.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full{% if quote_form.project_details.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.project_details.id_for_label }}">{{ quote_form.project_details.label }}</label>
+                        {{ quote_form.project_details }}
+                        {% for err in quote_form.project_details.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full{% if quote_form.deliverables.field.required %} drose-quote-field--required{% endif %}">
+                        <span>{{ quote_form.deliverables.label }}</span>
+                        {% if quote_form.deliverables.help_text %}<p class="drose-quote-field-hint">{{ quote_form.deliverables.help_text }}</p>{% endif %}
+                        {{ quote_form.deliverables }}
+                        {% for err in quote_form.deliverables.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                    <div class="drose-quote-field drose-quote-field--full{% if quote_form.reference_links.field.required %} drose-quote-field--required{% endif %}">
+                        <label for="{{ quote_form.reference_links.id_for_label }}">{{ quote_form.reference_links.label }}</label>
+                        {{ quote_form.reference_links }}
+                        {% for err in quote_form.reference_links.errors %}{% if err %}<p class="drose-quote-error">{{ err }}</p>{% endif %}{% endfor %}
+                    </div>
+                </div>
+
+                <div class="drose-quote-consent-group">
+                    <div class="drose-quote-consent{% if quote_form.gdpr_consent.field.required %} drose-quote-consent--required{% endif %}">
+                        {{ quote_form.gdpr_consent }}
+                        <label for="{{ quote_form.gdpr_consent.id_for_label }}">{{ quote_form.gdpr_consent.label }}</label>
+                    </div>
+                    <div class="drose-quote-consent-error-slot" aria-live="polite">
+                        {% for err in quote_form.gdpr_consent.errors %}
+                            {% if err %}<p class="drose-quote-error drose-quote-error--consent">{{ err }}</p>{% endif %}
+                        {% empty %}
+                            <p class="drose-quote-error drose-quote-error--consent drose-quote-error--consent-placeholder" aria-hidden="true">&nbsp;</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit" class="drose-btn drose-btn--primary">{% trans "Send quote request" %}</button>
+            </form>
+            </div>
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose' %}">{% trans "Back to Drose home" %}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{% static 'tools/js/drose-quote-select.js' %}?v=7"></script>
+<script>
+(function () {
+    var panel = document.getElementById("drose-quote-panel");
+    if (!panel) return;
+
+    function bindForm(root) {
+        var form = root.querySelector("#drose-quote-form");
+        if (!form || form.dataset.ajaxBound === "1") return;
+        form.dataset.ajaxBound = "1";
+
+        form.addEventListener("submit", function (e) {
+            if (typeof window.fetch !== "function") return;
+            e.preventDefault();
+
+            var btn = form.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.setAttribute("aria-busy", "true");
+            }
+
+            var scrollY = window.scrollY || window.pageYOffset || 0;
+            var action = form.getAttribute("action") || window.location.href;
+            var data = new FormData(form);
+
+            fetch(action, {
+                method: "POST",
+                body: data,
+                credentials: "same-origin",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            })
+                .then(function (res) {
+                    return res.text().then(function (html) {
+                        return { ok: res.ok, html: html };
+                    });
+                })
+                .then(function (result) {
+                    var doc = new DOMParser().parseFromString(result.html, "text/html");
+                    var next = doc.getElementById("drose-quote-panel");
+                    if (!next) {
+                        form.submit();
+                        return;
+                    }
+                    panel.innerHTML = next.innerHTML;
+                    if (typeof window.droseQuoteFormInit === "function") {
+                        window.droseQuoteFormInit();
+                    }
+                    bindForm(panel);
+                    window.scrollTo(0, scrollY);
+                    requestAnimationFrame(function () {
+                        window.scrollTo(0, scrollY);
+                    });
+                })
+                .catch(function () {
+                    form.submit();
+                })
+                .finally(function () {
+                    var freshBtn = panel.querySelector('button[type="submit"]');
+                    if (freshBtn) {
+                        freshBtn.disabled = false;
+                        freshBtn.removeAttribute("aria-busy");
+                    }
+                });
+        });
+    }
+
+    bindForm(panel);
+})();
+</script>
+{% endblock %}

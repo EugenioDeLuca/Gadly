@@ -4,8 +4,201 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 {% block title %}{% trans "Data Visualizer" %}{% endblock %}
 {% block body_class %}data-viz{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Turn CSV rows into charts and download PNG images with Gadly’s free data visualizer.' %}">
+<script>
+(function () {
+  try {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  } catch (e) { /* ignore */ }
+})();
+</script>
+<script>
+(function () {
+  try {
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (!nav || nav.type !== "reload") return;
+    var p = location.pathname || "/";
+    if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+    if (p !== "/data-viz") return;
+    var key = "gadly-page-scroll-y-v1:" + p;
+    var legacy = "gadly-tool-scroll-y-v1:" + p;
+    sessionStorage.removeItem(key);
+    sessionStorage.removeItem(legacy);
+    function scrollTopSoon() {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
+    scrollTopSoon();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", scrollTopSoon, { once: true });
+    }
+  } catch (eReloadTop) { /* ignore */ }
+})();
+</script>
+<script>
+(function () {
+    var KEY = "gadly-data-viz-state";
+    function readVizRestoreState() {
+        var sParam = new URLSearchParams(window.location.search).get("s");
+        if (sParam) {
+            try {
+                return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
+            } catch (e0) { /* ignore */ }
+        }
+        try {
+            var raw = localStorage.getItem(KEY);
+            if (raw) return JSON.parse(raw);
+        } catch (e1) { /* ignore */ }
+        return null;
+    }
+    function shouldRestoreChart(state) {
+        if (!state || !state.data || !String(state.data).trim()) return false;
+        if (state.chartVisible) return true;
+        return state.autoGenerate !== false;
+    }
+    try {
+        var state = readVizRestoreState();
+        if (shouldRestoreChart(state)) {
+            document.documentElement.classList.add("viz-chart-restore");
+            window.__vizRestoreChartImmediate = true;
+        }
+    } catch (e2) { /* ignore */ }
+})();
+document.documentElement.classList.add("viz-options-pending");
+</script>
+<style id="data-viz-layout-shield">
+html.viz-chart-restore .chart-container.hidden {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+html.viz-options-pending .viz-options-panel .text-tool-select-trigger {
+  visibility: hidden;
+}
+body.data-viz #data-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  height: 160px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-y: hidden;
+  resize: vertical;
+}
+@media (max-width: 768px) {
+  body.data-viz #data-input {
+    min-height: 130px;
+    height: 152px;
+    padding: 12px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  body.data-viz #data-input::placeholder {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  body.data-viz .text-tool-select {
+    position: relative;
+    width: 100%;
+    min-height: 47.5px;
+    box-sizing: border-box;
+  }
+  body.data-viz .text-tool-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 47.5px;
+    min-height: 47.5px;
+    max-height: 47.5px;
+    padding: 0 36px 0 16px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+  }
+  body.data-viz:not(.dark-mode) .text-tool-select-trigger {
+    background: #d0e8f9;
+    border: 2px solid #003f7f;
+    color: #003f7f;
+  }
+  body.dark-mode.data-viz .text-tool-select-trigger {
+    background: #1e2a3a;
+    border: 2px solid #b0c4de;
+    color: #b0c4de;
+  }
+  body.data-viz .text-tool-select > select {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+    background: #28a745 !important;
+    background-color: #28a745 !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+    background: #1e2a3a !important;
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+    background: #28a745 !important;
+    background-color: #28a745 !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
+</style>
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=4">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260531b">
+<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=85">
 {% endblock %}
 {% block content %}
 <div class="data-viz">
@@ -13,40 +206,319 @@
         <h1>{% trans "Data Visualizer" %}</h1>
         <p class="tool-desc">
             {% if LANGUAGE_CODE|slice:":2" == "it" %}
-                Crea grafici chiari da dati CSV e scaricali in PNG.
+                Crea grafici da CSV o Excel, personalizzali e scaricali in PNG, SVG o PDF.
             {% else %}
-                Create clear charts from CSV data and download them as PNG.
+                Create charts from CSV or Excel, customize them, and download PNG, SVG, or PDF.
             {% endif %}
         </p>
+        <p class="tool-help">
+            <a href="{% url 'help_data_viz' %}">{% trans "Data Visualizer help" %}</a>
+        </p>
+
+        <div class="viz-examples">
+            <span class="viz-examples-label">{% trans "Examples" %}</span>
+            <div class="viz-example-buttons">
+                <button type="button" class="viz-example-btn" data-example="sales">{% trans "Monthly sales" %}</button>
+                <button type="button" class="viz-example-btn" data-example="budget">{% trans "Budget vs actual" %}</button>
+                <button type="button" class="viz-example-btn" data-example="survey">{% trans "Survey results" %}</button>
+            </div>
+        </div>
 
         <div class="viz-controls">
             <div class="data-input-section">
-                <label for="data-input">{% trans "Paste your data (CSV format: label,value per line)" %}</label>
-                <textarea id="data-input" rows="4" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es.&#10;Gennaio,120&#10;Febbraio,190&#10;Marzo,80&#10;Aprile,20{% else %}e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,20{% endif %}"></textarea>
+                <label for="data-input">{% trans "Paste your data (CSV: label,value per line, or multiple value columns)" %}</label>
+                <div class="viz-data-actions">
+                    <div class="viz-action-buttons">
+                        <button type="button" id="btn-download-template-example" class="viz-template-btn">{% trans "Download sample template (CSV)" %}</button>
+                        <button type="button" id="btn-download-template-empty" class="viz-template-btn">{% trans "Download blank template (CSV)" %}</button>
+                        <input type="file" id="data-file-input" accept=".csv,.xlsx,.xls,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+                        <button type="button" id="btn-load-csv" class="viz-template-btn">{% trans "Load CSV / Excel file" %}</button>
+                    </div>
+                    <span id="data-file-name" class="viz-file-name" aria-live="polite"></span>
+                </div>
+                <p class="viz-data-hint">{% trans "Templates open in Excel or LibreOffice. Edit the file, save as CSV, then load it here. Your file stays on your device." %}</p>
+                <div class="viz-data-toolbar">
+                    <button type="button" id="btn-copy-data" class="viz-mini-btn">{% trans "Copy data" %}</button>
+                    <button type="button" id="btn-clear-data" class="viz-mini-btn viz-reset-btn">{% trans "Reset" %}</button>
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-auto-generate" checked> {% trans "Auto-generate chart" %}</label>
+                </div>
+                <textarea id="data-input" rows="5" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es.&#10;Gennaio,120&#10;Febbraio,190&#10;Marzo,80&#10;Aprile,20{% else %}e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,20{% endif %}"></textarea>
             </div>
         </div>
+
+        <div id="viz-data-preview" class="viz-data-preview hidden" aria-live="polite">
+            <p class="viz-preview-title">{% trans "Data preview" %}</p>
+            <div class="viz-preview-scroll">
+                <table id="viz-preview-table" class="viz-preview-table"></table>
+            </div>
+        </div>
+
+        <div id="viz-stats" class="viz-stats hidden" aria-live="polite"></div>
+
+        <script src="{% static 'tools/js/data-viz-i18n.js' %}?v=1"></script>
+        <script>
+        window.__vizBootI18n = {
+            label: "{% filter escapejs %}{% trans 'Label' %}{% endfilter %}",
+            value: "{% filter escapejs %}{% trans 'Value' %}{% endfilter %}",
+            series: "{% filter escapejs %}{% trans 'Series' %}{% endfilter %}",
+            item: "{% filter escapejs %}{% trans 'Item' %}{% endfilter %}",
+            total: "{% filter escapejs %}{% trans 'Total' %}{% endfilter %}",
+            average: "{% filter escapejs %}{% trans 'Average' %}{% endfilter %}",
+            min: "{% filter escapejs %}{% trans 'Min' %}{% endfilter %}",
+            max: "{% filter escapejs %}{% trans 'Max' %}{% endfilter %}",
+            moreRows: "{% filter escapejs %}{% trans '… and %(count)s more rows' %}{% endfilter %}"
+        };
+        </script>
+        <script src="{% static 'tools/js/data-viz-boot.js' %}?v=3"></script>
+
+        <div class="viz-options-panel">
+            <p class="viz-options-title">{% trans "Chart options" %}</p>
+            <div class="viz-options-grid">
+                <label class="viz-opt-field">
+                    <span>{% trans "Chart title" %}</span>
+                    <input type="text" id="chart-title" maxlength="120" placeholder="{% trans 'e.g. Sales 2025' %}">
+                </label>
+                <label class="viz-opt-field">
+                    <span>{% trans "Color palette" %}</span>
+                    <div class="text-tool-select viz-opt-select">
+                        <select id="viz-palette" tabindex="-1" aria-hidden="true">
+                            <option value="gadly">Gadly</option>
+                            <option value="pastel">{% trans "Pastel" %}</option>
+                            <option value="contrast">{% trans "High contrast" %}</option>
+                            <option value="mono">{% trans "Blue mono" %}</option>
+                        </select>
+                        <button type="button" class="text-tool-select-trigger" aria-haspopup="listbox">Gadly</button>
+                        <ul class="text-tool-select-menu" role="listbox"></ul>
+                    </div>
+                </label>
+                <label class="viz-opt-field">
+                    <span>{% trans "Sort data" %}</span>
+                    <div class="text-tool-select viz-opt-select">
+                        <select id="viz-sort" tabindex="-1" aria-hidden="true">
+                            <option value="none">{% trans "No sorting" %}</option>
+                            <option value="label-asc">{% trans "Label A→Z" %}</option>
+                            <option value="label-desc">{% trans "Label Z→A" %}</option>
+                            <option value="value-desc">{% trans "Value high→low" %}</option>
+                            <option value="value-asc">{% trans "Value low→high" %}</option>
+                        </select>
+                        <button type="button" class="text-tool-select-trigger" aria-haspopup="listbox">{% trans "No sorting" %}</button>
+                        <ul class="text-tool-select-menu" role="listbox"></ul>
+                    </div>
+                </label>
+                <label class="viz-opt-field">
+                    <span>{% trans "Top N (pie charts)" %}</span>
+                    <input type="number" id="viz-top-n" min="0" max="50" placeholder="{% trans 'e.g. 8' %}">
+                </label>
+                <label class="viz-opt-field">
+                    <span>{% trans "Y-axis unit" %}</span>
+                    <input type="text" id="viz-y-unit" maxlength="8" placeholder="{% trans 'e.g. € or %' %}">
+                </label>
+            </div>
+            <div class="viz-options-checks">
+                <div class="viz-options-checks-row">
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-show-values" checked> {% trans "Show labels and values on chart" %}</label>
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-horizontal-bar"> {% trans "Horizontal bars" %}</label>
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-rotate-labels"> {% trans "Rotate long labels" %}</label>
+                </div>
+                <div class="viz-options-checks-row">
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-auto-chart-type"> {% trans "Suggest chart type" %}</label>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        (function () {
+            var KEY = "gadly-data-viz-state";
+            function readState() {
+                var sParam = new URLSearchParams(window.location.search).get("s");
+                if (sParam) {
+                    try {
+                        return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
+                    } catch (e0) { /* ignore */ }
+                }
+                try {
+                    var raw = localStorage.getItem(KEY);
+                    if (raw) return JSON.parse(raw);
+                } catch (e1) { /* ignore */ }
+                return null;
+            }
+            function syncTrigger(selectEl) {
+                if (!selectEl) return;
+                var trigger = selectEl.closest(".text-tool-select") &&
+                    selectEl.closest(".text-tool-select").querySelector(".text-tool-select-trigger");
+                var opt = selectEl.options[selectEl.selectedIndex];
+                if (trigger && opt) trigger.textContent = opt.text;
+            }
+            try {
+                var state = readState();
+                if (state) {
+                    if (state.palette) {
+                        var palette = document.getElementById("viz-palette");
+                        if (palette) { palette.value = state.palette; syncTrigger(palette); }
+                    }
+                    if (state.sort) {
+                        var sort = document.getElementById("viz-sort");
+                        if (sort) { sort.value = state.sort; syncTrigger(sort); }
+                    }
+                }
+            } catch (e2) { /* ignore */ }
+            document.documentElement.classList.remove("viz-options-pending");
+        })();
+        </script>
 
         <div id="data-viz-result" class="result-area hidden" aria-live="polite"></div>
 
         <div class="chart-options">
-            <div class="chart-select-wrap">
-                <select id="chart-type">
+            <div class="text-tool-select" id="chart-type-wrap">
+                <select id="chart-type" tabindex="-1" aria-hidden="true">
                     <option value="bar">{% trans "Bar" %}</option>
                     <option value="line">{% trans "Line" %}</option>
                     <option value="pie">{% trans "Pie" %}</option>
                     <option value="doughnut">{% trans "Doughnut" %}</option>
                     <option value="polarArea">{% trans "Polar Area" %}</option>
                 </select>
+                <button type="button" class="text-tool-select-trigger" id="chart-type-trigger" aria-haspopup="listbox">{% trans "Bar" %}</button>
+                <ul class="text-tool-select-menu" id="chart-type-menu" role="listbox"></ul>
             </div>
             <button type="button" id="btn-generate">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera grafico{% else %}{% trans "Generate Chart" %}{% endif %}</button>
         </div>
+
+        <script>
+        (function () {
+            var KEY = "gadly-data-viz-state";
+
+            function readBootState() {
+                var sParam = new URLSearchParams(window.location.search).get("s");
+                if (sParam) {
+                    try {
+                        return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
+                    } catch (e0) { /* ignore */ }
+                }
+                try {
+                    var raw = localStorage.getItem(KEY);
+                    if (raw) return JSON.parse(raw);
+                } catch (e1) { /* ignore */ }
+                return null;
+            }
+
+            function syncSelectTrigger(selectEl) {
+                if (!selectEl) return;
+                var wrap = selectEl.closest(".text-tool-select");
+                if (!wrap) return;
+                var trigger = wrap.querySelector(".text-tool-select-trigger");
+                var opt = selectEl.options[selectEl.selectedIndex];
+                if (trigger && opt) trigger.textContent = opt.text;
+            }
+
+            function setCheck(id, checked) {
+                var el = document.getElementById(id);
+                if (el) el.checked = !!checked;
+            }
+
+            try {
+                var state = readBootState();
+                if (!state) return;
+                if (typeof window.gadlyLocalizeVizState === "function") {
+                    state = window.gadlyLocalizeVizState(state);
+                }
+
+                if (state.title != null) {
+                    var titleEl = document.getElementById("chart-title");
+                    if (titleEl) titleEl.value = state.title;
+                }
+                if (state.topN != null) {
+                    var topN = document.getElementById("viz-top-n");
+                    if (topN) topN.value = state.topN;
+                }
+                if (state.yUnit != null) {
+                    var yUnit = document.getElementById("viz-y-unit");
+                    if (yUnit) yUnit.value = state.yUnit;
+                }
+
+                if (state.palette) {
+                    var palette = document.getElementById("viz-palette");
+                    if (palette) {
+                        palette.value = state.palette;
+                        syncSelectTrigger(palette);
+                    }
+                }
+                if (state.sort) {
+                    var sort = document.getElementById("viz-sort");
+                    if (sort) {
+                        sort.value = state.sort;
+                        syncSelectTrigger(sort);
+                    }
+                }
+                if (state.chartType) {
+                    var chartType = document.getElementById("chart-type");
+                    if (chartType) {
+                        chartType.value = state.chartType;
+                        syncSelectTrigger(chartType);
+                    }
+                }
+
+                setCheck("viz-show-values", state.showValues !== false);
+                setCheck("viz-horizontal-bar", !!state.horizontalBar);
+                setCheck("viz-rotate-labels", !!state.rotateLabels);
+                setCheck("viz-auto-chart-type", !!state.autoChartType);
+                setCheck("viz-auto-generate", state.autoGenerate !== false);
+
+                document.documentElement.classList.add("viz-boot-restored");
+            } catch (e2) { /* ignore */ }
+        })();
+        </script>
 
         <div class="chart-container hidden">
             <div class="chart-preview">
                 <canvas id="chart-canvas"></canvas>
             </div>
-            <button type="button" id="btn-download" class="chart-download-btn" title="{% trans 'Download chart as PNG' %}">{% trans "Download PNG" %}</button>
+            <div class="viz-export-buttons">
+                <button type="button" id="btn-download" class="chart-download-btn viz-export-secondary viz-download-btn" title="{% trans 'Download chart as PNG' %}">{% trans "Download PNG" %}</button>
+                <button type="button" id="btn-download-svg" class="chart-download-btn viz-export-secondary viz-download-btn">{% trans "Download SVG" %}</button>
+                <button type="button" id="btn-download-pdf" class="chart-download-btn viz-export-secondary viz-download-btn">{% trans "Download PDF" %}</button>
+                <button type="button" id="btn-share-link" class="chart-download-btn viz-copy-btn">{% trans "Copy link" %}</button>
+            </div>
         </div>
+        <script>
+        (function () {
+            var KEY = "gadly-data-viz-state";
+            function readChartBootState() {
+                var sParam = new URLSearchParams(window.location.search).get("s");
+                if (sParam) {
+                    try {
+                        return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
+                    } catch (e0) { /* ignore */ }
+                }
+                try {
+                    var raw = localStorage.getItem(KEY);
+                    if (raw) return JSON.parse(raw);
+                } catch (e1) { /* ignore */ }
+                return null;
+            }
+            try {
+                var state = readChartBootState();
+                if (!state || !state.data || !String(state.data).trim()) return;
+                if (!state.chartVisible && state.autoGenerate === false) return;
+                var chartBox = document.querySelector(".chart-container");
+                if (chartBox) chartBox.classList.remove("hidden");
+                document.documentElement.classList.add("viz-chart-restore");
+                var pngUrl = sessionStorage.getItem("gadly-viz-chart-png-v1");
+                if (pngUrl) {
+                    var preview = chartBox && chartBox.querySelector(".chart-preview");
+                    var canvasEl = document.getElementById("chart-canvas");
+                    if (preview) {
+                        var bootImg = document.createElement("img");
+                        bootImg.className = "viz-boot-chart-img";
+                        bootImg.src = pngUrl;
+                        bootImg.alt = "";
+                        bootImg.decoding = "async";
+                        preview.appendChild(bootImg);
+                        if (canvasEl) canvasEl.style.visibility = "hidden";
+                    }
+                }
+            } catch (e2) { /* ignore */ }
+        })();
+        </script>
 
         <div class="home-link-wrap">
             <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
@@ -55,6 +527,10 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'tools/js/data-viz.js' %}?v=5"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/data-viz.js' %}?v=20260617e"></script>
 {% endblock %}

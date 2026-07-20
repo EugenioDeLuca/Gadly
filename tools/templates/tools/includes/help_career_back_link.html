@@ -1,0 +1,8 @@
+{% load i18n %}
+<div class="home-link-wrap">
+    {% if request.GET.from == 'kit' %}
+        <a href="{% url 'career_cv_page' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Kit candidatura"{% else %}Back to "Application kit"{% endif %}</a>
+    {% else %}
+        <a href="{% url tool_url %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "{{ tool_it }}"{% else %}Back to "{{ tool_en }}"{% endif %}</a>
+    {% endif %}
+</div>

@@ -73,6 +73,208 @@ body.dark-mode .static-container a:hover {
     transform: scale(1.04);
 }
 
+/* Privacy / Contatti: link #003f7f, grassetto (pagina contatti, email) */
+body.privacy-page .static-container p a,
+body.privacy-page .static-container p a:visited,
+body.contact-page .static-container p a,
+body.contact-page .static-container p a:visited {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-weight: 600 !important;
+    text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+    transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.privacy-page .static-container p a,
+    body.contact-page .static-container p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            -webkit-text-fill-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    body.privacy-page .static-container p a:hover,
+    body.privacy-page .static-container p a:focus-visible,
+    body.contact-page .static-container p a:hover,
+    body.contact-page .static-container p a:focus-visible {
+        color: #0056b3;
+        -webkit-text-fill-color: #0056b3;
+        text-decoration-color: #0056b3;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+        transform: none;
+    }
+}
+
+body.dark-mode.privacy-page .static-container p a,
+body.dark-mode.privacy-page .static-container p a:visited,
+body.dark-mode.contact-page .static-container p a,
+body.dark-mode.contact-page .static-container p a:visited {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-weight: 600 !important;
+    text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+    transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.dark-mode.privacy-page .static-container p a,
+    body.dark-mode.contact-page .static-container p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            -webkit-text-fill-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    body.dark-mode.privacy-page .static-container p a:hover,
+    body.dark-mode.privacy-page .static-container p a:focus-visible,
+    body.dark-mode.contact-page .static-container p a:hover,
+    body.dark-mode.contact-page .static-container p a:focus-visible {
+        color: #0056b3;
+        -webkit-text-fill-color: #0056b3;
+        text-decoration-color: #0056b3;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+        transform: none;
+    }
+}
+
+/* Chi siamo / About: link #003f7f, grassetto */
+body.about-page .static-container p a,
+body.about-page .static-container p a:visited {
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(0, 63, 127, 0.75);
+    transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.about-page .static-container p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            -webkit-text-fill-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    body.about-page .static-container p a:hover,
+    body.about-page .static-container p a:focus-visible {
+        color: #0056b3;
+        -webkit-text-fill-color: #0056b3;
+        text-decoration-color: #0056b3;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+        transform: none;
+    }
+}
+
+body.dark-mode.about-page .static-container p a,
+body.dark-mode.about-page .static-container p a:visited {
+    color: #003f7f;
+    -webkit-text-fill-color: #003f7f;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(0, 63, 127, 0.75);
+    transform: none;
+}
+
+/* Chi siamo / Privacy / Contatti — desktop dark: stessa card e colori del light mode */
+@media (min-width: 769px) {
+    body.dark-mode.about-page .static-page .static-container,
+    body.dark-mode.privacy-page .static-page .static-container,
+    body.dark-mode.contact-page .static-page .static-container {
+        background: #fff !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2) !important;
+    }
+
+    body.dark-mode.about-page .site-main .static-container h1,
+    body.dark-mode.about-page .site-main .static-container h2,
+    body.dark-mode.about-page .static-container h1,
+    body.dark-mode.about-page .static-container h2,
+    body.dark-mode.privacy-page .site-main .static-container h1,
+    body.dark-mode.privacy-page .site-main .static-container h2,
+    body.dark-mode.privacy-page .static-container h1,
+    body.dark-mode.privacy-page .static-container h2,
+    body.dark-mode.contact-page .site-main .static-container h1,
+    body.dark-mode.contact-page .static-container h1 {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.about-page .site-main .static-container p,
+    body.dark-mode.about-page .static-container p,
+    body.dark-mode.privacy-page .site-main .static-container p,
+    body.dark-mode.privacy-page .static-container p,
+    body.dark-mode.contact-page .site-main .static-container p,
+    body.dark-mode.contact-page .static-container p {
+        color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+    }
+
+    body.dark-mode.about-page .site-main .static-container p a,
+    body.dark-mode.about-page .site-main .static-container p a:visited,
+    body.dark-mode.about-page .static-container p a,
+    body.dark-mode.about-page .static-container p a:visited,
+    body.dark-mode.privacy-page .site-main .static-container p a,
+    body.dark-mode.privacy-page .site-main .static-container p a:visited,
+    body.dark-mode.privacy-page .static-container p a,
+    body.dark-mode.privacy-page .static-container p a:visited,
+    body.dark-mode.contact-page .site-main .static-container p a,
+    body.dark-mode.contact-page .site-main .static-container p a:visited,
+    body.dark-mode.contact-page .static-container p a,
+    body.dark-mode.contact-page .static-container p a:visited {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+    }
+
+    body.dark-mode.privacy-page .site-main .static-container .static-updated,
+    body.dark-mode.privacy-page .static-container .static-updated {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.dark-mode.about-page .static-container p a {
+        transition: color 0.15s ease, text-decoration-color 0.15s ease,
+            -webkit-text-fill-color 0.15s ease,
+            text-decoration-thickness 0.15s ease, text-underline-offset 0.15s ease;
+    }
+    body.dark-mode.about-page .static-container p a:hover,
+    body.dark-mode.about-page .static-container p a:focus-visible {
+        color: #0056b3;
+        -webkit-text-fill-color: #0056b3;
+        text-decoration-color: #0056b3;
+        text-decoration-thickness: max(2px, 0.09em);
+        text-underline-offset: 4px;
+        transform: none;
+    }
+
+    @media (min-width: 769px) {
+        body.dark-mode.about-page .site-main .static-container p a:hover,
+        body.dark-mode.about-page .site-main .static-container p a:focus-visible,
+        body.dark-mode.privacy-page .site-main .static-container p a:hover,
+        body.dark-mode.privacy-page .site-main .static-container p a:focus-visible,
+        body.dark-mode.contact-page .site-main .static-container p a:hover,
+        body.dark-mode.contact-page .site-main .static-container p a:focus-visible,
+        body.dark-mode.privacy-page .static-container p a:hover,
+        body.dark-mode.privacy-page .static-container p a:focus-visible,
+        body.dark-mode.contact-page .static-container p a:hover,
+        body.dark-mode.contact-page .static-container p a:focus-visible {
+            color: #0056b3 !important;
+            -webkit-text-fill-color: #0056b3 !important;
+            text-decoration-color: #0056b3 !important;
+        }
+    }
+}
+
+/* Niente scale sul testo del link (solo regole globali .static-container a:hover) */
+body.about-page .static-container p a:hover,
+body.privacy-page .static-container p a:hover,
+body.contact-page .static-container p a:hover {
+    transform: none;
+}
+
 .static-footer {
     margin-top: 12px;
     text-align: center;
@@ -118,6 +320,109 @@ body.dark-mode .static-page .static-footer .home-link:hover {
     }
 }
 
+/* Chi siamo / Privacy / Contatti mobile/tablet: light = #003f7f; dark = #7eb8ff */
+@media (max-width: 768px) {
+    body:not(.dark-mode).about-page .static-container p a,
+    body:not(.dark-mode).about-page .static-container p a:visited,
+    body:not(.dark-mode).about-page .site-main .static-container p a,
+    body:not(.dark-mode).about-page .site-main .static-container p a:visited,
+    body:not(.dark-mode).about-page .static-container p a:hover,
+    body:not(.dark-mode).about-page .static-container p a:focus,
+    body:not(.dark-mode).about-page .static-container p a:focus-visible,
+    body:not(.dark-mode).about-page .static-container p a:active,
+    body:not(.dark-mode).about-page .site-main .static-container p a:hover,
+    body:not(.dark-mode).about-page .site-main .static-container p a:focus,
+    body:not(.dark-mode).about-page .site-main .static-container p a:focus-visible,
+    body:not(.dark-mode).about-page .site-main .static-container p a:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 2px;
+        text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+        transform: none !important;
+    }
+
+    body:not(.dark-mode).contact-page .static-container p a,
+    body:not(.dark-mode).contact-page .static-container p a:visited,
+    body:not(.dark-mode).contact-page .site-main .static-container p a,
+    body:not(.dark-mode).contact-page .site-main .static-container p a:visited,
+    body:not(.dark-mode).contact-page .static-container p a:hover,
+    body:not(.dark-mode).contact-page .static-container p a:focus,
+    body:not(.dark-mode).contact-page .static-container p a:focus-visible,
+    body:not(.dark-mode).contact-page .static-container p a:active,
+    body:not(.dark-mode).contact-page .site-main .static-container p a:hover,
+    body:not(.dark-mode).contact-page .site-main .static-container p a:focus,
+    body:not(.dark-mode).contact-page .site-main .static-container p a:focus-visible,
+    body:not(.dark-mode).contact-page .site-main .static-container p a:active,
+    body:not(.dark-mode).privacy-page .static-container p a,
+    body:not(.dark-mode).privacy-page .static-container p a:visited,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a:visited,
+    body:not(.dark-mode).privacy-page .static-container p a:hover,
+    body:not(.dark-mode).privacy-page .static-container p a:focus,
+    body:not(.dark-mode).privacy-page .static-container p a:focus-visible,
+    body:not(.dark-mode).privacy-page .static-container p a:active,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a:hover,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a:focus,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a:focus-visible,
+    body:not(.dark-mode).privacy-page .site-main .static-container p a:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 2px;
+        text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+        transform: none !important;
+    }
+
+    body.dark-mode.about-page .static-container p a,
+    body.dark-mode.about-page .static-container p a:visited,
+    body.dark-mode.about-page .site-main .static-container p a,
+    body.dark-mode.about-page .site-main .static-container p a:visited,
+    body.dark-mode.about-page .static-container p a:hover,
+    body.dark-mode.about-page .static-container p a:focus,
+    body.dark-mode.about-page .static-container p a:focus-visible,
+    body.dark-mode.about-page .static-container p a:active,
+    body.dark-mode.about-page .site-main .static-container p a:hover,
+    body.dark-mode.about-page .site-main .static-container p a:focus,
+    body.dark-mode.about-page .site-main .static-container p a:focus-visible,
+    body.dark-mode.about-page .site-main .static-container p a:active,
+    body.dark-mode.contact-page .static-container p a,
+    body.dark-mode.contact-page .static-container p a:visited,
+    body.dark-mode.contact-page .site-main .static-container p a,
+    body.dark-mode.contact-page .site-main .static-container p a:visited,
+    body.dark-mode.contact-page .static-container p a:hover,
+    body.dark-mode.contact-page .static-container p a:focus,
+    body.dark-mode.contact-page .static-container p a:focus-visible,
+    body.dark-mode.contact-page .static-container p a:active,
+    body.dark-mode.contact-page .site-main .static-container p a:hover,
+    body.dark-mode.contact-page .site-main .static-container p a:focus,
+    body.dark-mode.contact-page .site-main .static-container p a:focus-visible,
+    body.dark-mode.contact-page .site-main .static-container p a:active,
+    body.dark-mode.privacy-page .static-container p a,
+    body.dark-mode.privacy-page .static-container p a:visited,
+    body.dark-mode.privacy-page .site-main .static-container p a,
+    body.dark-mode.privacy-page .site-main .static-container p a:visited,
+    body.dark-mode.privacy-page .static-container p a:hover,
+    body.dark-mode.privacy-page .static-container p a:focus,
+    body.dark-mode.privacy-page .static-container p a:focus-visible,
+    body.dark-mode.privacy-page .static-container p a:active,
+    body.dark-mode.privacy-page .site-main .static-container p a:hover,
+    body.dark-mode.privacy-page .site-main .static-container p a:focus,
+    body.dark-mode.privacy-page .site-main .static-container p a:focus-visible,
+    body.dark-mode.privacy-page .site-main .static-container p a:active {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 2px;
+        text-decoration-color: rgba(126, 184, 255, 0.85) !important;
+        transform: none !important;
+    }
+}
+
 @media (max-width: 480px) {
     body.contact-page .site-main .static-container,
     body.about-page .site-main .static-container,
@@ -144,48 +449,5 @@ body.dark-mode .static-page .static-footer .home-link:hover {
     body.privacy-page .static-container p,
     body.privacy-page .static-container .static-updated {
         text-align: center !important;
-    }
-    /* About mobile: link più visibile, stile JSON/help */
-    body.about-page .static-container a,
-    body.privacy-page .static-container a,
-    body.about-page .static-container a:visited,
-    body.privacy-page .static-container a:visited {
-        color: #0056b3 !important;
-        font-weight: 700 !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px;
-        text-decoration-thickness: 2px;
-    }
-    body.about-page .static-container a:hover,
-    body.privacy-page .static-container a:hover,
-    body.about-page .static-container a:focus,
-    body.privacy-page .static-container a:focus,
-    body.about-page .static-container a:focus-visible,
-    body.privacy-page .static-container a:focus-visible,
-    body.about-page .static-container a:active,
-    body.privacy-page .static-container a:active {
-        color: #007bff !important;
-    }
-    body.dark-mode.about-page .static-container a,
-    body.dark-mode.privacy-page .static-container a,
-    body.dark-mode.about-page .static-container a:visited,
-    body.dark-mode.privacy-page .static-container a:visited {
-        color: #7eb8ff !important;
-        -webkit-text-fill-color: #7eb8ff !important;
-        font-weight: 700 !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px;
-        text-decoration-thickness: 2px;
-    }
-    body.dark-mode.about-page .static-container a:hover,
-    body.dark-mode.privacy-page .static-container a:hover,
-    body.dark-mode.about-page .static-container a:focus,
-    body.dark-mode.privacy-page .static-container a:focus,
-    body.dark-mode.about-page .static-container a:focus-visible,
-    body.dark-mode.privacy-page .static-container a:focus-visible,
-    body.dark-mode.about-page .static-container a:active,
-    body.dark-mode.privacy-page .static-container a:active {
-        color: #a9d1ff !important;
-        -webkit-text-fill-color: #a9d1ff !important;
     }
 }

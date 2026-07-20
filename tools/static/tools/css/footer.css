@@ -1,4 +1,4 @@
-/* Site Footer */
+/* Site Footer — stesso fondo dell'header (var --bg-header) */
 .site-footer {
     position: static;
     width: 100%;
@@ -10,27 +10,34 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-header);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(0, 63, 127, 0.08);
+    border-top: none;
+}
+
+@media (min-width: 769px) {
+    body:not(.dark-mode) .site-footer {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
 }
 
 body.dark-mode .site-footer {
-    background: rgba(15, 15, 35, 0.85);
+    background: var(--bg-header);
     border-top: none;
 }
 
 body.warm-tone .site-footer {
-    background: rgba(255, 248, 236, 0.95) !important;
-    border-top: 1px solid rgba(184, 106, 0, 0.1) !important;
+    background: var(--bg-header) !important;
+    border-top: none !important;
     position: relative;
     z-index: 220;
 }
 
 body.dark-mode.warm-tone .site-footer {
-    background: rgba(38, 32, 28, 0.9) !important;
-    border-top: 1px solid rgba(232, 160, 64, 0.14) !important;
+    background: var(--bg-header) !important;
+    border-top: none !important;
     position: relative;
     z-index: 220;
 }
@@ -61,7 +68,7 @@ body.dark-mode.warm-tone .site-footer {
     padding: 10px 20px;
     color: #003f7f;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 17px;
     font-weight: 700;
     border-radius: 8px;
     transition: background 0.2s, color 0.2s;
@@ -72,10 +79,33 @@ body.dark-mode.warm-tone .site-footer {
     color: #007BFF;
 }
 
-/* Light mode: exact same hover as header links */
-body:not(.dark-mode) .footer-links a:hover {
-    background: #e8f4fd !important;
-    color: #007BFF !important;
+/* Gadly footer → Drose (brand ambra, solo su pagine Gadly). */
+body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose {
+    color: #b45309;
+    -webkit-text-fill-color: #b45309;
+}
+
+body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose {
+    color: #fbbf24;
+    -webkit-text-fill-color: #fbbf24;
+}
+
+body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:hover,
+body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus,
+body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
+body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
+    background: #fff4e0 !important;
+    color: #d97706 !important;
+    -webkit-text-fill-color: #d97706 !important;
+}
+
+body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:hover,
+body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus,
+body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
+body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
+    background: rgba(251, 191, 36, 0.18) !important;
+    color: #fbbf24 !important;
+    -webkit-text-fill-color: #fbbf24 !important;
 }
 
 body.dark-mode .footer-links a {
@@ -100,18 +130,18 @@ body.dark-mode.warm-tone .footer-links a:hover {
 /* Warm tone: footer text colors same as header */
 body.warm-tone .footer-links a,
 body.warm-tone .footer-links a:visited,
-body.warm-tone .footer-links a:focus,
-body.warm-tone .footer-links a:focus-visible,
-body.warm-tone .footer-links a:active,
+body.warm-tone .footer-links a:focus:not(:hover):not(.is-nav-link-hover),
+body.warm-tone .footer-links a:focus-visible:not(:hover):not(.is-nav-link-hover),
+body.warm-tone .footer-links a:active:not(:hover):not(.is-nav-link-hover),
 body.warm-tone .footer-copy {
     color: var(--warm-nav-link-color) !important;
 }
 
 body.dark-mode.warm-tone .footer-links a,
 body.dark-mode.warm-tone .footer-links a:visited,
-body.dark-mode.warm-tone .footer-links a:focus,
-body.dark-mode.warm-tone .footer-links a:focus-visible,
-body.dark-mode.warm-tone .footer-links a:active,
+body.dark-mode.warm-tone .footer-links a:focus:not(:hover):not(.is-nav-link-hover),
+body.dark-mode.warm-tone .footer-links a:focus-visible:not(:hover):not(.is-nav-link-hover),
+body.dark-mode.warm-tone .footer-links a:active:not(:hover):not(.is-nav-link-hover),
 body.dark-mode.warm-tone .footer-copy {
     color: var(--warm-nav-link-color) !important;
 }
@@ -123,6 +153,42 @@ body.warm-tone .footer-links a:hover {
 body.dark-mode.warm-tone .footer-links a:hover {
     background: transparent !important;
     color: #4a8ec2 !important;
+}
+
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose,
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:visited,
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus:not(:hover):not(.is-nav-link-hover),
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus-visible:not(:hover):not(.is-nav-link-hover),
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active:not(:hover):not(.is-nav-link-hover) {
+    color: #b45309 !important;
+    -webkit-text-fill-color: #b45309 !important;
+}
+
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:hover,
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus,
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
+body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
+    background: #fff4e0 !important;
+    color: #d97706 !important;
+    -webkit-text-fill-color: #d97706 !important;
+}
+
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose,
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:visited,
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus:not(:hover):not(.is-nav-link-hover),
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus-visible:not(:hover):not(.is-nav-link-hover),
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active:not(:hover):not(.is-nav-link-hover) {
+    color: #fbbf24 !important;
+    -webkit-text-fill-color: #fbbf24 !important;
+}
+
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:hover,
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:focus,
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
+body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
+    background: rgba(251, 191, 36, 0.18) !important;
+    color: #fbbf24 !important;
+    -webkit-text-fill-color: #fbbf24 !important;
 }
 
 .footer-copy {
@@ -139,6 +205,7 @@ body.dark-mode .footer-copy {
 @media (min-width: 769px) {
     .footer-links {
         padding-top: 0;
+        gap: 10px; /* allineato a .header-nav */
     }
     .footer-copy {
         margin-top: 0;
@@ -173,7 +240,7 @@ body.dark-mode .footer-copy {
     }
     .footer-links a {
         padding: 10px 20px;
-        font-size: 1rem;
+        font-size: 17px;
     }
     .footer-copy {
         font-size: 0.9rem;
@@ -244,4 +311,18 @@ body.warm-tone .footer-links a:hover {
 body.dark-mode.warm-tone .footer-links a:hover {
     background: rgba(232, 244, 253, 0.14) !important;
     color: #5a9fd4 !important;
+}
+
+/* Light mode desktop: hover senza contorno (solo sfondo/colore da base.css) */
+@media (min-width: 769px) {
+    body:not(.dark-mode) .header-link:hover,
+    body:not(.dark-mode) .header-link:focus,
+    body:not(.dark-mode) .header-link:focus-visible,
+    body:not(.dark-mode) .footer-links a:hover,
+    body:not(.dark-mode) .footer-links a:focus,
+    body:not(.dark-mode) .footer-links a:focus-visible {
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
 }

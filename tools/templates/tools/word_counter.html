@@ -5,14 +5,19 @@
 {% block title %}{% trans "Word & Character Counter" %}{% endblock %}
 {% block body_class %}word-counter{% endblock %}
 
+{% block extrahead %}
+<meta name="description" content="{% trans 'Count words and characters in real time for articles, posts, emails, reports, and long drafts. Your text is not uploaded to our servers.' %}">
+{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=21">
+<link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=43">
 {% endblock %}
 
 {% block content %}
 <div class="container">
 
     <h1>{% trans "Word & Character Counter" %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Conta parole e caratteri con un clic. Utile per articoli, post, mail e documenti lunghi; il testo viene elaborato nel browser e non viene caricato sui nostri server.{% else %}Count words and characters in one click. Handy for articles, posts, emails, and long documents—your text is processed in the browser and not uploaded to our servers.{% endif %}</p>
     <p class="tool-help">
         <a href="{% url 'help_text_tools' %}">{% trans "Tips for preparing text for publishing or SEO" %}</a>
     </p>
@@ -43,16 +48,14 @@
             {% endif %}
         </div>
 
-        <p class="tool-desc" style="margin-top: 4px; text-align: center; font-size: 0.9rem;">
-            {% trans "Spaces are counted as separators between words." %}
-        </p>
+        <p class="wc-spaces-note">{% trans "Spaces are counted as separators between words." %}</p>
 
         <div class="button-group">
-            <button type="submit" name="count_words_btn" class="wc-action-btn">
+            <button type="button" name="count_words_btn" id="wc-btn-words" class="wc-action-btn">
                 <span class="btn-text-desktop">{% trans "Count Words" %}</span>
                 <span class="btn-text-mobile">{% trans "Words" %}</span>
             </button>
-            <button type="submit" name="count_chars_btn" class="wc-action-btn">
+            <button type="button" name="count_chars_btn" id="wc-btn-chars" class="wc-action-btn">
                 <span class="btn-text-desktop">{% trans "Count Characters" %}</span>
                 <span class="btn-text-mobile">{% trans "Characters" %}</span>
             </button>
@@ -68,11 +71,27 @@
 </div>
 <script>
 (function() {
-    if (!window.matchMedia('(max-width: 480px)').matches) return;
     var form = document.getElementById('word-counter-form');
     var resultEl = document.getElementById('word-counter-result');
     var ta = document.getElementById('word-counter-text');
     if (!form || !resultEl) return;
+
+    var actionBtns = form.querySelectorAll('.wc-action-btn');
+
+    function isAjaxMobile() {
+        return window.matchMedia('(max-width: 480px)').matches;
+    }
+
+    function syncButtonTypes() {
+        var mobile = isAjaxMobile();
+        actionBtns.forEach(function(btn) {
+            btn.type = mobile ? 'button' : 'submit';
+            if (mobile) btn.setAttribute('tabindex', '-1');
+            else btn.removeAttribute('tabindex');
+        });
+    }
+    syncButtonTypes();
+    window.addEventListener('resize', syncButtonTypes);
 
     function esc(s) {
         if (s === null || s === undefined) return '';
@@ -97,17 +116,19 @@
         resultEl.innerHTML = html;
     }
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        var fd = new FormData(form);
-        /* Con preventDefault(), FormData(form) non include il submitter: Django non vede count_*_btn. */
-        var submitter = e.submitter;
-        if (!submitter && document.activeElement && form.contains(document.activeElement)) {
-            var ae = document.activeElement;
-            if (ae.getAttribute && ae.getAttribute('type') === 'submit' && ae.getAttribute('name')) {
-                submitter = ae;
+    function submitCount(submitter) {
+        if (!isAjaxMobile()) {
+            if (submitter && submitter.getAttribute('name')) {
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = submitter.getAttribute('name');
+                hidden.value = submitter.getAttribute('value') || '';
+                form.appendChild(hidden);
             }
+            form.submit();
+            return;
         }
+        var fd = new FormData(form);
         if (submitter && submitter.getAttribute('name')) {
             fd.append(submitter.getAttribute('name'), submitter.getAttribute('value') || '');
         }
@@ -128,12 +149,36 @@
             if (!data || !data.ok) throw new Error('bad payload');
             if (ta && typeof data.text === 'string') ta.value = data.text;
             renderResult(data);
-            if (document.activeElement && document.activeElement.blur) {
-                document.activeElement.blur();
-            }
+            actionBtns.forEach(function(btn) {
+                btn.blur();
+            });
         }).catch(function() {
             form.submit();
         });
+    }
+
+    actionBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            if (!isAjaxMobile()) return;
+            submitCount(btn);
+        });
+    });
+
+    form.addEventListener('submit', function(e) {
+        if (isAjaxMobile()) {
+            e.preventDefault();
+            return;
+        }
+        var submitter = e.submitter;
+        if (!submitter && document.activeElement && form.contains(document.activeElement)) {
+            var ae = document.activeElement;
+            if (ae.getAttribute && ae.getAttribute('name')) {
+                submitter = ae;
+            }
+        }
+        if (!submitter || !submitter.getAttribute('name')) {
+            e.preventDefault();
+        }
     });
 })();
 </script>

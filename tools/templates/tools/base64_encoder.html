@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Base64 Encoder / Decoder" %}{% endblock %}
 {% block body_class %}text-tool base64-encoder{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Encode text to Base64 or decode Base64 to text with Gadly’s free Base64 tool.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
 <style>

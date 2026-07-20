@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Social Media Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly social media tools: bio, hashtag, and caption generators for Instagram, TikTok, LinkedIn, and more.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -17,7 +20,7 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Social Media Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to social media tools." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Trova tutti i social media tools per creare bio, hashtag e caption ottimizzate per Instagram, TikTok, LinkedIn e altri canali, aumentando reach e coinvolgimento.{% else %}Find all social media tools to generate bios, hashtags, and captions optimized for Instagram, TikTok, LinkedIn, and other channels to boost reach and engagement.{% endif %}</p>
   <div class="text-tools-page-grid">
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'bio_generator' %}">{% trans "Bio Generator" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'hashtag_generator' %}">{% trans "Hashtag Generator" %}</a></div>

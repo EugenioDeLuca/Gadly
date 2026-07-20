@@ -4,10 +4,13 @@
 
 {% block title %}{% trans "File Analyzer Tool" %}{% endblock %}
 {% block body_class %}file-analyzer{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Analyze uploaded files: details, text statistics, and checksums in one Gadly tool.' %}">
+{% endblock %}
 
 {% block extra_css %}
 <!-- Include il CSS per il File Analyzer Tool -->
-<link rel="stylesheet" href="{% static 'tools/css/file-analyzer.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/file-analyzer.css' %}?v=20260529b">
 {% endblock %}
 
 {% block content %}
@@ -30,29 +33,35 @@
                 </div>
                 <p class="upload-hint">{% trans "Choose a file to analyze" %}</p>
             </div>
-            <div class="analysis-options">
+        </form>
+
+            <div class="analysis-options" id="analysis-options-wrap">
                 <span class="analysis-options-label">{% trans "Show in results" %}</span>
+                <button type="button" class="analysis-opts-trigger" id="analysis-opts-trigger" aria-expanded="false" aria-controls="analysis-opts-panel">
+                    <span id="analysis-opts-trigger-text" data-label-all="{% trans 'All selected' %}" data-label-none="{% trans 'None selected' %}">{% trans "All selected" %}</span>
+                </button>
+                <div class="analysis-opts-panel" id="analysis-opts-panel">
                 <div class="analysis-options-row">
-                <label class="analysis-option"><input type="checkbox" name="opt" value="file_name" checked><span class="check-box"></span>{% trans "File name" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="file_size_human" checked><span class="check-box"></span>{% trans "Size" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="file_type" checked><span class="check-box"></span>{% trans "Type" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="file_extension" checked><span class="check-box"></span>{% trans "Extension" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="md5_hash" checked><span class="check-box"></span>{% trans "MD5" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="sha256_hash" checked><span class="check-box"></span>{% trans "SHA-256" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="last_modified" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Ultima modifica{% else %}{% trans "Last modified" %}{% endif %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="line_count" checked><span class="check-box"></span>{% trans "Lines" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="word_count" checked><span class="check-box"></span>{% trans "Words" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="char_count" checked><span class="check-box"></span>{% trans "Characters" %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="char_count_no_spaces" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Caratteri (senza spazi){% else %}{% trans "Characters (no spaces)" %}{% endif %}</label>
-                <label class="analysis-option"><input type="checkbox" name="opt" value="reading_time_min" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Tempo di lettura (min){% else %}{% trans "Reading time (min)" %}{% endif %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="file_name" checked><span class="check-box"></span>{% trans "File name" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="file_size_human" checked><span class="check-box"></span>{% trans "Size" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="file_type" checked><span class="check-box"></span>{% trans "Type" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="file_extension" checked><span class="check-box"></span>{% trans "Extension" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="md5_hash" checked><span class="check-box"></span>{% trans "MD5" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="sha256_hash" checked><span class="check-box"></span>{% trans "SHA-256" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="last_modified" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Ultima modifica{% else %}{% trans "Last modified" %}{% endif %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="line_count" checked><span class="check-box"></span>{% trans "Lines" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="word_count" checked><span class="check-box"></span>{% trans "Words" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="char_count" checked><span class="check-box"></span>{% trans "Characters" %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="char_count_no_spaces" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Caratteri (senza spazi){% else %}{% trans "Characters (no spaces)" %}{% endif %}</label>
+                <label class="analysis-option"><input type="checkbox" form="file-analyzer-form" name="opt" value="reading_time_min" checked><span class="check-box"></span>{% if LANGUAGE_CODE|slice:":2" == "it" %}Tempo di lettura (min){% else %}{% trans "Reading time (min)" %}{% endif %}</label>
+                </div>
                 </div>
             </div>
-        </form>
 
         <div id="file-results" class="hidden" aria-live="polite"></div>
 
         <div class="button-group">
-            <button type="submit" id="submit-file" form="file-analyzer-form">{% trans "Analyze" %}</button>
+            <button type="button" id="submit-file">{% trans "Analyze" %}</button>
         </div>
 
         <div class="home-link-wrap">
@@ -64,5 +73,5 @@
 </div>
 
 <!-- Include the JavaScript for File Analyzer Tool -->
-<script src="{% static 'tools/js/file-analyzer.js' %}?v=20260422"></script>
+<script src="{% static 'tools/js/file-analyzer.js' %}?v=20260522p"></script>
 {% endblock %}

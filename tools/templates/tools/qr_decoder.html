@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "QR Decoder" %}{% endblock %}
 {% block body_class %}qr-generator{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Decode QR codes from images: upload a PNG or JPG and read the text or link with Gadly’s QR decoder.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}">
 <style>
@@ -28,11 +31,18 @@
 .qr-decoder .btn-copy.copied { background: #dc3545; }
 .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
 .qr-decoder .msg { margin: 16px 0 12px 0; font-size: 0.95rem; color: #666; }
-.qr-decoder .msg.success { color: #28a745; text-align: center; font-weight: 600; }
-.qr-decoder .msg.error { color: #c00; text-align: center; font-weight: bold; }
-.qr-decoder .result-area { width: 100%; box-sizing: border-box; margin: 12px 0 12px 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; background: #fff; border: 2px solid #d0e8f9; font-size: 1rem; text-align: center; color: #003f7f; font-weight: 600; }
-.qr-decoder .result-area.hidden { display: none !important; }
-.qr-decoder .result-area.error { display: block !important; margin: 12px 0 12px 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
+.qr-decoder .msg.success {
+    color: #28a745;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.qr-decoder .msg.error {
+    color: #c00;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+}
 .qr-decoder .home-link-wrap { margin-top: 0; text-align: center; }
 
 @media (max-width: 768px) {
@@ -79,10 +89,19 @@ body.dark-mode .qr-decoder .btn-copy { background: #003f7f; }
 body.dark-mode .qr-decoder .btn-copy:hover { background: #0056b3; }
 body.dark-mode .qr-decoder .btn-copy.copied { background: #dc3545; }
 body.dark-mode .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
-body.dark-mode .qr-decoder .msg.success { color: #1e7e34; text-align: center; font-weight: 600; }
+body.dark-mode .qr-decoder .msg.success {
+    color: #1e7e34;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
 body.dark-mode .qr-decoder .msg { color: #555; }
-body.dark-mode .qr-decoder .msg.error { color: #c00; text-align: center; font-weight: bold; }
-body.dark-mode .qr-decoder .result-area { background: #fff; border-color: #d0e8f9; color: #003f7f; }
+body.dark-mode .qr-decoder .msg.error {
+    color: #c00;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -102,7 +121,7 @@ body.dark-mode .qr-decoder .result-area { background: #fff; border-color: #d0e8f
             </div>
         </div>
 
-        <div id="qr-decoder-result" class="result-area hidden" aria-live="polite"></div>
+        <p class="msg" id="msg" aria-live="polite"></p>
 
         <div class="result-wrap" id="result-wrap" style="display: none;">
             <label for="decoded-text">{% trans "Decoded content" %}</label>
@@ -111,7 +130,6 @@ body.dark-mode .qr-decoder .result-area { background: #fff; border-color: #d0e8f
                 <button type="button" class="btn-copy" id="btn-copy">{% trans "Copy" %}</button>
             </div>
         </div>
-        <p class="msg" id="msg" aria-live="polite"></p>
 
         <div class="home-link-wrap">
             <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
@@ -121,6 +139,6 @@ body.dark-mode .qr-decoder .result-area { background: #fff; border-color: #d0e8f
     </div>
 </div>
 <canvas id="qr-canvas" style="display: none;"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-<script src="{% static 'tools/js/qr-decoder.js' %}?v=1"></script>
+<script src="{% static 'tools/js/jsQR.min.js' %}"></script>
+<script src="{% static 'tools/js/qr-decoder.js' %}?v=20260514a"></script>
 {% endblock %}

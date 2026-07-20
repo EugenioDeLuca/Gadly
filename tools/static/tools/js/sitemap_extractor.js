@@ -1,19 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     var urlInput = document.getElementById("url-input");
     var btnExtract = document.getElementById("btn-extract");
     var resultArea = document.getElementById("result-area");
+    var resultUi = window.gadlyWebSeoResultArea;
 
     btnExtract.addEventListener("click", function() {
         var url = urlInput.value.trim();
-        resultArea.classList.remove("hidden");
+        resultUi.reveal(resultArea);
         if (!url) {
-            resultArea.classList.add("error");
-            resultArea.textContent = t("Please enter a sitemap URL");
+            resultUi.showEmptyValidation(resultArea, gettext("Please enter a sitemap URL"));
             return;
         }
-        resultArea.classList.remove("error");
-        resultArea.innerHTML = t("Loading...");
+        resultUi.showLoading(resultArea);
         fetch("/api/sitemap-extract/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -22,22 +20,19 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (data.error) {
-                resultArea.classList.add("error");
-                resultArea.textContent = data.error;
+                resultUi.showError(resultArea, data.error);
                 return;
             }
-            resultArea.classList.remove("error");
             if (!data.urls || data.urls.length === 0) {
-                resultArea.innerHTML = "<em>" + t("No URLs found in sitemap.") + "</em>";
+                resultUi.showResult(resultArea, "<em>" + gettext("No URLs found in sitemap.") + "</em>");
                 return;
             }
-            resultArea.innerHTML = "<ul class='url-list'>" + data.urls.map(function(u) {
+            resultUi.showResult(resultArea, "<ul class='url-list'>" + data.urls.map(function(u) {
                 return "<li>" + u.replace(/</g, "&lt;") + "</li>";
-            }).join("") + "</ul>";
+            }).join("") + "</ul>");
         })
         .catch(function() {
-            resultArea.classList.add("error");
-            resultArea.textContent = t("Request failed");
+            resultUi.showError(resultArea, gettext("Request failed"));
         });
     });
 });

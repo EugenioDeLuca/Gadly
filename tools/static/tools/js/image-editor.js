@@ -89,9 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var availW = (wrapper && wrapper.clientWidth > 0) ? wrapper.clientWidth : 1100;
         if (availW <= 0 && editorArea) availW = editorArea.clientWidth;
         if (availW <= 0) availW = 1100;
-        var headerH = 74;
-        if (window.innerWidth <= 480) headerH = 66;
-        else if (window.innerWidth <= 600) headerH = 70;
+        var headerH = 82;
         var maxW, maxH;
         if (window.innerWidth <= 768) {
             maxW = Math.min(availW, window.innerWidth - 32);
@@ -136,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var toolbarUserMoved = false;
     function headerOffset() {
-        return window.innerWidth <= 768 ? 74 : 84;
+        return 82;
     }
     function clearAutoFollowToolbar() {
         var toolbar = document.querySelector(".editor-area .toolbar");
@@ -165,9 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     function updateTallImageClass(canvasHeight) {
-        var headerH = 74;
-        if (window.innerWidth <= 480) headerH = 66;
-        else if (window.innerWidth <= 600) headerH = 70;
+        var headerH = 82;
         var availH = window.innerWidth <= 768 ? window.innerHeight - headerH - 120 : window.innerHeight - headerH - 140;
         if (canvasHeight > availH) {
             document.body.classList.add("editor-tall-image");
@@ -254,6 +250,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (descEl) descEl.style.display = "none";
         editorArea.style.display = "flex";
         document.body.classList.add("editor-active");
+        if (typeof window.__gadlyPlaceQuickNav === "function") {
+            window.__gadlyPlaceQuickNav();
+        }
         document.body.classList.remove("toolbar-floated");
         clearAutoFollowToolbar();
         toolbarUserMoved = false;

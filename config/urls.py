@@ -19,12 +19,32 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.templatetags.static import static as static_url
+from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
+from django.contrib.sitemaps.views import sitemap
 from tools import views as tools_views
 from tools.forms import VerifiedEmailAuthenticationForm
+from tools.sitemaps import gadly_sitemaps
+from tools.pwa_cleanup import pwa_sw_cleanup
+from django.contrib.auth import urls as auth_urls
+
+_auth_urlpatterns = [p for p in auth_urls.urlpatterns if p.name != "logout"]
 
 urlpatterns = [
+    path(
+        'favicon.ico',
+        RedirectView.as_view(url=static_url('tools/images/favicon.ico'), permanent=True),
+    ),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript_catalog'),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': gadly_sitemaps},
+        name='sitemap_xml',
+    ),
+    path('robots.txt', tools_views.robots_txt, name='robots_txt'),
+    path('sw.js', pwa_sw_cleanup, name='pwa_sw_cleanup'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('accounts/', tools_views.accounts_home, name='accounts_home'),
@@ -63,7 +83,8 @@ urlpatterns = [
         ),
         name='password_reset_confirm_short',
     ),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include(_auth_urlpatterns)),
+    path('accounts/logout/', tools_views.DroseAwareLogoutView.as_view(), name='logout'),
     path('', include('tools.urls')),
 ]
 if settings.DEBUG:

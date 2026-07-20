@@ -1,0 +1,73 @@
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% trans "Drose email previews (DEBUG)" %}</title>
+  <style>
+    body { margin: 0; padding: 32px 20px 48px; font-family: Arial, sans-serif; background: #f1f5f9; color: #0f172a; }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; color: #b45309; }
+    .lead { margin: 0 0 24px; color: #475569; line-height: 1.6; font-size: 15px; }
+    .note { margin: 0 0 28px; padding: 12px 16px; background: #fff9f5; border: 1px solid #fbbf24; border-radius: 10px; font-size: 14px; line-height: 1.5; color: #78350f; }
+    section { margin-bottom: 28px; }
+    section h2 { margin: 0 0 12px; font-size: 1.05rem; color: #003f7f; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    li { margin: 0 0 10px; }
+    a { display: inline-block; padding: 10px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; color: #003f7f; text-decoration: none; font-weight: 600; font-size: 14px; }
+    a:hover { border-color: #b45309; color: #b45309; }
+    .back { margin-top: 32px; }
+    .back a { background: transparent; border: none; padding: 0; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>{% trans "Drose email previews" %}</h1>
+    <p class="lead">{% trans "Live render of the HTML templates used when auth flows start from Drose. Available only with DEBUG=True." %}</p>
+    <p class="note">{% trans "These pages use the same templates as production emails. Open each link in a new tab to review layout, copy, and colors." %}</p>
+
+    <section>
+      <h2>{% trans "Verify email (signup)" %}</h2>
+      <ul>
+        <li><a href="{% url 'drose_email_preview_verify' %}?lang=en" target="_blank" rel="noopener">English</a></li>
+        <li><a href="{% url 'drose_email_preview_verify' %}?lang=it" target="_blank" rel="noopener">Italiano</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>{% trans "Confirm new email (account change)" %}</h2>
+      <ul>
+        <li><a href="{% url 'drose_email_preview_verify' %}?lang=en&amp;change=1" target="_blank" rel="noopener">English</a></li>
+        <li><a href="{% url 'drose_email_preview_verify' %}?lang=it&amp;change=1" target="_blank" rel="noopener">Italiano</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>{% trans "Password reset" %}</h2>
+      <ul>
+        <li><a href="{% url 'drose_email_preview_password_reset' %}?lang=en" target="_blank" rel="noopener">English</a></li>
+        <li><a href="{% url 'drose_email_preview_password_reset' %}?lang=it" target="_blank" rel="noopener">Italiano</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>{% trans "We received your quote request - Drose" %}</h2>
+      <ul>
+        <li><a href="{% url 'drose_email_preview_quote_received' %}?lang=en" target="_blank" rel="noopener">English</a></li>
+        <li><a href="{% url 'drose_email_preview_quote_received' %}?lang=it" target="_blank" rel="noopener">Italiano</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>{% trans "Quote offer template" %}</h2>
+      <ul>
+        <li><a href="{% url 'drose_email_preview_quote_offer' %}?lang=en" target="_blank" rel="noopener">English</a></li>
+        <li><a href="{% url 'drose_email_preview_quote_offer' %}?lang=it" target="_blank" rel="noopener">Italiano</a></li>
+      </ul>
+    </section>
+
+    <p class="back"><a href="{% url 'drose' %}">← {% trans "Back to Drose home" %}</a></p>
+  </div>
+</body>
+</html>

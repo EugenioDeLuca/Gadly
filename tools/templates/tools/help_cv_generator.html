@@ -3,12 +3,15 @@
 {% load i18n %}
 
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Generatore CV{% else %}CV Generator Help{% endif %}{% endblock %}
-{% block body_class %}text-tool help-page help-cv-generator{% endblock %}
+{% block body_class %}text-tool cv-generator help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'How to fill in Gadly’s CV generator and reach a 100/100 score before export.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
 <style>
 @media (max-width: 480px) {
-    body.help-cv-generator.help-page .site-main .container {
+    body.cv-generator.help-page .site-main .container {
         width: 338px !important;
         max-width: 338px !important;
         min-width: 338px !important;
@@ -16,14 +19,14 @@
         margin: 8px auto 24px auto !important;
         padding: 16px 0 24px 0 !important;
     }
-    body.help-cv-generator.help-page .site-main .container h1,
-    body.help-cv-generator.help-page .site-main .container .tool-desc,
-    body.help-cv-generator.help-page .site-main .container .help-section,
-    body.help-cv-generator.help-page .site-main .container .help-section h2,
-    body.help-cv-generator.help-page .site-main .container .help-section p,
-    body.help-cv-generator.help-page .site-main .container .help-section ul,
-    body.help-cv-generator.help-page .site-main .container .help-section li,
-    body.help-cv-generator.help-page .site-main .container .home-link-wrap {
+    body.cv-generator.help-page .site-main .container h1,
+    body.cv-generator.help-page .site-main .container .tool-desc,
+    body.cv-generator.help-page .site-main .container .help-section,
+    body.cv-generator.help-page .site-main .container .help-section h2,
+    body.cv-generator.help-page .site-main .container .help-section p,
+    body.cv-generator.help-page .site-main .container .help-section ul,
+    body.cv-generator.help-page .site-main .container .help-section li,
+    body.cv-generator.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
     }
 }
@@ -49,9 +52,7 @@
         <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Prima dell'export, controlla l'anteprima live e verifica che date, titoli e risultati siano leggibili in una pagina ordinata.{% else %}Before export, check the live preview and ensure dates, titles, and outcomes are easy to scan.{% endif %}</p>
     </div>
 
-    <div class="home-link-wrap">
-        <a href="{% url 'cv_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Generatore CV"{% else %}Back to "CV Generator"{% endif %}</a>
-    </div>
+    {% include "tools/includes/help_career_back_link.html" with tool_url="cv_generator" tool_it="Generatore CV" tool_en="CV Generator" %}
 </div>
 {% endblock %}
 

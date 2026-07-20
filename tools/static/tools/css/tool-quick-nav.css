@@ -1,6 +1,6 @@
 .tool-quick-nav {
     position: fixed;
-    top: var(--tool-quick-nav-top, calc(82px + 24px + 40px));
+    top: var(--tool-quick-nav-top, calc(var(--site-header-height, 82px) + 24px));
     left: var(--tool-quick-nav-left, auto);
     width: 292px;
     max-height: calc(100vh - 112px);
@@ -16,6 +16,35 @@
     box-shadow: 0 10px 26px rgba(0, 63, 127, 0.12);
 }
 .tool-quick-nav::-webkit-scrollbar { display: none; }
+
+.tool-quick-nav-link--hidden-home {
+    display: none !important;
+}
+
+.tool-quick-nav-group--all-hidden {
+    display: none !important;
+}
+
+.tool-quick-nav .tool-quick-nav-link--removed-home {
+    color: #c62828 !important;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tool-quick-nav .tool-quick-nav-title--removed-home,
+.tool-quick-nav .tool-quick-nav-toggle--removed-home {
+    color: #c62828 !important;
+}
+
+.tool-quick-nav .tool-quick-nav-title--removed-home {
+    cursor: pointer;
+}
+
+.tool-popular-nav .tool-quick-nav-link--removed-home {
+    color: #c62828 !important;
+    font-weight: 700;
+    cursor: pointer;
+}
 
 body.warm-tone .tool-quick-nav,
 body.warm-tone .tool-popular-nav {
@@ -67,10 +96,15 @@ body.warm-tone .tool-quick-nav-links a:hover {
     background: #ffe8c9;
 }
 
-.tool-quick-nav.tool-quick-nav--hidden {
-    display: none !important;
+body.warm-tone .tool-quick-nav .tool-quick-nav-link--removed-home,
+body.warm-tone .tool-quick-nav .tool-quick-nav-title--removed-home,
+body.warm-tone .tool-quick-nav .tool-quick-nav-toggle--removed-home,
+body.warm-tone .tool-popular-nav .tool-quick-nav-link--removed-home {
+    color: #b71c1c !important;
 }
-.tool-quick-nav[data-ready="0"] {
+
+.tool-quick-nav.tool-quick-nav--hidden,
+.tool-popular-nav.tool-popular-nav--hidden {
     display: none !important;
 }
 
@@ -92,13 +126,6 @@ body.warm-tone .tool-quick-nav-links a:hover {
     box-shadow: 0 10px 26px rgba(0, 63, 127, 0.12);
 }
 .tool-popular-nav::-webkit-scrollbar { display: none; }
-
-.tool-popular-nav.tool-popular-nav--hidden {
-    display: none !important;
-}
-.tool-popular-nav[data-ready="0"] {
-    display: none !important;
-}
 
 .tool-popular-nav-head {
     font-size: 1.05rem;
@@ -338,11 +365,51 @@ body.dark-mode .tool-popular-nav .tool-quick-nav-title:hover {
     color: #7eb8f0;
 }
 
-@media (max-width: 1280px) {
-    .tool-quick-nav {
-        display: none;
+/* Visibilità mobile/desktop solo via JS (.tool-quick-nav--hidden): le media query
+   width seguono il layout viewport e al zoom browser spariscono i pannelli. */
+
+/* Desktop light: tool rimossi — solo testo rosso (come dark mode), senza fondo riga/bordo. */
+@media (min-width: 1281px) {
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:hover,
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:focus,
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:focus-visible {
+        background: transparent;
+        color: #c62828 !important;
     }
+
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-title--removed-home:hover,
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-title--removed-home:focus,
+    body:not(.dark-mode) .tool-quick-nav .tool-quick-nav-title--removed-home:focus-visible {
+        color: #c62828 !important;
+    }
+
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:hover,
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:focus,
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-links a.tool-quick-nav-link--removed-home:focus-visible {
+        background: transparent;
+        color: #b71c1c !important;
+    }
+
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-title--removed-home:hover,
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-title--removed-home:focus,
+    body:not(.dark-mode).warm-tone .tool-quick-nav .tool-quick-nav-title--removed-home:focus-visible {
+        color: #b71c1c !important;
+    }
+}
+
+/* Desktop: non usare display:none per --hidden (evita reflow/lampo al reveal). */
+@media (min-width: 1281px) {
+    .tool-quick-nav,
     .tool-popular-nav {
-        display: none;
+        transition: none !important;
+    }
+    aside.tool-quick-nav[hidden],
+    aside.tool-popular-nav[hidden],
+    aside.tool-quick-nav.tool-quick-nav--hidden,
+    aside.tool-popular-nav.tool-popular-nav--hidden {
+        display: block !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
 }

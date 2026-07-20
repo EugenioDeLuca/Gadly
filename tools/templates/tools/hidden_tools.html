@@ -1,0 +1,68 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Removed tools - Gadly" %}{% endblock %}
+{% block body_class %}static-page hidden-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Restore tools you removed from the Gadly homepage.' %}">
+<style>
+/* Evita flash Restore all / Back to Home prima del render JS */
+body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-bottom,
+body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-empty {
+    display: none !important;
+    visibility: hidden !important;
+}
+@media (min-width: 769px) {
+    body.hidden-tools-page .static-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 32px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+    }
+    body.hidden-tools-page .hidden-tools-panel,
+    body.hidden-tools-page .static-container.hidden-tools-container {
+        min-height: 372px;
+    }
+}
+</style>
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260515b">
+<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=97">
+{% endblock %}
+{% block content %}
+<div class="hidden-tools-panel">
+<div class="static-container hidden-tools-container">
+    <div class="hidden-tools-head">
+    <h1>{% trans "Removed tools" %}</h1>
+    <p class="hidden-tools-intro">{% trans "Tools you removed from the homepage appear here. Restore them individually or all at once." %}</p>
+    <p class="hidden-tools-intro-hint">{% trans "You can hide tools anytime by dragging them to the trash on the homepage." %}</p>
+    </div>
+
+    <div id="hidden-tools-empty" class="hidden-tools-empty" hidden>
+        <p>{% trans "No removed tools. Everything is visible on the homepage." %}</p>
+        <a href="{% url 'home' %}" class="hidden-tools-home-link">{% trans "Back to Home" %}</a>
+    </div>
+
+    <div id="hidden-tools-list" class="hidden-tools-list" aria-live="polite"></div>
+
+    <div id="hidden-tools-bottom" class="hidden-tools-bottom" hidden>
+        <div class="hidden-tools-divider" role="presentation" aria-hidden="true"></div>
+        <div id="hidden-tools-footer" class="hidden-tools-footer">
+            <div class="hidden-tools-footer-row">
+                <button type="button" id="hidden-tools-restore-all" class="hidden-tools-restore-all">{% trans "Restore all" %}</button>
+                <a href="{% url 'home' %}" class="hidden-tools-home-link">{% trans "Back to Home" %}</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    window.GADLY_HIDDEN_TOOLS_RESTORE_LABEL = "{% filter escapejs %}{% trans 'Restore' %}{% endfilter %}";
+    window.GADLY_HOME_URL = "{% url 'home' %}";
+    </script>
+    <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=24"></script>
+    <script src="{% static 'tools/js/hidden-tools-page.js' %}?v=14"></script>
+</div>
+</div>
+{% endblock %}

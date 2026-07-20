@@ -3,9 +3,34 @@
 {% load i18n %}
 
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Ottimizza CV{% else %}CV Optimizer Help{% endif %}{% endblock %}
-{% block body_class %}text-tool help-page help-cv-optimizer{% endblock %}
+{% block body_class %}text-tool cv-optimizer help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'How Gadly’s CV optimizer reads your CV and role text to suggest improvements.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
+<style>
+@media (max-width: 480px) {
+    body.cv-optimizer.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.cv-optimizer.help-page .site-main .container h1,
+    body.cv-optimizer.help-page .site-main .container .tool-desc,
+    body.cv-optimizer.help-page .site-main .container .help-section,
+    body.cv-optimizer.help-page .site-main .container .help-section h2,
+    body.cv-optimizer.help-page .site-main .container .help-section p,
+    body.cv-optimizer.help-page .site-main .container .help-section ul,
+    body.cv-optimizer.help-page .site-main .container .help-section li,
+    body.cv-optimizer.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -23,9 +48,7 @@
         <p>{% if LANGUAGE_CODE|slice:":2" == "it" %}Inserisci il ruolo target e, se possibile, la descrizione lavoro completa: il confronto sarà più preciso e utile.{% else %}Add the target role and, when possible, the full job description for more accurate matching.{% endif %}</p>
     </div>
 
-    <div class="home-link-wrap">
-        <a href="{% url 'cv_optimizer' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Ottimizza CV"{% else %}Back to "CV Optimizer"{% endif %}</a>
-    </div>
+    {% include "tools/includes/help_career_back_link.html" with tool_url="cv_optimizer" tool_it="Ottimizza CV" tool_en="CV Optimizer" %}
 </div>
 {% endblock %}
 

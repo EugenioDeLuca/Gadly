@@ -1,17 +1,86 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
+{% load career_kit_tags %}
 {% block title %}{% trans "CV Optimizer" %}{% endblock %}
 {% block body_class %}text-tool cv-optimizer{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Upload your CV and a job description to get practical improvement suggestions on Gadly.' %}">
+<script>
+(function () {
+  document.documentElement.classList.add("gadly-cvopt-ui-stable");
+  try {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  } catch (e0) { /* ignore */ }
+  function normalizePath(p) {
+    p = p || "/";
+    if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+    return p || "/";
+  }
+  try {
+    var scrollKey = "gadly-page-scroll-y-v1:" + normalizePath(location.pathname);
+    var legacyKey = "gadly-tool-scroll-y-v1:" + normalizePath(location.pathname);
+    sessionStorage.removeItem(scrollKey);
+    sessionStorage.removeItem(legacyKey);
+  } catch (e1) { /* ignore */ }
+  try {
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type === "reload") {
+      window.scrollTo(0, 0);
+    }
+  } catch (e2) { /* ignore */ }
+  if (window.innerWidth > 1280) {
+    try {
+      if (localStorage.getItem("gadly-quick-nav-layout-v1")) {
+        document.documentElement.classList.add("gadly-cvopt-qnav-prime");
+      }
+    } catch (e3) { /* ignore */ }
+  }
+})();
+</script>
+<style id="cvopt-boot-shield">
+html.gadly-cvopt-ui-stable body.cv-optimizer aside.tool-quick-nav.gadly-cvopt-qnav-ready,
+html.gadly-cvopt-ui-stable body.cv-optimizer aside.tool-popular-nav.gadly-cvopt-qnav-ready {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+/* Mobile: container 338px al primo paint (evita shift layout) */
+@media (max-width: 768px) {
+  body.cv-optimizer .site-main .container {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    margin: 8px auto 24px auto !important;
+    padding: 16px 0 24px 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+</style>
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/career-kit.css' %}?v=35">
 <style>
 .cv-optimizer .form-group textarea, .cv-optimizer .form-group input { width: 100%; max-width: 100%; box-sizing: border-box; }
+/* Descrizione: #555 solo in light mode (desktop e mobile) */
+body.cv-optimizer:not(.dark-mode) .site-main .container .tool-desc {
+  color: #555 !important;
+  line-height: 1.55;
+}
+@media (min-width: 769px) {
+  .cv-optimizer .file-upload-area {
+    border: 2px dashed #b8d4f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #f8fcff;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
 .cv-optimizer .file-upload-area {
-  border: 2px dashed #b8d4f0;
-  border-radius: 12px;
-  padding: 10px 12px;
-  background: #f8fcff;
   width: 100%;
   box-sizing: border-box;
 }
@@ -73,29 +142,183 @@
   box-sizing: border-box;
 }
 .cv-optimizer .export-controls {
-  display: inline-flex;
-  gap: 8px;
+  display: flex;
   align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  margin-left: auto;
 }
 .cv-optimizer .export-controls.hidden {
-  display: none;
+  display: none !important;
 }
-.cv-optimizer .export-btn {
+.cv-optimizer .format-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.cv-optimizer .export-btn,
+.cv-optimizer .format-toggle {
   width: 76px;
   min-width: 76px;
   height: 44px;
   min-height: 44px;
+  padding: 0 10px;
   border: none;
   border-radius: 12px;
   background: #003f7f;
   color: #fff;
   font-weight: 400 !important;
+  font-size: 16px;
+  line-height: 1.2;
   cursor: pointer;
+  transition: background 0.2s;
+  flex: 0 0 76px;
+  white-space: nowrap;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
-.cv-optimizer .export-btn:hover { background: #0056b3; }
+@media (min-width: 769px) {
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle {
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 10px !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    position: relative;
+    z-index: 0;
+    overflow: visible;
+    background: transparent !important;
+    transform: none !important;
+  }
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn::before,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: #003f7f;
+    transition: transform 0.2s, background 0.2s;
+    z-index: -1;
+  }
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active::before,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle.export-active::before {
+    background: #28a745;
+  }
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):hover::before,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle:not(.export-active):hover::before {
+    background: #0056b3;
+    transform: scale(1.03);
+  }
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:hover::before,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle.export-active:hover::before {
+    background: #28a745;
+    transform: scale(1.03);
+  }
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .format-toggle.export-active:hover {
+    background: transparent !important;
+    transform: none !important;
+  }
+}
+
+/* Desktop: export — colori stato (sfondo su ::before) */
+@media (min-width: 769px) {
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:hover,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:focus,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:active,
+  body.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls .export-btn.export-active:active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-pdf.export-active:active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-docx.export-active:active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .export-controls #cvopt-export-txt.export-active:active {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
 .cv-optimizer .result-area { white-space: normal; }
 .cvopt-cards {
   display: grid;
@@ -236,6 +459,973 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Mobile: niente contenitore tratteggiato attorno a Scegli file */
+@media (max-width: 768px) {
+  /* Container 338px centrato (come CV Generator) — evita shift a destra */
+  body.cv-optimizer .site-main .container {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    margin: 8px auto 24px auto !important;
+    padding: 16px 0 24px 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-optimizer .site-main .container .form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-optimizer .site-main .container .form-group label {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    text-align: center !important;
+  }
+  body.cv-optimizer .site-main .container .file-note {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    text-align: center !important;
+  }
+  body.cv-optimizer .site-main .container .button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-optimizer .site-main .container .file-upload-area {
+    display: contents;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  body.cv-optimizer .site-main .container .form-group:has(.file-upload-area) .file-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0;
+  }
+  /* Mobile: larghezza piena nel container 338px */
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex: 0 0 auto !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+    transition: transform 0.05s ease-out !important;
+  }
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+  }
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:active {
+    transform: scale(0.96) !important;
+  }
+  body.cv-optimizer .site-main .container #cvopt-job-title,
+  body.cv-optimizer .site-main .container #cvopt-job-description {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  /* Scegli file = stesso layout del bottone Analizza (base.css mobile) */
+  body.cv-optimizer .site-main .container .choose-file-btn {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1) !important;
+    transition: transform 0.05s ease-out !important;
+    cursor: pointer !important;
+  }
+  body.cv-optimizer .site-main .container .choose-file-btn:hover,
+  body.cv-optimizer .site-main .container .choose-file-btn:focus,
+  body.cv-optimizer .site-main .container .choose-file-btn:focus-visible {
+    transform: scale(1) !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  body.cv-optimizer .site-main .container .choose-file-btn:active {
+    transform: scale(0.96) !important;
+  }
+
+  /* Mobile: testo scuro nei campi (override azzurro #b0c4de del tema dark) */
+  body.cv-optimizer .site-main .container #cvopt-job-title,
+  body.cv-optimizer .site-main .container #cvopt-job-title:focus,
+  body.cv-optimizer .site-main .container #cvopt-job-title:not(:focus),
+  body.cv-optimizer .site-main .container #cvopt-job-description,
+  body.cv-optimizer .site-main .container #cvopt-job-description:focus,
+  body.cv-optimizer .site-main .container #cvopt-job-description:not(:focus) {
+    background: #f8f9fa !important;
+    border: 1px solid #ddd !important;
+    color: #0f2f55 !important;
+    -webkit-text-fill-color: #0f2f55 !important;
+    caret-color: #0f2f55 !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+    opacity: 1 !important;
+  }
+  body.cv-optimizer .site-main .container #cvopt-job-title::placeholder,
+  body.cv-optimizer .site-main .container #cvopt-job-description::placeholder {
+    color: #444 !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-title,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-title:focus,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-title:not(:focus),
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-description,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-description:focus,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-description:not(:focus) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #0d0d1a !important;
+    -webkit-text-fill-color: #0d0d1a !important;
+    caret-color: #0d0d1a !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-title::placeholder,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-job-description::placeholder {
+    color: #333 !important;
+  }
+
+  /* Mobile: testo intro + spaziatura campi (come Lettera / CV Generator) */
+  body.text-tool.cv-optimizer .site-main .container > h1 + p.tool-desc,
+  body.text-tool.cv-optimizer .site-main .container p.tool-desc,
+  body.text-tool.cv-optimizer .site-main .container .tool-desc {
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    margin: 0 0 8px 0 !important;
+  }
+  body.text-tool.cv-optimizer:not(.dark-mode) .site-main .container .tool-desc {
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+  }
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .tool-desc {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+  }
+  body.cv-optimizer .site-main .container .form-group {
+    margin-bottom: 16px !important;
+  }
+  body.cv-optimizer .site-main .container .form-group:has(#cvopt-job-description) {
+    margin-bottom: 0 !important;
+  }
+  body.cv-optimizer.text-tool .site-main .container #cvopt-job-title {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    padding: 10px 12px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-optimizer.text-tool .site-main .container textarea#cvopt-job-description,
+  body.cv-optimizer.text-tool .site-main .container #cvopt-job-description:focus {
+    min-height: 280px !important;
+    margin-bottom: 0 !important;
+    padding: 12px 16px !important;
+    box-sizing: border-box !important;
+  }
+  body.cv-optimizer .site-main .container #cvopt-result.result-area.error,
+  body.cv-optimizer .site-main .container #cvopt-result.result-area:not(.hidden).error {
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Mobile: risultati analisi — testo scuro, senza bordo esterno (più spazio) */
+  body.cv-optimizer .site-main .container #cvopt-result.result-area:not(.hidden):not(.error),
+  body.cv-optimizer .site-main .container .result-area:not(.hidden):not(.error) {
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+    min-height: 0 !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-result.result-area:not(.hidden):not(.error),
+  body.dark-mode.cv-optimizer .site-main .container .result-area:not(.hidden):not(.error) {
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-card h4,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-score-main,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-confidence strong {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-score-sub,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-label,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-confidence {
+    color: #374151 !important;
+    -webkit-text-fill-color: #374151 !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-suggestion-text,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-example,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-breakdown-item,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-history-item,
+  body.cv-optimizer .site-main .container .result-area:not(.error) p,
+  body.cv-optimizer .site-main .container .result-area:not(.error) li {
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+  }
+
+  /* Mobile: contenuti risultato centrati */
+  body.cv-optimizer .site-main .container .result-area:not(.error),
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-cards,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-card,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-card h4,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-score-main,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-score-sub,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-confidence,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-suggestion-text,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-example,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-history-item {
+    text-align: center !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-score-row,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-breakdown-item,
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-keyword-line {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-keyword-line {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-label {
+    margin-right: 0 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    width: 100% !important;
+  }
+  /* Mobile: Applica esempio — stesso stile Analizza in light mode (anche in dark) */
+  body.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn,
+  body.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:hover,
+  body.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus,
+  body.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus-visible {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 148px !important;
+    min-height: 44px !important;
+    padding: 12px 20px !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    outline: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    transition: transform 0.05s ease-out !important;
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:active,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:active {
+    background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+    background-color: #b8d4f0 !important;
+    background-image: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
+    border-color: #002d5c !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    transform: scale(0.96) !important;
+  }
+  body.cv-optimizer .site-main .container .result-area:not(.error) .cvopt-skeleton-bar {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Mobile: export — light = Analizza blu; dark = Analizza gradiente; verde LED solo su .export-active */
+  body.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.text-tool.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  /* Mobile: export PDF/DOCX/TXT — layout come CV Generator */
+  body.cv-optimizer .site-main .container .button-group,
+  body.cv-optimizer .site-main .container .button-group .export-controls:not(.hidden),
+  body.cv-optimizer .site-main .container .button-group .export-controls .format-toggle-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls:not(.hidden) {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls.hidden {
+    display: none !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls .format-toggle-group {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn,
+  body.cv-optimizer .site-main .container .button-group .export-controls .format-toggle,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-weight: 400 !important;
+    font-size: 0.92rem !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 8px 10px !important;
+    min-height: unset !important;
+    height: auto !important;
+    max-height: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    border-radius: 12px !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active,
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:hover,
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus,
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus-visible,
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:active {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active {
+    transform: scale(1) !important;
+  }
+  body.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:active {
+    transform: scale(0.96) !important;
+  }
+  /* Mobile dark: verde selezione = CV Generator (format-toggle.active) */
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls button.export-btn.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx.export-active:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt.export-active:active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    background-color: rgba(126, 226, 160, 0.20) !important;
+    background-image: none !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  /* Lock: export a riposo = Analizza (tutti gli stati, batte .export-btn #003f7f e theme) */
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-analyze,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-analyze:hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-analyze:focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-analyze:active,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.cv-optimizer .site-main .container .choose-file-btn {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    padding: 12px 20px !important;
+    font-size: 1.05rem !important;
+    font-weight: 400 !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:hover,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:focus,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:focus-visible {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+
+  /* Analizza + export a riposo: stesso aspetto in tutti gli stati (≤480px) */
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:active,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 20px !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:focus-visible {
+    min-height: 47.5px !important;
+    height: 47.5px !important;
+    max-height: 47.5px !important;
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    transform: scale(1) !important;
+  }
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-analyze:active,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: #003f7f !important;
+    border: none !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-analyze:active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group .export-controls .export-btn:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-pdf:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-docx:not(.export-active):active,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):hover,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .button-group #cvopt-export-txt:not(.export-active):active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+}
+
+/* FINAL MOBILE LOCK — stesso comportamento bottoni CV Generator (colore fisso + scale al tap) */
+@media (max-width: 768px) {
+  body.cv-optimizer .site-main .container #cvopt-analyze,
+  body.cv-optimizer .site-main .container .export-btn:not(.export-active),
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:not(.export-active),
+  body.cv-optimizer .site-main .container #cvopt-export-docx:not(.export-active),
+  body.cv-optimizer .site-main .container #cvopt-export-txt:not(.export-active),
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn {
+    --cvopt-lock-bg: #003f7f;
+    --cvopt-lock-color: #fff;
+    --cvopt-lock-border: none;
+    background: var(--cvopt-lock-bg) !important;
+    color: var(--cvopt-lock-color) !important;
+    -webkit-text-fill-color: var(--cvopt-lock-color) !important;
+    border: var(--cvopt-lock-border) !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    transform: scale(1) !important;
+    transition: transform 0.05s ease-out !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+  body.cv-optimizer .site-main .container .export-btn.export-active,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf.export-active,
+  body.cv-optimizer .site-main .container #cvopt-export-docx.export-active,
+  body.cv-optimizer .site-main .container #cvopt-export-txt.export-active {
+    --cvopt-lock-bg: #28a745;
+    --cvopt-lock-color: #fff;
+    --cvopt-lock-border: none;
+  }
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-analyze,
+  body.dark-mode.cv-optimizer .site-main .container .export-btn:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-pdf:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-docx:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-txt:not(.export-active),
+  body.dark-mode.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn {
+    --cvopt-lock-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --cvopt-lock-color: var(--text-secondary, #b0c4de);
+    --cvopt-lock-border: 2px solid var(--text-secondary, #b0c4de);
+  }
+  body.dark-mode.cv-optimizer .site-main .container .export-btn.export-active,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-pdf.export-active,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-docx.export-active,
+  body.dark-mode.cv-optimizer .site-main .container #cvopt-export-txt.export-active {
+    --cvopt-lock-bg: rgba(126, 226, 160, 0.2);
+    --cvopt-lock-color: #7ee2a0;
+    --cvopt-lock-border: 2px solid #7ee2a0;
+  }
+  body.cv-optimizer .site-main .container #cvopt-analyze:hover,
+  body.cv-optimizer .site-main .container #cvopt-analyze:focus,
+  body.cv-optimizer .site-main .container #cvopt-analyze:focus-visible,
+  body.cv-optimizer .site-main .container #cvopt-analyze:active,
+  body.cv-optimizer .site-main .container #cvopt-analyze.tap-active,
+  body.cv-optimizer .site-main .container .export-btn:hover,
+  body.cv-optimizer .site-main .container .export-btn:focus,
+  body.cv-optimizer .site-main .container .export-btn:focus-visible,
+  body.cv-optimizer .site-main .container .export-btn:active,
+  body.cv-optimizer .site-main .container .export-btn.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:hover,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:focus,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:focus-visible,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:active,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-docx:hover,
+  body.cv-optimizer .site-main .container #cvopt-export-docx:focus,
+  body.cv-optimizer .site-main .container #cvopt-export-docx:focus-visible,
+  body.cv-optimizer .site-main .container #cvopt-export-docx:active,
+  body.cv-optimizer .site-main .container #cvopt-export-docx.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-txt:hover,
+  body.cv-optimizer .site-main .container #cvopt-export-txt:focus,
+  body.cv-optimizer .site-main .container #cvopt-export-txt:focus-visible,
+  body.cv-optimizer .site-main .container #cvopt-export-txt:active,
+  body.cv-optimizer .site-main .container #cvopt-export-txt.tap-active,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:hover,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:focus-visible,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:active,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn.tap-active {
+    background: var(--cvopt-lock-bg) !important;
+    color: var(--cvopt-lock-color) !important;
+    -webkit-text-fill-color: var(--cvopt-lock-color) !important;
+    border: var(--cvopt-lock-border) !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  body.cv-optimizer .site-main .container #cvopt-analyze:active,
+  body.cv-optimizer .site-main .container #cvopt-analyze.tap-active,
+  body.cv-optimizer .site-main .container .export-btn:active,
+  body.cv-optimizer .site-main .container .export-btn.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf:active,
+  body.cv-optimizer .site-main .container #cvopt-export-pdf.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-docx:active,
+  body.cv-optimizer .site-main .container #cvopt-export-docx.tap-active,
+  body.cv-optimizer .site-main .container #cvopt-export-txt:active,
+  body.cv-optimizer .site-main .container #cvopt-export-txt.tap-active,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn:active,
+  body.cv-optimizer .site-main .container .result-area:not(.error) button.cvopt-apply-btn.tap-active {
+    transform: scale(0.96) !important;
+  }
+}
+
+/* Light mobile: Scegli file — default come CV Generator (#d0e8f9 + bordo blu, non blu pieno) */
+@media (max-width: 768px) {
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:hover,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:focus,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:focus-visible {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-weight: 400 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    transform: scale(1) !important;
+  }
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn:active,
+  body.cv-optimizer:not(.dark-mode) .site-main .container .choose-file-btn.tap-active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    transform: scale(0.96) !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:hover,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:focus,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:focus-visible,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:active,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn.tap-active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    font-weight: 400 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+  }
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn:active,
+  body.dark-mode.cv-optimizer .site-main .container .choose-file-btn.tap-active {
+    transform: scale(0.96) !important;
+  }
+}
+
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  body.cv-optimizer #cvopt-analyze:hover,
+  body.cv-optimizer .export-btn:hover,
+  body.cv-optimizer .result-area:not(.error) button.cvopt-apply-btn:hover {
+    transform: scale(1) !important;
+  }
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -269,17 +1459,15 @@
   <div class="button-group">
     <button type="button" id="cvopt-analyze">{% trans "Analyze" %}</button>
     <div id="cvopt-export-controls" class="export-controls hidden">
-      <button type="button" id="cvopt-export-pdf" class="export-btn">PDF</button>
-      <button type="button" id="cvopt-export-docx" class="export-btn">DOCX</button>
-      <button type="button" id="cvopt-export-txt" class="export-btn">TXT</button>
+      <div class="format-toggle-group" role="group" aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Formato esportazione{% else %}Export format{% endif %}">
+        <button type="button" id="cvopt-export-pdf" class="export-btn format-toggle">PDF</button>
+        <button type="button" id="cvopt-export-docx" class="export-btn format-toggle">DOCX</button>
+        <button type="button" id="cvopt-export-txt" class="export-btn format-toggle">TXT</button>
+      </div>
     </div>
   </div>
 
-  <div class="home-link-wrap">
-    <a href="{% url 'career_cv_page' %}" class="home-link" title="{% trans 'Back to Career & CV Tools' %}" aria-label="{% trans 'Back to Career & CV Tools' %}">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5L4 21Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-    </a>
-  </div>
+  {% career_kit_flow_nav "cv_optimizer" %}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -293,5 +1481,52 @@ if (!window.docx) {
   document.write('<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
 }
 </script>
-<script src="{% static 'tools/js/cv_optimizer.js' %}?v=20260417a"></script>
+<script src="{% static 'tools/js/cv_optimizer.js' %}?v=20260601a"></script>
+{% endblock %}
+
+{% block after_quick_nav %}
+<script>
+(function () {
+  if (!document.documentElement.classList.contains("gadly-cvopt-qnav-prime")) return;
+  if (window.innerWidth <= 1280) return;
+  var nav = document.querySelector(".tool-quick-nav");
+  var popular = document.querySelector(".tool-popular-nav");
+  if (!nav) return;
+  try {
+    var layout = JSON.parse(localStorage.getItem("gadly-quick-nav-layout-v1") || "null");
+    if (!layout || typeof layout.left !== "number") return;
+    var side = localStorage.getItem("gadly-quick-nav-side-v1");
+    if (side !== "left" && side !== "right") side = "right";
+    var topPx = layout.top;
+    if (typeof topPx !== "number") {
+      var storedTop = sessionStorage.getItem("gadly-quick-nav-top-px-v1");
+      topPx = storedTop ? parseInt(storedTop, 10) : NaN;
+    }
+    if (isNaN(topPx)) return;
+    nav.style.setProperty("--tool-quick-nav-top", topPx + "px");
+    nav.dataset.qnTopPx = String(topPx);
+    nav.style.setProperty("--tool-quick-nav-left", layout.left + "px");
+    if (typeof layout.quickMaxH === "number") {
+      nav.style.maxHeight = layout.quickMaxH + "px";
+    }
+    nav.classList.remove("tool-quick-nav--hidden");
+    nav.removeAttribute("hidden");
+    nav.classList.add("gadly-cvopt-qnav-ready");
+    if (popular) {
+      popular.style.setProperty("--tool-popular-nav-left", layout.left + "px");
+      if (typeof layout.popularTop === "number") {
+        popular.style.setProperty("--tool-popular-nav-top", layout.popularTop + "px");
+      }
+      if (typeof layout.popularMaxH === "number") {
+        popular.style.maxHeight = layout.popularMaxH + "px";
+      }
+      popular.classList.remove("tool-popular-nav--hidden");
+      popular.removeAttribute("hidden");
+      popular.classList.add("gadly-cvopt-qnav-ready");
+    }
+    document.body.classList.remove("gadly-qn-anchor-left", "gadly-qn-anchor-right");
+    document.body.classList.add(side === "left" ? "gadly-qn-anchor-left" : "gadly-qn-anchor-right");
+  } catch (e) { /* ignore */ }
+})();
+</script>
 {% endblock %}

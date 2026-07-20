@@ -101,6 +101,58 @@ body.dark-mode .login-required-btn--close:hover {
     display: none !important;
 }
 
+/* Quick access: spazio riservato in <head> prima del paint (html.gadly-has-shortcuts) */
+body.homepage.user-authenticated #shortcuts-section {
+    display: none;
+}
+
+html.gadly-has-shortcuts body.homepage #shortcuts-section {
+    display: block !important;
+    box-sizing: border-box;
+}
+
+html.gadly-has-shortcuts body.homepage .container .search-wrap {
+    margin-bottom: 2px;
+}
+
+html.gadly-has-shortcuts body.homepage .container .shortcuts-section {
+    margin-top: 0;
+}
+
+html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-title {
+    margin-bottom: 2px;
+}
+
+@media (min-width: 769px) {
+    html.gadly-has-shortcuts body.homepage .container .search-wrap {
+        margin-bottom: 16px;
+        padding-bottom: 0;
+    }
+
+    html.gadly-has-shortcuts body.homepage #shortcuts-section {
+        min-height: 4.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    html.gadly-has-shortcuts body.homepage .container .search-wrap {
+        padding-bottom: 20px;
+    }
+
+    html.gadly-has-shortcuts body.homepage #shortcuts-section {
+        min-height: calc(
+            1.75rem + var(--gadly-shortcuts-count, 1) * 3.25rem +
+            max(0, var(--gadly-shortcuts-count, 1) - 1) * 0.625rem
+        );
+    }
+}
+
+@media (max-width: 480px) {
+    html.gadly-has-shortcuts body.homepage .container .search-wrap {
+        padding-bottom: 40px;
+    }
+}
+
 .homepage .container {
     max-width: 900px;
     margin: 30px auto;
@@ -124,6 +176,11 @@ body.dark-mode .login-required-btn--close:hover {
     }
 }
 
+.homepage .home-hero {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .homepage .home-main-title {
     margin: 0 0 10px 0;
     font-size: clamp(1.35rem, 3.6vw, 1.9rem);
@@ -131,6 +188,9 @@ body.dark-mode .login-required-btn--close:hover {
     color: #003f7f;
     letter-spacing: -0.02em;
     line-height: 1.2;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
 }
 
 .homepage .intro {
@@ -140,6 +200,9 @@ body.dark-mode .login-required-btn--close:hover {
     padding-top: 0;
     line-height: 1.5;
     text-align: center;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
 }
 
 .homepage .intro a {
@@ -154,6 +217,119 @@ body.dark-mode .login-required-btn--close:hover {
 
 .search-wrap {
     margin-bottom: 24px;
+}
+
+/* Gadly home → Drose: pill ambra separata dai tool (mobile; desktop ha già il float). */
+.homepage .home-drose-entry {
+    display: block;
+    margin: 0 0 24px;
+    text-align: center;
+}
+
+.homepage .home-drose-entry__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    width: min(100%, 420px);
+    padding: 12px 16px 12px 14px;
+    margin: 0 auto;
+    text-decoration: none;
+    text-align: left;
+    border-radius: 14px;
+    border: 2px solid #b45309;
+    background: linear-gradient(135deg, #fff8eb 0%, #ffefd1 100%);
+    color: #92400e;
+    box-shadow: 0 8px 22px rgba(180, 83, 9, 0.12);
+    transition: transform 0.2s ease;
+    box-sizing: border-box;
+    /* Mobile: evita callout/selezione testo su long-press che lascia la UI “morta”. */
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
+    /* Solo focus outline se serve; niente cambio colore (pill è mobile-only). */
+    outline: none;
+}
+
+/* Press feedback solo via .tap-active: solo scale, niente cambio colore. */
+.homepage .home-drose-entry__link.tap-active {
+    transform: scale(0.98);
+}
+
+body.dark-mode.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
+    outline: none;
+}
+
+.homepage .home-drose-entry__icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: contain;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.homepage .home-drose-entry__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.homepage .home-drose-entry__title {
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #b45309;
+    -webkit-text-fill-color: #b45309;
+}
+
+.homepage .home-drose-entry__subtitle {
+    font-size: 0.88rem;
+    line-height: 1.35;
+    color: #78350f;
+    -webkit-text-fill-color: #78350f;
+}
+
+.homepage .home-drose-entry__chevron {
+    flex: 0 0 auto;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: #b45309;
+    font-weight: 700;
+}
+
+body.dark-mode.homepage .home-drose-entry__link {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%);
+    border-color: #fbbf24;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode.homepage .home-drose-entry__title {
+    color: #fbbf24;
+    -webkit-text-fill-color: #fbbf24;
+}
+
+body.dark-mode.homepage .home-drose-entry__subtitle {
+    color: #fbbf24;
+    -webkit-text-fill-color: #fbbf24;
+    opacity: 0.82;
+}
+
+body.dark-mode.homepage .home-drose-entry__chevron {
+    color: #fbbf24;
+}
+
+@media (min-width: 769px) {
+    .homepage .home-drose-entry {
+        display: none;
+    }
 }
 
 .homepage .container.has-shortcuts .search-wrap {
@@ -230,7 +406,6 @@ body.dark-mode .login-required-btn--close:hover {
     transition: all 0.2s;
     border-radius: 12px;
     text-decoration: none;
-    font-weight: 600;
     text-align: center;
 }
 .homepage .shortcuts-btn {
@@ -242,8 +417,8 @@ body.dark-mode .login-required-btn--close:hover {
     border: 2px solid #e84c4c !important;
 }
 
-/* Hover scorciatoie solo con puntatore fine (evita stato evidenziato dopo il tap su touch) */
-@media (hover: hover) and (pointer: fine) {
+/* Hover scorciatoie desktop: solo con puntatore fine */
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
     .homepage .shortcuts-btn:hover {
         background: #e84c4c !important;
         color: white !important;
@@ -377,9 +552,47 @@ body.dark-mode .login-required-btn--close:hover {
         min-width: 180px !important;
         height: 56px !important;
         min-height: 56px !important;
-        padding: 0 !important;
+        max-height: 56px !important;
+        padding: 0 12px !important;
         font-size: 1em !important;
         font-weight: 600 !important;
+        line-height: 1.1;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        display: grid !important;
+        place-items: center;
+        place-content: center;
+        text-align: center !important;
+        box-sizing: border-box !important;
+        overflow: hidden;
+    }
+
+    /* Desktop: etichette su più righe centrate, altezza fissa 56px */
+    .homepage .tool-btn,
+    .homepage .tool-section .tool-grid .tool-btn {
+        display: grid !important;
+        place-items: center;
+        place-content: center;
+        width: 180px;
+        height: 56px !important;
+        min-height: 56px !important;
+        max-height: 56px !important;
+        padding: 0 12px !important;
+        line-height: 1.1;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        text-align: center !important;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .homepage .tool-btn.tool-btn--kit {
+        padding: 0 12px !important;
+        height: 56px !important;
+        min-height: 56px !important;
+        max-height: 56px !important;
     }
 }
 
@@ -404,13 +617,27 @@ body.dark-mode .login-required-btn--close:hover {
     font-size: 1em;
     text-decoration: none;
     border-radius: 12px;
-    transition: transform 0.2s, background 0.2s;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.homepage .tool-btn.tool-btn--kit {
+    font-size: 16px;
+    border-width: 3px;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 63, 127, 0.35), 0 4px 14px rgba(0, 63, 127, 0.22);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .homepage .tool-btn:hover {
         background: #0056b3;
         transform: scale(1.05);
+    }
+
+    .homepage .tool-btn.tool-btn--kit:hover {
+        border-color: #e8f4fd;
+        box-shadow: 0 0 0 1px rgba(0, 63, 127, 0.4), 0 6px 18px rgba(0, 63, 127, 0.28);
     }
 }
 
@@ -421,7 +648,7 @@ body.dark-mode .login-required-btn--close:hover {
         color: #003f7f;
     }
     .shortcuts-section .shortcuts-title {
-        color: #e84c4c;
+        color: #003f7f;
     }
     .shortcuts-grid {
         flex-direction: column;
@@ -437,9 +664,9 @@ body.dark-mode .login-required-btn--close:hover {
         padding: 14px 44px 14px 20px !important;
         font-size: 1.05rem !important;
         font-weight: 700 !important;
-        background: rgba(232, 76, 76, 0.25);
-        color: #e84c4c;
-        border: 2px solid #e84c4c;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        border: 2px solid #003f7f !important;
         border-radius: 12px !important;
         justify-content: flex-start !important;
         align-items: center !important;
@@ -518,6 +745,8 @@ body.dark-mode .login-required-btn--close:hover {
         padding: 0;
         margin: 6px 0 20px 0;
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
         gap: 0;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%);
         border-radius: 12px;
@@ -527,11 +756,37 @@ body.dark-mode .login-required-btn--close:hover {
     .tool-section.is-open .tool-grid {
         display: flex;
     }
+    /* Prima paint al refresh: stato da sessionStorage (script in extrahead) */
+    html[data-home-open] .category-btn-chevron {
+        transition: none;
+    }
+    html[data-home-open="category-text"] .tool-section:has(#category-text) .tool-grid,
+    html[data-home-open="category-social"] .tool-section:has(#category-social) .tool-grid,
+    html[data-home-open="category-career"] .tool-section:has(#category-career) .tool-grid,
+    html[data-home-open="category-file"] .tool-section:has(#category-file) .tool-grid,
+    html[data-home-open="category-image"] .tool-section:has(#category-image) .tool-grid,
+    html[data-home-open="category-finance"] .tool-section:has(#category-finance) .tool-grid,
+    html[data-home-open="category-web"] .tool-section:has(#category-web) .tool-grid,
+    html[data-home-open="category-security"] .tool-section:has(#category-security) .tool-grid {
+        display: flex;
+    }
+    html[data-home-open="category-text"] .tool-section:has(#category-text) .category-btn-chevron,
+    html[data-home-open="category-social"] .tool-section:has(#category-social) .category-btn-chevron,
+    html[data-home-open="category-career"] .tool-section:has(#category-career) .category-btn-chevron,
+    html[data-home-open="category-file"] .tool-section:has(#category-file) .category-btn-chevron,
+    html[data-home-open="category-image"] .tool-section:has(#category-image) .category-btn-chevron,
+    html[data-home-open="category-finance"] .tool-section:has(#category-finance) .category-btn-chevron,
+    html[data-home-open="category-web"] .tool-section:has(#category-web) .category-btn-chevron,
+    html[data-home-open="category-security"] .tool-section:has(#category-security) .category-btn-chevron {
+        transform: rotate(180deg);
+    }
     .homepage .tool-section .tool-grid .tool-btn-wrap {
         padding-left: 20px;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
-        min-height: 0 !important;
+        min-height: 52px !important;
+        height: 52px !important;
+        box-sizing: border-box;
     }
     .homepage .tool-btn-wrap {
         width: 100%;
@@ -544,28 +799,40 @@ body.dark-mode .login-required-btn--close:hover {
     .homepage .tool-btn-wrap:last-child {
         border-bottom: none;
     }
-    .homepage .tool-section .tool-grid .tool-btn-wrap .tool-fav {
-        padding: 3px 5px;
-        min-width: 28px;
-        font-size: 1rem;
-        margin-left: 4px;
-        margin-right: 8px;
-    }
+    /* Mobile: stessa altezza della categoria; non ereditare il bottone desktop 56×180px */
     .homepage .tool-section .tool-grid .tool-btn {
         flex: 1;
+        width: auto !important;
+        height: 100% !important;
         min-width: 0;
-        min-height: 20px !important;
+        min-height: 0 !important;
+        max-height: none !important;
         padding: 2px 10px 2px 0 !important;
-        font-size: 0.9rem !important;
+        font-size: 15px !important;
         line-height: 1.15 !important;
+        font-weight: 600 !important;
         display: flex;
         align-items: center;
         justify-content: flex-start !important;
         text-align: left !important;
-        background: transparent;
+        background: transparent !important;
         color: #003f7f;
-        border-radius: 0;
-        transform: translateY(-2px);
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    .homepage .tool-section .tool-grid .tool-btn-wrap .tool-fav {
+        margin-right: 8px;
+        margin-left: 4px;
+        padding: 4px 6px !important;
+        min-width: 32px !important;
+        min-height: 0 !important;
+        height: auto !important;
+        font-size: 1rem !important;
+        color: #003f7f;
+        background: transparent !important;
+        border: none !important;
     }
     .homepage .tool-btn-wrap .tool-fav {
         position: static;
@@ -593,12 +860,14 @@ body.dark-mode .login-required-btn--close:hover {
     .homepage .category-btn:focus:not(:focus-visible),
     .homepage .shortcuts-btn:focus:not(:focus-visible),
     .homepage .shortcuts-grid .shortcuts-btn:focus:not(:focus-visible),
+    .homepage .tool-btn:focus:not(:focus-visible),
     .homepage .tool-fav:focus:not(:focus-visible) {
         outline: none;
     }
     .homepage .category-btn:focus-visible,
     .homepage .shortcuts-btn:focus-visible,
     .homepage .shortcuts-grid .shortcuts-btn:focus-visible,
+    .homepage .tool-btn:focus-visible,
     .homepage .tool-fav:focus-visible {
         outline: 2px solid #003f7f;
         outline-offset: 2px;
@@ -606,8 +875,38 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .homepage .category-btn:focus-visible,
     body.dark-mode .homepage .shortcuts-btn:focus-visible,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn:focus-visible,
+    body.dark-mode .homepage .tool-btn:focus-visible,
     body.dark-mode .homepage .tool-fav:focus-visible {
-        outline-color: #7eb8ff;
+        outline-color: #fcc;
+    }
+
+    /* Tap come CV Generator (mobile-tap.js): tap-active, non :active */
+    body.homepage .site-main .container .category-btn:active,
+    body.homepage .site-main .container .shortcuts-btn:active,
+    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active,
+    body.homepage .site-main .tool-section .tool-grid .tool-btn:active,
+    body.homepage .site-main .tool-fav:active,
+    body.homepage .site-main .home-drose-entry__link:active,
+    body.dark-mode.homepage .site-main .container .category-btn:active,
+    body.dark-mode.homepage .site-main .container .shortcuts-btn:active,
+    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active,
+    body.dark-mode.homepage .site-main .tool-section .tool-grid .tool-btn:active,
+    body.dark-mode.homepage .site-main .tool-fav:active,
+    body.dark-mode.homepage .site-main .home-drose-entry__link:active {
+        transform: none !important;
+    }
+    /* Touch: niente hover “appeso” dopo il tap sulla pill Drose */
+    body.homepage .site-main .home-drose-entry__link:not(.tap-active):is(:hover, :focus, :focus-visible) {
+        transform: none !important;
+    }
+    body.homepage .site-main .category-btn.tap-active,
+    body.homepage .site-main .shortcuts-btn.tap-active,
+    body.homepage .site-main .shortcuts-grid .shortcuts-btn.tap-active,
+    body.homepage .site-main .tool-section .tool-grid .tool-btn.tap-active,
+    body.homepage .site-main .tool-fav.tap-active,
+    body.homepage .site-main .login-required-btn.tap-active,
+    body.homepage .site-main .home-drose-entry__link.tap-active {
+        transform: scale(0.96) !important;
     }
 }
 
@@ -621,7 +920,7 @@ body.dark-mode .login-required-btn--close:hover {
         transform: none;
     }
     .homepage .tool-section .tool-grid .tool-btn:hover {
-        transform: translateY(-2px);
+        transform: none;
     }
     .homepage .tool-btn-wrap .tool-fav:hover {
         background: rgba(0, 63, 127, 0.08);
@@ -631,9 +930,9 @@ body.dark-mode .login-required-btn--close:hover {
     }
     body.dark-mode .shortcuts-btn:hover,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn:hover {
-        background: #e84c4c;
-        color: white;
-        border-color: #b01830;
+        background: rgba(220, 80, 80, 0.28) !important;
+        color: #fcc !important;
+        border-color: #fcc !important;
     }
     body.dark-mode .category-btn:hover {
         background: linear-gradient(145deg, rgba(0, 63, 127, 0.3) 0%, rgba(0, 63, 127, 0.2) 100%);
@@ -642,8 +941,13 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .homepage .tool-btn:hover {
         background: rgba(0, 63, 127, 0.2);
     }
-    body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover {
-        background: rgba(255, 255, 255, 0.1);
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav:hover,
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav:hover {
+        background: transparent !important;
+    }
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite:hover,
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav.is-favorite:hover {
+        color: #ff8585 !important;
     }
 }
 
@@ -706,10 +1010,11 @@ body.dark-mode .login-required-btn--close:hover {
     .homepage .home-categories-wrap,
     .homepage .tool-section,
     .homepage .category-btn,
+    .homepage .tool-section .tool-grid,
     .homepage .shortcuts-btn,
     .homepage .shortcuts-grid .shortcuts-btn {
-        width: 100%;
-        max-width: 356px;
+        width: min(100%, var(--mobile-btn-width, 352px));
+        max-width: var(--mobile-btn-width, 352px);
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
@@ -723,7 +1028,7 @@ body.dark-mode .login-required-btn--close:hover {
         box-sizing: border-box;
     }
     .homepage .tool-section .tool-grid .tool-btn {
-        font-size: 0.95rem !important;
+        font-size: 15px !important;
     }
     .shortcuts-btn,
     body.dark-mode .shortcuts-btn,
@@ -752,23 +1057,15 @@ body.dark-mode .login-required-btn--close:hover {
     }
     body.homepage .site-main .container .category-btn:focus,
     body.homepage .site-main .container .shortcuts-btn:focus,
-    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus {
+    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus,
+    body.homepage .site-main .tool-section .tool-grid .tool-btn:focus {
         transform: scale(1) !important;
-    }
-    body.homepage .site-main .container .category-btn:active,
-    body.homepage .site-main .container .shortcuts-btn:active,
-    body.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active {
-        transform: scale(1.03) !important;
     }
     body.dark-mode.homepage .site-main .container .category-btn:focus,
     body.dark-mode.homepage .site-main .container .shortcuts-btn:focus,
-    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus {
+    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:focus,
+    body.dark-mode.homepage .site-main .tool-section .tool-grid .tool-btn:focus {
         transform: scale(1) !important;
-    }
-    body.dark-mode.homepage .site-main .container .category-btn:active,
-    body.dark-mode.homepage .site-main .container .shortcuts-btn:active,
-    body.dark-mode.homepage .site-main .container .shortcuts-grid .shortcuts-btn:active {
-        transform: scale(1.03) !important;
     }
 }
 
@@ -791,7 +1088,7 @@ body.dark-mode .login-required-btn--close:hover {
         color: var(--text-secondary);
     }
     body.dark-mode .shortcuts-section .shortcuts-title {
-        color: #e84c4c;
+        color: #e88 !important;
     }
     body.dark-mode .shortcuts-btn,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
@@ -800,10 +1097,11 @@ body.dark-mode .login-required-btn--close:hover {
         height: auto !important;
         padding: 14px 44px 14px 20px !important;
         font-size: 1.05rem !important;
-        font-weight: 700 !important;
-        background: rgba(232, 76, 76, 0.25);
-        color: #e84c4c;
-        border-color: rgba(232, 76, 76, 0.5);
+        font-weight: 600 !important;
+        background: rgba(220, 80, 80, 0.15) !important;
+        color: #e88 !important;
+        border: 2px solid #fcc !important;
+        border-radius: 12px !important;
     }
     body.dark-mode .category-btn {
         color: var(--text-secondary);
@@ -826,6 +1124,28 @@ body.dark-mode .login-required-btn--close:hover {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border: 2px solid var(--text-secondary) !important;
     }
+    body.dark-mode html[data-home-open="category-text"] .tool-section:has(#category-text) .category-btn,
+    body.dark-mode html[data-home-open="category-social"] .tool-section:has(#category-social) .category-btn,
+    body.dark-mode html[data-home-open="category-career"] .tool-section:has(#category-career) .category-btn,
+    body.dark-mode html[data-home-open="category-file"] .tool-section:has(#category-file) .category-btn,
+    body.dark-mode html[data-home-open="category-image"] .tool-section:has(#category-image) .category-btn,
+    body.dark-mode html[data-home-open="category-finance"] .tool-section:has(#category-finance) .category-btn,
+    body.dark-mode html[data-home-open="category-web"] .tool-section:has(#category-web) .category-btn,
+    body.dark-mode html[data-home-open="category-security"] .tool-section:has(#category-security) .category-btn {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+    }
+    body.dark-mode html[data-home-open="category-text"] .tool-section:has(#category-text) .tool-grid,
+    body.dark-mode html[data-home-open="category-social"] .tool-section:has(#category-social) .tool-grid,
+    body.dark-mode html[data-home-open="category-career"] .tool-section:has(#category-career) .tool-grid,
+    body.dark-mode html[data-home-open="category-file"] .tool-section:has(#category-file) .tool-grid,
+    body.dark-mode html[data-home-open="category-image"] .tool-section:has(#category-image) .tool-grid,
+    body.dark-mode html[data-home-open="category-finance"] .tool-section:has(#category-finance) .tool-grid,
+    body.dark-mode html[data-home-open="category-web"] .tool-section:has(#category-web) .tool-grid,
+    body.dark-mode html[data-home-open="category-security"] .tool-section:has(#category-security) .tool-grid {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+    }
     body.dark-mode .homepage .tool-btn-wrap {
         border-bottom-color: rgba(255, 255, 255, 0.08);
     }
@@ -835,28 +1155,91 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode .homepage .tool-section .tool-grid {
         color: var(--text-secondary);
     }
-    body.dark-mode .homepage .tool-btn-wrap .tool-fav {
+    /* Dark mobile: solo la stellina rossa (come Quick access), senza box sul pulsante */
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav,
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav {
         color: var(--text-secondary);
+        background: transparent !important;
+        border: none !important;
     }
-    body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite {
-        color: #dc3545;
+    body.dark-mode .homepage .tool-btn-wrap .tool-fav.is-favorite,
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav.is-favorite {
+        color: #ff6b6b !important;
     }
 
     /* Dark mode (mobile/tablet): force a single text color everywhere on Home */
     body.dark-mode.homepage .home-main-title,
     body.dark-mode.homepage .intro,
     body.dark-mode.homepage .intro a,
-    body.dark-mode.homepage .tool-search-input,
-    body.dark-mode.homepage .shortcuts-section .shortcuts-title,
-    body.dark-mode.homepage .shortcuts-btn,
     body.dark-mode.homepage .category-btn,
     body.dark-mode.homepage .category-btn .category-btn-label,
     body.dark-mode.homepage .category-btn .category-btn-chevron,
     body.dark-mode.homepage .tool-section .tool-grid,
     body.dark-mode.homepage .tool-section .tool-grid * ,
-    body.dark-mode.homepage .tool-btn,
-    body.dark-mode.homepage .tool-fav {
+    body.dark-mode.homepage .tool-btn {
         color: var(--text-secondary) !important;
+    }
+    body.dark-mode.homepage .shortcuts-section .shortcuts-title {
+        color: #e88 !important;
+    }
+    body.dark-mode.homepage .shortcuts-btn,
+    body.dark-mode.homepage .shortcuts-grid .shortcuts-btn {
+        background: rgba(220, 80, 80, 0.15) !important;
+        color: #e88 !important;
+        border: 2px solid #fcc !important;
+    }
+
+    /* Dopo .tool-grid *: stellina preferita rosso più acceso (mobile dark) */
+    body.dark-mode.homepage .tool-section .tool-grid .tool-btn-wrap .tool-fav.is-favorite {
+        color: #ff6b6b !important;
+    }
+
+    /* Mobile: ricerca — testo scuro sempre (focus e blur; batte theme.css input #b0c4de) */
+    body.homepage .site-main .container #tool-search.tool-search-input {
+        font-size: 16px !important;
+        font-family: Arial, sans-serif !important;
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: normal !important;
+    }
+    /* Light mobile: stesso stack textarea tool (es. Word Counter / JSON Formatter) */
+    body.homepage:not(.dark-mode) .site-main .container #tool-search.tool-search-input {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    body.homepage:not(.dark-mode) .site-main .container #tool-search.tool-search-input:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    body.homepage:not(.dark-mode) .site-main .container #tool-search.tool-search-input::placeholder {
+        color: #999 !important;
+        -webkit-text-fill-color: #999 !important;
+        opacity: 1 !important;
+    }
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input,
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input:focus,
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input::placeholder {
+        color: #555 !important;
+        -webkit-text-fill-color: #555 !important;
+        opacity: 1 !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
     }
 }
 
@@ -865,13 +1248,54 @@ body.dark-mode .login-required-btn--close:hover {
     body.dark-mode.homepage .home-main-title,
     body.dark-mode.homepage .intro,
     body.dark-mode.homepage .intro a,
-    body.dark-mode.homepage .tool-search-input,
     body.dark-mode.homepage .category-btn,
     body.dark-mode.homepage .category-btn .category-btn-label,
     body.dark-mode.homepage .category-btn .category-btn-chevron,
-    body.dark-mode.homepage .tool-section .tool-grid .tool-btn,
-    body.dark-mode.homepage .tool-btn-wrap .tool-fav {
+    body.dark-mode.homepage .tool-section .tool-grid .tool-btn {
         color: #b0c4de !important;
+    }
+
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav {
+        color: #b0c4de;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    body.dark-mode.homepage .tool-btn-wrap .tool-fav.is-favorite,
+    body.dark-mode.homepage .tool-section .tool-grid .tool-btn-wrap .tool-fav.is-favorite {
+        color: #ff6b6b !important;
+    }
+
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input,
+    body.dark-mode.homepage .site-main .container #tool-search.tool-search-input:not(:focus) {
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+}
+
+/* Mobile: tool trovato — lampeggia il bordo del .tool-grid (box-shadow = bordo visibile), 3 volte */
+@media (max-width: 768px) {
+    @keyframes homepage-tool-search-border-flash-light {
+        0%, 100% {
+            box-shadow: 0 0 0 2px #003f7f;
+        }
+        50% {
+            box-shadow: 0 0 0 2px #dc2626;
+        }
+    }
+    @keyframes homepage-tool-search-border-flash-dark {
+        0%, 100% {
+            box-shadow: 0 0 0 2px var(--text-secondary, #b0c4de);
+        }
+        50% {
+            box-shadow: 0 0 0 2px #dc2626;
+        }
+    }
+    .homepage .tool-grid.tool-search-match {
+        animation: homepage-tool-search-border-flash-light 1s ease-in-out 3;
+    }
+    body.dark-mode.homepage .tool-grid.tool-search-match {
+        animation: homepage-tool-search-border-flash-dark 1s ease-in-out 3;
     }
 }
 
@@ -879,4 +1303,9 @@ body.dark-mode .login-required-btn--close:hover {
 body.homepage .site-main .container {
     margin-top: 24px !important;
     margin-bottom: 24px !important;
+}
+
+/* Footer: stessa dimensione delle voci header (FAQ, Contatti, Privacy) */
+body.homepage .footer-links a {
+    font-size: 17px !important;
 }

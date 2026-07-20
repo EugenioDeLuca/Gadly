@@ -5,6 +5,11 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Stessa altezza barra del footer (.site-footer height/min-height) */
+    --site-header-height: 82px;
+}
+
 html {
     overflow-x: hidden;
     scrollbar-width: none; /* Firefox: scrollbar nascosta = niente spostamento */
@@ -37,27 +42,37 @@ h1, h2 {
   font-weight: bold;
 }
 
-/* Site Header - fixed on all pages */
+/* Site Header - fixed on all pages (altezza = footer 82px) */
 .site-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     width: 100%;
+    height: var(--site-header-height);
+    min-height: var(--site-header-height);
+    max-height: var(--site-header-height);
     z-index: 220;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-header);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 1px 0 rgba(0, 63, 127, 0.08);
+    box-shadow: none;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-inner {
     max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
-    padding: 20px 28px;
+    padding: 0 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
+    min-height: 0;
 }
 
 .header-logo {
@@ -76,6 +91,22 @@ h1, h2 {
     width: 42px;
     height: 42px;
     flex-shrink: 0;
+}
+
+.header-logo--drose .header-logo-icon {
+    animation: none !important;
+}
+
+.header-logo--drose .drose-header-logo__reticle {
+    animation: none;
+}
+
+.header-logo--drose .drose-orbit-ping {
+    visibility: hidden;
+}
+
+.header-logo--drose.is-orbit-synced .drose-orbit-ping {
+    visibility: visible;
 }
 
 @keyframes logo-slow-rotate {
@@ -298,15 +329,42 @@ body.dark-mode .header-menu-icon::after {
     height: 28px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 .header-avatar--letter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    display: block;
+    padding: 0;
+    margin: 0;
     background: #003f7f;
-    color: white;
-    font-size: 0.85rem;
+    color: #fff;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.header-avatar-initials {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: 700 10px/1 Arial, sans-serif;
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-align: center;
+    pointer-events: none;
+}
+
+.header-avatar.header-avatar--letter {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    flex: 0 0 28px;
 }
 
 .header-username {
@@ -345,7 +403,7 @@ body.dark-mode .header-menu-icon::after {
     padding: 10px 16px;
     color: #003f7f;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 16px;
     font-weight: 500;
     transition: background 0.2s;
 }
@@ -409,7 +467,7 @@ body.dark-mode .header-dropdown-item:hover {
     color: #003f7f;
     text-decoration: none;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.0625rem;
     border-radius: 8px;
     transition: background 0.2s, color 0.2s;
 }
@@ -421,6 +479,57 @@ body.dark-mode .header-dropdown-item:hover {
 
 .header-link-mobile-only {
     display: none !important;
+}
+
+/* Account nel menu hamburger (solo mobile/tablet); barra desktop usa .header-user-wrap--bar */
+.header-nav-account {
+    display: none;
+}
+
+.header-nav-account-profile {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 10px;
+    vertical-align: middle;
+}
+
+.header-nav-account-profile .header-avatar--letter,
+.header-nav-account-profile .header-nav-account-avatar {
+    vertical-align: middle;
+}
+
+.header-nav-account-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.header-nav-account-avatar.header-avatar--letter {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    flex: 0 0 36px;
+}
+
+.header-nav-account-avatar.header-avatar--letter .header-avatar-initials {
+    font-size: 12px;
+}
+
+.header-nav-logout-form {
+    margin: 0;
+    display: contents;
+}
+
+.header-nav-logout-form .header-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .header-link.active {
@@ -448,7 +557,7 @@ body.dark-mode .header-dropdown-item:hover {
 .site-main {
     flex: 1;
     padding: 24px 16px 40px;
-    padding-top: calc(24px + 82px);  /* space for fixed header */
+    padding-top: calc(24px + var(--site-header-height));  /* space for fixed header (= footer bar) */
     padding-bottom: 40px;
 }
 
@@ -495,17 +604,47 @@ body:not(.homepage):not(.help-page) .static-page .static-footer {
 body:not(.homepage) .mobile-home-fab {
     display: block !important;
     position: fixed;
-    --home-fab-bg: #d6e5f5;
-    --home-fab-icon: #002d5c;
-    --home-fab-border: #dc2626;
-    --home-fab-icon-stroke: rgba(0, 45, 92, 0.22);
     width: 62px;
     height: 62px;
     /* Default: più in alto del canton basso (footer / barra) così si nota subito all’ingresso */
-    right: 22px;
+    right: 28px;
     bottom: calc(96px + env(safe-area-inset-bottom));
     z-index: 260;
+    /* touch-action:none sul FAB: il browser non ruba il gesto allo scroll (serve per trascinare). */
     touch-action: none;
+    -webkit-touch-callout: none;
+}
+
+/* Sopra linguette/pannelli laterali mentre si trascina (es. punteggio CV) */
+body:not(.homepage) .mobile-home-fab.is-dragging {
+    z-index: 410 !important;
+}
+
+/* Nascosto finché mobile-home-fab.js non ha applicato la posizione (niente flash default → salvata). */
+body:not(.homepage) .mobile-home-fab.mobile-home-fab--layout-pending {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+@media (min-width: 1920px) {
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
+        right: 52px;
+        bottom: calc(124px + env(safe-area-inset-bottom));
+    }
+}
+
+@media (min-width: 2200px) {
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
+        right: 56px;
+        bottom: calc(132px + env(safe-area-inset-bottom));
+    }
+}
+
+@media (min-width: 2560px) {
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
+        right: 64px;
+        bottom: calc(144px + env(safe-area-inset-bottom));
+    }
 }
 
 body:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
@@ -515,28 +654,52 @@ body:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
     width: 62px;
     height: 62px;
     border-radius: 50%;
-    background: var(--home-fab-bg, #d6e5f5);
-    color: var(--home-fab-icon, #002d5c);
+    /* Stesso aspetto del FAB in dark mode (desktop e light) */
+    background: #d6e5f5;
+    color: #002d5c;
     box-shadow: none;
-    border: 2px solid var(--home-fab-border, #dc2626);
+    border: 2px solid #dc2626;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
 body:not(.homepage) .mobile-home-fab:not(.is-dragging) .mobile-home-fab-link:active {
-    transform: scale(0.96);
+    transform: none;
 }
 
 body:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     width: 27px;
     height: 27px;
-    fill: currentColor;
+    fill: #002d5c;
 }
 
-body:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg path {
-    stroke: var(--home-fab-icon-stroke, rgba(0, 45, 92, 0.25));
+body:not(.homepage) .mobile-home-fab .mobile-home-fab-link:not(.mobile-home-fab-link--drose) svg path {
+    stroke: rgba(0, 45, 92, 0.22);
     stroke-width: 1.1px;
     paint-order: stroke fill;
+}
+
+/* FAB Gadly: logo #003f7f in light e dark (non casetta) */
+body:not(.homepage):not(.drose-page) .mobile-home-fab .gadly-home-icon {
+    display: block;
+    flex-shrink: 0;
+    animation: none !important;
+    transform: none !important;
+}
+
+body:not(.homepage):not(.drose-page) .mobile-home-fab .mobile-home-fab-gadly-logo {
+    width: 30px;
+    height: 30px;
+}
+
+body:not(.homepage):not(.drose-page) .mobile-home-fab .gadly-home-icon,
+body:not(.homepage):not(.drose-page) .mobile-home-fab .gadly-home-icon path {
+    fill: #003f7f !important;
+    stroke: none !important;
 }
 
 body:not(.homepage) .mobile-home-fab.is-dragging .mobile-home-fab-link {
@@ -544,26 +707,107 @@ body:not(.homepage) .mobile-home-fab.is-dragging .mobile-home-fab-link {
     transform: none !important;
 }
 
-body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
-    background: #d6e5f5;
-    color: #002d5c;
-    border: 2px solid #dc2626;
-    box-shadow: none;
+/* Posizione impostata dall’utente: niente right/bottom dal CSS; stessa misura desktop anche sotto 480px (altrimenti il resize “sposta” il cerchio). */
+body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned {
+    right: auto !important;
+    bottom: auto !important;
+    width: 62px !important;
+    height: 62px !important;
+    min-width: 62px !important;
+    min-height: 62px !important;
+    max-width: 62px !important;
+    max-height: 62px !important;
+    box-sizing: border-box !important;
+    transition: none !important;
 }
 
-body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
-    fill: #002d5c;
+body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned .mobile-home-fab-link {
+    width: 62px !important;
+    height: 62px !important;
+    min-width: 62px !important;
+    min-height: 62px !important;
+    box-sizing: border-box !important;
 }
 
-/* Desktop: align container top offset with homepage; static box: stesso respiro sopra/sotto rispetto a header/footer (24+30 = 14+40) */
+body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned .mobile-home-fab-link svg {
+    width: 27px !important;
+    height: 27px !important;
+}
+
+/* Primo accesso: Back to Home (FAB) lampeggia 3 volte — desktop e mobile */
+@keyframes gadly-home-fab-intro-blink {
+    from {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.14);
+        box-shadow: 0 0 0 18px rgba(220, 38, 38, 0);
+    }
+}
+
+body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-fab-link {
+    animation: gadly-home-fab-intro-blink 0.42s ease-in-out 3 alternate;
+    z-index: 1;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    @keyframes gadly-home-fab-intro-blink-mobile {
+        from {
+            opacity: 1;
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 1);
+        }
+        to {
+            opacity: 1;
+            box-shadow: 0 0 0 14px rgba(220, 38, 38, 0);
+        }
+    }
+
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-fab-link {
+        animation: gadly-home-fab-intro-blink-mobile 0.42s ease-in-out 3 alternate;
+        transform: none !important;
+    }
+
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned {
+        width: 58px !important;
+        height: 58px !important;
+        min-width: 58px !important;
+        min-height: 58px !important;
+        max-width: 58px !important;
+        max-height: 58px !important;
+    }
+
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned .mobile-home-fab-link {
+        width: 58px !important;
+        height: 58px !important;
+        min-width: 58px !important;
+        min-height: 58px !important;
+    }
+
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned .mobile-home-fab-link svg {
+        width: 28px !important;
+        height: 28px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-fab-link {
+        animation: none;
+    }
+}
+
+/* Desktop: stesso distacco verticale del contenitore home (24px sotto header / sopra footer, v. home.css) */
 @media (min-width: 769px) {
     body:not(.homepage):not(.image-editor) .site-main .container,
     body:not(.homepage) .site-main .faq-container {
-        margin-top: 30px !important;
-        margin-bottom: 30px !important;
+        margin-top: 24px !important;
+        margin-bottom: 24px !important;
     }
     body:not(.homepage) .site-main .static-container {
-        margin: 30px auto 14px !important;
+        margin: 24px auto 14px !important;
     }
 }
 
@@ -574,7 +818,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         border-bottom: none !important;
     }
     .header-inner {
-        padding: 20px 28px;
+        padding: 0 28px;
     }
     .header-logo-text {
         font-size: 1.45rem;
@@ -598,7 +842,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     }
     .header-nav {
         position: fixed;
-        top: 74px;
+        top: var(--site-header-height);
         left: 0;
         right: 0;
         width: 100%;
@@ -624,9 +868,29 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         max-height: 360px;
         overflow: hidden;
         padding: 10px 28px 12px;
-        box-shadow: 0 12px 32px rgba(0, 63, 127, 0.15);
-        border: 1px solid rgba(0, 63, 127, 0.08);
-        border-top: none;
+        box-shadow: none;
+        border: none;
+    }
+    body.dark-mode .header-nav.is-open {
+        box-shadow: none;
+        border: none;
+    }
+    body.warm-tone .header-nav.is-open,
+    body.dark-mode.warm-tone .header-nav.is-open {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    @media (max-width: 480px) {
+        body.warm-tone .header-nav,
+        body.warm-tone .header-nav.is-open,
+        body.dark-mode.warm-tone .header-nav,
+        body.dark-mode.warm-tone .header-nav.is-open {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-top: none !important;
+        }
     }
     .header-nav .header-link {
         padding: 10px 20px;
@@ -642,8 +906,43 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     .header-nav .header-link-mobile-only {
         display: inline-flex !important;
     }
-    .header-nav .header-link:hover {
-        background: transparent;
+    .header-nav .header-link-bin-row {
+        flex: 0 0 100%;
+        width: 100%;
+        margin-top: 4px;
+        padding-top: 0;
+        border-top: none;
+        box-sizing: border-box;
+    }
+    /* Menu hamburger: niente pill al tap in light/dark; warm tone → theme.css (evidenza ok) */
+    .header-nav .header-link,
+    .header-nav .header-auth-wrap .header-link {
+        -webkit-tap-highlight-color: transparent;
+    }
+    body:not(.warm-tone) .header-nav .header-link:hover,
+    body:not(.warm-tone) .header-nav .header-link:active,
+    body:not(.warm-tone) .header-nav .header-link:focus,
+    body:not(.warm-tone) .header-nav .header-link:focus-visible,
+    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:hover,
+    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:active,
+    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus,
+    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible {
+        background: transparent !important;
+        box-shadow: none !important;
+        color: #003f7f !important;
+        outline: none !important;
+    }
+    body.dark-mode:not(.warm-tone) .header-nav .header-link:hover,
+    body.dark-mode:not(.warm-tone) .header-nav .header-link:active,
+    body.dark-mode:not(.warm-tone) .header-nav .header-link:focus,
+    body.dark-mode:not(.warm-tone) .header-nav .header-link:focus-visible,
+    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:hover,
+    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:active,
+    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus,
+    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible {
+        background: transparent !important;
+        box-shadow: none !important;
+        color: var(--text-secondary, #b0c4de) !important;
     }
     .header-nav .header-auth-wrap {
         flex-basis: 100%;
@@ -652,8 +951,11 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         justify-content: center;
         gap: 8px;
         margin-top: 4px;
-        padding-top: 8px;
+        padding-top: 10px;
         border-top: 1px solid rgba(0, 63, 127, 0.15);
+    }
+    body.dark-mode .header-nav .header-auth-wrap {
+        border-top-color: rgba(255, 255, 255, 0.15);
     }
     .header-nav .header-auth-wrap .header-link {
         white-space: nowrap;
@@ -661,15 +963,12 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     .header-nav .header-dropdown-item {
         text-align: left;
     }
-    body.dark-mode .header-nav.is-open {
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-    body.dark-mode .header-nav .header-link:hover {
-        background: transparent;
-    }
-    body.dark-mode .header-nav .header-auth-wrap {
-        border-top-color: rgba(255, 255, 255, 0.15);
+    @media (max-width: 480px) {
+        body.dark-mode .header-nav,
+        body.dark-mode .header-nav.is-open {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
     }
     body.nav-open {
         overflow: hidden;
@@ -685,19 +984,14 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         cursor: pointer;
         animation: fadeIn 0.25s ease;
     }
-    /* Con warm tone attivo: quando il menu è aperto l’overlay è solo blur, come in light/dark */
-    body.nav-open.warm-tone::before {
-        background: rgba(0, 0, 0, 0.04);
-        mix-blend-mode: normal;
-        opacity: 1;
-    }
+    /* Warm tone overlay: theme.css (scuro, senza blur) */
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
     .site-main {
         padding: 20px 16px 36px;
-        padding-top: calc(20px + 78px);
+        padding-top: calc(20px + var(--site-header-height));
         padding-bottom: 36px;
     }
     /* Homepage: container si espande in altezza, stessa distanza top/bottom (tablet) */
@@ -706,6 +1000,31 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     /* Image editor: stesso layout mobile/tablet */
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 16px auto 36px !important; min-height: 0; }
+    /* Mobile/tablet: account nel menu, non in barra (più spazio per logo Gadly) */
+    .header-user-wrap--bar {
+        display: none !important;
+    }
+    .header-nav-account {
+        display: flex;
+        flex-basis: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        margin-top: 4px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0, 63, 127, 0.15);
+    }
+    body.dark-mode .header-nav-account {
+        border-top-color: rgba(255, 255, 255, 0.15);
+    }
+    .header-nav-account-profile {
+        align-items: center;
+        justify-content: center;
+    }
+    .header-nav.is-open {
+        max-height: 440px;
+    }
 }
 
 /* Mobile */
@@ -716,7 +1035,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     }
 
     /* Global mobile button sizing baseline (single source of truth). Escluso Word Counter: stili dedicati in word-counter.css. */
-    body:not(.word-counter) .site-main .container button:not(.tool-fav):not(.tool-quick-nav-toggle):not(.mobile-home-fab-link),
+    body:not(.word-counter) .site-main .container button:not(.tool-fav):not(.tool-quick-nav-toggle):not(.mobile-home-fab-link):not(.interview-settings-toggle),
     body:not(.word-counter) .site-main .container .shortcuts-btn,
     body:not(.word-counter) .site-main .container .category-btn,
     body:not(.word-counter) .site-main .container input[type="button"],
@@ -750,23 +1069,20 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         font-size: 1.5em !important;
         font-weight: 700 !important;
     }
-    .header-username {
-        max-width: 70px;
-    }
     .header-inner {
-        padding: 14px 16px;
+        padding: 0 16px;
     }
     .header-logo-icon {
-        width: 48px;
-        height: 48px;
+        width: 46px;
+        height: 46px;
         animation: logo-slow-rotate 22s linear infinite;
         transform-origin: center;
     }
     .header-logo-text {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
     .header-nav {
-        top: 70px;
+        top: var(--site-header-height);
         gap: 6px;
         padding-left: 16px;
         padding-right: 16px;
@@ -783,13 +1099,15 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         align-items: center;
         justify-content: center;
     }
-    .header-nav .header-link {
+    .header-nav .header-link,
+    .header-nav .header-auth-wrap .header-link {
         justify-content: center;
         text-align: center;
+        font-size: 18px !important;
     }
     .site-main {
         padding: 12px 12px 28px;
-        padding-top: calc(12px + 70px);
+        padding-top: calc(12px + var(--site-header-height));
         padding-bottom: 28px;
     }
 
@@ -809,14 +1127,6 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
 
     .header-logo {
         min-width: 0;
-    }
-
-    .header-logo-text {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 38vw;
     }
     /* Mobile header: mostra solo la lingua alternativa (nasconde quella attiva). */
     .header-lang-form {
@@ -869,7 +1179,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         border-radius: var(--mobile-radius);
     }
 
-    body:not(.homepage):not(.image-editor) .site-main .container button,
+    body:not(.homepage):not(.image-editor) .site-main .container button:not(.interview-settings-toggle),
     body:not(.homepage):not(.image-editor) .site-main .container .text-tool-select-trigger,
     body:not(.homepage):not(.image-editor) .site-main .container .custom-select-trigger,
     body:not(.homepage):not(.image-editor) .site-main .container #swap-btn {
@@ -893,13 +1203,13 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         width: 100% !important;
     }
 
-    /* Mobile: bottoni come homepage (stile category-btn) */
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container .button-group button,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"],
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"],
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container .btn {
+    /* Mobile light: bottoni category-btn. Solo :not(.dark-mode) — il dark usa CSS per tool / theme.css. */
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn),
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .button-group button:not(.split-preset-btn),
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .faq-container button,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container input[type="submit"],
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container input[type="button"],
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz) .site-main .container .btn {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         border: 2px solid #003f7f !important;
         color: #003f7f !important;
@@ -913,33 +1223,33 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         outline: none !important;
         box-shadow: none !important;
     }
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container button:hover,
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container .button-group button:hover,
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .faq-container button:hover,
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container input[type="submit"]:hover,
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container input[type="button"]:hover,
-    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.markdown-preview) .site-main .container .btn:hover {
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container button:not(.interview-settings-toggle):not(.analysis-opts-trigger):not(.split-preset-btn):hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container .button-group button:not(.split-preset-btn):hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .faq-container button:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container input[type="submit"]:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container input[type="button"]:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container .btn:hover {
         background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
         border-color: #002d5c !important;
         color: #003f7f !important;
     }
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:focus,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:focus-visible,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:focus,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:focus-visible,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:focus,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:focus-visible,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:focus,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:focus-visible {
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:focus-visible {
         outline: none !important;
         box-shadow: none !important;
         transform: scale(1) !important;
     }
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container button:active,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .faq-container button:active,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="submit"]:active,
-    body:not(.homepage):not(.image-editor):not(.cv-generator) .site-main .container input[type="button"]:active {
-        transform: scale(1.03) !important;
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.analysis-opts-trigger):not(.split-preset-btn):active,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:active,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:active,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:active {
+        transform: scale(0.96) !important;
     }
 
     /* Mobile: layout errore come Translator (niente margin, stesso stile compatto) */
@@ -1009,6 +1319,16 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         font-size: 17px !important;
         line-height: 1.5 !important;
     }
+    /* Diff Checker: niente margin sotto le textarea (12px solo sul box errore) */
+    body.diff-checker.text-tool .site-main .container .diff-column textarea,
+    body.diff-checker.text-tool .site-main .container .diff-column textarea:focus {
+        margin-bottom: 0 !important;
+    }
+    /* JSON Formatter mobile: 12px tra textarea e errore (non sommare form-group + textarea) */
+    body.json-formatter.text-tool .site-main .container .form-group textarea,
+    body.json-formatter.text-tool .site-main .container .form-group textarea:focus {
+        margin-bottom: 0 !important;
+    }
     body.text-tool .site-main .container .button-group {
         display: flex !important;
         flex-direction: column !important;
@@ -1068,7 +1388,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:active,
     body:not(.homepage):not(.image-editor) .site-main .container .btn-copy:active,
     body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:active {
-        transform: scale(1.03) !important;
+        transform: scale(0.96) !important;
     }
 
     /* Pagine help: mostra bottone "Back to tool" in basso a sinistra */
@@ -1093,7 +1413,7 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         transition: transform 0.05s ease-out;
     }
     body.help-page .site-main .container .home-link-wrap .home-link:active {
-        transform: scale(1.03);
+        transform: scale(0.96);
     }
     body.dark-mode.help-page .site-main .container .home-link-wrap .home-link {
         color: var(--text-secondary) !important;
@@ -1101,46 +1421,53 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         border-color: var(--text-secondary);
     }
 
-    /* Mobile FAB Home: cerchietto trascinabile */
-    body:not(.homepage) .mobile-home-fab {
+    /* Mobile FAB Home: default sotto 768px (non se l’utente ha già fissato posizione/misure inline). */
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
         display: block !important;
         position: fixed;
         width: 58px;
         height: 58px;
         right: 22px;
         bottom: calc(96px + env(safe-area-inset-bottom));
-        z-index: 260;
+        z-index: 1100;
         touch-action: none;
+        -webkit-touch-callout: none;
     }
-    body:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
+    /* Mobile: Back to Home sopra cookie-banner (1000); con menu header aperto resta sotto overlay (theme.css) */
+    body:not(.homepage):not(.nav-open) .mobile-home-fab {
+        z-index: 1100 !important;
+    }
+    body:not(.homepage):not(.nav-open) .mobile-home-fab.is-dragging {
+        z-index: 1200 !important;
+    }
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) .mobile-home-fab-link {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 58px;
         height: 58px;
         border-radius: 50%;
-        background: #003f7f;
-        color: white;
+        background: #d6e5f5;
+        color: #002d5c;
         box-shadow: none;
         border: 2px solid #dc2626;
         text-decoration: none;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: box-shadow 0.2s;
     }
-    body:not(.homepage) .mobile-home-fab:not(.is-dragging) .mobile-home-fab-link:active {
-        transform: scale(0.96);
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned):not(.is-dragging) .mobile-home-fab-link:active {
+        transform: none;
     }
-    body:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) .mobile-home-fab-link svg {
         width: 28px;
         height: 28px;
-        fill: currentColor;
+        fill: #002d5c;
     }
-    body:not(.homepage) .mobile-home-fab.is-dragging .mobile-home-fab-link {
-        box-shadow: none;
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) .mobile-home-fab-link:not(.mobile-home-fab-link--drose) svg path {
+        stroke: rgba(0, 45, 92, 0.22);
+        stroke-width: 1.1px;
+        paint-order: stroke fill;
     }
-    body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link {
-        background: #d6e5f5;
-        color: #002d5c;
-        border: 2px solid #dc2626;
+    body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned).is-dragging .mobile-home-fab-link {
         box-shadow: none;
     }
 
@@ -1170,6 +1497,21 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
     body.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
     }
+    /* Help mobile light: #003f7f su titoli e corpo; descrizione resta grigia */
+    body.help-page:not(.dark-mode) .site-main .container h1,
+    body.help-page:not(.dark-mode) .site-main .container .help-section,
+    body.help-page:not(.dark-mode) .site-main .container .help-section h2,
+    body.help-page:not(.dark-mode) .site-main .container .help-section p,
+    body.help-page:not(.dark-mode) .site-main .container .help-section ul,
+    body.help-page:not(.dark-mode) .site-main .container .help-section li,
+    body.help-page:not(.dark-mode) .site-main .container .help-section strong,
+    body.help-page:not(.dark-mode) .site-main .container .help-section pre,
+    body.help-page:not(.dark-mode) .site-main .container .help-section code {
+        color: #003f7f !important;
+    }
+    body.help-page:not(.dark-mode) .site-main .container .tool-desc {
+        color: #666 !important;
+    }
 
     /* CV Generator mobile: larghezza reale 338px (override finale) */
     body.cv-generator .site-main .container {
@@ -1197,29 +1539,25 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
 /* Small mobile */
 @media (max-width: 380px) {
     .header-inner {
-        padding: 12px 14px;
+        padding: 0 12px;
     }
     .header-nav {
-        top: 66px;
+        top: var(--site-header-height);
     }
     .header-logo-icon {
-        width: 44px;
-        height: 44px;
-        animation: logo-slow-rotate 22s linear infinite;
-        transform-origin: center;
+        width: 42px;
+        height: 42px;
     }
     .header-logo-text {
-        font-size: 1.5rem;
-    }
-    .header-logo-text {
-        max-width: 34vw;
+        font-size: 1.35rem;
     }
     .header-link {
         padding: 10px 12px;
         font-size: 1.02rem;
     }
-    .header-nav .header-link {
-        font-size: 17px !important;
+    .header-nav .header-link,
+    .header-nav .header-auth-wrap .header-link {
+        font-size: 18px !important;
     }
     .header-actions .theme-toggle {
         padding: 10px 12px;
@@ -1230,11 +1568,37 @@ body.dark-mode:not(.homepage) .mobile-home-fab .mobile-home-fab-link svg {
         font-size: 0.85em;
     }
     .site-main {
-        padding-top: calc(12px + 66px);
+        padding-top: calc(12px + var(--site-header-height));
         padding-bottom: 28px;
     }
     body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.homepage .site-main .container { flex: 1; margin: 8px 6px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 12px auto 28px !important; min-height: 0; }
+}
+
+/* Mobile: tap-active come CV Generator (gestito da mobile-tap.js, solo touch) */
+@media (max-width: 768px) {
+    body .site-main .tap-active {
+        transform: scale(0.96) !important;
+    }
+}
+
+/* 481px–768px: stesso “press” al tap dei bottoni main (il blocco ≤480px sopra non copre questa fascia) */
+@media (min-width: 481px) and (max-width: 768px) {
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.analysis-opts-trigger):not(.split-preset-btn):active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:active,
+    body:not(.homepage):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:active {
+        transform: scale(0.96) !important;
+    }
+    body:not(.homepage):not(.image-editor):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container #btn-copy:active,
+    body:not(.homepage):not(.image-editor):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container #btn-copy.copied:active,
+    body:not(.homepage):not(.image-editor):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container .btn-copy:active,
+    body:not(.homepage):not(.image-editor):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container .btn-copy.copied:active {
+        transform: scale(0.96) !important;
+    }
+    body.help-page .site-main .container .home-link-wrap .home-link:active {
+        transform: scale(0.96);
+    }
 }

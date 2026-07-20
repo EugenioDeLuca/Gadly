@@ -5,14 +5,19 @@
 {% block title %}{% trans "Translator Tool" %}{% endblock %}
 {% block body_class %}translator{% endblock %}
 
+{% block extrahead %}
+<meta name="description" content="{% trans 'Translate text between many languages—pick source and target or use automatic detection. Handy for emails, articles, and multilingual drafts.' %}">
+{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/translator.css' %}?v=24">
+<link rel="stylesheet" href="{% static 'tools/css/translator.css' %}?v=34">
 {% endblock %}
 
 {% block content %}
 <div class="container translator-page">
 
     <h1>{% trans "Translator" %}</h1>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Traduci tra molte lingue: scegli partenza e arrivo oppure lascia rilevare la lingua. Incolla il testo e ottieni il risultato in pochi secondi.{% else %}Translate between many languages—pick source and target or use auto-detection. Paste your text and get a result in seconds.{% endif %}</p>
 
     <textarea id="input-text" placeholder='{% trans "Enter text to translate" %}'></textarea>
     <div id="translator-result" class="result-area translator-result-area hidden" aria-live="polite"></div>

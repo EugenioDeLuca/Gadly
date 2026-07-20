@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var t = (typeof gettext === "function") ? gettext : function(s) { return s; };
     function localizeTagName(name) {
         var n = (name || "").toLowerCase();
         var map = {
-            "title": t("Title"),
-            "description": t("Description"),
-            "keywords": t("Keywords"),
-            "author": t("Author")
+            "title": gettext("Title"),
+            "description": gettext("Description"),
+            "keywords": gettext("Keywords"),
+            "author": gettext("Author")
         };
         return map[n] || name;
     }
@@ -14,17 +13,16 @@ document.addEventListener("DOMContentLoaded", function() {
     var urlInput = document.getElementById("url-input");
     var btnCheck = document.getElementById("btn-check");
     var resultArea = document.getElementById("result-area");
+    var resultUi = window.gadlyWebSeoResultArea;
 
     btnCheck.addEventListener("click", function() {
         var url = urlInput.value.trim();
-        resultArea.classList.remove("hidden");
+        resultUi.reveal(resultArea);
         if (!url) {
-            resultArea.classList.add("error");
-            resultArea.textContent = t("Please enter a URL");
+            resultUi.showEmptyValidation(resultArea, gettext("Please enter a URL"));
             return;
         }
-        resultArea.classList.remove("error");
-        resultArea.innerHTML = t("Loading...");
+        resultUi.showLoading(resultArea);
         fetch("/api/meta-tag-check/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -33,20 +31,17 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (data.error) {
-                resultArea.classList.add("error");
-                resultArea.textContent = data.error;
+                resultUi.showError(resultArea, data.error);
                 return;
             }
-            resultArea.classList.remove("error");
             var html = "";
-            data.meta_tags.forEach(function(t) {
-                html += '<div class="meta-tag-item"><div class="meta-tag-name">' + localizeTagName(t.name) + '</div><div class="meta-tag-value">' + (t.content || "").replace(/</g, "&lt;") + '</div></div>';
+            data.meta_tags.forEach(function(tag) {
+                html += '<div class="meta-tag-item"><div class="meta-tag-name">' + localizeTagName(tag.name) + '</div><div class="meta-tag-value">' + (tag.content || "").replace(/</g, "&lt;") + '</div></div>';
             });
-            resultArea.innerHTML = html || ("<em>" + t("No meta tags found.") + "</em>");
+            resultUi.showResult(resultArea, html || ("<em>" + gettext("No meta tags found.") + "</em>"));
         })
         .catch(function() {
-            resultArea.classList.add("error");
-            resultArea.textContent = t("Request failed");
+            resultUi.showError(resultArea, gettext("Request failed"));
         });
     });
 });

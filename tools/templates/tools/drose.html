@@ -1,0 +1,183 @@
+{% extends "tools/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "Drose Drone Services" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-home{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Drose Drone Services: professional aerial imaging in preparation. Share your project or register interest through Gadly.' %}">
+<style>
+    /* Evita flash lente al refresh; le animazioni partono solo con is-lens-focused */
+    .drose-hero__logo:not(.is-lens-focused) .drose-lens-rest .drose-lens-focus-ring,
+    .drose-hero__logo:not(.is-lens-focused) .drose-lens-focused .drose-lens-focus-ring {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    .drose-hero__logo:not(.is-lens-focused) .drose-lens-focused {
+        opacity: 0;
+        animation: none !important;
+        transform: none !important;
+    }
+
+    /* Desktop: foto servizi già presenti al primo paint (data-URI inline) */
+    @media (min-width: 769px) {
+        body.drose-home .drose-card-grid > .drose-card--service {
+            padding: 0 !important;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        body.drose-home .drose-card--service .drose-card__media {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            z-index: 0;
+            border: 0;
+        }
+        body.drose-home .drose-card--service .drose-card__label {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 12px;
+            top: auto;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 0 14px;
+            background: none;
+            pointer-events: none;
+            transform: none;
+        }
+        body.drose-home .drose-card--service .drose-card__title,
+        body.drose-home .drose-card--service .drose-card__desc {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+            color: #ffffff;
+            text-align: center;
+            text-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.95),
+                0 0 12px rgba(0, 0, 0, 0.65);
+        }
+        body.drose-home .drose-card--service .drose-card__title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+        }
+        body.drose-home .drose-card--service .drose-card__desc {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+</style>
+{% endblock %}
+{% block extra_css %}
+{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-hero">
+            <div class="drose-hero__logo">
+                {% include "tools/includes/drose_logo_hero.svg" %}
+                <span class="drose-hero__logo-hit" aria-hidden="true"></span>
+            </div>
+            <h1 class="drose-hero__title">Drone Services</h1>
+            <p class="drose-hero__tagline">{% trans "Professional aerial photography, inspections, mapping, and event coverage for businesses, professionals, and private clients." %}</p>
+            <div class="drose-hero__actions">
+                <a href="{% url 'drose_works' %}" class="drose-btn drose-btn--primary drose-btn--fireworks drose-works-cta--desktop">
+                    <span class="drose-fw" aria-hidden="true">
+                        <span class="drose-fw__burst drose-fw__burst--1"></span>
+                        <span class="drose-fw__burst drose-fw__burst--2"></span>
+                        <span class="drose-fw__burst drose-fw__burst--3"></span>
+                        <span class="drose-fw__burst drose-fw__burst--4"></span>
+                    </span>
+                    <span class="drose-fw__label">{% trans "Our works" %}</span>
+                </a>
+                <a href="{% url 'drose_works' %}?choose=1" class="drose-btn drose-btn--primary drose-works-cta--mobile">
+                    <span class="drose-fw__label">{% trans "Our works" %}</span>
+                </a>
+            </div>
+        </header>
+
+        <section class="drose-section" aria-labelledby="drose-services-title">
+            <h2 id="drose-services-title">{% trans "Planned services" %}</h2>
+            <p class="drose-section__lead">{% trans "Technical flights are not available yet. The areas below show the services we are organizing first, so we can prioritize real requests and launch with the right setup." %}</p>
+            <div class="drose-card-grid">
+                <article class="drose-card drose-card--service">
+                    {% if drose_service_photos.aerial %}<img class="drose-card__media" src="{{ drose_service_photos.aerial }}" alt="" width="800" height="520" decoding="sync" fetchpriority="high">{% endif %}
+                    <div class="drose-card__label">
+                        <h3 class="drose-card__title">
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                            <span class="drose-card__title-text">{% trans "Aerial photography" %}</span>
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+                    <p class="drose-card__desc">{% trans "High-resolution aerial photo and video for marketing, real estate, hospitality, and visual storytelling - planned deliverables for when operations go live." %}</p>
+                </article>
+                <article class="drose-card drose-card--service">
+                    {% if drose_service_photos.inspection %}<img class="drose-card__media" src="{{ drose_service_photos.inspection }}" alt="" width="800" height="520" decoding="sync" fetchpriority="high">{% endif %}
+                    <div class="drose-card__label">
+                        <h3 class="drose-card__title">
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                            <span class="drose-card__title-text">{% trans "Inspections" %}</span>
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+                    <p class="drose-card__desc">{% trans "Roof, facade, structure, and site visuals from the air for insurers, contractors, and internal teams - planned as a safer alternative to ladders and on-site disruption." %}</p>
+                </article>
+                <article class="drose-card drose-card--service">
+                    {% if drose_service_photos.mapping %}<img class="drose-card__media drose-card__media--map" src="{{ drose_service_photos.mapping }}" alt="" width="800" height="520" decoding="sync" fetchpriority="high">{% endif %}
+                    <div class="drose-card__label">
+                        <h3 class="drose-card__title">
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                            <span class="drose-card__title-text">{% trans "Mapping and surveys" %}</span>
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+                    <p class="drose-card__desc">{% trans "Overview maps, orthophotos, and aerial surveys for planning, progress tracking, and documentation - planned for clients, stakeholders, and field teams on every project." %}</p>
+                    <p class="drose-card__unavailable">{% trans "Service not yet available" %}</p>
+                </article>
+                <article class="drose-card drose-card--service">
+                    {% if drose_service_photos.events %}<img class="drose-card__media" src="{{ drose_service_photos.events }}" alt="" width="800" height="520" decoding="sync" fetchpriority="high">{% endif %}
+                    <div class="drose-card__label">
+                        <h3 class="drose-card__title">
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                            <span class="drose-card__title-text">{% trans "Events" %}</span>
+                            <span class="drose-card__title-ornament" aria-hidden="true"></span>
+                        </h3>
+                    </div>
+                    <p class="drose-card__desc">{% trans "Drone coverage for concerts, sports, ceremonies, and outdoor celebrations - planned highlight clips and wide establishing shots for social and recap videos." %}</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="drose-section drose-why" aria-labelledby="drose-why-title">
+            <h2 id="drose-why-title">{% trans "Why Drose" %}</h2>
+            <ul class="drose-benefits">
+                <li>{% trans "Certified operator and compliant flight planning" %}</li>
+                <li>{% trans "Practical deliverables planned for marketing, reports, and archives" %}</li>
+                <li>{% trans "Flexible packages for companies, freelancers, and private clients" %}</li>
+                <li>{% trans "Direct local contact and support from Drose" %}</li>
+            </ul>
+        </section>
+
+        <section class="drose-section drose-cta" aria-labelledby="drose-cta-title">
+            <h2 id="drose-cta-title">{% trans "Request a quote" %}</h2>
+            <p>{% trans "We moved the quote request to a dedicated page so you can share detailed project info, deliverables, and budget range in one place." %}</p>
+            <a href="{% url 'drose_quote_request' %}" class="drose-btn drose-btn--primary">{% trans "Open detailed quote form" %}</a>
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'home' %}" class="drose-landing__back-link">{% trans "Explore free tools on Gadly" %}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Finance Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly finance calculators: percentages, VAT, net salary, interest, currency, loans, discounts, margins, and bill split.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -23,7 +26,7 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Finance Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to finance calculators." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scopri tutti i calcolatori finanziari per percentuali, IVA, stipendio netto, interessi, valuta, prestiti, sconti e margini, ideali per analisi economiche veloci e precise.{% else %}Explore all finance calculators for percentages, VAT, net salary, interest, currency conversion, loans, discounts, and margins for quick and accurate financial analysis.{% endif %}</p>
   <div class="text-tools-page-grid">
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_vat' %}">{% trans "VAT" %}</a></div>

@@ -1,23 +1,37 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Email verified - Gadly" %}{% endblock %}
+{% block title %}{% if is_drose_site %}{% if email_change_confirmed %}{% trans "New email confirmed - Drose" %}{% else %}{% trans "Email verified - Drose" %}{% endif %}{% else %}{% if email_change_confirmed %}{% trans "New email confirmed - Gadly" %}{% else %}{% trans "Email verified - Gadly" %}{% endif %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=23">
 {% endblock %}
 {% block content %}
 <div class="static-container login-container">
-    <h1>{% trans "Email verified" %}</h1>
+    <h1>{% if email_change_confirmed %}{% trans "New email confirmed" %}{% else %}{% trans "Email verified" %}{% endif %}</h1>
 
-    <p class="verify-done-success" style="margin: 24px 0 10px;">
-        <span class="verify-done-check" aria-hidden="true">✓</span>
-        <span>{% trans "Your email has been verified. You can now reset your password anytime from the login page if you forget it." %}</span>
+    <div class="verify-done-check-wrap" aria-hidden="true">
+        <span class="verify-done-check">✓</span>
+    </div>
+    <p class="verify-done-message">
+        {% if email_change_confirmed %}
+        {% if confirmed_email %}
+        {% blocktrans with email=confirmed_email %}Your new email address {{ email }} is now active on your account. Sign in with your username or email and your password.{% endblocktrans %}
+        {% else %}
+        {% trans "Your new email address is now active on your account. Sign in with your username or email and your password." %}
+        {% endif %}
+        {% else %}
+        {% trans "Your email has been verified. You can now reset your password anytime from the login page if you forget it." %}
+        {% endif %}
     </p>
 
     <p class="login-hint" style="margin: 0 0 18px;">
+        {% if email_change_confirmed %}
+        <a href="{{ login_url }}">{% trans "Sign in to your account" %}</a>
+        {% else %}
         <a href="{% url 'login' %}">{% trans "Sign in to your account" %}</a>
+        {% endif %}
     </p>
 
     <div class="static-footer">

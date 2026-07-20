@@ -3,9 +3,34 @@
 {% load i18n %}
 
 {% block title %}{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida Lettera di presentazione{% else %}Cover Letter Help{% endif %}{% endblock %}
-{% block body_class %}text-tool help-page help-cover-letter{% endblock %}
+{% block body_class %}text-tool cover-letter-generator help-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Tips for generating a clear, tailored cover letter with Gadly.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
+<style>
+@media (max-width: 480px) {
+    body.cover-letter-generator.help-page .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin: 8px auto 24px auto !important;
+        padding: 16px 0 24px 0 !important;
+    }
+    body.cover-letter-generator.help-page .site-main .container h1,
+    body.cover-letter-generator.help-page .site-main .container .tool-desc,
+    body.cover-letter-generator.help-page .site-main .container .help-section,
+    body.cover-letter-generator.help-page .site-main .container .help-section h2,
+    body.cover-letter-generator.help-page .site-main .container .help-section p,
+    body.cover-letter-generator.help-page .site-main .container .help-section ul,
+    body.cover-letter-generator.help-page .site-main .container .help-section li,
+    body.cover-letter-generator.help-page .site-main .container .home-link-wrap {
+        text-align: left !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -22,9 +47,7 @@
         </ul>
     </div>
 
-    <div class="home-link-wrap">
-        <a href="{% url 'cover_letter_generator' %}" class="home-link">{% if LANGUAGE_CODE|slice:":2" == "it" %}Torna a "Lettera di presentazione"{% else %}Back to "Cover Letter Generator"{% endif %}</a>
-    </div>
+    {% include "tools/includes/help_career_back_link.html" with tool_url="cover_letter_generator" tool_it="Lettera di presentazione" tool_en="Cover Letter Generator" %}
 </div>
 {% endblock %}
 

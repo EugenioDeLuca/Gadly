@@ -3,78 +3,78 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gadly\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-19 10:15+0000\n"
+"POT-Creation-Date: 2026-06-13 13:25+0200\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tools/static/tools/js/application_email_generator.js:25
+#: .\tools\static\tools\js\application_email_generator.js:60
 msgid "Please fill in name, role, and company."
 msgstr "Compila nome, ruolo e azienda."
 
-#: tools/static/tools/js/application_email_generator.js:31
-msgid ""
-"Relevant experience, strong communication, and motivation for the role."
+#: .\tools\static\tools\js\application_email_generator.js:64
+msgid "Relevant experience, strong communication, and motivation for the role."
 msgstr ""
 "Esperienza pertinente, comunicazione efficace e motivazione per il ruolo."
 
-#: tools/static/tools/js/application_email_generator.js:33
+#: .\tools\static\tools\js\application_email_generator.js:73
 msgid "Application for %(role)s - %(name)s"
 msgstr "Candidatura per %(role)s - %(name)s"
 
-#: tools/static/tools/js/application_email_generator.js:38
-msgid "Subject"
-msgstr "Oggetto"
-
-#: tools/static/tools/js/application_email_generator.js:40
-msgid "Dear Hiring Team"
-msgstr "Gentile team HR"
-
-#: tools/static/tools/js/application_email_generator.js:42
-msgid "I am applying for the %(role)s role at %(company)s."
-msgstr "Mi candido per il ruolo di %(role)s presso %(company)s."
-
-#: tools/static/tools/js/application_email_generator.js:45
-msgid "I believe my profile is a strong fit. Key points: %(points)s"
-msgstr "Ritengo che il mio profilo sia adatto. Punti chiave: %(points)s"
-
-#: tools/static/tools/js/application_email_generator.js:47
-msgid "I have attached my CV and would be glad to discuss my application."
-msgstr "Ho allegato il mio CV e sarei lieto di discutere la mia candidatura."
-
-#: tools/static/tools/js/application_email_generator.js:49
-msgid "Kind regards"
-msgstr "Cordiali saluti"
-
+#: .\tools\static\tools\js\application_email_generator.js:74
 msgid "Application: %(role)s position — %(name)s"
 msgstr "Candidatura: posizione %(role)s — %(name)s"
 
+#: .\tools\static\tools\js\application_email_generator.js:75
 msgid "%(name)s — application for %(role)s"
 msgstr "%(name)s — candidatura per %(role)s"
 
+#: .\tools\static\tools\js\application_email_generator.js:82
+msgid "Dear Hiring Team"
+msgstr "Gentile team HR"
+
+#: .\tools\static\tools\js\application_email_generator.js:83
 msgid "Dear Recruiting Team"
 msgstr "Gentile team di selezione"
 
+#: .\tools\static\tools\js\application_email_generator.js:84
 msgid "Hello"
 msgstr "Salve"
 
+#: .\tools\static\tools\js\application_email_generator.js:88
+msgid "I am applying for the %(role)s role at %(company)s."
+msgstr "Mi candido per il ruolo di %(role)s presso %(company)s."
+
+#: .\tools\static\tools\js\application_email_generator.js:91
 msgid "I am writing to apply for the %(role)s position at %(company)s."
 msgstr "Scrivo per candidarmi alla posizione di %(role)s presso %(company)s."
 
+#: .\tools\static\tools\js\application_email_generator.js:94
 msgid ""
 "I would like to express my interest in the %(role)s role at %(company)s."
 msgstr ""
-"Vorrei esprimere il mio interesse per il ruolo di %(role)s presso "
-"%(company)s."
+"Vorrei esprimere il mio interesse per il ruolo di %(role)s presso %"
+"(company)s."
 
+#: .\tools\static\tools\js\application_email_generator.js:100
+msgid "I believe my profile is a strong fit. Key points: %(points)s"
+msgstr "Ritengo che il mio profilo sia adatto. Punti chiave: %(points)s"
+
+#: .\tools\static\tools\js\application_email_generator.js:101
 msgid "Here is a brief summary of how I match the role: %(points)s"
 msgstr "Ecco un breve riepilogo di come rispondo al ruolo: %(points)s"
 
+#: .\tools\static\tools\js\application_email_generator.js:102
 msgid "My strengths for this position include: %(points)s"
 msgstr "I miei punti di forza per questa posizione includono: %(points)s"
 
+#: .\tools\static\tools\js\application_email_generator.js:106
+msgid "I have attached my CV and would be glad to discuss my application."
+msgstr "Ho allegato il mio CV e sarei lieto di discutere la mia candidatura."
+
+#: .\tools\static\tools\js\application_email_generator.js:107
 msgid ""
 "Please find my CV attached; I would welcome the opportunity to discuss my "
 "application."
@@ -82,591 +82,946 @@ msgstr ""
 "In allegato il mio CV; accoglierei volentieri l’occasione di discutere la "
 "mia candidatura."
 
+#: .\tools\static\tools\js\application_email_generator.js:108
 msgid ""
 "My CV is attached for your review. I would be happy to discuss how I can "
 "contribute."
 msgstr ""
-"Il mio CV è in allegato per la sua valutazione. Sarò lieto di discutere come"
-" posso contribuire."
+"Il mio CV è in allegato per la sua valutazione. Sarò lieto di discutere come "
+"posso contribuire."
 
+#: .\tools\static\tools\js\application_email_generator.js:112
+msgid "Kind regards"
+msgstr "Cordiali saluti"
+
+#: .\tools\static\tools\js\application_email_generator.js:113
 msgid "Best regards"
 msgstr "Cordiali saluti"
 
+#: .\tools\static\tools\js\application_email_generator.js:114
 msgid "Sincerely"
 msgstr "Cordialmente"
 
-#: tools/static/tools/js/application_email_generator.js:60
-#: tools/static/tools/js/base64_encoder.js:75
-#: tools/static/tools/js/base64_encoder.js:86
-#: tools/static/tools/js/diff_checker.js:95
-#: tools/static/tools/js/hash_generator.js:128
-#: tools/static/tools/js/hash_generator.js:139
-#: tools/static/tools/js/hashtag_generator.js:53
-#: tools/static/tools/js/interview_simulator.js:87
-#: tools/static/tools/js/json_formatter.js:85
-#: tools/static/tools/js/json_formatter.js:96
-#: tools/static/tools/js/lorem_ipsum.js:81
-#: tools/static/tools/js/lorem_ipsum.js:92
-#: tools/static/tools/js/password.js:75
-#: tools/static/tools/js/qr-decoder.js:102
-#: tools/static/tools/js/qr-decoder.js:124
-#: tools/static/tools/js/remove_spaces.js:48
-#: tools/static/tools/js/robots_txt_generator.js:51
-#: tools/static/tools/js/robots_txt_generator.js:65
-#: tools/static/tools/js/uuid_generator.js:44
-#: tools/static/tools/js/uuid_generator.js:55
+#: .\tools\static\tools\js\application_email_generator.js:118
+msgid "Subject"
+msgstr "Oggetto"
+
+#: .\tools\static\tools\js\application_email_generator.js:139
+#: .\tools\static\tools\js\base64_encoder.js:74
+#: .\tools\static\tools\js\base64_encoder.js:85
+#: .\tools\static\tools\js\case_converter.js:13
+#: .\tools\static\tools\js\color_converter.js:215
+#: .\tools\static\tools\js\data-viz.js:794
+#: .\tools\static\tools\js\diff_checker.js:95
+#: .\tools\static\tools\js\hash_generator.js:128
+#: .\tools\static\tools\js\hash_generator.js:139
+#: .\tools\static\tools\js\hashtag_generator.js:96
+#: .\tools\static\tools\js\json_formatter.js:139
+#: .\tools\static\tools\js\json_formatter.js:150
+#: .\tools\static\tools\js\lorem_ipsum.js:98
+#: .\tools\static\tools\js\password.js:168
+#: .\tools\static\tools\js\qr-decoder.js:133
+#: .\tools\static\tools\js\qr-decoder.js:154
+#: .\tools\static\tools\js\remove_spaces.js:99
+#: .\tools\static\tools\js\robots_txt_generator.js:312
+#: .\tools\static\tools\js\uuid_generator.js:44
+#: .\tools\static\tools\js\uuid_generator.js:55
 msgid "Copied!"
 msgstr "Copiato!"
 
-#: tools/static/tools/js/application_email_generator.js:63
-#: tools/static/tools/js/base64_encoder.js:77
-#: tools/static/tools/js/base64_encoder.js:88
-#: tools/static/tools/js/diff_checker.js:99
-#: tools/static/tools/js/hash_generator.js:130
-#: tools/static/tools/js/hash_generator.js:141
-#: tools/static/tools/js/hashtag_generator.js:55
-#: tools/static/tools/js/interview_simulator.js:90
-#: tools/static/tools/js/json_formatter.js:87
-#: tools/static/tools/js/json_formatter.js:98
-#: tools/static/tools/js/lorem_ipsum.js:83
-#: tools/static/tools/js/lorem_ipsum.js:94
-#: tools/static/tools/js/password.js:78
-#: tools/static/tools/js/qr-decoder.js:105
-#: tools/static/tools/js/qr-decoder.js:127
-#: tools/static/tools/js/remove_spaces.js:51
-#: tools/static/tools/js/robots_txt_generator.js:54
-#: tools/static/tools/js/robots_txt_generator.js:68
-#: tools/static/tools/js/uuid_generator.js:46
-#: tools/static/tools/js/uuid_generator.js:57
+#: .\tools\static\tools\js\application_email_generator.js:142
+#: .\tools\static\tools\js\base64_encoder.js:76
+#: .\tools\static\tools\js\base64_encoder.js:87
+#: .\tools\static\tools\js\case_converter.js:13
+#: .\tools\static\tools\js\diff_checker.js:98
+#: .\tools\static\tools\js\hash_generator.js:130
+#: .\tools\static\tools\js\hash_generator.js:141
+#: .\tools\static\tools\js\hashtag_generator.js:98
+#: .\tools\static\tools\js\json_formatter.js:141
+#: .\tools\static\tools\js\json_formatter.js:152
+#: .\tools\static\tools\js\lorem_ipsum.js:101
+#: .\tools\static\tools\js\password.js:171
+#: .\tools\static\tools\js\qr-decoder.js:136
+#: .\tools\static\tools\js\qr-decoder.js:157
+#: .\tools\static\tools\js\remove_spaces.js:108
+#: .\tools\static\tools\js\robots_txt_generator.js:90
+#: .\tools\static\tools\js\robots_txt_generator.js:316
+#: .\tools\static\tools\js\uuid_generator.js:46
+#: .\tools\static\tools\js\uuid_generator.js:57
 msgid "Copy"
 msgstr "Copia"
 
-#: tools/static/tools/js/calculator.js:38
-#: tools/static/tools/js/calculator.js:316
-#: tools/static/tools/js/calculator.js:441
-#: tools/static/tools/js/calculator.js:481
-#: tools/static/tools/js/calculator.js:550
+#: .\tools\static\tools\js\base64_encoder.js:41
+msgid "Enter text to encode"
+msgstr "Inserisci il testo da codificare"
+
+#: .\tools\static\tools\js\base64_encoder.js:46
+msgid "Encoding failed"
+msgstr "Codifica non riuscita"
+
+#: .\tools\static\tools\js\base64_encoder.js:55
+msgid "Enter Base64 string to decode"
+msgstr "Inserisci la stringa Base64 da decodificare"
+
+#: .\tools\static\tools\js\base64_encoder.js:60
+msgid "Invalid Base64 or decoding failed"
+msgstr "Base64 non valido o decodifica non riuscita"
+
+#: .\tools\static\tools\js\bio_generator.js:302
+msgid "Suggested bios"
+msgstr "Bio suggerite"
+
+#: .\tools\static\tools\js\bio_generator.js:303
+#: .\tools\static\tools\js\caption_generator.js:341
+#: .\tools\static\tools\js\username_generator.js:173
+msgid "Select all"
+msgstr "Seleziona tutto"
+
+#: .\tools\static\tools\js\bio_generator.js:304
+#: .\tools\static\tools\js\caption_generator.js:342
+#: .\tools\static\tools\js\username_generator.js:174
+msgid "Deselect all"
+msgstr "Deseleziona tutto"
+
+#: .\tools\static\tools\js\bio_generator.js:305
+msgid "The Copy button copies only the bios you have selected."
+msgstr "Il tasto Copia copia solo le bio selezionate."
+
+#: .\tools\static\tools\js\bio_generator.js:353
+msgid "Select at least one bio to copy."
+msgstr "Seleziona almeno una bio da copiare."
+
+#: .\tools\static\tools\js\calculator.js:40
+#: .\tools\static\tools\js\calculator.js:415
+#: .\tools\static\tools\js\calculator.js:538
+#: .\tools\static\tools\js\calculator.js:578
+#: .\tools\static\tools\js\calculator.js:649
 msgid "Please enter valid values."
 msgstr "Inserisci valori validi."
 
-#: tools/static/tools/js/calculator.js:42
+#: .\tools\static\tools\js\calculator.js:44
 msgid "Result:"
 msgstr "Risultato:"
 
-#: tools/static/tools/js/calculator.js:42
+#: .\tools\static\tools\js\calculator.js:44
 msgid "of"
 msgstr "di"
 
-#: tools/static/tools/js/calculator.js:42
+#: .\tools\static\tools\js\calculator.js:44
 msgid "is"
-msgstr "e"
+msgstr "è"
 
-#: tools/static/tools/js/calculator.js:99
+#: .\tools\static\tools\js\calculator.js:136
 msgid "(standard)"
 msgstr "(ordinaria)"
 
-#: tools/static/tools/js/calculator.js:100
+#: .\tools\static\tools\js\calculator.js:140
 msgid "(reduced)"
 msgstr "(ridotta)"
 
-#: tools/static/tools/js/calculator.js:141
-#: tools/static/tools/js/calculator.js:178
+#: .\tools\static\tools\js\calculator.js:224
+#: .\tools\static\tools\js\calculator.js:261
 msgid "Italy (IT)"
 msgstr "Italia (IT)"
 
-#: tools/static/tools/js/calculator.js:218
-#: tools/static/tools/js/calculator.js:237
-#: tools/static/tools/js/calculator.js:364
+#: .\tools\static\tools\js\calculator.js:301
+#: .\tools\static\tools\js\calculator.js:320
+#: .\tools\static\tools\js\calculator.js:461
 msgid "Please enter a valid amount."
 msgstr "Inserisci un importo valido."
 
-#: tools/static/tools/js/calculator.js:225
-#: tools/static/tools/js/calculator.js:246
+#: .\tools\static\tools\js\calculator.js:308
+#: .\tools\static\tools\js\calculator.js:329
 msgid "Net amount:"
 msgstr "Importo netto:"
 
-#: tools/static/tools/js/calculator.js:226
-#: tools/static/tools/js/calculator.js:245
+#: .\tools\static\tools\js\calculator.js:309
+#: .\tools\static\tools\js\calculator.js:328
 msgid "VAT"
 msgstr "IVA"
 
-#: tools/static/tools/js/calculator.js:227
-#: tools/static/tools/js/calculator.js:244
+#: .\tools\static\tools\js\calculator.js:310
+#: .\tools\static\tools\js\calculator.js:327
 msgid "Gross amount:"
 msgstr "Importo lordo:"
 
-#: tools/static/tools/js/calculator.js:291
+#: .\tools\static\tools\js\calculator.js:374
 msgid "Please enter a valid gross salary."
 msgstr "Inserisci una retribuzione lorda valida."
 
-#: tools/static/tools/js/calculator.js:296
+#: .\tools\static\tools\js\calculator.js:379
 msgid "Gross annual:"
 msgstr "Lordo annuo:"
 
-#: tools/static/tools/js/calculator.js:297
+#: .\tools\static\tools\js\calculator.js:380
 msgid "Social security (approx.):"
 msgstr "Contributi sociali (approssimativi):"
 
-#: tools/static/tools/js/calculator.js:298
+#: .\tools\static\tools\js\calculator.js:381
 msgid "Income tax (estimate):"
 msgstr "IRPEF (stima):"
 
-#: tools/static/tools/js/calculator.js:299
+#: .\tools\static\tools\js\calculator.js:382
 msgid "Net annual:"
 msgstr "Netto annuo:"
 
-#: tools/static/tools/js/calculator.js:300
+#: .\tools\static\tools\js\calculator.js:383
 msgid "Net monthly (%(months)s payments):"
 msgstr "Netto mensile (%(months)s rate):"
 
-#: tools/static/tools/js/calculator.js:301
+#: .\tools\static\tools\js\calculator.js:384
 msgid ""
 "Indicative estimate for Italy. Does not include deductions, regional or "
 "municipal taxes, or other charges."
 msgstr ""
-"Stima indicativa per l’Italia. Non include detrazioni, addizionali regionali"
-" o comunali né altri oneri."
+"Stima indicativa per l’Italia. Non include detrazioni, addizionali regionali "
+"o comunali né altri oneri."
 
-#: tools/static/tools/js/calculator.js:329
+#: .\tools\static\tools\js\calculator.js:426
 msgid "Principal:"
 msgstr "Capitale:"
 
-#: tools/static/tools/js/calculator.js:330
+#: .\tools\static\tools\js\calculator.js:427
 msgid "Interest:"
 msgstr "Interessi:"
 
-#: tools/static/tools/js/calculator.js:331
-#: tools/static/tools/js/calculator.js:554
+#: .\tools\static\tools\js\calculator.js:428
+#: .\tools\static\tools\js\calculator.js:653
 msgid "Total:"
 msgstr "Totale:"
 
-#: tools/static/tools/js/calculator.js:361
+#: .\tools\static\tools\js\calculator.js:458
 msgid "Convert"
 msgstr "Converti"
 
-#: tools/static/tools/js/calculator.js:368
+#: .\tools\static\tools\js\calculator.js:465
 msgid "Select two different currencies."
 msgstr "Seleziona due valute diverse."
 
-#: tools/static/tools/js/calculator.js:373
+#: .\tools\static\tools\js\calculator.js:470
+#: .\tools\static\tools\js\robots_txt_generator.js:396
+#: .\tools\static\tools\js\web_seo_result_area.js:37
 msgid "Loading…"
 msgstr "Caricamento…"
 
-#: tools/static/tools/js/calculator.js:392
+#: .\tools\static\tools\js\calculator.js:489
 msgid "Exchange rate as of %(date)s (ECB)."
 msgstr "Tasso di cambio al %(date)s (BCE)."
 
-#: tools/static/tools/js/calculator.js:410
+#: .\tools\static\tools\js\calculator.js:507
 msgid "Error fetching rates. Check your connection."
 msgstr "Errore nel recupero dei tassi. Controlla la connessione."
 
-#: tools/static/tools/js/calculator.js:451
+#: .\tools\static\tools\js\calculator.js:548
 msgid "Monthly payment:"
 msgstr "Rata mensile:"
 
-#: tools/static/tools/js/calculator.js:452
+#: .\tools\static\tools\js\calculator.js:549
 msgid "Total paid:"
 msgstr "Totale pagato:"
 
-#: tools/static/tools/js/calculator.js:453
+#: .\tools\static\tools\js\calculator.js:550
 msgid "Total interest:"
 msgstr "Interessi totali:"
 
-#: tools/static/tools/js/calculator.js:485
+#: .\tools\static\tools\js\calculator.js:582
+msgid "Discount"
+msgstr "Sconto"
+
+#: .\tools\static\tools\js\calculator.js:583
 msgid "Original price:"
 msgstr "Prezzo originale:"
 
-#: tools/static/tools/js/calculator.js:486
-msgid "Discount (%(pct)s%%):"
-msgstr "Sconto (%(pct)s%%):"
-
-#: tools/static/tools/js/calculator.js:487
+#: .\tools\static\tools\js\calculator.js:585
 msgid "Final price:"
 msgstr "Prezzo finale:"
 
-#: tools/static/tools/js/calculator.js:515
+#: .\tools\static\tools\js\calculator.js:613
 msgid "Please enter valid values. The margin must be below 100%."
 msgstr "Inserisci valori validi. Il margine deve essere inferiore al 100%."
 
-#: tools/static/tools/js/calculator.js:519
+#: .\tools\static\tools\js\calculator.js:618
 msgid "Cost:"
 msgstr "Costo:"
 
-#: tools/static/tools/js/calculator.js:520
-msgid "Margin (%(pct)s%%):"
-msgstr "Margine (%(pct)s%%):"
+#: .\tools\static\tools\js\calculator.js:619
+msgid "Margin"
+msgstr "Margine"
 
-#: tools/static/tools/js/calculator.js:521
+#: .\tools\static\tools\js\calculator.js:620
 msgid "Selling price:"
 msgstr "Prezzo di vendita:"
 
-#: tools/static/tools/js/calculator.js:555
-msgid "With %(tip)s%% tip:"
-msgstr "Con mancia %(tip)s%%:"
+#: .\tools\static\tools\js\calculator.js:654
+msgid "With %(tip)s tip:"
+msgstr "Con mancia del %(tip)s:"
 
-#: tools/static/tools/js/calculator.js:556
+#: .\tools\static\tools\js\calculator.js:655
 msgid "Per person (%(n)s):"
 msgstr "A persona (%(n)s):"
 
-#: tools/static/tools/js/cv_optimizer.js:31
-msgid "Choose file"
-msgstr "Scegli file"
-
-#: tools/static/tools/js/diff_checker.js:51
-msgid "Enter or paste text in both boxes"
-msgstr "Inserisci o incolla il testo in entrambi i riquadri"
-
-#: tools/static/tools/js/diff_checker.js:57
-msgid "Diff library not loaded"
-msgstr "Libreria diff non caricata"
-
-#: tools/static/tools/js/home.js:121
-msgid "You cannot use this feature. Please log in."
-msgstr "Non puoi usare questa funzione. Accedi."
-
-#: tools/static/tools/js/interview_simulator.js:32
-msgid "Mid"
-msgstr "Intermedio"
-
-#: tools/static/tools/js/interview_simulator.js:36
-msgid "Please enter a target role."
-msgstr "Inserisci un ruolo target."
-
-#: tools/static/tools/js/interview_simulator.js:40
-msgid "problem solving, teamwork, and communication"
-msgstr "problem solving, lavoro di squadra e comunicazione"
-
-#: tools/static/tools/js/interview_simulator.js:43
-msgid "Tell me about yourself and why you are interested in this role."
-msgstr "Parlami di te e del motivo per cui ti interessa questo ruolo."
-
-#: tools/static/tools/js/interview_simulator.js:44
-msgid "Describe a challenging project and your contribution."
-msgstr "Descrivi un progetto sfidante e il tuo contributo."
-
-#: tools/static/tools/js/interview_simulator.js:45
-msgid "How do you prioritize tasks when deadlines overlap?"
-msgstr "Come dai priorita alle attivita quando le scadenze si sovrappongono?"
-
-#: tools/static/tools/js/interview_simulator.js:46
-msgid "What would your previous manager say about your strengths?"
-msgstr "Cosa direbbe il tuo precedente manager sui tuoi punti di forza?"
-
-#: tools/static/tools/js/interview_simulator.js:47
-msgid "How would you approach this role in the first 90 days?"
-msgstr "Come affronteresti questo ruolo nei primi 90 giorni?"
-
-#: tools/static/tools/js/interview_simulator.js:48
-msgid "What interests you about our company or this industry?"
-msgstr "Cosa ti interessa della nostra azienda o di questo settore?"
-
-#: tools/static/tools/js/interview_simulator.js:49
-msgid "Describe a conflict or disagreement at work and how you handled it."
-msgstr ""
-"Descrivi un conflitto o un disaccordo sul lavoro e come lo hai gestito."
-
-#: tools/static/tools/js/interview_simulator.js:50
-msgid "How do you keep your skills up to date for this kind of role?"
-msgstr "Come tieni aggiornate le competenze per questo tipo di ruolo?"
-
-#: tools/static/tools/js/interview_simulator.js:53
-msgid ""
-"Keep your answer concise: profile, relevant experience, and motivation."
-msgstr ""
-"Mantieni la risposta concisa: profilo, esperienza rilevante e motivazione."
-
-#: tools/static/tools/js/interview_simulator.js:54
-msgid "Use STAR: Situation, Task, Action, Result with measurable impact."
-msgstr ""
-"Usa STAR: Situazione, Compito, Azione, Risultato con impatto misurabile."
-
-#: tools/static/tools/js/interview_simulator.js:55
-msgid "Explain your prioritization method and communication style."
-msgstr "Spiega il tuo metodo di prioritizzazione e il tuo stile comunicativo."
-
-#: tools/static/tools/js/interview_simulator.js:56
-msgid "Highlight two strengths with concrete examples."
-msgstr "Evidenzia due punti di forza con esempi concreti."
-
-#: tools/static/tools/js/interview_simulator.js:57
-msgid "Show a realistic plan: learn, align, deliver quick wins."
-msgstr ""
-"Mostra un piano realistico: apprendere, allinearsi, ottenere risultati "
-"rapidi."
-
-#: tools/static/tools/js/interview_simulator.js:58
-msgid "Mention something specific you learned about the company or sector."
-msgstr "Cita qualcosa di specifico che hai appreso su azienda o settore."
-
-#: tools/static/tools/js/interview_simulator.js:59
-msgid "Emphasize listening, clarity, and a constructive outcome."
-msgstr "Metti in evidenza ascolto, chiarezza e un esito costruttivo."
-
-#: tools/static/tools/js/interview_simulator.js:60
-msgid "Name learning habits: courses, reading, side projects, or communities."
-msgstr ""
-"Indica abitudini di apprendimento: corsi, letture, progetti personali, "
-"community."
-
-#: tools/static/tools/js/interview_simulator.js:67
-msgid "Interview simulation for %(role)s (%(level)s)"
-msgstr "Simulazione colloquio per %(role)s (%(level)s)"
-
-#: tools/static/tools/js/interview_simulator.js:70
-msgid "Focus areas"
-msgstr "Aree di focus"
-
-#: tools/static/tools/js/interview_simulator.js:76
-msgid "Question"
-msgstr "Domanda"
-
-#: tools/static/tools/js/interview_simulator.js:77
-msgid "Example answer tip"
-msgstr "Suggerimento risposta esempio"
-
-msgid "Recruiter"
-msgstr "Recruiter"
-
-msgid "You"
-msgstr "Tu"
-
-msgid "Suggested improvement"
-msgstr "Suggerimento per migliorare"
-
-msgid "Practice interview for %(role)s (%(level)s). Areas: %(focus)s."
-msgstr "Colloquio di prova per %(role)s (%(level)s). Aree: %(focus)s."
-
-msgid "Practice interview. Areas: %(focus)s."
-msgstr "Colloquio di prova. Aree: %(focus)s."
-
-msgid "That was the last question. Thanks for practicing!"
-msgstr "Era l’ultima domanda. Grazie per aver esercitato!"
-
-msgid "Please write an answer before sending."
-msgstr "Scrivi una risposta prima di inviare."
-
-msgid "Listening…"
-msgstr "In ascolto…"
-
-msgid "Could not use the microphone. Check permissions."
-msgstr "Impossibile usare il microfono. Controlla i permessi."
-
-msgid "Could not start listening. Try again."
-msgstr "Impossibile avviare l’ascolto. Riprova."
-
-msgid "Listening… speak now"
-msgstr "In ascolto… parla ora"
-
-msgid "Voice input is not supported in this browser."
-msgstr "L’input vocale non è supportato in questo browser."
-
-msgid "Voice input is not available."
-msgstr "L’input vocale non è disponibile."
-
-msgid "Microphone access denied. Allow the microphone in the browser bar."
-msgstr ""
-"Accesso al microfono negato. Consenti il microfono dalla barra del browser."
-
-msgid "No speech detected. Try again."
-msgstr "Nessun parlato rilevato. Riprova."
-
-msgid "Could not start listening. Try again in a moment."
-msgstr "Impossibile avviare l’ascolto. Riprova tra un attimo."
-
-msgid "Role"
-msgstr "Ruolo"
-
-msgid "Level"
-msgstr "Livello"
-
-#: tools/static/tools/js/password.js:32
-msgid "Please enter a number of characters."
-msgstr "Inserisci un numero di caratteri."
-
-#: tools/static/tools/js/password.js:38
-msgid "Password must be at least 14 characters."
-msgstr "La password deve contenere almeno 14 caratteri."
-
-#: tools/static/tools/js/password.js:42
-msgid "Password cannot exceed 128 characters."
-msgstr "La password non puo superare 128 caratteri."
-
-#: tools/static/tools/js/password.js:47
-msgid "You must select all options to generate a password!"
-msgstr "Devi selezionare tutte le opzioni per generare una password!"
-
-#: tools/static/tools/js/qr-decoder.js:130
-msgid "Copy not supported"
-msgstr "Copia non supportata"
-
-#: tools/static/tools/js/translator.js:84
-msgid "Please enter text to translate"
-msgstr "Inserisci il testo da tradurre"
-
-msgid "Please enter text to process"
-msgstr "Inserisci del testo"
-
-#: tools/static/tools/js/translator.js:111
-msgid "An unknown error occurred while translating"
-msgstr "Si è verificato un errore sconosciuto durante la traduzione"
-
-#: tools/static/tools/js/translator.js:117
-msgid "An error occurred while translating"
-msgstr "Si è verificato un errore durante la traduzione"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Please select a file to analyze"
-msgstr "Seleziona un file da analizzare"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Analyzing..."
-msgstr "Analisi in corso..."
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "An error occurred while analyzing the file"
-msgstr "Si è verificato un errore durante l'analisi del file"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Select at least one option to show in results."
-msgstr "Seleziona almeno un'opzione da mostrare nei risultati."
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "File name"
-msgstr "Nome file"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Size"
-msgstr "Dimensione"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Type"
-msgstr "Tipo"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Extension"
-msgstr "Estensione"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Last modified"
-msgstr "Ultima modifica"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Lines"
-msgstr "Righe"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Words"
-msgstr "Parole"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Characters"
-msgstr "Caratteri"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Characters (no spaces)"
-msgstr "Caratteri (senza spazi)"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "Reading time (min)"
-msgstr "Tempo di lettura (min)"
-
-#: tools/static/tools/js/file-analyzer.js
-msgid "min"
-msgstr "min"
-
-#: tools/static/tools/js/meta_tag_checker.js
-msgid "Please enter a URL"
-msgstr "Inserisci un URL"
-
-#: tools/static/tools/js/meta_tag_checker.js
-#: tools/static/tools/js/sitemap_extractor.js
-msgid "Loading..."
-msgstr "Caricamento..."
-
-#: tools/static/tools/js/meta_tag_checker.js
-msgid "No meta tags found."
-msgstr "Nessun meta tag trovato."
-
-#: tools/static/tools/js/meta_tag_checker.js
-#: tools/static/tools/js/sitemap_extractor.js
-msgid "Request failed"
-msgstr "Richiesta non riuscita"
-
-#: tools/static/tools/js/sitemap_extractor.js
-msgid "Please enter a sitemap URL"
-msgstr "Inserisci l'URL di una sitemap"
-
-#: tools/static/tools/js/sitemap_extractor.js
-msgid "No URLs found in sitemap."
-msgstr "Nessun URL trovato nella sitemap."
-
-#: tools/static/tools/js/base64_encoder.js
-msgid "Enter text to encode"
-msgstr "Inserisci il testo da codificare"
-
-#: tools/static/tools/js/base64_encoder.js
-msgid "Encoding failed"
-msgstr "Codifica non riuscita"
-
-#: tools/static/tools/js/base64_encoder.js
-msgid "Enter Base64 string to decode"
-msgstr "Inserisci la stringa Base64 da decodificare"
-
-#: tools/static/tools/js/base64_encoder.js
-msgid "Invalid Base64 or decoding failed"
-msgstr "Base64 non valido o decodifica non riuscita"
-
-#: tools/static/tools/js/robots_txt_generator.js
-msgid "Please enter a User-agent before generating robots.txt"
-msgstr "Inserisci uno User-agent prima di generare il robots.txt"
-
-msgid "Select all"
-msgstr "Seleziona tutto"
-
-msgid "Deselect all"
-msgstr "Deseleziona tutto"
-
-msgid "Suggested usernames"
-msgstr "Username suggeriti"
-
-msgid "The Copy button copies only the usernames you have selected."
-msgstr "Il tasto Copia copia solo gli username selezionati."
-
-msgid "Select at least one username to copy."
-msgstr "Seleziona almeno uno username da copiare."
-
-msgid "Paste JSON to format"
-msgstr "Incolla JSON da formattare"
-
-msgid "Paste JSON to minify"
-msgstr "Incolla JSON da comprimere"
-
-msgid "Invalid JSON"
-msgstr "JSON non valido"
-
-msgid "Please enter some text to convert"
-msgstr "Inserisci del testo da convertire"
-
+#: .\tools\static\tools\js\caption_generator.js:340
 msgid "Suggested captions"
 msgstr "Didascalie suggerite"
 
+#: .\tools\static\tools\js\caption_generator.js:343
 msgid "The Copy button copies only the captions you have selected."
 msgstr "Il tasto Copia copia solo le didascalie selezionate."
 
+#: .\tools\static\tools\js\caption_generator.js:391
 msgid "Select at least one caption to copy."
 msgstr "Seleziona almeno una didascalia da copiare."
 
-#: tools/static/tools/js/bio_generator.js
-msgid "Suggested bios"
-msgstr "Bio suggerite"
+#: .\tools\static\tools\js\case_converter.js:35
+#: .\tools\static\tools\js\case_converter.js:43
+#: .\tools\static\tools\js\case_converter.js:51
+msgid "Please enter some text to convert"
+msgstr "Inserisci del testo da convertire"
 
-#: tools/static/tools/js/bio_generator.js
-msgid "The Copy button copies only the bios you have selected."
-msgstr "Il tasto Copia copia solo le bio selezionate."
+#: .\tools\static\tools\js\color_converter.js:156
+msgid "This is not a hexadecimal code"
+msgstr "Questo non è un codice esadecimale"
 
-#: tools/static/tools/js/bio_generator.js
-msgid "Select at least one bio to copy."
-msgstr "Seleziona almeno una bio da copiare."
+#: .\tools\static\tools\js\cv_optimizer.js:31
+#: .\tools\static\tools\js\file-analyzer.js:120
+#: .\tools\static\tools\js\pdf-merge.js:15
+#: .\tools\static\tools\js\pdf-merge.js:111
+#: .\tools\static\tools\js\pdf-split.js:22
+#: .\tools\static\tools\js\qr-decoder.js:55
+#: .\tools\static\tools\js\qr-decoder.js:60
+msgid "Choose file"
+msgstr "Scegli file"
+
+#: .\tools\static\tools\js\data-viz.js:38
+msgid "Monthly sales"
+msgstr "Vendite mensili"
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:365
+msgid "January"
+msgstr "Gennaio"
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:366
+msgid "February"
+msgstr "Febbraio"
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:367
+msgid "March"
+msgstr "Marzo"
+
+#: .\tools\static\tools\js\data-viz.js:39
+#: .\tools\static\tools\js\data-viz.js:368
+msgid "April"
+msgstr "Aprile"
+
+#: .\tools\static\tools\js\data-viz.js:39
+msgid "May"
+msgstr "Maggio"
+
+#: .\tools\static\tools\js\data-viz.js:39
+msgid "June"
+msgstr "Giugno"
+
+#: .\tools\static\tools\js\data-viz.js:42
+msgid "Budget vs actual"
+msgstr "Budget vs effettivi"
+
+#: .\tools\static\tools\js\data-viz.js:43
+#: .\tools\static\tools\js\data-viz.js:350
+#: .\tools\static\tools\js\data-viz.js:361
+#: .\tools\static\tools\js\data-viz.js:429
+msgid "Label"
+msgstr "Etichetta"
+
+#: .\tools\static\tools\js\data-viz.js:43
+msgid "Planned"
+msgstr "Pianificato"
+
+#: .\tools\static\tools\js\data-viz.js:43
+msgid "Actual"
+msgstr "Effettivo"
+
+#: .\tools\static\tools\js\data-viz.js:46
+msgid "Survey results"
+msgstr "Risultati sondaggio"
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "Yes"
+msgstr "Sì"
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "No"
+msgstr "No"
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "Maybe"
+msgstr "Forse"
+
+#: .\tools\static\tools\js\data-viz.js:47
+msgid "No answer"
+msgstr "Nessuna risposta"
+
+#: .\tools\static\tools\js\data-viz.js:246
+#: .\tools\static\tools\js\data-viz.js:250
+msgid "Series"
+msgstr "Serie"
+
+#: .\tools\static\tools\js\data-viz.js:253
+#: .\tools\static\tools\js\data-viz.js:284
+#: .\tools\static\tools\js\data-viz.js:361
+#: .\tools\static\tools\js\data-viz.js:662
+msgid "Value"
+msgstr "Valore"
+
+#: .\tools\static\tools\js\data-viz.js:271
+msgid "Item"
+msgstr "Voce"
+
+#: .\tools\static\tools\js\data-viz.js:329
+msgid "Other"
+msgstr "Altro"
+
+#: .\tools\static\tools\js\data-viz.js:441
+msgid "… and %(count)s more rows"
+msgstr "… e altre %(count)s righe"
+
+#: .\tools\static\tools\js\data-viz.js:483
+msgid "Total"
+msgstr "Totale"
+
+#: .\tools\static\tools\js\data-viz.js:484
+msgid "Average"
+msgstr "Media"
+
+#: .\tools\static\tools\js\data-viz.js:485
+msgid "Min"
+msgstr "Min"
+
+#: .\tools\static\tools\js\data-viz.js:486
+msgid "Max"
+msgstr "Max"
+
+#: .\tools\static\tools\js\data-viz.js:554
+msgid "Please enter valid data (format: label,value per line)"
+msgstr "Inserisci dati validi (formato: etichetta,valore per riga)"
+
+#: .\tools\static\tools\js\data-viz.js:750
+msgid "Generate a chart first, then download the PNG."
+msgstr "Genera prima un grafico, poi scarica il PNG."
+
+#: .\tools\static\tools\js\data-viz.js:760
+#: .\tools\static\tools\js\data-viz.js:772
+msgid "Generate a chart first, then download."
+msgstr "Genera prima un grafico, poi scarica."
+
+#: .\tools\static\tools\js\data-viz.js:776
+msgid "PDF export is not available. Try PNG or SVG."
+msgstr "Export PDF non disponibile. Prova PNG o SVG."
+
+#: .\tools\static\tools\js\data-viz.js:786
+msgid "Nothing to copy."
+msgstr "Niente da copiare."
+
+#: .\tools\static\tools\js\data-viz.js:798
+msgid "Could not copy to clipboard."
+msgstr "Impossibile copiare negli appunti."
+
+#: .\tools\static\tools\js\data-viz.js:894
+msgid "Data is too large to share in a link. Try fewer rows."
+msgstr "Dati troppo grandi per un link. Prova con meno righe."
+
+#: .\tools\static\tools\js\data-viz.js:902
+msgid "Link copied!"
+msgstr "Link copiato!"
+
+#: .\tools\static\tools\js\data-viz.js:913
+#: .\tools\static\tools\js\data-viz.js:932
+#: .\tools\static\tools\js\robots_txt_generator.js:384
+msgid "Could not read the selected file."
+msgstr "Impossibile leggere il file selezionato."
+
+#: .\tools\static\tools\js\data-viz.js:921
+msgid "Excel support is not loaded. Save as CSV or try again."
+msgstr "Supporto Excel non caricato. Salva come CSV o riprova."
+
+#: .\tools\static\tools\js\data-viz.js:929
+msgid "Could not read this Excel file."
+msgstr "Impossibile leggere questo file Excel."
+
+#: .\tools\static\tools\js\data-viz.js:964
+msgid "CSV file is too large. Maximum size is 256 KB."
+msgstr "Il file CSV è troppo grande. Dimensione massima: 256 KB."
+
+#: .\tools\static\tools\js\data-viz.js:971
+msgid ""
+"Could not read chart data from this file. Use the template format: "
+"label,value per line."
+msgstr ""
+"Impossibile leggere i dati da questo file. Usa il formato del template: "
+"etichetta,valore per riga."
+
+#: .\tools\static\tools\js\diff_checker.js:52
+msgid "Enter or paste text in both boxes"
+msgstr "Inserisci o incolla il testo in entrambi i riquadri"
+
+#: .\tools\static\tools\js\diff_checker.js:59
+msgid "Diff library not loaded"
+msgstr "Libreria diff non caricata"
+
+#: .\tools\static\tools\js\file-analyzer.js:36
+#, fuzzy
+#| msgid "files selected"
+msgid "All selected"
+msgstr "file selezionati"
+
+#: .\tools\static\tools\js\file-analyzer.js:37
+#, fuzzy
+#| msgid "files selected"
+msgid "None selected"
+msgstr "file selezionati"
+
+#: .\tools\static\tools\js\file-analyzer.js:129
+msgid "Please select a file to analyze"
+msgstr "Seleziona un file da analizzare"
+
+#: .\tools\static\tools\js\file-analyzer.js:141
+msgid "Analyzing..."
+msgstr "Analisi in corso..."
+
+#: .\tools\static\tools\js\file-analyzer.js:169
+msgid "File name"
+msgstr "Nome file"
+
+#: .\tools\static\tools\js\file-analyzer.js:170
+msgid "Size"
+msgstr "Dimensione"
+
+#: .\tools\static\tools\js\file-analyzer.js:171
+msgid "Type"
+msgstr "Tipo"
+
+#: .\tools\static\tools\js\file-analyzer.js:172
+msgid "Extension"
+msgstr "Estensione"
+
+#: .\tools\static\tools\js\file-analyzer.js:173
+msgid "MD5"
+msgstr "MD5"
+
+#: .\tools\static\tools\js\file-analyzer.js:174
+msgid "SHA-256"
+msgstr "SHA-256"
+
+#: .\tools\static\tools\js\file-analyzer.js:175
+msgid "Last modified"
+msgstr "Ultima modifica"
+
+#: .\tools\static\tools\js\file-analyzer.js:176
+msgid "Lines"
+msgstr "Righe"
+
+#: .\tools\static\tools\js\file-analyzer.js:177
+msgid "Words"
+msgstr "Parole"
+
+#: .\tools\static\tools\js\file-analyzer.js:178
+msgid "Characters"
+msgstr "Caratteri"
+
+#: .\tools\static\tools\js\file-analyzer.js:179
+msgid "Characters (no spaces)"
+msgstr "Caratteri (senza spazi)"
+
+#: .\tools\static\tools\js\file-analyzer.js:180
+msgid "Reading time (min)"
+msgstr "Tempo di lettura (min)"
+
+#: .\tools\static\tools\js\file-analyzer.js:204
+msgid "min"
+msgstr "min"
+
+#: .\tools\static\tools\js\file-analyzer.js:210
+msgid "Select at least one option to show in results."
+msgstr "Seleziona almeno un'opzione da mostrare nei risultati."
+
+#: .\tools\static\tools\js\file-analyzer.js:218
+msgid "An error occurred while analyzing the file"
+msgstr "Si è verificato un errore durante l'analisi del file"
+
+#: .\tools\static\tools\js\home.js:237
+#: .\tools\static\tools\js\tool-favorites.js:34
+msgid "You cannot use this feature. Please log in."
+msgstr "Non puoi usare questa funzione. Accedi."
+
+#: .\tools\static\tools\js\json_formatter.js:101
+msgid "Paste JSON to format"
+msgstr "Incolla JSON da formattare"
+
+#: .\tools\static\tools\js\json_formatter.js:106
+#: .\tools\static\tools\js\json_formatter.js:121
+msgid "Invalid JSON"
+msgstr "JSON non valido"
+
+#: .\tools\static\tools\js\json_formatter.js:116
+msgid "Paste JSON to minify"
+msgstr "Incolla JSON da comprimere"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:5
+msgid "Title"
+msgstr "Titolo"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:6
+msgid "Description"
+msgstr "Descrizione"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:7
+msgid "Keywords"
+msgstr "Parole chiave"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:8
+msgid "Author"
+msgstr "Autore"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:22
+#: .\tools\static\tools\js\site_speed_check.js:42
+msgid "Please enter a URL"
+msgstr "Inserisci un URL"
+
+#: .\tools\static\tools\js\meta_tag_checker.js:41
+msgid "No meta tags found."
+msgstr "Nessun meta tag trovato."
+
+#: .\tools\static\tools\js\meta_tag_checker.js:44
+#: .\tools\static\tools\js\robots_txt_generator.js:420
+#: .\tools\static\tools\js\site_speed_check.js:62
+#: .\tools\static\tools\js\sitemap_extractor.js:35
+msgid "Request failed"
+msgstr "Richiesta non riuscita"
+
+#: .\tools\static\tools\js\password.js:32
+msgid "Please enter a number of characters."
+msgstr "Inserisci un numero di caratteri."
+
+#: .\tools\static\tools\js\password.js:38
+msgid "Password must be at least 14 characters."
+msgstr "La password deve contenere almeno 14 caratteri."
+
+#: .\tools\static\tools\js\password.js:42
+msgid "Password cannot exceed 128 characters."
+msgstr "La password non puo superare 128 caratteri."
+
+#: .\tools\static\tools\js\password.js:47
+msgid "You must select all options to generate a password!"
+msgstr "Devi selezionare tutte le opzioni per generare una password!"
+
+#: .\tools\static\tools\js\pdf-merge.js:19
+msgid "files selected"
+msgstr "file selezionati"
+
+#: .\tools\static\tools\js\pdf-merge.js:57
+msgid "Move up"
+msgstr "Sposta su"
+
+#: .\tools\static\tools\js\pdf-merge.js:64
+msgid "Move down"
+msgstr "Sposta giù"
+
+#: .\tools\static\tools\js\pdf-merge.js:111
+msgid "Choose PDF files to merge"
+msgstr "Scegli i file PDF da unire"
+
+#: .\tools\static\tools\js\pdf-merge.js:120
+msgid "Please select at least two PDF files"
+msgstr "Seleziona almeno due file PDF"
+
+#: .\tools\static\tools\js\pdf-merge.js:139
+#: .\tools\static\tools\js\pdf-merge.js:154
+msgid "Error while processing the PDFs"
+msgstr "Errore durante l'elaborazione dei PDF"
+
+#: .\tools\static\tools\js\pdf-merge.js:149
+msgid "PDF merged successfully!"
+msgstr "PDF uniti con successo!"
+
+#: .\tools\static\tools\js\pdf-split.js:63
+#: .\tools\static\tools\js\pdf-split.js:76
+msgid "Please select a PDF file"
+msgstr "Seleziona un file PDF"
+
+#: .\tools\static\tools\js\pdf-split.js:99
+#: .\tools\static\tools\js\pdf-split.js:118
+msgid "Error processing PDF"
+msgstr "Errore durante l'elaborazione del PDF"
+
+#: .\tools\static\tools\js\pdf-split.js:112
+msgid "PDF split successfully!"
+msgstr "PDF diviso con successo!"
+
+#: .\tools\static\tools\js\qr-decoder.js:59
+msgid "Please select a valid image."
+msgstr "Seleziona un'immagine valida."
+
+#: .\tools\static\tools\js\qr-decoder.js:74
+msgid "Decoding library not loaded. Refresh the page and try again."
+msgstr "Libreria di decodifica non caricata. Aggiorna la pagina e riprova."
+
+#: .\tools\static\tools\js\qr-decoder.js:83
+msgid "QR code read successfully."
+msgstr "QR code letto con successo."
+
+#: .\tools\static\tools\js\qr-decoder.js:85
+msgid "No QR code found in this image."
+msgstr "Nessun QR code trovato in questa immagine."
+
+#: .\tools\static\tools\js\qr-decoder.js:89
+msgid "Could not decode this image. Try another file or a clearer photo."
+msgstr ""
+"Impossibile decodificare questa immagine. Prova un altro file o una foto più "
+"nitida."
+
+#: .\tools\static\tools\js\qr-decoder.js:121
+msgid "Unable to load image."
+msgstr "Impossibile caricare l'immagine."
+
+#: .\tools\static\tools\js\qr-decoder.js:160
+msgid "Copy not supported"
+msgstr "Copia non supportata"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:108
+msgid "Enter a site URL"
+msgstr "Inserisci l'URL"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:109
+msgid "No robots.txt found"
+msgstr "Nessun robots.txt"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:110
+msgid "URL unreachable"
+msgstr "URL non raggiungibile"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:111
+msgid "Load failed"
+msgstr "Caricamento fallito"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:279
+msgid "Please enter a User-agent before generating robots.txt"
+msgstr "Inserisci uno User-agent prima di generare il robots.txt"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:378
+msgid "The selected file is empty."
+msgstr "Il file selezionato è vuoto."
+
+#: .\tools\static\tools\js\robots_txt_generator.js:381
+msgid "Loaded file"
+msgstr "File caricato"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:393
+msgid "Please enter a site URL for web import"
+msgstr "Inserisci l’URL del sito per lo scaricamento da web"
+
+#: .\tools\static\tools\js\robots_txt_generator.js:410
+#: .\tools\static\tools\js\robots_txt_generator.js:411
+msgid "Loaded from the web"
+msgstr "Scaricato dal web"
+
+#: .\tools\static\tools\js\site_speed_check.js:31
+msgid "Response time:"
+msgstr "Tempo di risposta:"
+
+#: .\tools\static\tools\js\sitemap_extractor.js:11
+msgid "Please enter a sitemap URL"
+msgstr "Inserisci l'URL di una sitemap"
+
+#: .\tools\static\tools\js\sitemap_extractor.js:27
+msgid "No URLs found in sitemap."
+msgstr "Nessun URL trovato nella sitemap."
+
+#: .\tools\static\tools\js\tool-favorites.js:36
+msgid "Log in"
+msgstr "Accedi"
+
+#: .\tools\static\tools\js\tool-favorites.js:37
+msgid "Close"
+msgstr "Chiudi"
+
+#: .\tools\static\tools\js\tool-favorites.js:78
+msgid "Add to favorites"
+msgstr "Aggiungi ai preferiti"
+
+#: .\tools\static\tools\js\tool-favorites.js:79
+msgid "Favorite"
+msgstr "Preferito"
+
+#: .\tools\static\tools\js\translator.js:84
+msgid "Please enter text to translate"
+msgstr "Inserisci il testo da tradurre"
+
+#: .\tools\static\tools\js\translator.js:111
+msgid "An unknown error occurred while translating"
+msgstr "Si è verificato un errore sconosciuto durante la traduzione"
+
+#: .\tools\static\tools\js\translator.js:117
+msgid "An error occurred while translating"
+msgstr "Si è verificato un errore durante la traduzione"
+
+#: .\tools\static\tools\js\username_generator.js:172
+msgid "Suggested usernames"
+msgstr "Username suggeriti"
+
+#: .\tools\static\tools\js\username_generator.js:175
+msgid "The Copy button copies only the usernames you have selected."
+msgstr "Il tasto Copia copia solo gli username selezionati."
+
+#: .\tools\static\tools\js\username_generator.js:222
+msgid "Select at least one username to copy."
+msgstr "Seleziona almeno uno username da copiare."
+
+#~ msgid "Discount (%(pct)s%%):"
+#~ msgstr "Sconto (%(pct)s%%):"
+
+#~ msgid "Margin (%(pct)s%%):"
+#~ msgstr "Margine (%(pct)s%%):"
+
+#~ msgid "Mid"
+#~ msgstr "Intermedio"
+
+#~ msgid "Please enter a target role."
+#~ msgstr "Inserisci un ruolo target."
+
+#~ msgid "problem solving, teamwork, and communication"
+#~ msgstr "problem solving, lavoro di squadra e comunicazione"
+
+#~ msgid "Tell me about yourself and why you are interested in this role."
+#~ msgstr "Parlami di te e del motivo per cui ti interessa questo ruolo."
+
+#~ msgid "Describe a challenging project and your contribution."
+#~ msgstr "Descrivi un progetto sfidante e il tuo contributo."
+
+#~ msgid "How do you prioritize tasks when deadlines overlap?"
+#~ msgstr ""
+#~ "Come dai priorita alle attivita quando le scadenze si sovrappongono?"
+
+#~ msgid "What would your previous manager say about your strengths?"
+#~ msgstr "Cosa direbbe il tuo precedente manager sui tuoi punti di forza?"
+
+#~ msgid "How would you approach this role in the first 90 days?"
+#~ msgstr "Come affronteresti questo ruolo nei primi 90 giorni?"
+
+#~ msgid "What interests you about our company or this industry?"
+#~ msgstr "Cosa ti interessa della nostra azienda o di questo settore?"
+
+#~ msgid "Describe a conflict or disagreement at work and how you handled it."
+#~ msgstr ""
+#~ "Descrivi un conflitto o un disaccordo sul lavoro e come lo hai gestito."
+
+#~ msgid "How do you keep your skills up to date for this kind of role?"
+#~ msgstr "Come tieni aggiornate le competenze per questo tipo di ruolo?"
+
+#~ msgid ""
+#~ "Keep your answer concise: profile, relevant experience, and motivation."
+#~ msgstr ""
+#~ "Mantieni la risposta concisa: profilo, esperienza rilevante e motivazione."
+
+#~ msgid "Use STAR: Situation, Task, Action, Result with measurable impact."
+#~ msgstr ""
+#~ "Usa STAR: Situazione, Compito, Azione, Risultato con impatto misurabile."
+
+#~ msgid "Explain your prioritization method and communication style."
+#~ msgstr ""
+#~ "Spiega il tuo metodo di prioritizzazione e il tuo stile comunicativo."
+
+#~ msgid "Highlight two strengths with concrete examples."
+#~ msgstr "Evidenzia due punti di forza con esempi concreti."
+
+#~ msgid "Show a realistic plan: learn, align, deliver quick wins."
+#~ msgstr ""
+#~ "Mostra un piano realistico: apprendere, allinearsi, ottenere risultati "
+#~ "rapidi."
+
+#~ msgid "Mention something specific you learned about the company or sector."
+#~ msgstr "Cita qualcosa di specifico che hai appreso su azienda o settore."
+
+#~ msgid "Emphasize listening, clarity, and a constructive outcome."
+#~ msgstr "Metti in evidenza ascolto, chiarezza e un esito costruttivo."
+
+#~ msgid ""
+#~ "Name learning habits: courses, reading, side projects, or communities."
+#~ msgstr ""
+#~ "Indica abitudini di apprendimento: corsi, letture, progetti personali, "
+#~ "community."
+
+#~ msgid "Interview simulation for %(role)s (%(level)s)"
+#~ msgstr "Simulazione colloquio per %(role)s (%(level)s)"
+
+#~ msgid "Focus areas"
+#~ msgstr "Aree di focus"
+
+#~ msgid "Example answer tip"
+#~ msgstr "Suggerimento risposta esempio"
+
+#~ msgid "Recruiter"
+#~ msgstr "Recruiter"
+
+#~ msgid "You"
+#~ msgstr "Tu"
+
+#~ msgid "Suggested improvement"
+#~ msgstr "Suggerimento per migliorare"
+
+#~ msgid "Practice interview for %(role)s (%(level)s). Areas: %(focus)s."
+#~ msgstr "Colloquio di prova per %(role)s (%(level)s). Aree: %(focus)s."
+
+#~ msgid "Practice interview. Areas: %(focus)s."
+#~ msgstr "Colloquio di prova. Aree: %(focus)s."
+
+#~ msgid "That was the last question. Thanks for practicing!"
+#~ msgstr "Era l’ultima domanda. Grazie per aver esercitato!"
+
+#~ msgid "Please write an answer before sending."
+#~ msgstr "Scrivi una risposta prima di inviare."
+
+#~ msgid "Listening…"
+#~ msgstr "In ascolto…"
+
+#~ msgid "Could not use the microphone. Check permissions."
+#~ msgstr "Impossibile usare il microfono. Controlla i permessi."
+
+#~ msgid "Could not start listening. Try again."
+#~ msgstr "Impossibile avviare l’ascolto. Riprova."
+
+#~ msgid "Listening… speak now"
+#~ msgstr "In ascolto… parla ora"
+
+#~ msgid "Voice input is not supported in this browser."
+#~ msgstr "L’input vocale non è supportato in questo browser."
+
+#~ msgid "Voice input is not available."
+#~ msgstr "L’input vocale non è disponibile."
+
+#~ msgid "Microphone access denied. Allow the microphone in the browser bar."
+#~ msgstr ""
+#~ "Accesso al microfono negato. Consenti il microfono dalla barra del "
+#~ "browser."
+
+#~ msgid "No speech detected. Try again."
+#~ msgstr "Nessun parlato rilevato. Riprova."
+
+#~ msgid "Could not start listening. Try again in a moment."
+#~ msgstr "Impossibile avviare l’ascolto. Riprova tra un attimo."
+
+#~ msgid "Role"
+#~ msgstr "Ruolo"
+
+#~ msgid "Level"
+#~ msgstr "Livello"
+
+#~ msgid "Please enter text to process"
+#~ msgstr "Inserisci del testo"
+
+#~ msgid "Loading..."
+#~ msgstr "Caricamento..."
 
 #~ msgid "Formal and concise"
 #~ msgstr "Formale e conciso"
@@ -730,10 +1085,6 @@ msgstr "Seleziona almeno una bio da copiare."
 #~ msgstr "Risultati"
 
 #, fuzzy
-#~ msgid "PDF generated successfully."
-#~ msgstr "PDF uniti con successo!"
-
-#, fuzzy
 #~ msgid "Error while generating PDF."
 #~ msgstr "Errore durante l'elaborazione dei PDF"
 
@@ -762,41 +1113,5 @@ msgstr "Seleziona almeno una bio da copiare."
 #~ msgid "Suggestions"
 #~ msgstr "Suggerimenti"
 
-#~ msgid "Could not get the exchange rate."
-#~ msgstr "Impossibile ottenere il tasso di cambio."
-
 #~ msgid "Result: %(perc)s%% of %(of)s is %(result)s"
 #~ msgstr "Risultato: il %(perc)s%% di %(of)s e %(result)s"
-
-#~ msgid "files selected"
-#~ msgstr "file selezionati"
-
-#~ msgid "Move up"
-#~ msgstr "Sposta su"
-
-#~ msgid "Move down"
-#~ msgstr "Sposta giu"
-
-#~ msgid "Please select at least two PDF files"
-#~ msgstr "Seleziona almeno due file PDF"
-
-#~ msgid "Please select a PDF file"
-#~ msgstr "Seleziona un file PDF"
-
-#~ msgid "Error processing PDF"
-#~ msgstr "Errore durante l'elaborazione del PDF"
-
-#~ msgid "PDF split successfully!"
-#~ msgstr "PDF diviso con successo!"
-
-#~ msgid "Please enter valid data (format: label,value per line)"
-#~ msgstr "Inserisci dati validi (formato: etichetta,valore per riga)"
-
-#~ msgid "Item"
-#~ msgstr "Voce"
-
-#~ msgid "Value"
-#~ msgstr "Valore"
-
-#~ msgid "This is not a hexadecimal code"
-#~ msgstr "Questo non e un codice esadecimale"

@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "Top 15 Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'The 15 most-used Gadly tools in one place—text, files, social, finance, and security.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -11,29 +14,46 @@
 .text-tools-page .tool-btn-wrap { width:180px; display:flex; justify-content:center; }
 .text-tools-page .tool-btn { width:180px; height:56px; display:flex; align-items:center; justify-content:center; text-align:center; background:#003f7f; color:#fff; font-weight:600; font-size:1em; text-decoration:none; border-radius:12px; transition:transform .2s, background .2s; }
 .text-tools-page .tool-btn:hover { background:#0056b3; transform:scale(1.05); }
-@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } }
+.text-tools-page-top { margin-top:26px; padding-top:20px; border-top:1px solid rgba(0, 63, 127, 0.15); text-align:center; }
+.text-tools-page-top-title { margin:0 0 8px; font-size:1rem; font-weight:700; color:#003f7f; }
+.text-tools-page-top-desc { margin:0 auto 14px; max-width:32rem; font-size:.92rem; line-height:1.45; color:#555; }
+.text-tools-page-top-links { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.text-tools-page-top-links a { display:flex; align-items:center; justify-content:center; width:180px; height:50px; padding:0 12px; border-radius:12px; text-decoration:none; font-size:.95rem; font-weight:600; color:#003f7f; background:#e8f4fd; border:2px solid #003f7f; transition:background .2s,border-color .2s,color .2s,transform .16s ease,box-shadow .16s ease; box-sizing:border-box; }
+.text-tools-page-top-links a:hover { background:#d0e8f9; border-color:#002d5c; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,63,127,.12); }
+@media (max-width:768px){ .text-tools-page .tool-btn-wrap,.text-tools-page .tool-btn{ width:100%; } .text-tools-page .tool-btn{ min-height:52px; } .text-tools-page-top { margin-top:20px; padding-top:16px; } .text-tools-page-top-links a { width:100%; max-width:320px; } }
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
   <h1>{% trans "Top 15 Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to the 15 most used tools." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Esplora i 15 tool piu usati su Gadly per produttivita, SEO, CV, file, social e sicurezza: una selezione completa per lavorare meglio ogni giorno.{% else %}Explore the 15 most used tools on Gadly for productivity, SEO, CV writing, file workflows, social content, and security in one curated collection.{% endif %}</p>
   <div class="text-tools-page-grid">
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cv_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore CV{% else %}{% trans "CV Generator" %}{% endif %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ottimizza CV{% else %}{% trans "CV Optimizer" %}{% endif %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'cover_letter_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'application_email_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a></div>
+    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'translator' %}">{% trans "Translator" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'remove_spaces' %}">{% trans "Remove Spaces" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'diff_checker' %}">{% trans "Diff Checker" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'json_formatter' %}">{% trans "JSON Formatter" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'image_editor' %}">{% trans "Image Editor" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'pdf_merger' %}">{% trans "PDF Merge" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'file_analyzer' %}">{% trans "File Analyzer" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'bio_generator' %}">{% trans "Bio Generator" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'hashtag_generator' %}">{% trans "Hashtag Generator" %}</a></div>
-    <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'caption_generator' %}">{% trans "Caption Generator" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'calc_currency' %}">{% trans "Currency" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'qr_generator' %}">{% trans "QR Generator" %}</a></div>
   </div>
+  <section class="text-tools-page-top" aria-label="{% trans 'Top career tools' %}">
+    <h2 class="text-tools-page-top-title">{% trans "Top tools" %}</h2>
+    <p class="text-tools-page-top-desc">{% trans "Handy entry points if you are not sure where to start." %}</p>
+    <div class="text-tools-page-top-links">
+      <a href="{% url 'cv_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore CV{% else %}{% trans "CV Generator" %}{% endif %}</a>
+      <a href="{% url 'cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ottimizza CV{% else %}{% trans "CV Optimizer" %}{% endif %}</a>
+      <a href="{% url 'cover_letter_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a>
+      <a href="{% url 'application_email_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a>
+      <a href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a>
+    </div>
+  </section>
 </div>
 {% endblock %}

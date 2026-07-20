@@ -1,7 +1,5 @@
 (function () {
     'use strict';
-    var isItalian = (document.documentElement.lang || "").toLowerCase().indexOf("it") === 0;
-    function t(it, en) { return isItalian ? it : en; }
 
     var input = document.getElementById('qr-image-input');
     var fileNameDisplay = document.querySelector('.qr-decoder .file-name-display');
@@ -11,36 +9,35 @@
     var decodedText = document.getElementById('decoded-text');
     var btnCopy = document.getElementById('btn-copy');
     var msg = document.getElementById('msg');
-    var resultArea = document.getElementById('qr-decoder-result');
     var canvas = document.getElementById('qr-canvas');
+    if (!input || !canvas || !msg) return;
     var ctx = canvas.getContext('2d');
 
     function showError(text) {
-        if (resultArea) {
-            resultArea.textContent = (text || '').replace(/\.$/, '');
-            resultArea.classList.remove('hidden');
-            resultArea.classList.add('error');
-            resultArea.style.display = 'block';
-            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-        if (msg) { msg.textContent = ''; msg.className = 'msg'; }
-    }
-    function hideError() {
-        if (resultArea) {
-            resultArea.textContent = '';
-            resultArea.classList.remove('error');
-            resultArea.classList.add('hidden');
-            resultArea.style.display = '';
+        if (msg) {
+            msg.textContent = (text || '').replace(/\.$/, '');
+            msg.className = 'msg error';
+            msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
+
+    function clearFeedback() {
+        if (msg) {
+            msg.textContent = '';
+            msg.className = 'msg';
+        }
+    }
+
     function showMessage(text, isError, isSuccess) {
         if (isError) {
             showError(text);
             return;
         }
-        hideError();
-        msg.textContent = text || '';
-        msg.className = 'msg' + (isSuccess ? ' success' : '');
+        clearFeedback();
+        if (text) {
+            msg.textContent = text || '';
+            msg.className = 'msg' + (isSuccess ? ' success' : '');
+        }
     }
 
     function showResult(text) {
@@ -54,11 +51,13 @@
         showResult('');
         resultWrap.style.display = 'none';
         previewWrap.style.display = 'none';
-        if (fileNameDisplay) fileNameDisplay.textContent = file && file.name ? file.name : t('Scegli file', 'Choose file');
+        if (fileNameDisplay) {
+            fileNameDisplay.textContent = file && file.name ? file.name : gettext('Choose file');
+        }
 
         if (!file || !file.type.match(/^image\//)) {
-            showMessage(t('Seleziona un\'immagine valida.', 'Please select a valid image.'), true);
-            if (fileNameDisplay) fileNameDisplay.textContent = t('Scegli file', 'Choose file');
+            showMessage(gettext('Please select a valid image.'), true);
+            if (fileNameDisplay) fileNameDisplay.textContent = gettext('Choose file');
             return;
         }
 
@@ -67,54 +66,85 @@
             previewImg.src = img.src;
             previewWrap.style.display = 'block';
 
-            var w = img.naturalWidth;
-            var h = img.naturalHeight;
-            canvas.width = w;
-            canvas.height = h;
-            ctx.drawImage(img, 0, 0);
-            var imageData = ctx.getImageData(0, 0, w, h);
-
-            if (typeof jsQR === 'undefined') {
-                showMessage(t('Libreria di decodifica non caricata', 'Decoding library not loaded'), true);
-                return;
+            function decodeFromCanvas(w, h) {
+                try {
+                    var imageData = ctx.getImageData(0, 0, w, h);
+                    if (typeof jsQR === 'undefined') {
+                        showMessage(
+                            gettext('Decoding library not loaded. Refresh the page and try again.'),
+                            true
+                        );
+                        return;
+                    }
+                    var code = jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
+                    if (code && code.data) {
+                        showResult(code.data);
+                        resultWrap.style.display = 'block';
+                        showMessage(gettext('QR code read successfully.'), false, true);
+                    } else {
+                        showMessage(gettext('No QR code found in this image.'), true);
+                    }
+                } catch (err) {
+                    showMessage(
+                        gettext('Could not decode this image. Try another file or a clearer photo.'),
+                        true
+                    );
+                }
             }
-            var code = jsQR(imageData.data, w, h);
-            if (code && code.data) {
-                showResult(code.data);
-                resultWrap.style.display = 'block';
-                showMessage(t('QR code letto con successo.', 'QR code read successfully.'), false, true);
+
+            function runWithSource(w, h, source) {
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(source, 0, 0, w, h);
+                decodeFromCanvas(w, h);
+            }
+
+            if (typeof createImageBitmap === 'function') {
+                createImageBitmap(img, { imageOrientation: 'from-image' })
+                    .then(function (bitmap) {
+                        try {
+                            runWithSource(bitmap.width, bitmap.height, bitmap);
+                        } finally {
+                            if (bitmap && typeof bitmap.close === 'function') {
+                                bitmap.close();
+                            }
+                        }
+                    })
+                    .catch(function () {
+                        runWithSource(img.naturalWidth, img.naturalHeight, img);
+                    });
             } else {
-                showMessage(t('Nessun QR code trovato in questa immagine', 'No QR code found in this image'), true);
+                runWithSource(img.naturalWidth, img.naturalHeight, img);
             }
         };
         img.onerror = function () {
-            showMessage(t('Impossibile caricare l\'immagine', 'Unable to load image'), true);
+            showMessage(gettext('Unable to load image.'), true);
         };
         img.src = URL.createObjectURL(file);
     });
 
-    btnCopy.addEventListener('click', function () {
-        var text = decodedText.value;
-        if (!text) return;
-        btnCopy.classList.remove('copied');
-        function onCopyDone() {
-            btnCopy.classList.add('copied');
-            btnCopy.textContent = gettext('Copied!');
-            setTimeout(function () {
-                btnCopy.classList.remove('copied');
-                btnCopy.textContent = gettext('Copy');
-            }, 2000);
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(function () {
-                onCopyDone();
-            }).catch(function () {
+    if (btnCopy) {
+        btnCopy.addEventListener('click', function () {
+            var text = decodedText.value;
+            if (!text) return;
+            btnCopy.classList.remove('copied');
+            function onCopyDone() {
+                btnCopy.classList.add('copied');
+                btnCopy.textContent = gettext('Copied!');
+                setTimeout(function () {
+                    btnCopy.classList.remove('copied');
+                    btnCopy.textContent = gettext('Copy');
+                }, 2000);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(onCopyDone).catch(function () {
+                    fallbackCopy(text);
+                });
+            } else {
                 fallbackCopy(text);
-            });
-        } else {
-            fallbackCopy(text);
-        }
-    });
+            }
+        });
+    }
 
     function fallbackCopy(text) {
         decodedText.select();

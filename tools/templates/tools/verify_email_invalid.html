@@ -1,7 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "Invalid link - Gadly" %}{% endblock %}
+{% block title %}{% if is_drose_site %}{% trans "Invalid link - Drose" %}{% else %}{% trans "Invalid link - Gadly" %}{% endif %}{% endblock %}
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">

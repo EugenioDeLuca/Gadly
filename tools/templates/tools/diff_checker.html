@@ -3,14 +3,23 @@
 {% load i18n %}
 {% block title %}{% trans "Diff Checker" %}{% endblock %}
 {% block body_class %}text-tool diff-checker{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Compare two text versions side by side and see highlighted additions and removals. Your content is not sent to our servers.' %}">
+{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520n">
 <style>
+.text-tool.diff-checker .tool-desc { color: #555; line-height: 1.55; }
 .diff-checker .diff-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    margin-bottom: 12px; /* 12px tra le textarea e il messaggio di errore */
+    margin-bottom: 0;
+}
+@media (min-width: 769px) {
+    .diff-checker .diff-columns {
+        margin-bottom: 12px;
+    }
 }
 .diff-checker .diff-column label {
     display: block;
@@ -29,9 +38,7 @@
     align-items: center;
     margin-bottom: 0px;
 }
-.diff-checker .button-group #btn-compare {
-    flex: 0 0 auto;
-}
+.diff-checker .button-group #btn-compare,
 .diff-checker .button-group #btn-copy {
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -96,10 +103,10 @@ body.dark-mode .diff-checker .button-group button.copied:hover {
     padding: 0 2px;
     border-radius: 2px;
 }
-/* Layout errore allineato agli altri tool (12px di distanza, min-height 44px, padding 10x16) */
+/* Layout errore (margini 12px solo su mobile, v. @media ≤768px) */
 .diff-checker .diff-result.error {
-    margin-top: 12px;      /* 12px sopra l'errore */
-    margin-bottom: 12px;   /* 12px sotto l'errore */
+    margin-top: 0;
+    margin-bottom: 0;
     padding: 10px 16px;
     min-height: 44px;
     border-radius: 12px;
@@ -115,6 +122,10 @@ body.dark-mode .diff-checker .button-group button.copied:hover {
 }
 /* Desktop: stesse dimensioni textarea/result di Markdown Preview */
 @media (min-width: 769px) {
+    .diff-checker .button-group #btn-compare,
+    .diff-checker .button-group #btn-copy {
+        min-width: 11.75rem;
+    }
     .diff-checker .diff-column textarea {
         min-height: 340px;
         max-height: 560px;
@@ -127,6 +138,11 @@ body.dark-mode .diff-checker .button-group button.copied:hover {
         padding: 16px 20px;
         margin-bottom: 12px;
         overflow-x: hidden;
+    }
+    /* Desktop: 12px tra textarea/errore e tra errore/bottoni (sovrascrive base.css margin:0 sugli errori) */
+    body.diff-checker.text-tool .site-main .container #diff-result.diff-result.error {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
     }
 }
 @media (max-width: 768px) {
@@ -141,57 +157,130 @@ body.dark-mode .diff-checker .button-group button.copied:hover {
         background: #f8f9fa !important;
         font-family: Arial, sans-serif;
         font-size: 17px;
+        line-height: 1.5;
+        margin-bottom: 0 !important;
+        box-sizing: border-box !important;
+        border: 1px solid #ddd !important;
+        outline: none !important;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .diff-checker .diff-result {
+    /* Light mobile: focus #007BFF come desktop Markdown Preview */
+    .diff-checker .diff-column textarea:focus {
+        border-color: #007BFF !important;
+        box-shadow: none !important;
+    }
+    /* Risultato diff (non errore): stile area risultato */
+    body.diff-checker.text-tool .site-main .container #diff-result.diff-result:not(.error) {
         background: #f8f9fa !important;
-        border: 1px solid #ddd;
+        border: 1px solid #ddd !important;
         color: #1a1a2e !important;
-        margin-top: 12px;
-        margin-bottom: 20px;
-    }
-    .diff-checker .diff-result.error {
         margin-top: 12px !important;
         margin-bottom: 20px !important;
+        padding: 16px !important;
+        min-height: 120px;
+    }
+    /* Errore mobile: stesso bordo/stile degli altri tool + 12px da textarea e bottoni */
+    body.diff-checker.text-tool .site-main .container .diff-columns {
+        margin-bottom: 12px !important;
+        gap: 12px !important;
+    }
+    body.diff-checker.diff-checker-has-error.text-tool .site-main .container .diff-columns {
+        margin-bottom: 0 !important;
+    }
+    body.diff-checker.text-tool .site-main .container #diff-result.diff-result.error {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+        padding: 10px 16px !important;
+        min-height: 44px !important;
+        height: auto !important;
+        border-radius: 12px !important;
+        border: 2px solid #fcc !important;
+        background: #fff5f5 !important;
         color: #c00 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.diff-checker.text-tool .site-main .container #diff-result.diff-result.error {
+        background: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+    }
+    body.diff-checker.text-tool .site-main .container .button-group {
+        gap: 12px !important;
+        row-gap: 12px !important;
     }
     body.dark-mode .diff-checker .diff-column textarea,
     body.dark-mode .diff-checker .diff-column textarea:focus {
         background: rgba(240, 242, 245, 0.95) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    }
+    body.dark-mode .diff-checker .diff-column textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
     }
     body.dark-mode .diff-checker .diff-result {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9);
     }
-    /* Mobile: bottoni come Translator (no blu al tap, Copy rosso quando copiato) */
-    body.diff-checker .site-main .container .button-group button {
+    /* Mobile: bottoni — colori fissi (light + dark), tap via mobile-tap.js */
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):hover,
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):focus:not(.tap-active) {
         border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
         transform: scale(1) !important;
+        transition: none !important;
     }
-    body.diff-checker .site-main .container .button-group button:focus {
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:not(.copied),
+    body.diff-checker.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:not(.copied):hover,
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button:not(.copied):focus:not(.tap-active) {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
         transform: scale(1) !important;
+        transition: none !important;
     }
-    body.diff-checker .site-main .container .button-group button:active {
-        transform: scale(1.03) !important;
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied) {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
     }
     body.diff-checker .site-main .container .button-group button.copied,
     body.diff-checker .site-main .container .button-group button.copied:hover {
         background: #fff5f5 !important;
         border: 2px solid #fcc !important;
         color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
     }
-    body.dark-mode.diff-checker .site-main .container .button-group button {
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
-        border: 2px solid var(--text-secondary) !important;
-    }
-    body.dark-mode.diff-checker .site-main .container .button-group button.copied,
-    body.dark-mode.diff-checker .site-main .container .button-group button.copied:hover {
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.copied,
+    body.dark-mode.diff-checker.text-tool .site-main .container .button-group button.copied:hover {
         background: rgba(220, 80, 80, 0.15) !important;
         border: 2px solid #fcc !important;
         color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
     }
 }
 @media (max-width: 480px) {
@@ -236,7 +325,7 @@ body.dark-mode .diff-checker .diff-result .diff-add {
 {% block content %}
 <div class="container">
     <h1>{% trans "Diff Checker" %}</h1>
-    <p class="tool-desc">{% trans "Compare two texts and see differences highlighted. Removed text in red, added text in green." %}</p>
+    <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Incolla due versioni dello stesso testo e vedi le differenze evidenziate. Utile per revisioni, contratti, traduzioni e note di rilascio.{% else %}Paste two versions of the same text and see highlighted differences. Handy for edits, contracts, translations, and release notes.{% endif %}</p>
     <p class="tool-help">
         <a href="{% url 'help_diff_checker' %}">{% trans "How text diffing works and what the colors mean" %}</a>
     </p>
@@ -266,5 +355,5 @@ body.dark-mode .diff-checker .diff-result .diff-add {
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/diff@5.1.0/dist/diff.min.js"></script>
-<script src="{% static 'tools/js/diff_checker.js' %}"></script>
+<script src="{% static 'tools/js/diff_checker.js' %}?v=20260520b"></script>
 {% endblock %}

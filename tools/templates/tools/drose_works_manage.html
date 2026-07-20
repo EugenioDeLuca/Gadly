@@ -1,0 +1,140 @@
+{% extends "tools/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Manage portfolio - Drose" %}{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage drose-works-page drose-works-manage-page{% endblock %}
+{% block extrahead %}
+<style id="drose-works-manage-thumb-antiflash">
+body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    opacity: 1;
+    visibility: visible;
+    animation: none;
+    transition: none;
+}
+</style>
+{% endblock %}
+{% block extra_css %}
+{% include "tools/includes/drose_works_media_head.html" %}
+{% endblock %}
+{% block blockbots %}
+<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=10">
+{% endblock %}
+{% block content %}
+<div class="drose-landing">
+    <div class="drose-landing__container">
+        <header class="drose-subpage__head">
+            <h1>{% trans "Manage portfolio" %}</h1>
+            <p class="drose-subpage__lead">{% trans "Choose a file for each slot — the upload starts automatically. Replacing a file updates the public gallery immediately." %}</p>
+            <p class="drose-works-manage-hint">{% trans "Photos: JPG, PNG, WebP, GIF (max 12 MB). Videos: MP4, WebM, MOV (max 80 MB)." %}</p>
+        </header>
+
+        <div class="drose-works-manage-status" id="drose-works-manage-status" aria-live="polite">
+            <p class="drose-works-manage-status__text{% if upload_success or removed %} drose-works-manage-status__text--success{% elif upload_error %} drose-works-manage-status__text--error{% else %} drose-works-manage-status__text--empty{% endif %}" id="drose-works-manage-status-text"{% if upload_error %} role="alert"{% elif upload_success or removed %} role="status"{% endif %}>
+                {% if upload_success %}{% trans "File uploaded successfully." %}
+                {% elif removed %}{% trans "File removed successfully." %}
+                {% elif upload_error %}{{ upload_error }}
+                {% else %}&nbsp;{% endif %}
+            </p>
+        </div>
+
+        <section class="drose-section" aria-labelledby="drose-works-manage-photos-title">
+            <h2 id="drose-works-manage-photos-title" class="drose-works-section-title"><span class="drose-works-section-ornament" aria-hidden="true"></span>{% trans "Photos" %}<span class="drose-works-section-ornament" aria-hidden="true"></span></h2>
+            <div class="drose-card-grid drose-works-grid drose-works-grid--photos">
+                {% for slot, item in photo_slots %}
+                <div class="drose-works-manage-slot">
+                    <p class="drose-works-manage-slot__label">{% blocktrans with num=slot %}Photo {{ num }}{% endblocktrans %}</p>
+                    <div class="drose-card drose-works-slot drose-works-slot--photo{% if item %} drose-works-slot--filled{% endif %}">
+                        {% if item %}
+                        <img class="drose-works-media" src="{{ item.gallery_thumb_src|default:item.gallery_thumb_url|default:item.file.url }}" alt="" width="320" height="240" decoding="sync"{% if forloop.counter <= 5 %} fetchpriority="high"{% endif %}>
+                        {% endif %}
+                    </div>
+                    <form method="post" enctype="multipart/form-data" class="drose-works-manage-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="upload">
+                        <input type="hidden" name="media_type" value="photo">
+                        <input type="hidden" name="slot" value="{{ slot }}">
+                        <div class="file-input-wrapper drose-works-file-input-wrapper">
+                            <input type="file" id="drose-photo-file-{{ slot }}" name="file" accept="image/jpeg,image/png,image/webp,image/gif">
+                            <label for="drose-photo-file-{{ slot }}" class="choose-file-btn drose-works-choose-file-btn">
+                                <span class="drose-works-file-name" data-default-label="{% trans 'Choose file' %}" data-uploading-label="{% trans 'Uploading…' %}">{% trans "Choose file" %}</span>
+                            </label>
+                        </div>
+                    </form>
+                    {% if item %}
+                    <form method="post" class="drose-works-manage-remove-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="media_type" value="photo">
+                        <input type="hidden" name="slot" value="{{ slot }}">
+                        <button type="submit" class="drose-works-manage-remove">{% trans "Remove" %}</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="drose-section" aria-labelledby="drose-works-manage-videos-title">
+            <h2 id="drose-works-manage-videos-title" class="drose-works-section-title"><span class="drose-works-section-ornament" aria-hidden="true"></span>{% trans "Videos" %}<span class="drose-works-section-ornament" aria-hidden="true"></span></h2>
+            <div class="drose-card-grid drose-works-grid drose-works-grid--videos">
+                {% for slot, item in video_slots %}
+                <div class="drose-works-manage-slot">
+                    <p class="drose-works-manage-slot__label">{% blocktrans with num=slot %}Video {{ num }}{% endblocktrans %}</p>
+                    <div class="drose-card drose-works-slot drose-works-slot--video{% if item %} drose-works-slot--filled{% endif %}">
+                        {% if item %}
+                        <video controls preload="metadata" playsinline>
+                            <source src="{{ item.file.url }}">
+                        </video>
+                        {% endif %}
+                    </div>
+                    <form method="post" enctype="multipart/form-data" class="drose-works-manage-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="upload">
+                        <input type="hidden" name="media_type" value="video">
+                        <input type="hidden" name="slot" value="{{ slot }}">
+                        <div class="file-input-wrapper drose-works-file-input-wrapper">
+                            <input type="file" id="drose-video-file-{{ slot }}" name="file" accept="video/mp4,video/webm,video/quicktime">
+                            <label for="drose-video-file-{{ slot }}" class="choose-file-btn drose-works-choose-file-btn">
+                                <span class="drose-works-file-name" data-default-label="{% trans 'Choose file' %}" data-uploading-label="{% trans 'Uploading…' %}">{% trans "Choose file" %}</span>
+                            </label>
+                        </div>
+                    </form>
+                    {% if item %}
+                    <form method="post" class="drose-works-manage-remove-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="media_type" value="video">
+                        <input type="hidden" name="slot" value="{{ slot }}">
+                        <button type="submit" class="drose-works-manage-remove">{% trans "Remove" %}</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <p class="drose-landing__back">
+            <a href="{% url 'drose_works' %}" class="drose-landing__back-link">{% trans "View public gallery" %}</a>
+        </p>
+    </div>
+</div>
+<script>
+(function () {
+    document.querySelectorAll(".drose-works-media").forEach(function (el) {
+        if (el.classList.contains("is-ready")) return;
+        if (el.tagName === "IMG" && el.complete && el.naturalWidth) {
+            el.classList.add("is-ready");
+        }
+    });
+})();
+</script>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/drose-works-manage.js' %}?v=4"></script>
+{% endblock %}

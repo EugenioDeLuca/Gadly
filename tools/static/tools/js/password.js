@@ -56,12 +56,72 @@ function generatePassword(showAlert) {
     return password;
 }
 
-/** Altezza del textarea = contenuto a font size invariato (CSS); niente riduzione font. */
+function isMobileViewport() {
+    return window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+}
+
+var MOBILE_PASSWORD_PAD_V = 12;
+var MOBILE_PASSWORD_PAD_H = 14;
+
+function resetPasswordBoxInlineSize() {
+    if (!passwordInput) return;
+    passwordInput.style.height = '';
+    passwordInput.style.overflowY = '';
+    passwordInput.style.overflow = '';
+    passwordInput.style.fontSize = '';
+    passwordInput.style.paddingTop = '';
+    passwordInput.style.paddingBottom = '';
+    passwordInput.style.paddingLeft = '';
+    passwordInput.style.paddingRight = '';
+}
+
+function centerPasswordInBox() {
+    if (!passwordInput) return;
+    passwordInput.style.paddingTop = MOBILE_PASSWORD_PAD_V + 'px';
+    passwordInput.style.paddingBottom = MOBILE_PASSWORD_PAD_V + 'px';
+    passwordInput.style.paddingLeft = MOBILE_PASSWORD_PAD_H + 'px';
+    passwordInput.style.paddingRight = MOBILE_PASSWORD_PAD_H + 'px';
+    var diff = passwordInput.clientHeight - passwordInput.scrollHeight;
+    if (diff > 0) {
+        var topExtra = Math.floor(diff / 2);
+        passwordInput.style.paddingTop = (MOBILE_PASSWORD_PAD_V + topExtra) + 'px';
+        passwordInput.style.paddingBottom = (MOBILE_PASSWORD_PAD_V + diff - topExtra) + 'px';
+    }
+}
+
+/** Mobile: box fisso 120px, font si riduce, testo centrato verticalmente (no scroll). */
+function fitPasswordToBox() {
+    if (!passwordInput || !isMobileViewport()) return;
+    passwordInput.style.height = '';
+    passwordInput.style.overflow = 'hidden';
+    passwordInput.style.overflowY = 'hidden';
+    if (!passwordInput.value) {
+        resetPasswordBoxInlineSize();
+        return;
+    }
+    passwordInput.style.paddingTop = MOBILE_PASSWORD_PAD_V + 'px';
+    passwordInput.style.paddingBottom = MOBILE_PASSWORD_PAD_V + 'px';
+    passwordInput.style.paddingLeft = MOBILE_PASSWORD_PAD_H + 'px';
+    passwordInput.style.paddingRight = MOBILE_PASSWORD_PAD_H + 'px';
+    var sizePx = 17;
+    var minPx = 10;
+    passwordInput.style.fontSize = sizePx + 'px';
+    while (passwordInput.scrollHeight > passwordInput.clientHeight && sizePx > minPx) {
+        sizePx -= 1;
+        passwordInput.style.fontSize = sizePx + 'px';
+    }
+    centerPasswordInBox();
+}
+
+/** Desktop: altezza da contenuto. */
 function sizePasswordBox() {
     if (!passwordInput) return;
+    if (isMobileViewport()) {
+        fitPasswordToBox();
+        return;
+    }
     if (!passwordInput.value) {
-        passwordInput.style.height = '';
-        passwordInput.style.overflowY = '';
+        resetPasswordBoxInlineSize();
         return;
     }
     passwordInput.style.fontSize = '';
@@ -78,18 +138,18 @@ function updatePassword(showAlert) {
             requestAnimationFrame(sizePasswordBox);
         });
     } else {
-        passwordInput.style.height = '';
-        passwordInput.style.overflowY = '';
+        resetPasswordBoxInlineSize();
     }
 }
 
-generateBtn.addEventListener('click', function() { updatePassword(true); });
+generateBtn.addEventListener('click', function () {
+    updatePassword(true);
+});
 
 function onLengthTweak() {
     hideError();
     passwordInput.value = '';
-    passwordInput.style.height = '';
-    passwordInput.style.overflowY = '';
+    resetPasswordBoxInlineSize();
 }
 
 lengthInput.addEventListener('input', onLengthTweak);

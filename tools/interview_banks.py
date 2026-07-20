@@ -150,6 +150,12 @@ def get_interview_simulator_payload():
         "loadError": _(
             "Could not load interview questions. Please reload the page."
         ),
+        "backToChoice": _("Back to setup"),
+        "voiceAndOptions": _("Voice & options"),
+        "hideOptions": _("Hide options"),
+        "newInterview": _("New interview"),
+        "copyConversation": _("Copy conversation"),
+        "chatActionsMenu": _("Actions"),
     }
     return {"questions": questions, "tips": tips, "labels": labels}
 

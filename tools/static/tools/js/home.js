@@ -6,18 +6,82 @@ document.addEventListener("DOMContentLoaded", function() {
     var userAuthenticated = window.GADLY_USER_AUTHENTICATED === true;
 
     var isMobileView = function() { return window.innerWidth <= 768; };
+    var OPEN_SECTIONS_KEY = "gadly-home-open-sections";
 
-    /* Category accordion (tablet + mobile) */
+    function saveOpenSections() {
+        if (!isMobileView()) return;
+        var ids = [];
+        toolSections.forEach(function(section) {
+            if (!section.classList.contains("is-open")) return;
+            var btn = section.querySelector(".category-btn");
+            if (btn && btn.id) ids.push(btn.id);
+        });
+        try {
+            sessionStorage.setItem(OPEN_SECTIONS_KEY, JSON.stringify(ids));
+        } catch (e) { /* ignore */ }
+    }
+
+    function closeAllSectionsExcept(exceptSection) {
+        toolSections.forEach(function(s) {
+            if (exceptSection && s === exceptSection) return;
+            s.classList.remove("is-open");
+            var b = s.querySelector(".category-btn");
+            if (b) b.setAttribute("aria-expanded", "false");
+        });
+    }
+
+    function restoreOpenSections() {
+        var root = document.documentElement;
+        if (!isMobileView()) {
+            root.removeAttribute("data-home-open");
+            return;
+        }
+        var ids = [];
+        try {
+            ids = JSON.parse(sessionStorage.getItem(OPEN_SECTIONS_KEY) || "[]");
+        } catch (e) {
+            ids = [];
+        }
+        var openId = ids.length ? ids[ids.length - 1] : null;
+        toolSections.forEach(function(section) {
+            var btn = section.querySelector(".category-btn");
+            var id = btn ? btn.id : "";
+            var open = openId && id === openId;
+            section.classList.toggle("is-open", open);
+            if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        root.removeAttribute("data-home-open");
+    }
+
+    /* Category accordion (tablet + mobile): una sola sezione aperta */
     var categoryBtns = document.querySelectorAll(".homepage .category-btn");
     categoryBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
             var section = btn.closest(".tool-section");
             if (!section) return;
             if (isMobileView()) {
+                if (btn.dataset.gadlyDidDrag === "1" ||
+                    btn.dataset.gadlySuppressClick === "1" ||
+                    document.documentElement.classList.contains("gadly-trash-drag-active")) {
+                    return;
+                }
                 var wasOpen = section.classList.contains("is-open");
-                section.classList.toggle("is-open", !wasOpen);
-                btn.setAttribute("aria-expanded", !wasOpen);
+                closeAllSectionsExcept(section);
+                if (!wasOpen) {
+                    section.classList.add("is-open");
+                    btn.setAttribute("aria-expanded", "true");
+                } else {
+                    section.classList.remove("is-open");
+                    btn.setAttribute("aria-expanded", "false");
+                }
+                saveOpenSections();
             }
+        });
+    });
+
+    document.querySelectorAll(".homepage a.tool-btn, .homepage a.shortcuts-btn").forEach(function(link) {
+        link.addEventListener("click", function() {
+            if (isMobileView()) saveOpenSections();
         });
     });
 
@@ -25,7 +89,13 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!isMobileView()) {
             toolSections.forEach(function(s) { s.classList.remove("is-open"); });
             categoryBtns.forEach(function(b) { b.setAttribute("aria-expanded", "true"); });
+            clearSearchMatchHighlights();
         }
+    });
+
+    restoreOpenSections();
+    window.addEventListener("pageshow", function(event) {
+        if (event.persisted) restoreOpenSections();
     });
 
     function getFavorites() {
@@ -48,28 +118,33 @@ document.addEventListener("DOMContentLoaded", function() {
         renderShortcuts();
     }
 
-    function getToolName(url) {
-        var a = document.querySelector('.tool-btn-wrap a[href="' + url + '"]');
-        return a ? a.textContent.trim() : url.replace(/\//g, '').replace(/-/g, ' ');
-    }
-
     function renderShortcuts() {
-        var section = document.getElementById('shortcuts-section');
-        var grid = document.getElementById('shortcuts-grid');
-        var container = document.querySelector('.homepage .container');
+        if (typeof window.gadlyRenderHomeShortcuts === "function") {
+            window.gadlyRenderHomeShortcuts(storageSuffix);
+            return;
+        }
+        var section = document.getElementById("shortcuts-section");
+        var grid = document.getElementById("shortcuts-grid");
+        var container = document.querySelector(".homepage .container");
         if (!section || !grid) return;
         var favs = getFavorites();
         if (favs.length === 0) {
-            section.style.display = 'none';
-            if (container) container.classList.remove('has-shortcuts');
+            section.hidden = true;
+            section.style.display = "none";
+            if (container) container.classList.remove("has-shortcuts");
             return;
         }
-        section.style.display = 'block';
-        if (container) container.classList.add('has-shortcuts');
+        section.hidden = false;
+        section.style.display = "block";
+        if (container) container.classList.add("has-shortcuts");
         grid.innerHTML = favs.map(function(url) {
-            var name = getToolName(url);
-            return '<a href="' + url + '" class="tool-btn shortcuts-btn">' + name + '</a>';
-        }).join('');
+            var a = document.querySelector('.tool-btn-wrap a[href="' + url + '"]');
+            var name = a ? a.textContent.trim() : url.replace(/\//g, "").replace(/-/g, " ");
+            return '<a href="' + url + '" class="tool-btn shortcuts-btn">' + name + "</a>";
+        }).join("");
+        if (typeof window.__gadlySetupTrashDragSources === "function") {
+            window.__gadlySetupTrashDragSources();
+        }
     }
 
     function updateStarIcons() {
@@ -85,28 +160,68 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            var q = this.value.trim().toLowerCase();
-            var firstMatch = null;
-            toolSections.forEach(function(section) {
-                var btns = section.querySelectorAll(".tool-btn-wrap");
-                var visible = 0;
-                btns.forEach(function(wrap) {
-                    var a = wrap.querySelector("a.tool-btn");
-                    var name = (a ? a.textContent : "").toLowerCase();
-                    var match = !q || name.indexOf(q) >= 0;
-                    wrap.style.display = match ? "" : "none";
-                    if (match) visible++;
-                });
-                section.style.display = visible > 0 ? "" : "none";
-                if (visible > 0) {
-                    if (!firstMatch) firstMatch = section;
-                    if (isMobileView()) section.classList.add("is-open");
+    function pulseSearchGridMatch(grid) {
+        grid.classList.remove("tool-search-match");
+        void grid.offsetWidth;
+        grid.classList.add("tool-search-match");
+    }
+
+    function clearSearchMatchHighlights() {
+        document.querySelectorAll(".homepage .tool-section .tool-grid.tool-search-match").forEach(function(grid) {
+            grid.classList.remove("tool-search-match");
+        });
+    }
+
+    function applyToolSearch(queryRaw) {
+        var q = (queryRaw || "").trim().toLowerCase();
+        var isSearching = q.length > 0;
+        var highlightMobile = isSearching && isMobileView();
+        if (!highlightMobile) {
+            clearSearchMatchHighlights();
+        }
+        toolSections.forEach(function(section) {
+            var btn = section.querySelector(".category-btn");
+            var grid = section.querySelector(".tool-grid");
+            var btns = section.querySelectorAll(".tool-btn-wrap");
+            var visible = 0;
+            btns.forEach(function(wrap) {
+                if (wrap.classList.contains("tool-btn-wrap--hidden-home")) {
+                    wrap.style.display = "none";
+                    return;
+                }
+                var a = wrap.querySelector("a.tool-btn");
+                var name = (a ? a.textContent : "").toLowerCase();
+                var match = !isSearching || name.indexOf(q) >= 0;
+                wrap.style.display = match ? "" : "none";
+                if (match) visible++;
+            });
+            section.style.display = !isSearching || visible > 0 ? "" : "none";
+            if (isMobileView()) {
+                if (isSearching && visible > 0) {
+                    section.classList.add("is-open");
+                    if (btn) btn.setAttribute("aria-expanded", "true");
+                } else if (!isSearching) {
+                    /* non chiudere le sezioni ripristinate quando la ricerca è vuota */
                 } else {
                     section.classList.remove("is-open");
+                    if (btn) btn.setAttribute("aria-expanded", "false");
                 }
-            });
+            }
+            if (grid) {
+                if (highlightMobile && visible > 0) {
+                    requestAnimationFrame(function() {
+                        pulseSearchGridMatch(grid);
+                    });
+                } else {
+                    grid.classList.remove("tool-search-match");
+                }
+            }
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            applyToolSearch(this.value);
         });
     }
 
@@ -131,7 +246,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (userAuthenticated) {
         updateStarIcons();
-        renderShortcuts();
+        var shortcutsGrid = document.getElementById("shortcuts-grid");
+        if (!shortcutsGrid || !shortcutsGrid.children.length) {
+            renderShortcuts();
+        }
     }
 
     var loginModal = document.getElementById("login-required-modal");

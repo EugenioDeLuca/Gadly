@@ -1,14 +1,14 @@
 {% load i18n %}
-<aside class="tool-quick-nav tool-quick-nav--hidden" data-ready="0" hidden aria-label="{% trans 'Quick tool navigation' %}">
+<aside class="tool-quick-nav tool-quick-nav--hidden" hidden aria-label="{% if LANGUAGE_CODE|slice:':2' == 'it' %}Navigazione tutti gli strumenti{% else %}All tools navigation{% endif %}">
     <div class="tool-quick-nav-head-row">
-        <div class="tool-quick-nav-head">{% trans "Quick Tools" %}</div>
+        <div class="tool-quick-nav-head">{% if LANGUAGE_CODE|slice:":2" == "it" %}All Tools{% else %}All Tools{% endif %}</div>
         <div class="tool-quick-nav-side-controls" aria-label="{% trans 'Quick nav side controls' %}">
             <button type="button" class="tool-quick-nav-side-btn" data-side="left">{% if LANGUAGE_CODE|slice:":2" == "it" %}Sinistra{% else %}Left{% endif %}</button>
             <button type="button" class="tool-quick-nav-side-btn" data-side="right">{% if LANGUAGE_CODE|slice:":2" == "it" %}Destra{% else %}Right{% endif %}</button>
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-text">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'text_tools_page' %}">{% trans "Text Tools" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Text Tools' %}">▼</button>
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-social">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'social_media_page' %}">{% trans "Social Media" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Social Media' %}">▼</button>
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-career">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'career_cv_page' %}">{% trans "Career & CV" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Career and CV' %}">▼</button>
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-file,category-image">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'file_image_page' %}">{% trans "File & Image" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle File and Image' %}">▼</button>
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-finance">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'finance_page' %}">{% trans "Finance" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Finance' %}">▼</button>
@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-web">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'web_seo_page' %}">{% trans "Web / SEO" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Web SEO' %}">▼</button>
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <div class="tool-quick-nav-group" data-open="0">
+    <div class="tool-quick-nav-group" data-open="0" data-home-category-ids="category-security">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'security_misc_page' %}">{% trans "Security & Misc" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle Security' %}">▼</button>
@@ -116,25 +116,25 @@
     </div>
 </aside>
 
-<aside class="tool-popular-nav tool-popular-nav--hidden" data-ready="0" hidden aria-label="{% trans 'Most used tools' %}">
-    <div class="tool-popular-nav-head">{% trans "Top 15 Tools" %}</div>
+<aside class="tool-popular-nav tool-popular-nav--hidden" hidden aria-label="{% trans 'Most used tools' %}">
+    <div class="tool-popular-nav-head">{% if LANGUAGE_CODE|slice:":2" == "it" %}Top 15 Tools{% else %}{% trans "Top 15 Tools" %}{% endif %}</div>
     <div class="tool-quick-nav-group" data-open="0">
         <div class="tool-quick-nav-row">
             <a class="tool-quick-nav-title" href="{% url 'top_tools_page' %}">{% trans "Most Used Tools" %}</a>
             <button type="button" class="tool-quick-nav-toggle" aria-expanded="false" aria-label="{% trans 'Toggle most used tools' %}">▼</button>
         </div>
         <div class="tool-quick-nav-links">
+            <a href="{% url 'cv_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore CV{% else %}{% trans "CV Generator" %}{% endif %}</a>
+            <a href="{% url 'cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Ottimizza CV{% else %}{% trans "CV Optimizer" %}{% endif %}</a>
+            <a href="{% url 'cover_letter_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}{% trans "Cover Letter Generator" %}{% endif %}</a>
+            <a href="{% url 'application_email_generator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}{% trans "Application Email Generator" %}{% endif %}</a>
+            <a href="{% url 'interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</a>
             <a href="{% url 'word_counter' %}">{% trans "Word Counter" %}</a>
             <a href="{% url 'translator' %}">{% trans "Translator" %}</a>
-            <a href="{% url 'remove_spaces' %}">{% trans "Remove Spaces" %}</a>
-            <a href="{% url 'diff_checker' %}">{% trans "Diff Checker" %}</a>
-            <a href="{% url 'json_formatter' %}">{% trans "JSON Formatter" %}</a>
             <a href="{% url 'image_editor' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a>
             <a href="{% url 'pdf_merger' %}">{% trans "PDF Merge" %}</a>
             <a href="{% url 'file_analyzer' %}">{% trans "File Analyzer" %}</a>
             <a href="{% url 'bio_generator' %}">{% trans "Bio Generator" %}</a>
-            <a href="{% url 'hashtag_generator' %}">{% trans "Hashtag Generator" %}</a>
-            <a href="{% url 'caption_generator' %}">{% trans "Caption Generator" %}</a>
             <a href="{% url 'calc_percentage' %}">{% trans "Percentage" %}</a>
             <a href="{% url 'calc_currency' %}">{% trans "Currency" %}</a>
             <a href="{% url 'password_gen' %}">{% trans "Password Gen" %}</a>
@@ -142,3 +142,36 @@
         </div>
     </div>
 </aside>
+<script>
+(function() {
+    function loadOpenStateInline() {
+        try {
+            var raw = localStorage.getItem("gadly-quick-nav-open-state-v1");
+            return raw ? JSON.parse(raw) : {};
+        } catch (e0) {
+            return {};
+        }
+    }
+    function getGroupKeyInline(group, index) {
+        var title = group.querySelector(".tool-quick-nav-title");
+        var text = title ? title.textContent.trim().toLowerCase() : ("group-" + index);
+        return "g:" + text + ":" + index;
+    }
+    var groups = document.querySelectorAll(".tool-quick-nav-group");
+    var saved = loadOpenStateInline();
+    var firstOpen = false;
+    groups.forEach(function(group) {
+        var idx = Array.prototype.indexOf.call(groups, group);
+        var key = getGroupKeyInline(group, idx);
+        var btn = group.querySelector(".tool-quick-nav-toggle");
+        if (!btn) return;
+        if (Object.prototype.hasOwnProperty.call(saved, key)) {
+            var isOpen = !!saved[key];
+            if (isOpen && firstOpen) isOpen = false;
+            if (isOpen) firstOpen = true;
+            group.setAttribute("data-open", isOpen ? "1" : "0");
+            btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        }
+    });
+})();
+</script>

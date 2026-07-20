@@ -137,6 +137,13 @@
     box-sizing: border-box;
 }
 
+@media (min-width: 769px) {
+    .image-editor .container {
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+}
+
 .image-editor-mobile-message {
     display: none;
     text-align: center;
@@ -294,7 +301,7 @@ body.editor-active.toolbar-floated .toolbar-wrap {
 }
 @media (max-width: 768px) {
     body.editor-active .toolbar-wrap {
-        top: 74px;
+        top: 82px;
     }
     #canvas {
         max-width: 100%;
@@ -1029,6 +1036,17 @@ body.editor-active.toolbar-floated .toolbar-wrap {
     }
     .ratio-check {
         font-size: 13px;
+    }
+}
+
+/* Desktop con immagine caricata: più spazio — nascondi All Tools / Top 15 */
+@media (min-width: 1281px) {
+    body.image-editor.editor-active .tool-quick-nav,
+    body.image-editor.editor-active .tool-popular-nav {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
 }
 

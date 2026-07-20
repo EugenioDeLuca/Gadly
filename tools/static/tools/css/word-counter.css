@@ -14,8 +14,34 @@
 .word-counter h1 {
     text-align: center;
     color: #003f7f;
-    margin: 0 0 24px 0;
+    margin: 0 0 8px 0;
     font-size: 2em;
+}
+
+.word-counter .tool-desc {
+    text-align: center;
+    color: #555;
+    margin: 0 0 24px;
+    max-width: none;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: 1.55;
+    font-size: 1rem;
+}
+
+body.dark-mode .word-counter .tool-desc {
+    color: var(--text-secondary, #b0c4de);
+}
+
+.word-counter .wc-spaces-note {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+body.dark-mode .word-counter .wc-spaces-note {
+    color: var(--text-muted, #8892a6);
 }
 
 /* Small helper links under titles/descriptions */
@@ -53,16 +79,17 @@
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 12px;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
     margin-bottom: 24px;
     resize: vertical;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s;
 }
 
+/* Desktop: come Markdown Preview (.text-tool textarea — bordo 2px, focus #007BFF, senza alone) */
 .word-counter textarea:focus {
     outline: none;
     border-color: #007BFF;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    box-shadow: none;
 }
 
 .word-counter textarea::placeholder {
@@ -190,6 +217,55 @@ body.word-counter.help-page .home-link-wrap {
         max-height: 52px !important;
         height: 52px !important;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    body.word-counter .site-main .container .button-group button,
+    body.word-counter .site-main .container .button-group .wc-action-btn {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        font-weight: 700 !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.word-counter .site-main .container .button-group button:focus,
+    body.word-counter .site-main .container .button-group button:focus-visible,
+    body.word-counter .site-main .container .button-group .wc-action-btn:focus,
+    body.word-counter .site-main .container .button-group .wc-action-btn:focus-visible {
+        transform: scale(1) !important;
+    }
+    body.word-counter .site-main .container .button-group button:active,
+    body.word-counter .site-main .container .button-group .wc-action-btn:active,
+    body.word-counter .site-main .container .button-group .tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.dark-mode.word-counter .site-main .container .button-group button,
+    body.dark-mode.word-counter .site-main .container .button-group .wc-action-btn {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .word-counter .tool-desc {
+        font-size: 15.2px;
+    }
+    .word-counter textarea {
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .word-counter textarea:focus {
+        outline: none;
+        border-color: #007BFF;
+        box-shadow: none;
+    }
+    body.dark-mode.word-counter .site-main .container textarea:focus {
+        border-color: rgba(220, 224, 230, 0.9) !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
     }
 }
 
@@ -207,7 +283,7 @@ body.word-counter.help-page .home-link-wrap {
     }
     .word-counter h1 {
         font-size: 1.6em;
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         text-align: center;
     }
     body.word-counter.help-page .container h1 {
@@ -217,8 +293,7 @@ body.word-counter.help-page .home-link-wrap {
         margin-bottom: 20px;
         font-size: 1rem;
     }
-    .word-counter textarea,
-    .word-counter textarea:focus {
+    .word-counter textarea {
         min-height: 280px;
         font-family: Arial, sans-serif;
         font-size: 17px;
@@ -228,9 +303,13 @@ body.word-counter.help-page .home-link-wrap {
         width: 100%;
         box-sizing: border-box;
         background: #f8f9fa;
-        border-color: #ddd;
+        border: 1px solid #ddd;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+    }
+    .word-counter textarea:focus {
+        border-color: #007BFF;
+        box-shadow: none;
     }
     body.dark-mode.word-counter .site-main .container textarea,
     body.dark-mode.word-counter .site-main .container textarea:focus {
@@ -253,12 +332,12 @@ body.word-counter.help-page .home-link-wrap {
         text-align: center;
         width: 100%;
     }
-    .word-counter .tool-desc {
+    .word-counter .wc-spaces-note {
         margin-bottom: 8px;
     }
     .word-counter .button-group {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         flex-wrap: nowrap;
         justify-content: flex-start;
         align-items: stretch;
@@ -276,46 +355,40 @@ body.word-counter.help-page .home-link-wrap {
         padding: 12px 20px;
         box-sizing: border-box;
         font-size: 1.05rem;
-        font-weight: 600;
-        border-radius: 12px;
-        border: none;
-        background: var(--btn-primary, #003f7f);
-        color: white;
-        cursor: pointer;
         -webkit-appearance: none;
         appearance: none;
-        transition: transform 0.05s ease-out;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
     }
-    body.word-counter .site-main .container .button-group button:focus {
+    /* Mobile: stessi bottoni di Remove Spaces (gradiente + scale al tap) */
+    body.word-counter .site-main .container .button-group button,
+    body.word-counter .site-main .container .button-group .wc-action-btn {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        font-weight: 700 !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    body.word-counter .site-main .container .button-group button:focus,
+    body.word-counter .site-main .container .button-group button:focus-visible,
+    body.word-counter .site-main .container .button-group .wc-action-btn:focus,
+    body.word-counter .site-main .container .button-group .wc-action-btn:focus-visible {
         transform: scale(1) !important;
     }
-    /* Touch: sul tap non cambiare sfondo (evita lampo); hover gradient solo con mouse */
-    @media (hover: hover) and (pointer: fine) {
-        body.word-counter .site-main .container .button-group button:hover {
-            background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-            border: 2px solid #003f7f !important;
-            color: #003f7f !important;
-            transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
-        }
+    body.word-counter .site-main .container .button-group button:active,
+    body.word-counter .site-main .container .button-group .wc-action-btn:active,
+    body.word-counter .site-main .container .button-group .tap-active {
+        transform: scale(0.96) !important;
     }
-    body.word-counter .site-main .container .button-group button:active {
-        transform: scale(1.03) !important;
-    }
-    body.dark-mode.word-counter .site-main .container .button-group button:focus {
-        transform: scale(1) !important;
-    }
-    @media (hover: hover) and (pointer: fine) {
-        body.dark-mode.word-counter .site-main .container .button-group button:hover {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-            border: 2px solid var(--text-secondary) !important;
-            color: var(--text-secondary) !important;
-            transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
-        }
-    }
-    body.dark-mode.word-counter .site-main .container .button-group button:active {
-        transform: scale(1.03) !important;
+    body.dark-mode.word-counter .site-main .container .button-group button,
+    body.dark-mode.word-counter .site-main .container .button-group .wc-action-btn {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
     }
     /* Desktop text su mobile - nascondi versione corta se presente */
     .word-counter .button-group .btn-text-mobile {

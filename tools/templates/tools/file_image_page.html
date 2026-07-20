@@ -3,6 +3,9 @@
 {% load i18n %}
 {% block title %}{% trans "File & Image Tools" %}{% endblock %}
 {% block body_class %}web-seo text-tools-page{% endblock %}
+{% block extrahead %}
+<meta name="description" content="{% trans 'Gadly file and image tools: PDF merge/split, file analyzer, image editor, QR codes, colors, and charts.' %}">
+{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/web-seo.css' %}?v=14">
 <style>
@@ -23,7 +26,7 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "File & Image Tools" %}</h1>
-  <p class="tool-desc">{% trans "Quick access to file and image tools." %}</p>
+  <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Accedi a tutti i tool File & Image per unire o dividere PDF, analizzare file, modificare immagini, convertire colori e visualizzare dati in modo rapido e professionale.{% else %}Access all File & Image tools to merge or split PDFs, analyze files, edit images, convert colors, and visualize data quickly and professionally.{% endif %}</p>
   <div class="text-tools-page-grid">
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'file_analyzer' %}">{% trans "File Analyzer" %}</a></div>
     <div class="tool-btn-wrap"><a class="tool-btn" href="{% url 'pdf_merger' %}">{% trans "PDF Merge" %}</a></div>
