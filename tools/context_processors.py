@@ -50,3 +50,34 @@ def user_profile(request):
             ctx["user_avatar_inline_account"] = ""
         return ctx
     return {"user_profile": None, "user_home_hidden_tools": []}
+
+
+def home_layout(request):
+    """Home first-paint layout: prehide CSS + hidden URL set for SSR classes."""
+    match = getattr(request, "resolver_match", None)
+    if not match or match.url_name != "home":
+        return {
+            "home_hidden_prehide_css": "",
+            "home_hidden_url_set": set(),
+            "home_section_paths_json": "{}",
+        }
+
+    from .home_hidden_prehide import (
+        build_home_hidden_prehide_css,
+        hidden_url_set as build_hidden_url_set,
+        home_section_paths_json,
+    )
+
+    tools = []
+    if request.user.is_authenticated:
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        stored = profile.home_hidden_tools
+        if isinstance(stored, list):
+            tools = stored
+
+    hidden = build_hidden_url_set(tools)
+    return {
+        "home_hidden_prehide_css": build_home_hidden_prehide_css(tools) if hidden else "",
+        "home_hidden_url_set": hidden,
+        "home_section_paths_json": home_section_paths_json(),
+    }

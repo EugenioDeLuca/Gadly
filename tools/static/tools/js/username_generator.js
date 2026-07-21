@@ -106,8 +106,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         trigger.addEventListener("click", function(e) {
             e.stopPropagation();
+            var wasOpen = styleWrap.classList.contains("open");
             document.querySelectorAll(".text-tool-select.open").forEach(function(s) { s.classList.remove("open"); });
-            styleWrap.classList.toggle("open");
+            if (!wasOpen) {
+                styleWrap.classList.add("open");
+            }
         });
         menu.addEventListener("click", function(e) { e.stopPropagation(); });
     }

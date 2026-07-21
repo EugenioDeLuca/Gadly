@@ -386,6 +386,33 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         transform: scale(1.03) !important;
     }
 
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
+        background: #dc3545 !important;
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .chart-container .chart-preview.viz-chart-preview-pie {
+        aspect-ratio: 1 / 1 !important;
+        max-width: 540px !important;
+        min-height: 440px !important;
+        max-height: 580px !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .chart-container .chart-preview.viz-chart-preview-pie #chart-canvas {
+        min-height: 440px !important;
+        max-height: 540px !important;
+    }
+
     body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
     body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover,
     body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:focus,
@@ -775,12 +802,17 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.data-viz #data-input,
     body.data-viz #data-input:focus {
         min-height: 130px !important;
-        height: 152px !important;
+        max-height: 280px;
         padding: 12px !important;
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
-        overflow-y: hidden !important;
+        overflow-y: hidden;
+        resize: none !important;
+    }
+
+    body.data-viz #data-input.viz-data-input-scroll {
+        overflow-y: auto !important;
     }
 
     body.data-viz #data-input::placeholder {
@@ -807,6 +839,21 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
+    }
+
+    body.data-viz .site-main .container .text-tool-select-trigger,
+    body.data-viz .site-main .container .text-tool-select-trigger:hover,
+    body.data-viz .site-main .container .text-tool-select-trigger:focus,
+    body.data-viz .site-main .container .text-tool-select-trigger:focus-visible,
+    body.data-viz .site-main .container .text-tool-select-trigger:active,
+    body.data-viz .site-main .container .text-tool-select-trigger.tap-active,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger,
+    body.data-viz .site-main .container .viz-opt-field .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
     }
 
     body.data-viz .viz-opt-field input[type="text"],
@@ -868,8 +915,9 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         outline: none !important;
     }
 
-    body.data-viz:not(.dark-mode) .text-tool-select-trigger::after {
-        color: #003f7f !important;
+    body.data-viz:not(.dark-mode) .text-tool-select-trigger::after,
+    body.data-viz:not(.dark-mode) #chart-type-wrap .text-tool-select-trigger::after {
+        border-top-color: #003f7f !important;
     }
 
     body.data-viz:not(.dark-mode) .text-tool-select-menu {
@@ -913,6 +961,51 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
 
     body.dark-mode.data-viz .viz-opt-field input[type="text"],
     body.dark-mode.data-viz .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]:hover,
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]:hover,
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]:focus,
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]:focus,
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]:not(:focus),
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #chart-title,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #chart-title:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #chart-title:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-top-n,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-top-n:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-top-n:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-y-unit,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-y-unit:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-y-unit:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        background-color: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]:-webkit-autofill,
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #chart-title:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-top-n:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-y-unit:-webkit-autofill,
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]:-webkit-autofill:focus,
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #chart-title:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-top-n:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel #viz-y-unit:-webkit-autofill:focus {
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+        color: #1a1a2e !important;
+    }
+
+    body.dark-mode.data-viz .viz-opt-field input[type="text"]::placeholder,
+    body.dark-mode.data-viz .viz-opt-field input[type="number"]::placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        opacity: 1 !important;
+    }
+
     body.dark-mode.data-viz .viz-opt-field .text-tool-select-trigger,
     body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li,
     body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li.selected {
@@ -938,8 +1031,9 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         outline: none !important;
     }
 
-    body.dark-mode.data-viz .text-tool-select-trigger::after {
-        color: var(--text-secondary, #b0c4de) !important;
+    body.dark-mode.data-viz .text-tool-select-trigger::after,
+    body.dark-mode.data-viz #chart-type-wrap .text-tool-select-trigger::after {
+        border-top-color: #b0c4de !important;
     }
 
     body.dark-mode.data-viz .text-tool-select-menu {
@@ -958,6 +1052,11 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.dark-mode.data-viz .text-tool-select-menu li:hover,
     body.dark-mode.data-viz .text-tool-select-menu li:active {
         background: rgba(0, 63, 127, 0.2) !important;
+    }
+
+    body.dark-mode.data-viz .text-tool-select-menu li.selected {
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
     }
 
     /* Errore: 12px sopra select + Genera (base.css azzera i margin su mobile) */
@@ -996,9 +1095,87 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         text-align: center;
     }
 
+    body.data-viz .data-viz .tool-desc,
+    body.data-viz .site-main .data-viz > .container > .tool-desc {
+        font-size: 15.2px !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > .tool-help {
+        margin: 8px 0 20px !important;
+        font-size: 1rem !important;
+        text-align: center !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > .tool-help a,
+    body.data-viz .site-main .data-viz > .container > .tool-help a:visited {
+        display: inline !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        font-weight: 500 !important;
+        font-size: 1rem !important;
+        text-decoration: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > .tool-help a:hover,
+    body.data-viz .site-main .data-viz > .container > .tool-help a:focus,
+    body.data-viz .site-main .data-viz > .container > .tool-help a:focus-visible,
+    body.data-viz .site-main .data-viz > .container > .tool-help a:active {
+        color: #0056b3 !important;
+        -webkit-text-fill-color: #0056b3 !important;
+        text-decoration: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a,
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:visited {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:focus,
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:focus-visible,
+    body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:active {
+        color: #a8d4ff !important;
+        -webkit-text-fill-color: #a8d4ff !important;
+        text-decoration: underline !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
 
     body.data-viz .data-input-section label {
         text-align: center;
+        font-size: 15.2px !important;
+    }
+
+    body.data-viz .viz-data-hint {
+        font-size: 15.2px !important;
+    }
+
+    body.data-viz .viz-options-checks {
+        align-items: stretch !important;
+    }
+
+    body.data-viz .viz-options-checks-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+    }
+
+    body.data-viz .viz-options-checks .viz-inline-check {
+        font-size: 15px !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
     }
 
     body.data-viz .chart-options {
@@ -1103,10 +1280,22 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         touch-action: manipulation !important;
     }
 
-    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected {
-        background: #d0e8f9 !important;
-        border: 2px solid #003f7f !important;
-        box-shadow: inset 0 0 0 1px #003f7f !important;
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected:focus-visible,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.tap-active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn.selected.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-color: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     body.data-viz:not(.dark-mode) .site-main .container .viz-example-btn:active,
@@ -1132,10 +1321,22 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         touch-action: manipulation !important;
     }
 
-    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected {
-        background: rgba(176, 196, 222, 0.12) !important;
-        border: 2px solid #b0c4de !important;
-        box-shadow: inset 0 0 0 1px #b0c4de !important;
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected:hover,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected:focus,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected:focus-visible,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn:active,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.tap-active,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected:active,
+    body.dark-mode.data-viz .site-main .container .viz-example-btn.selected.tap-active {
+        background: rgba(126, 226, 160, 0.20) !important;
+        background-color: rgba(126, 226, 160, 0.20) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     body.dark-mode.data-viz .site-main .container .viz-example-btn:active,
@@ -1186,7 +1387,9 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     }
 
     /* Download — dimensioni (mobile light) */
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn {
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link {
         font-weight: 700 !important;
         min-height: 52px !important;
         height: 52px !important;
@@ -1203,10 +1406,10 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         touch-action: manipulation !important;
     }
 
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):hover,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus-visible {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         background-color: #d0e8f9 !important;
         background-image: none !important;
@@ -1215,20 +1418,41 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         -webkit-text-fill-color: #003f7f !important;
     }
 
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
-        background: #28a745 !important;
-        background-color: #28a745 !important;
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active:not(.downloaded),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active:not(.downloaded) {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
         background-image: none !important;
-        border: 2px solid #28a745 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
         transform: scale(0.96) !important;
     }
 
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied) {
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-color: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        transform: scale(1) !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded.tap-active {
+        background: rgba(40, 167, 69, 0.22) !important;
+        background-color: rgba(40, 167, 69, 0.22) !important;
+        background-image: none !important;
+        border: 2px solid #28a745 !important;
+        color: #1f7a35 !important;
+        -webkit-text-fill-color: #1f7a35 !important;
+        transform: scale(0.96) !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link:not(:active):not(.tap-active):not(.copied) {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         background-color: #d0e8f9 !important;
         border: 2px solid #003f7f !important;
@@ -1236,32 +1460,74 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         -webkit-text-fill-color: #003f7f !important;
     }
 
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active {
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active:not(.copied),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active:not(.copied),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active:not(.copied),
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.tap-active:not(.copied) {
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         background-color: #d0e8f9 !important;
+        background-image: none !important;
         border: 2px solid #003f7f !important;
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
+        transform: scale(0.96) !important;
     }
 
     body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
-        background: #dc3545 !important;
-        background-color: #dc3545 !important;
-        border: 2px solid #dc3545 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
+        background: #ffe6e6 !important;
+        background-color: #ffe6e6 !important;
+        background-image: none !important;
+        border: 2px solid #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
         font-weight: 700 !important;
+        transform: scale(1) !important;
     }
 
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied.tap-active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:active,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied.tap-active {
+        background: #ffe6e6 !important;
+        background-color: #ffe6e6 !important;
+        background-image: none !important;
+        border: 2px solid #e8a5a5 !important;
+        color: #c82333 !important;
+        -webkit-text-fill-color: #c82333 !important;
+        font-weight: 700 !important;
+        transform: scale(0.96) !important;
+    }
+
+    /* Mobile light: Reset — neutro a riposo; rosso ~2s con .viz-reset-flash */
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn,
     body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:focus-visible,
     body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn:active,
     body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.tap-active {
+        background: #fff !important;
+        background-color: #fff !important;
+        background-image: none !important;
+        border: 2px solid #b8d4f0 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash:focus,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash:focus-visible,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash:active,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-reset-btn.viz-reset-flash.tap-active {
         background: #ffe6e6 !important;
         background-color: #ffe6e6 !important;
         border: 2px solid #e8a5a5 !important;
-        border-color: #e8a5a5 !important;
         color: #c82333 !important;
         -webkit-text-fill-color: #c82333 !important;
         font-weight: 600 !important;
@@ -1269,22 +1535,161 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         outline: none !important;
     }
 
-    body.data-viz .text-tool-select-trigger:active,
-    body.data-viz .text-tool-select-trigger.tap-active {
+    /* Mobile light: Copia dati — niente hover/focus sticky; rosso solo con .copied */
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data:hover,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data:focus,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data:focus-visible,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data:active,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.tap-active {
+        background: #fff !important;
+        background-color: #fff !important;
+        background-image: none !important;
+        border: 2px solid #b8d4f0 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied:hover,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied:focus,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied:focus-visible,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied:active,
+    body.data-viz:not(.dark-mode) .site-main .container #btn-copy-data.copied.tap-active {
+        background: #dc3545 !important;
+        background-color: #dc3545 !important;
+        border: 2px solid #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.data-viz .site-main .container #btn-copy-data.tap-active,
+    body.data-viz .site-main .container #btn-copy-data:active.tap-active {
         transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+
+    /* Dropdown Opzioni grafico + tipo grafico: scale al tap (battuta da :focus scale(1) in base.css) */
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:hover,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:focus,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:focus-visible,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:active:not(.tap-active),
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:hover,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:focus,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:focus-visible,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:active:not(.tap-active) {
+        transform: scale(1) !important;
+        transform-origin: center center !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger.tap-active,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:focus.tap-active,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:focus-visible.tap-active,
+    body.data-viz .site-main .container .viz-options-panel .text-tool-select-trigger:active.tap-active,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger.tap-active,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:focus.tap-active,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:focus-visible.tap-active,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:active.tap-active {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
     }
 
     body.data-viz .home-link-wrap {
         text-align: center;
     }
 
-    /* Light mobile: niente card/contenitore sul risultato grafico */
-    body.data-viz:not(.dark-mode) .site-main .data-viz > .container > .chart-container {
+    /* Mobile: niente card sul risultato grafico — preview a tutta larghezza 338px */
+    body.data-viz .site-main .data-viz > .container > .chart-container {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
+        margin-top: 12px !important;
+        gap: 12px !important;
         border-radius: 0 !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > .chart-container .chart-preview {
+        width: 100% !important;
+        max-width: 338px !important;
+        min-height: 400px !important;
+        max-height: 540px !important;
+        aspect-ratio: auto !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container > .chart-container #chart-canvas,
+    body.data-viz .site-main .data-viz > .container > .chart-container .viz-boot-chart-img {
+        width: 100% !important;
+        min-height: 400px !important;
+        max-height: none !important;
+        display: block !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body.data-viz .viz-export-buttons {
+        width: 338px !important;
+        max-width: 338px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    body.data-viz .viz-export-buttons .chart-download-btn {
+        width: 338px !important;
+        max-width: 338px !important;
+        flex: none !important;
+    }
+
+    /* Copia dati + Reset: 47.5px come palette/ordina */
+    body.data-viz .site-main .data-viz > .container .viz-data-toolbar .viz-mini-btn,
+    body.data-viz .site-main .data-viz > .container .viz-data-toolbar #btn-copy-data,
+    body.data-viz .site-main .data-viz > .container .viz-data-toolbar #btn-clear-data {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
+        font-size: 16px !important;
+    }
+
+    /* Palette colori + Ordina dati: 47.5px come tipo grafico (batte --mobile-control-h 52px) */
+    body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field .text-tool-select.viz-opt-select,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field:has(#viz-palette) .text-tool-select,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field:has(#viz-sort) .text-tool-select {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .viz-options-panel #viz-palette + .text-tool-select-trigger,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel #viz-sort + .text-tool-select-trigger,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field:has(#viz-palette) .text-tool-select-trigger,
+    body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field:has(#viz-sort) .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 36px 0 16px !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
     }
 }
 
@@ -1294,16 +1699,6 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     }
     #btn-generate {
         min-width: 100%;
-    }
-    .chart-container {
-        padding: 16px;
-    }
-    .chart-container .chart-preview {
-        min-height: 280px;
-        max-height: 350px;
-    }
-    #chart-canvas {
-        max-height: 350px;
     }
 }
 
@@ -1324,15 +1719,53 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     }
 
     body.dark-mode.data-viz .site-main .container #data-input,
-    body.dark-mode.data-viz .site-main .container #data-input:focus {
+    body.dark-mode.data-viz .site-main .container #data-input:hover,
+    body.dark-mode.data-viz .site-main .container #data-input:focus,
+    body.dark-mode.data-viz .site-main .container #data-input:not(:focus) {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:hover,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:hover,
+    body.dark-mode.data-viz .site-main .container #chart-title,
+    body.dark-mode.data-viz .site-main .container #chart-title:focus,
+    body.dark-mode.data-viz .site-main .container #chart-title:not(:focus),
+    body.dark-mode.data-viz .site-main .container #viz-top-n,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:focus,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:not(:focus),
+    body.dark-mode.data-viz .site-main .container #viz-y-unit,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:focus,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]::placeholder,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]::placeholder,
+    body.dark-mode.data-viz .site-main .container #chart-title::placeholder,
+    body.dark-mode.data-viz .site-main .container #viz-top-n::placeholder,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit::placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        opacity: 1 !important;
     }
 
     body.dark-mode.data-viz .site-main .container #data-input::placeholder {
-        color: #555 !important;
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
         opacity: 1 !important;
     }
 
@@ -1384,24 +1817,14 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         -webkit-text-fill-color: #e88 !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container > .chart-container {
-        background: rgba(255, 255, 255, 0.06) !important;
-        border: 1px solid rgba(176, 196, 222, 0.35) !important;
-        color: #b0c4de !important;
-        -webkit-text-fill-color: #b0c4de !important;
-    }
-
-    body.dark-mode.data-viz .site-main .data-viz > .container > .chart-container .chart-preview {
-        color: #b0c4de !important;
-        -webkit-text-fill-color: #b0c4de !important;
-    }
-
     body.dark-mode.data-viz .site-main .data-viz > .container > #data-viz-result.result-area:not(.error):not(.hidden) {
         color: #b0c4de !important;
         -webkit-text-fill-color: #b0c4de !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn {
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link {
         font-weight: 700 !important;
         min-height: 52px !important;
         height: 52px !important;
@@ -1418,10 +1841,10 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         touch-action: manipulation !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus-visible {
         background: #1e2a3a !important;
         background-color: #1e2a3a !important;
         background-image: none !important;
@@ -1430,40 +1853,86 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         -webkit-text-fill-color: #b0c4de !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
-        background: #28a745 !important;
-        background-color: #28a745 !important;
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active:not(.downloaded),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active:not(.downloaded) {
+        background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
         background-image: none !important;
-        border: 2px solid #28a745 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
         transform: scale(0.96) !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied) {
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+        background: rgba(126, 226, 160, 0.20) !important;
+        background-color: rgba(126, 226, 160, 0.20) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded.tap-active {
+        background: rgba(126, 226, 160, 0.20) !important;
+        background-color: rgba(126, 226, 160, 0.20) !important;
+        background-image: none !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        transform: scale(0.96) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:not(:active):not(.tap-active):not(.copied) {
         background: #1e2a3a !important;
         border: 2px solid #b0c4de !important;
         color: #b0c4de !important;
         -webkit-text-fill-color: #b0c4de !important;
     }
 
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active {
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active:not(.copied),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active:not(.copied),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active:not(.copied),
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.tap-active:not(.copied) {
         background: #1e2a3a !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
         border: 2px solid #b0c4de !important;
         color: #b0c4de !important;
         -webkit-text-fill-color: #b0c4de !important;
+        transform: scale(0.96) !important;
     }
 
     body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
-    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
-        background: #dc3545 !important;
-        border-color: #dc3545 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+        font-weight: 700 !important;
+        transform: scale(1) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied.tap-active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:active,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+        font-weight: 700 !important;
+        transform: scale(0.96) !important;
     }
 
     body.dark-mode.data-viz .home-link-wrap svg path {
@@ -1496,6 +1965,21 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     font-weight: 600;
     color: #555;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    /* Mobile light: “Examples” leggibile */
+    body.data-viz:not(.dark-mode) .viz-examples-label {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        font-size: 15px !important;
+    }
+    /* Mobile dark: colore tema, non #333 */
+    body.dark-mode.data-viz .viz-examples-label {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-size: 15.2px !important;
+    }
 }
 
 /* Stesso aspetto dei bottoni template / Genera grafico */
@@ -1804,18 +2288,45 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
 }
 
 .chart-download-btn.viz-export-secondary:hover,
-.viz-export-buttons .viz-copy-btn:hover {
+.viz-export-buttons .viz-copy-btn:hover:not(.copied) {
     background: #0056b3;
     border-color: #0056b3;
 }
 
-/* Copia link mobile: niente scale al tap */
-body.data-viz .viz-export-buttons .viz-copy-btn.tap-active,
-body.data-viz .viz-export-buttons #btn-share-link.tap-active,
-body.data-viz .viz-data-toolbar #btn-copy-data.tap-active,
-body.data-viz .viz-data-toolbar #btn-copy-data.copied,
-body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
-    transform: none !important;
+@media (max-width: 768px) {
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .chart-download-btn.viz-copy-btn,
+    body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.chart-download-btn {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        background-color: #d0e8f9 !important;
+        background-image: none !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+}
+
+/* Desktop: Copia link senza scale al tap; mobile sovrascrive in @media max-width 768px */
+@media (min-width: 769px) {
+    body.data-viz .viz-export-buttons .viz-copy-btn.tap-active,
+    body.data-viz .viz-export-buttons #btn-share-link.tap-active,
+    body.data-viz .viz-data-toolbar #btn-copy-data.tap-active,
+    body.data-viz .viz-data-toolbar #btn-copy-data.copied,
+    body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
+        transform: none !important;
+    }
+
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+    body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+    body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied {
+        background: #dc3545 !important;
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
 }
 
 .viz-export-buttons .viz-copy-btn.copied,
@@ -1850,28 +2361,48 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
     }
 
     body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied,
-    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied:hover {
-        background: #dc3545 !important;
-        border-color: #dc3545 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied:hover,
+    body.dark-mode.data-viz .viz-export-buttons #btn-share-link.copied,
+    body.dark-mode.data-viz .viz-export-buttons #btn-share-link.copied:hover {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
     }
 
-    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active) {
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded) {
         background: #1e2a3a;
         border: 2px solid #b0c4de;
         color: #b0c4de;
         -webkit-text-fill-color: #b0c4de;
     }
 
-    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:active,
-    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.tap-active,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:active:not(.downloaded),
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.tap-active:not(.downloaded) {
+        background: #1e2a3a !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
     body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded,
     body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded:hover {
-        background: #28a745 !important;
-        border: 2px solid #28a745 !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
+        background: rgba(126, 226, 160, 0.20) !important;
+        background-color: rgba(126, 226, 160, 0.20) !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+    }
+
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded:active,
+    body.dark-mode.data-viz .viz-export-buttons .viz-download-btn.downloaded.tap-active {
+        background: rgba(126, 226, 160, 0.20) !important;
+        background-color: rgba(126, 226, 160, 0.20) !important;
+        border: 2px solid #7ee2a0 !important;
+        color: #7ee2a0 !important;
+        -webkit-text-fill-color: #7ee2a0 !important;
+        transform: scale(0.96) !important;
     }
 
     body.data-viz:not(.dark-mode) .viz-mini-btn.copied,
@@ -1884,7 +2415,7 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
 
     body.dark-mode.data-viz .viz-examples-label,
     body.dark-mode.data-viz .viz-inline-check,
-    body.dark-mode.data-viz .viz-opt-field {
+    body.dark-mode.data-viz .viz-opt-field > span {
         color: #b0c4de;
     }
 
@@ -1895,18 +2426,61 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
         -webkit-text-fill-color: #b0c4de;
     }
 
-    body.dark-mode.data-viz .viz-example-btn:hover,
-    body.dark-mode.data-viz .viz-example-btn.selected {
+    body.dark-mode.data-viz .viz-example-btn:hover {
         background: rgba(176, 196, 222, 0.12);
         border-color: #b0c4de;
         color: #b0c4de;
         -webkit-text-fill-color: #b0c4de;
     }
 
+    body.dark-mode.data-viz .viz-example-btn.selected,
+    body.dark-mode.data-viz .viz-example-btn.selected:hover,
+    body.dark-mode.data-viz .viz-example-btn:active,
+    body.dark-mode.data-viz .viz-example-btn.tap-active {
+        background: rgba(126, 226, 160, 0.20);
+        border-color: #7ee2a0;
+        color: #7ee2a0;
+        -webkit-text-fill-color: #7ee2a0;
+    }
+
     body.dark-mode.data-viz .viz-mini-btn {
         background: rgba(255, 255, 255, 0.06);
         border-color: rgba(176, 196, 222, 0.45);
         color: #b0c4de;
+    }
+
+    /* Mobile dark: Reset — testo leggibile; rosso ~2s con .viz-reset-flash */
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn:hover,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn:focus,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn:focus-visible,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn:active,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.tap-active {
+        background: rgba(255, 255, 255, 0.06) !important;
+        background-color: rgba(255, 255, 255, 0.06) !important;
+        background-image: none !important;
+        border: 2px solid rgba(176, 196, 222, 0.45) !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash:hover,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash:focus,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash:focus-visible,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash:active,
+    body.dark-mode.data-viz .site-main .container .viz-reset-btn.viz-reset-flash.tap-active {
+        background: rgba(220, 80, 80, 0.15) !important;
+        background-color: rgba(220, 80, 80, 0.15) !important;
+        border: 2px solid #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     body.dark-mode.data-viz .viz-preview-scroll,
@@ -1937,7 +2511,6 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
     body.dark-mode.data-viz .site-main .data-viz .container .tool-desc,
     body.dark-mode.data-viz .data-input-section label,
     body.dark-mode.data-viz .chart-options label,
-    body.dark-mode.data-viz .viz-examples-label,
     body.dark-mode.data-viz .viz-inline-check,
     body.dark-mode.data-viz .viz-opt-field,
     body.dark-mode.data-viz .viz-file-name,
@@ -2026,20 +2599,6 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
 
     body.dark-mode.data-viz .viz-opt-field .text-tool-select-menu li.selected {
         font-weight: 400 !important;
-    }
-
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a,
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:visited {
-        color: #003f7f !important;
-        -webkit-text-fill-color: #003f7f !important;
-    }
-
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:hover,
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:focus,
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:focus-visible,
-    body.dark-mode.data-viz .site-main .data-viz .container .tool-help a:active {
-        color: #0056b3 !important;
-        -webkit-text-fill-color: #0056b3 !important;
     }
 
     body.dark-mode.data-viz .site-main .container #btn-generate,
@@ -2139,7 +2698,7 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
         -webkit-text-fill-color: white !important;
     }
 
-    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn:hover,
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn:hover:not(.copied),
     body.dark-mode.data-viz .viz-export-buttons .viz-download-btn:hover {
         background: #0056b3 !important;
         border-color: #0056b3 !important;
@@ -2155,18 +2714,10 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
         -webkit-text-fill-color: #1f7a35 !important;
     }
 
-    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.tap-active {
+    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.tap-active:not(.copied),
+    body.dark-mode.data-viz .viz-export-buttons #btn-share-link.tap-active:not(.copied) {
         background: #003f7f !important;
         border-color: #003f7f !important;
-        color: #fff !important;
-        -webkit-text-fill-color: #fff !important;
-        transform: none !important;
-    }
-
-    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied,
-    body.dark-mode.data-viz .viz-export-buttons .viz-copy-btn.copied:hover {
-        background: #dc3545 !important;
-        border-color: #dc3545 !important;
         color: #fff !important;
         -webkit-text-fill-color: #fff !important;
         transform: none !important;
@@ -2281,15 +2832,6 @@ body.data-viz .viz-data-toolbar #btn-copy-data.copied:hover {
         max-width: 338px;
         margin-left: auto;
         margin-right: auto;
-    }
-
-    body.data-viz .viz-export-buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    body.data-viz .viz-export-buttons .chart-download-btn {
-        width: 100%;
     }
 }
 

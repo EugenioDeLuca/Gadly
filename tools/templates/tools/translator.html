@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/translator.css' %}?v=34">
+<link rel="stylesheet" href="{% static 'tools/css/translator.css' %}?v=38">
 {% endblock %}
 
 {% block content %}
@@ -25,6 +25,7 @@
         <div class="translate-btn-wrap"><button id="translate-btn">{% trans "Translate" %}</button></div>
         <div class="translator-lang-row">
         <div class="custom-select-wrap">
+        <div class="custom-select-trigger" aria-hidden="true">{% trans "Italian" %}</div>
         <select id="input-language">
             <option value="af">{% trans "Afrikaans" %}</option>
             <option value="sq">{% trans "Albanian" %}</option>
@@ -132,6 +133,7 @@
         </div>
         <button id="swap-btn" type="button">⇄</button>
         <div class="custom-select-wrap">
+        <div class="custom-select-trigger" aria-hidden="true">{% trans "English" %}</div>
         <select id="language">
             <option value="af">{% trans "Afrikaans" %}</option>
             <option value="sq">{% trans "Albanian" %}</option>
@@ -252,5 +254,5 @@
     const TRANSLATE_URL = "{% url 'translate_text' %}";
 </script>
 
-<script src="{% static 'tools/js/translator.js' %}"></script>
+<script src="{% static 'tools/js/translator.js' %}?v=3"></script>
 {% endblock %}

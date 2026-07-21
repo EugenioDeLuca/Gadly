@@ -235,8 +235,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         typeTrigger.addEventListener("click", function(e) {
             e.stopPropagation();
+            var wasOpen = typeWrap.classList.contains("open");
             document.querySelectorAll(".text-tool-select.open").forEach(function(s) { s.classList.remove("open"); });
-            typeWrap.classList.toggle("open");
+            if (!wasOpen) {
+                typeWrap.classList.add("open");
+            }
         });
         typeMenu.addEventListener("click", function(e) { e.stopPropagation(); });
     }
@@ -256,12 +259,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         trigger.addEventListener("click", function(e) {
             e.stopPropagation();
+            var wasOpen = platformWrap.classList.contains("open");
             document.querySelectorAll(".text-tool-select.open").forEach(function(s) { s.classList.remove("open"); });
             var current = platformWrap.dataset.value;
             items.forEach(function(li) {
                 li.style.display = li.dataset.value === current ? "none" : "";
             });
-            platformWrap.classList.toggle("open");
+            if (!wasOpen) {
+                platformWrap.classList.add("open");
+            }
         });
         menu.addEventListener("click", function(e) { e.stopPropagation(); });
     }

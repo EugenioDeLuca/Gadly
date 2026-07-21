@@ -1,0 +1,76 @@
+/* Scrollbar overlay: non sposta il layout, colore fisso #b0c4de */
+html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* Mobile/tablet: mai nel flusso documento (altrimenti al resize desktop→mobile
+   il thumb con height inline spinge site-main in basso). */
+.gadly-page-scrollbar {
+    display: none !important;
+}
+
+@media (min-width: 769px) {
+    html {
+        overflow-x: hidden;
+    }
+
+    .gadly-page-scrollbar {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 8px;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 250;
+        pointer-events: none;
+    }
+
+    .gadly-page-scrollbar.is-hidden {
+        visibility: hidden;
+    }
+
+    body.homepage .gadly-page-scrollbar {
+        visibility: visible;
+    }
+
+    .gadly-page-scrollbar__track {
+        position: absolute;
+        inset: 0;
+        pointer-events: auto;
+    }
+
+    .gadly-page-scrollbar__thumb {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 8px;
+        min-height: 32px;
+        background: #b0c4de;
+        border-radius: 4px;
+        pointer-events: auto;
+        touch-action: none;
+        cursor: default;
+    }
+
+    body:not(.dark-mode) .gadly-page-scrollbar__thumb {
+        background: #003f7f;
+    }
+
+    .gadly-page-scrollbar__thumb:hover,
+    .gadly-page-scrollbar__thumb:active {
+        background: #b0c4de;
+    }
+
+    body:not(.dark-mode) .gadly-page-scrollbar__thumb:hover,
+    body:not(.dark-mode) .gadly-page-scrollbar__thumb:active {
+        background: #003f7f;
+    }
+}

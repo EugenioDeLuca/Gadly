@@ -1,4 +1,4 @@
-﻿{% extends "tools/base.html" %}
+{% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
 {% load career_kit_tags %}
@@ -2753,15 +2753,21 @@ body.cv-generator .cv-preview-modal-body .mini-preview.preview-european {
   body.cv-generator .site-main .container #cv-language-list .lang-level-select .role-arrow {
     top: 50% !important;
     transform: translateY(-50%) !important;
-    right: 8px !important;
-    height: 26px !important;
-    width: 26px !important;
+    right: 4px !important;
+    height: 44px !important;
+    width: 44px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    z-index: 2 !important;
+    z-index: 6 !important;
     pointer-events: auto !important;
     cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap > .text-tool-select-trigger,
+  body.cv-generator .site-main .container #cv-target-role-wrap > #cv-target-role {
+    position: relative !important;
+    z-index: 1 !important;
   }
   body.cv-generator .site-main .container #cv-target-role-wrap .role-arrow::before,
   body.cv-generator .site-main .container #cv-language-list .lang-level-select .role-arrow::before {
@@ -3269,10 +3275,20 @@ body.cv-generator .cv-preview-modal-body .mini-preview.preview-european {
   body.cv-generator .site-main .container #cv-download:active,
   body.cv-generator .site-main .container .tap-active:not(.lang-level-trigger) {
     transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
   }
-  body.cv-generator .site-main .container #cv-language-list .lang-level-select .lang-level-trigger:active,
+  /* Ruolo target: scale del campo solo se tap sulla freccia (tap-active sul wrap) */
+  body.cv-generator .site-main .container #cv-target-role-wrap.tap-active {
+    transform: scale(0.96) !important;
+    transform-origin: center center !important;
+    transition: transform 0.05s ease-out !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.tap-active .role-arrow {
+    transform: translateY(-50%) !important;
+  }
   body.cv-generator .site-main .container #cv-language-list .lang-level-select .lang-level-trigger.tap-active {
-    transform: none !important;
+    transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
   }
   body.cv-generator .site-main .container #cv-language-list .lang-level-select .text-tool-select-menu li:active,
   body.cv-generator .site-main .container #cv-language-list .lang-level-select .text-tool-select-menu li.tap-active {
@@ -9685,6 +9701,20 @@ body.cv-generator .site-main .container .cv-setup-panel [data-cv-lang] {
     filter: none !important;
     outline: none !important;
     font-weight: 600 !important;
+  }
+
+  /* Ruolo target: scale del campo solo con tap sulla freccia; Livello lingua: scale sul trigger */
+  body.cv-generator .site-main .container #cv-target-role-wrap.tap-active {
+    transform: scale(0.96) !important;
+    transform-origin: center center !important;
+    transition: transform 0.05s ease-out !important;
+  }
+  body.cv-generator .site-main .container #cv-target-role-wrap.tap-active .role-arrow {
+    transform: translateY(-50%) !important;
+  }
+  body.cv-generator .site-main .container #cv-language-list .lang-level-select .lang-level-trigger.tap-active {
+    transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
   }
 }
 </style>

@@ -449,7 +449,7 @@
     .file-analyzer .analysis-options.is-open .analysis-opts-trigger::after {
         transform: rotate(180deg);
     }
-    /* Menu: stessi colori di riposo su tap/focus (niente scurimento) */
+    /* Menu: stessi colori di riposo su tap/focus (niente scurimento); scale solo con .tap-active */
     body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:hover,
     body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:focus,
     body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:focus-visible,
@@ -458,9 +458,20 @@
         border: 2px solid #003f7f !important;
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
-        transform: none !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:not(.tap-active),
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:not(.tap-active):hover,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:not(.tap-active):focus,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:not(.tap-active):focus-visible,
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger:not(.tap-active):active {
+        transform: none !important;
+    }
+    body.file-analyzer:not(.dark-mode) .file-analyzer .analysis-opts-trigger.tap-active,
+    body.file-analyzer:not(.dark-mode) .site-main .file-analyzer .container .analysis-opts-trigger.tap-active {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
     }
     body.dark-mode.file-analyzer .file-analyzer .analysis-opts-trigger::after {
         border-top-color: #b0c4de;
@@ -691,11 +702,15 @@
         color: #b0c4de !important;
         -webkit-text-fill-color: #b0c4de !important;
     }
-    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:hover,
-    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus,
-    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:focus-visible,
-    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:active {
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:not(.tap-active):hover,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:not(.tap-active):focus,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:not(.tap-active):focus-visible,
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger:not(.tap-active):active {
         transform: none !important;
+    }
+    body.dark-mode.file-analyzer .site-main .file-analyzer .container .analysis-opts-trigger.tap-active {
+        transform: scale(0.96) !important;
+        transition: transform 0.05s ease-out !important;
     }
     body.dark-mode.file-analyzer .file-analyzer .button-group #submit-file:active,
     body.dark-mode.file-analyzer .file-analyzer .button-group #submit-file.is-tap-pressed {

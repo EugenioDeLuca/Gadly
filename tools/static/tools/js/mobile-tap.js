@@ -16,6 +16,7 @@
         ".site-main .file-upload-btn",
         ".site-main .custom-select-trigger",
         ".site-main .text-tool-select-trigger",
+        ".site-main .cv-target-role-native",
         ".site-main .chart-select-trigger",
         ".site-main .format-toggle",
         ".site-main [data-level]",
@@ -37,19 +38,14 @@
         ".qr-options .qr-custom-select .qr-select-trigger",
         "#qr-wifi-security-wrap > .qr-select-trigger",
         ".tool-quick-nav-toggle",
-        ".analysis-opts-trigger",
         ".tool-quick-nav-panel",
         ".header-nav",
         "#cv-score-tab-btn",
         ".cv-score-tab-btn",
         ".cv-score-tab-close",
         "#cv-target-role",
-        "#cv-language-list .lang-level-trigger",
-        ".lang-level-trigger",
         "#cv-language-list .lang-level-select .text-tool-select-menu li",
-        "#btn-copy.copy-disabled",
-        "#btn-share-link",
-        "#btn-copy-data"
+        "#btn-copy.copy-disabled"
     ].join(", ");
 
     var tapPressTarget = null;
@@ -121,8 +117,13 @@
         if (document.body.classList.contains("json-formatter") && target.closest(".button-group")) {
             return null;
         }
+        /* Ruolo target: tap sulla freccia → scale del wrap; tap sul testo → niente scale */
         if (document.body.classList.contains("cv-generator") && target.id === "cv-target-role") {
             return null;
+        }
+        if (target.classList && target.classList.contains("role-arrow")) {
+            var roleWrap = target.closest("#cv-target-role-wrap");
+            if (roleWrap) return roleWrap;
         }
         return target;
     }

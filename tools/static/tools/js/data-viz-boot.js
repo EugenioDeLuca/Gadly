@@ -157,13 +157,14 @@
 
     function bootResizeTextarea(ta) {
         if (!ta || !String(ta.value || "").trim()) return;
+        var mobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
         ta.style.height = "auto";
         var sh = ta.scrollHeight;
-        var minH = window.matchMedia && window.matchMedia("(max-width: 768px)").matches ? 152 : 160;
-        var maxH = 750;
+        var minH = mobile ? 130 : 160;
+        var maxH = mobile ? 280 : 750;
         var h = Math.min(Math.max(sh, minH), maxH);
         ta.style.height = h + "px";
-        ta.style.overflowY = h >= maxH ? "auto" : "hidden";
+        ta.classList.toggle("viz-data-input-scroll", h >= maxH);
     }
 
     function displayColumnHeader(name) {

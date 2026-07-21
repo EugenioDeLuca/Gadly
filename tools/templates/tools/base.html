@@ -8,6 +8,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
+    <script>
+    (function () {
+        window.gadlySyncViewportChrome = function (isDark) {
+            var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
+            var root = document.documentElement;
+            root.dataset.theme = isDark ? 'dark' : 'light';
+            root.style.backgroundColor = color;
+            root.style.colorScheme = isDark ? 'dark' : 'light';
+            var meta = document.getElementById('gadly-theme-color');
+            if (meta) {
+                meta.setAttribute('content', color);
+            }
+        };
+        try {
+            var s = localStorage.getItem('gadly-theme');
+            var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            window.gadlySyncViewportChrome(dark);
+        } catch (e) {}
+    })();
+    </script>
+    <style id="gadly-first-paint-critical">
+    html {
+        overflow-x: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .gadly-page-scrollbar {
+        display: none !important;
+    }
+    @media (min-width: 769px) {
+        .gadly-page-scrollbar {
+            display: block !important;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 250;
+            pointer-events: none;
+        }
+        .gadly-page-scrollbar__track {
+            position: absolute;
+            inset: 0;
+            pointer-events: auto;
+        }
+        .gadly-page-scrollbar__thumb {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            min-height: 32px;
+            background: #b0c4de;
+            border-radius: 4px;
+            pointer-events: auto;
+            touch-action: none;
+        }
+        .gadly-page-scrollbar__thumb:hover,
+        .gadly-page-scrollbar__thumb:active {
+            background: #b0c4de;
+        }
+    }
+    {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
+    @media (min-width: 769px) {
+        body.homepage .site-main > .container {
+            width: min(900px, calc(100vw - 48px));
+            max-width: none;
+            margin: 24px auto;
+            padding: 34px 36px;
+            position: relative;
+            box-sizing: border-box;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25);
+            text-align: center;
+        }
+        /* Ultrawide: allineato a home Drose (1040 / 1120) */
+        @media (min-width: 2200px) {
+            body.homepage .site-main > .container {
+                width: min(1040px, calc(100vw - 48px));
+                max-width: 1040px;
+            }
+        }
+        @media (min-width: 3400px) {
+            body.homepage .site-main > .container {
+                width: min(1120px, calc(100vw - 48px));
+                max-width: 1120px;
+            }
+        }
+        /* Dark desktop: stesso contenitore del light (niente card #1a1a2e) */
+        html[data-theme="dark"] body.homepage .site-main > .container,
+        body.dark-mode.homepage .site-main > .container {
+            background: #fff !important;
+            box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25) !important;
+        }
+        body.homepage .tool-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+        body.homepage .tool-btn-wrap {
+            position: relative;
+            display: inline-flex;
+        }
+        body.homepage .tool-btn {
+            width: 180px;
+            height: 56px !important;
+            min-height: 56px !important;
+            max-height: 56px !important;
+            padding: 0 12px !important;
+            display: grid !important;
+            place-items: center;
+            place-content: center;
+            text-align: center !important;
+            background: #003f7f;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1em;
+            line-height: 1.1;
+            white-space: normal;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            text-decoration: none;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            box-sizing: border-box;
+            overflow: hidden;
+            transition: none;
+        }
+        body.homepage .tool-btn.tool-btn--kit {
+            font-size: 16px;
+            border-width: 3px;
+            border-color: #fff;
+            box-shadow: 0 0 0 1px rgba(0, 63, 127, 0.35), 0 4px 14px rgba(0, 63, 127, 0.22);
+        }
+        /* Stelle: glifo via ::before così i preferiti possono essere ★ già dal CSS in head */
+        body.homepage .tool-btn-wrap .tool-fav {
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            z-index: 1;
+            margin: 0;
+            padding: 2px 6px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0 !important;
+            line-height: 1;
+            cursor: pointer;
+            transition: none !important;
+        }
+        body.homepage .tool-btn-wrap .tool-fav::before {
+            content: "☆";
+            font-size: 1.1rem;
+            line-height: 1;
+            color: inherit;
+        }
+        body.homepage .tool-btn-wrap .tool-fav.is-favorite,
+        body.homepage .tool-btn-wrap .tool-fav.is-favorite::before {
+            color: #dc3545;
+        }
+        body.homepage .tool-btn-wrap .tool-fav.is-favorite::before {
+            content: "★";
+        }
+        body.homepage .category-btn-label--mobile,
+        body.homepage .category-btn-chevron,
+        body.homepage .category-icon-img,
+        body.homepage .tool-icon-img {
+            display: none !important;
+        }
+        body.homepage .home-main-title {
+            margin: 0 0 12px 0;
+            font-size: clamp(1.35rem, 3.6vw, 1.9rem);
+            font-weight: 800;
+            color: #003f7f;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        body.homepage .intro {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+            margin: 0 0 26px 0;
+            padding-top: 0;
+            text-align: center;
+        }
+        body.homepage .site-main {
+            padding-bottom: 24px !important;
+        }
+        body.homepage .site-main > .container {
+            min-height: var(--gadly-home-container-min-h, 0px);
+        }
+        body.homepage #desktop-trash-bin,
+        body.homepage .desktop-trash-bin {
+            display: block !important;
+            position: absolute;
+            left: 14px;
+            bottom: 18px;
+            z-index: 6;
+            width: 56px;
+            height: 64px;
+        }
+        body.homepage #gadly-trash-onboarding-slot,
+        body.homepage .gadly-trash-onboarding-slot {
+            position: absolute;
+            left: 14px;
+            bottom: 86px;
+            z-index: 8;
+            max-width: min(400px, calc(100% - 28px));
+            pointer-events: none;
+        }
+        body.homepage .home-drose-entry {
+            display: none !important;
+        }
+        body.homepage:not(.user-authenticated) #shortcuts-section {
+            display: none !important;
+        }
+        body.homepage.user-authenticated #shortcuts-section {
+            display: none;
+        }
+        html.gadly-has-shortcuts body.homepage #shortcuts-section {
+            display: block !important;
+            box-sizing: border-box;
+        }
+        html.gadly-has-shortcuts body.homepage .container .search-wrap {
+            margin-bottom: 16px;
+            padding-bottom: 0;
+        }
+        html.gadly-has-shortcuts body.homepage .container .shortcuts-section {
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+        html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-title {
+            font-size: 1.32em;
+            font-weight: bold;
+            margin: 0 0 18px 0;
+            letter-spacing: 0.02em;
+            color: #c41e3a;
+        }
+        html.gadly-has-shortcuts body.homepage #shortcuts-section {
+            min-height: calc(
+                2.8rem + 56px * var(--gadly-shortcuts-rows, 1) +
+                16px * max(0, var(--gadly-shortcuts-rows, 1) - 1) +
+                18px
+            );
+        }
+{% if home_hidden_prehide_css %}
+{{ home_hidden_prehide_css|safe }}
+{% endif %}
+        body.homepage .search-wrap {
+            margin-bottom: 24px;
+        }
+        body.homepage .tool-section {
+            margin-bottom: 18px;
+        }
+        body.homepage .category-btn {
+            margin: 0 0 18px 0;
+            font-size: 1.32em;
+            font-weight: bold;
+        }
+        body.homepage .tool-grid {
+            margin-bottom: 22px;
+        }
+        /* Non forzare display:block su sezioni/tool nascosti (era la causa del flash). */
+        body.homepage .home-categories-wrap .tool-section:not(.tool-section--all-hidden):not([hidden]) {
+            display: block;
+        }
+        body.homepage .tool-btn-wrap--hidden-home,
+        body.homepage .tool-section--all-hidden,
+        body.homepage .tool-btn-wrap[hidden],
+        body.homepage .tool-section[hidden] {
+            display: none !important;
+        }
+        body.homepage .shortcuts-section .shortcuts-title {
+            color: #c41e3a;
+        }
+        body.homepage .shortcuts-btn {
+            color: #c41e3a !important;
+            -webkit-text-fill-color: #c41e3a !important;
+            border-color: #c41e3a !important;
+            background: rgba(196, 30, 58, 0.22) !important;
+            font-weight: 600 !important;
+        }
+        body.homepage .shortcuts-btn:hover {
+            background: #c41e3a !important;
+            color: #fff !important;
+            -webkit-text-fill-color: #fff !important;
+            border-color: #991b1b !important;
+            font-weight: 600 !important;
+        }
+    }
+    {% endif %}
+    </style>
+    <link rel="stylesheet" href="{% static 'tools/css/gadly-page-scrollbar.css' %}?v=7">
+    {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
+    <script>
+    (function () {
+        try {
+            if ("scrollRestoration" in history) {
+                history.scrollRestoration = "manual";
+            }
+            // Evita frame “neutro”/clamp: se c'è scroll salvato in sessionStorage,
+            // su refresh desktop può provocare flash/resize percepito.
+            var KEY_PREFIX = "gadly-page-scroll-y-v1:";
+            var p = location.pathname || "/";
+            if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+            if (!p) p = "/";
+            sessionStorage.removeItem(KEY_PREFIX + p);
+            sessionStorage.removeItem(KEY_PREFIX + p + "/");
+
+            // Blocca l'altezza del contenitore al valore dell'ultima visita:
+            // al refresh (pagina alta, tutti i tool) non si ritira e poi ricresce.
+            var HKEY = "gadly-home-container-h-v1";
+            var nav = performance.getEntriesByType("navigation")[0];
+            var isReload = nav && nav.type === "reload";
+            if (isReload) {
+                var h = parseInt(sessionStorage.getItem(HKEY) || "0", 10);
+                if (h > 200) {
+                    document.documentElement.style.setProperty("--gadly-home-container-min-h", h + "px");
+                }
+            }
+            window.__gadlySaveHomeContainerHeight = function () {
+                try {
+                    var c = document.querySelector("body.homepage .site-main > .container");
+                    if (!c) return;
+                    var next = Math.round(c.offsetHeight);
+                    if (next > 200) sessionStorage.setItem(HKEY, String(next));
+                } catch (eSave) { /* ignore */ }
+            };
+            window.addEventListener("pagehide", function () {
+                if (typeof window.__gadlySaveHomeContainerHeight === "function") {
+                    window.__gadlySaveHomeContainerHeight();
+                }
+            });
+            window.addEventListener("load", function () {
+                if (typeof window.__gadlySaveHomeContainerHeight === "function") {
+                    window.__gadlySaveHomeContainerHeight();
+                }
+                // Sblocca min-height dopo il layout stabile (stessa altezza → niente salto).
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        document.documentElement.style.removeProperty("--gadly-home-container-min-h");
+                        if (typeof window.__gadlySaveHomeContainerHeight === "function") {
+                            window.__gadlySaveHomeContainerHeight();
+                        }
+                    });
+                });
+            });
+        } catch (eHomeScroll) { /* ignore */ }
+    })();
+    </script>
+    {% endif %}
     <script>
     (function () {
         if (!('serviceWorker' in navigator)) return;
@@ -208,8 +569,7 @@
         }
 
         function usesScrollRestorePending(p) {
-            p = normalizePath(p || path);
-            return isHomeScrollRestorePath(p);
+            return false;
         }
 
         function isScrollRestorePath(p) {
@@ -246,6 +606,7 @@
         }
 
         function persistScroll(y) {
+            if (isHomeScrollRestorePath()) return;
             try {
                 var rounded = Math.max(0, Math.round(y));
                 sessionStorage.setItem(scrollKey, String(rounded));
@@ -313,14 +674,13 @@
         }
 
         function isHomeLayoutReady() {
-            if (!isHomeScrollRestorePath()) return true;
-            if (!root.classList.contains("gadly-has-hidden-tools")) return true;
-            return root.classList.contains("gadly-home-hidden-tools-ready");
+            return true;
         }
 
         function saveScroll() {
             if (isScrollSaveBlocked()) return;
             if (!isScrollRestorePath() || isHiddenToolsPath()) return;
+            if (isHomeScrollRestorePath()) return;
             var y = Math.max(0, Math.round(window.scrollY));
             if (y <= 2) {
                 if (saveTimer) {
@@ -527,22 +887,15 @@
             requestAnimationFrame(runCommitLoop);
         }
 
-        var savedScrollOnLoad = readSavedScroll();
-        var restoreScrollOnLoad = savedScrollOnLoad > 0 && shouldRestoreScrollOnLoad() && usesScrollRestorePending();
-
-        if (restoreScrollOnLoad) {
-            beginScrollRestorePending();
+        restoreCommitted = true;
+        function maybeNotifyScrollRestoreSettled() {
+            if (isCoverLetterScrollHold()) return;
+            notifyScrollRestoreSettled();
+        }
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", maybeNotifyScrollRestoreSettled, { once: true });
         } else {
-            restoreCommitted = true;
-            function maybeNotifyScrollRestoreSettled() {
-                if (isCoverLetterScrollHold()) return;
-                notifyScrollRestoreSettled();
-            }
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", maybeNotifyScrollRestoreSettled, { once: true });
-            } else {
-                maybeNotifyScrollRestoreSettled();
-            }
+            maybeNotifyScrollRestoreSettled();
         }
 
         window.addEventListener("scroll", function() {
@@ -555,22 +908,6 @@
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === "hidden") flushSaveScroll();
         });
-
-        function scheduleCommitPasses() {
-            runCommitLoop();
-            window.addEventListener("load", function() {
-                restoreAttempts = 0;
-                runCommitLoop();
-            }, { once: true });
-        }
-
-        if (restoreScrollOnLoad) {
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", scheduleCommitPasses, { once: true });
-            } else {
-                scheduleCommitPasses();
-            }
-        }
 
         window.addEventListener("pageshow", function(ev) {
             if (!ev.persisted) return;
@@ -655,12 +992,23 @@
         html.gadly-home-trash-onboarding-active body.homepage #gadly-trash-onboarding-slot,
         html.gadly-home-trash-onboarding-active body.homepage .gadly-trash-onboarding-slot {
             display: block !important;
+            position: absolute !important;
+            left: 14px !important;
+            bottom: 86px !important;
             visibility: visible !important;
             opacity: 1 !important;
             width: auto !important;
             height: auto !important;
             overflow: visible !important;
             pointer-events: none !important;
+        }
+        body.homepage #desktop-trash-bin,
+        body.homepage .desktop-trash-bin {
+            position: absolute !important;
+            left: 14px !important;
+            bottom: 18px !important;
+            width: 56px !important;
+            height: 64px !important;
         }
         html.gadly-home-trash-onboarding-active body.homepage #home-trash-onboarding.home-trash-onboarding--visible {
             display: block !important;
@@ -703,8 +1051,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=151">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=89">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=176">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=106">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -719,7 +1067,7 @@
     }
     </style>
     {% endif %}
-    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=33">
+    <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=34">
     <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=7">
     <style id="gadly-cookie-banner-shield">
     /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body → niente frame “neutro” ai refresh rapidi. */
@@ -766,9 +1114,9 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=346">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=351">
     {% endif %}
-    <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
     <link rel="stylesheet" href="{% static 'tools/css/word-counter.css' %}?v=53">
     {% endif %}
@@ -808,18 +1156,21 @@
     <script>
     (function() {
         try {
-            var s = localStorage.getItem('gadly-theme');
-            var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            if (dark) {
-                document.documentElement.style.backgroundColor = '#0f0f23';
-            } else if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
-                document.documentElement.style.backgroundColor = '#f4f6fa';
+            if (!document.documentElement.dataset.theme && typeof window.gadlySyncViewportChrome === 'function') {
+                var s = localStorage.getItem('gadly-theme');
+                var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                window.gadlySyncViewportChrome(dark);
             }
         } catch (e) {}
     })();
     </script>
 </head>
 <body class="{% block body_class %}{% endblock %}{% if is_drose_site %} is-drose-brand{% endif %}">
+    <div id="gadly-page-scrollbar" class="gadly-page-scrollbar" aria-hidden="true">
+        <div class="gadly-page-scrollbar__track">
+            <div class="gadly-page-scrollbar__thumb"></div>
+        </div>
+    </div>
     {% block body_top %}{% endblock %}
     {% if is_drose_site %}<div class="drose-sky-layer" aria-hidden="true"></div>{% endif %}
     <script>
@@ -830,14 +1181,10 @@
             var saved = localStorage.getItem(themeKey);
             var isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (isDark) {
-                document.documentElement.style.backgroundColor = '#0f0f23';
-                document.documentElement.dataset.theme = 'dark';
                 document.body.classList.add('dark-mode');
-            } else {
-                document.documentElement.dataset.theme = 'light';
-                if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
-                    document.documentElement.style.backgroundColor = '#f4f6fa';
-                }
+            }
+            if (typeof window.gadlySyncViewportChrome === 'function') {
+                window.gadlySyncViewportChrome(isDark);
             }
             if (localStorage.getItem(warmKey) === '1') {
                 document.body.classList.add('warm-tone');
@@ -1358,18 +1705,19 @@
             </div>
         </footer>
     <script src="{% static 'tools/js/cookie-banner.js' %}?v=14"></script>
+    <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=14"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=15"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
-    <script src="{% static 'tools/js/mobile-tap.js' %}?v=42"></script>
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=48"></script>
     {% if not is_drose_site %}
     {% include "tools/includes/tool_quick_nav.html" %}
     {% endif %}
     {% block after_quick_nav %}{% endblock %}
-    <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=28"></script>
+    <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=36"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=106"></script>
     {% endif %}
@@ -1386,6 +1734,25 @@
         var menuBtn = document.getElementById('header-menu-btn');
         var nav = document.getElementById('header-nav');
         if (menuBtn && nav) {
+            var navScrollY = 0;
+
+            function lockNavScroll() {
+                navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                document.documentElement.classList.add('nav-open');
+                document.body.classList.add('nav-open');
+                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
+            }
+
+            function unlockNavScroll() {
+                document.documentElement.classList.remove('nav-open');
+                document.body.classList.remove('nav-open', 'nav-closing');
+                document.body.style.removeProperty('--nav-scroll-lock-y');
+                var curY = window.scrollY || document.documentElement.scrollTop || 0;
+                if (Math.abs(curY - navScrollY) > 2) {
+                    window.scrollTo(0, navScrollY);
+                }
+            }
+
             function clearMenuFocus() {
                 nav.querySelectorAll('a').forEach(function(link) {
                     if (typeof link.blur === 'function') {
@@ -1396,18 +1763,35 @@
                     menuBtn.blur();
                 }
             }
+
+            function openMenu() {
+                nav.classList.remove('is-closing');
+                nav.style.maxHeight = '';
+                nav.style.paddingTop = '';
+                nav.style.paddingBottom = '';
+                nav.classList.add('is-open');
+                menuBtn.setAttribute('aria-expanded', 'true');
+                lockNavScroll();
+            }
+
             function closeMenu() {
-                nav.classList.remove('is-open');
+                if (!nav.classList.contains('is-open')) {
+                    return;
+                }
+                nav.classList.remove('is-open', 'is-closing');
+                nav.style.maxHeight = '';
+                nav.style.paddingTop = '';
+                nav.style.paddingBottom = '';
+                unlockNavScroll();
                 menuBtn.setAttribute('aria-expanded', 'false');
-                document.body.classList.remove('nav-open');
                 clearMenuFocus();
             }
+
             menuBtn.addEventListener('click', function() {
-                var open = nav.classList.toggle('is-open');
-                menuBtn.setAttribute('aria-expanded', open);
-                document.body.classList.toggle('nav-open', open);
-                if (!open) {
-                    clearMenuFocus();
+                if (nav.classList.contains('is-open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
                 }
             });
             nav.querySelectorAll('a, .header-nav-logout-form button').forEach(function(el) {
@@ -1438,8 +1822,11 @@
                 var menuBtn = document.getElementById('header-menu-btn');
                 if (open && nav && menuBtn) {
                     nav.classList.remove('is-open');
+                    nav.style.maxHeight = '';
                     menuBtn.setAttribute('aria-expanded', 'false');
-                    document.body.classList.remove('nav-open');
+                    document.documentElement.classList.remove('nav-open');
+                    document.body.classList.remove('nav-open', 'nav-closing');
+                    document.body.style.removeProperty('--nav-scroll-lock-y');
                 }
             });
             document.addEventListener('click', function() {

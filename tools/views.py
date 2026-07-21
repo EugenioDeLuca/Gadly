@@ -281,7 +281,7 @@ def _sanitize_home_hidden_tools(data):
 # Normal page views
 # -------------------------
 def home(request):
-    return render(request, 'tools/home.html')
+    return render(request, "tools/home.html")
 
 
 def drose(request):
@@ -796,6 +796,31 @@ def _profile_form_ajax_errors(profile_form):
     return JsonResponse({"ok": False, "errors": errors}, status=400)
 
 
+def _profile_form_ajax_avatar_success(request, profile, message=None):
+    from .avatar_inline import avatar_inline_data_uri
+
+    user = request.user
+    username = (user.username or "").strip()
+    avatar = profile.avatar
+    has_avatar = bool(avatar and getattr(avatar, "name", None))
+    return JsonResponse({
+        "ok": True,
+        "message": message or gettext("Profile image saved."),
+        "has_avatar": has_avatar,
+        "avatar_inline_header": avatar_inline_data_uri(avatar, 56) if has_avatar else "",
+        "avatar_inline_account": avatar_inline_data_uri(avatar, 160) if has_avatar else "",
+        "initials": (username[:2].upper() if username else "?"),
+    })
+
+
+def _profile_form_ajax_avatar_errors(avatar_form):
+    errors = {}
+    for field, field_errors in avatar_form.errors.items():
+        key = field if field != "__all__" else "_all"
+        errors[key] = [str(err) for err in field_errors]
+    return JsonResponse({"ok": False, "errors": errors}, status=400)
+
+
 @login_required
 def account_profile(request):
     """Account settings: username, email, avatar, password change."""
@@ -888,20 +913,34 @@ def account_profile(request):
             if _profile_form_wants_ajax(request) and profile_form.errors:
                 return _profile_form_ajax_errors(profile_form)
         elif 'update_avatar' in request.POST:
+            wants_avatar_ajax = _profile_form_wants_ajax(request)
             if request.POST.get('avatar_action') == 'remove':
                 if profile.avatar:
                     profile.avatar.delete(save=False)
                 profile.avatar = None
                 profile.save(update_fields=['avatar'])
+                if wants_avatar_ajax:
+                    return _profile_form_ajax_avatar_success(
+                        request,
+                        profile,
+                        gettext("Profile image removed."),
+                    )
                 return redirect(reverse('account_profile') + '?avatar_removed=1')
             avatar_form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
             if avatar_form.is_valid():
                 media_avatars = os.path.join(settings.MEDIA_ROOT, 'avatars')
                 os.makedirs(media_avatars, exist_ok=True)
                 avatar_form.save()
+                profile.refresh_from_db(fields=['avatar'])
                 if request.POST.get('avatar_action') == 'save':
+                    if wants_avatar_ajax:
+                        return _profile_form_ajax_avatar_success(request, profile)
                     return redirect(reverse('account_profile') + '?avatar_saved=1')
+                if wants_avatar_ajax:
+                    return _profile_form_ajax_avatar_success(request, profile)
                 avatar_form = AvatarUploadForm(instance=profile)
+            elif wants_avatar_ajax:
+                return _profile_form_ajax_avatar_errors(avatar_form)
     else:
         avatar_saved = request.GET.get('avatar_saved') == '1'
         avatar_removed = request.GET.get('avatar_removed') == '1'

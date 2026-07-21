@@ -48,8 +48,8 @@
     /* Footer Gadly → Drose: pill ambra (non blu Gadly). */
     body:not(.dark-mode):not(.warm-tone):not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
         background: #fff4e0 !important;
-        color: #d97706 !important;
-        -webkit-text-fill-color: #d97706 !important;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
         outline: none !important;
         box-shadow: none !important;
     }
@@ -64,8 +64,8 @@
 
     body.warm-tone:not(.dark-mode):not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:is(:hover, :focus, :active, .is-nav-link-hover) {
         background: #fff4e0 !important;
-        color: #d97706 !important;
-        -webkit-text-fill-color: #d97706 !important;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
         outline: none !important;
         box-shadow: none !important;
     }

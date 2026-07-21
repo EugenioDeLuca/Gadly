@@ -179,15 +179,13 @@
         }
         remoteSynced = true;
 
-        var server = readServerSnapshot() || [];
-
-        if (server.length) {
-            writeAllLocal(server);
+        var server = readServerSnapshot();
+        if (server === null) {
             done();
             return;
         }
-        // Server vuoto: layout loggato pulito (non eredita scelte da anonimo)
-        writeAllLocal([]);
+
+        writeAllLocal(server);
         done();
     }
 
@@ -283,6 +281,11 @@
     function updateTrashBadge(n) {
         var badge = document.getElementById("desktop-trash-bin-count");
         if (!badge) return;
+        var current = parseInt(badge.textContent, 10);
+        if (!isNaN(current) && current === n && (n > 0) === !badge.hidden) {
+            document.documentElement.classList.toggle("gadly-home-has-hidden-tools", n > 0);
+            return;
+        }
         badge.textContent = n > 0 ? String(n) : "";
         badge.hidden = n < 1;
         badge.setAttribute("aria-hidden", n < 1 ? "true" : "false");
@@ -458,35 +461,65 @@
             var hide = !!(url && hiddenSet[url]);
             if (hide) {
                 releaseFocusFrom(wrap);
+                // Fuori dal layout: niente display toggle che può far flashare.
+                if (wrap.parentNode) {
+                    wrap.parentNode.removeChild(wrap);
+                }
+                return;
             }
-            wrap.classList.toggle("tool-btn-wrap--hidden-home", hide);
+            wrap.classList.remove("tool-btn-wrap--hidden-home");
+            wrap.hidden = false;
+            wrap.style.removeProperty("display");
             wrap.removeAttribute("aria-hidden");
         });
 
         root.querySelectorAll("body.homepage .tool-section").forEach(function (section) {
             var total = section.querySelectorAll(".tool-btn-wrap").length;
-            var visible = section.querySelectorAll(".tool-btn-wrap:not(.tool-btn-wrap--hidden-home)").length;
-            var allHidden = total > 0 && visible === 0;
-            if (allHidden) {
+            if (total === 0) {
                 releaseFocusFrom(section);
+                if (section.parentNode) {
+                    section.parentNode.removeChild(section);
+                }
+                return;
             }
-            section.classList.toggle("tool-section--all-hidden", allHidden);
+            section.classList.remove("tool-section--all-hidden");
+            section.hidden = false;
+            section.style.removeProperty("display");
             section.removeAttribute("aria-hidden");
         });
 
         updateTrashBadge(hidden.length);
     }
 
+    function dispatchHomeHiddenToolsReady() {
+        var root = document.documentElement;
+        if (root.dataset.gadlyHomeHiddenReadyEvt === "1") return;
+        root.dataset.gadlyHomeHiddenReadyEvt = "1";
+        try {
+            document.dispatchEvent(new CustomEvent("gadly-home-hidden-tools-ready"));
+        } catch (e) {
+            if (typeof document.createEvent === "function") {
+                var ev = document.createEvent("Event");
+                ev.initEvent("gadly-home-hidden-tools-ready", true, true);
+                document.dispatchEvent(ev);
+            }
+        }
+    }
+
     function bootHiddenToolsUi() {
-        if (document.body.classList.contains("homepage")) {
+        var root = document.documentElement;
+        var homeSynced = root.dataset.gadlyHomeHiddenSynced === "1";
+
+        if (document.body.classList.contains("homepage") && !homeSynced) {
             applyToHomePage();
-            document.documentElement.classList.add("gadly-home-hidden-tools-ready");
+        } else if (document.body.classList.contains("homepage") && homeSynced) {
+            updateTrashBadge(readAll().length);
         }
         applyToQuickNav();
         if (typeof global.__gadlySetupTrashDragSources === "function") {
             global.__gadlySetupTrashDragSources();
         }
-        document.dispatchEvent(new CustomEvent("gadly-home-hidden-tools-ready"));
+        dispatchHomeHiddenToolsReady();
     }
 
     function boot() {
@@ -515,5 +548,4 @@
     } else {
         boot();
     }
-    window.addEventListener("pageshow", boot);
 })(window);

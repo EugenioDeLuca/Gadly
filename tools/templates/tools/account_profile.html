@@ -84,7 +84,7 @@ html.gadly-account-reload-top {
             <div class="account-avatar account-avatar--placeholder">{{ user|user_initials }}</div>
             {% endif %}
         </div>
-        <form method="post" enctype="multipart/form-data" class="account-form">
+        <form method="post" enctype="multipart/form-data" class="account-form" id="account-avatar-form" action="{% url 'account_profile' %}">
             {% csrf_token %}
             <input type="hidden" name="update_avatar" value="1">
             <div class="form-group">
@@ -169,7 +169,7 @@ html.gadly-account-reload-top {
     </section>
 
 </div>
-<script src="{% static 'tools/js/account-profile-form.js' %}?v=1"></script>
+<script src="{% static 'tools/js/account-profile-form.js' %}?v=2"></script>
 <script>
 (function() {
     var chooseImageLabel = "{{ choose_image_label|escapejs }}";

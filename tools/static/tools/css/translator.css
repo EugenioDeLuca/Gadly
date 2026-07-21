@@ -35,25 +35,7 @@ body.dark-mode .translator .tool-desc {
     color: var(--text-secondary, #b0c4de);
 }
 
-/* Barre di scorrimento non visibili (scroll con rotella/touch resta attivo) */
-html:has(body.translator) {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-html:has(body.translator)::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-}
-body.translator {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-body.translator::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-}
+/* Barre interne al traduttore (textarea/menu): nascoste; scroll pagina = barra globale in base.css */
 .translator textarea,
 .translator .custom-select-dropdown,
 .translator .custom-select-options-wrap {
@@ -66,6 +48,51 @@ body.translator::-webkit-scrollbar {
     display: none;
     width: 0;
     height: 0;
+}
+
+/* Desktop: scrollbar visibile nel menu lingua (trackpad / tastiera senza mouse esterno) */
+@media (min-width: 769px) {
+    .translator .custom-select-dropdown {
+        scrollbar-width: thin;
+        scrollbar-color: #b0c4de rgba(0, 0, 0, 0.06);
+        -ms-overflow-style: auto;
+    }
+    .translator .custom-select-dropdown::-webkit-scrollbar {
+        display: block;
+        width: 8px;
+    }
+    .translator .custom-select-dropdown::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.06);
+        border-radius: 0 10px 10px 0;
+    }
+    .translator .custom-select-dropdown::-webkit-scrollbar-thumb {
+        background: #b0c4de;
+        border-radius: 4px;
+    }
+    .translator .custom-select-options-wrap {
+        max-height: none;
+        overflow: visible;
+    }
+
+    /* Dark desktop: Traduci = stessa larghezza dei bottoni lingua */
+    body.dark-mode.translator .translator-page .custom-select-wrap {
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
+    }
+    body.dark-mode.translator .translator-page .custom-select-trigger {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+    body.dark-mode.translator .translator-page #translate-btn {
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
+        padding-left: 12px;
+        padding-right: 12px;
+        box-sizing: border-box;
+    }
 }
 
 .translator textarea {
@@ -137,6 +164,8 @@ body.translator::-webkit-scrollbar {
 /* Custom select wrapper */
 .custom-select-wrap {
     position: relative;
+    min-height: 44px;
+    min-width: 160px;
 }
 
 .custom-select-wrap select {
@@ -339,6 +368,27 @@ body.dark-mode .translator .result-area.error {
         height: 47.5px !important;
         min-height: 47.5px !important;
     }
+    body.translator .translator-page .translator-lang-row .custom-select-wrap {
+        min-height: 47.5px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Light mobile/tablet: swap = stesso aspetto dei bottoni lingua */
+    body:not(.dark-mode).translator .translator-page #swap-btn,
+    body:not(.dark-mode).translator .translator-page #swap-btn:hover,
+    body:not(.dark-mode).translator .translator-page #swap-btn:focus,
+    body:not(.dark-mode).translator .translator-page #swap-btn:active {
+        background: white !important;
+        background-image: none !important;
+        border: 2px solid #ddd !important;
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        font-weight: 400 !important;
+        box-shadow: none !important;
+        transform: scale(1) !important;
+    }
+
     /* Light mobile: focus #007BFF come desktop */
     .translator textarea:focus {
         border-color: #007BFF;
@@ -348,21 +398,88 @@ body.dark-mode .translator .result-area.error {
         border-color: rgba(220, 224, 230, 0.9) !important;
         box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15) !important;
     }
+
+    .translator .translator-controls .custom-select-option {
+        font-size: 15.2px !important;
+    }
+
+    /* Dark mobile: menu dropdown come CV Generator */
+    body.dark-mode.translator .translator-controls .custom-select-wrap .custom-select-dropdown {
+        padding: 0 !important;
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        color: var(--text-secondary, #b0c4de) !important;
+    }
+
+    body.dark-mode.translator .translator-controls .custom-select-option {
+        background-color: #1e2a3a !important;
+        background-image: none !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        font-size: 15.2px !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+
+    body.dark-mode.translator .translator-controls .custom-select-option:hover,
+    body.dark-mode.translator .translator-controls .custom-select-option.selected {
+        background: rgba(0, 63, 127, 0.2) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+    }
+
+    /* Dark mobile: trigger lingua + swap come CV Generator */
+    body.dark-mode.translator .translator-page .custom-select-trigger,
+    body.dark-mode.translator .translator-page .custom-select-trigger:hover,
+    body.dark-mode.translator .translator-page .custom-select-trigger:focus,
+    body.dark-mode.translator .translator-page .custom-select-trigger:focus-visible,
+    body.dark-mode.translator .translator-page .custom-select-trigger:active,
+    body.dark-mode.translator .translator-page .custom-select-trigger.tap-active,
+    body.dark-mode.translator .translator-page #swap-btn,
+    body.dark-mode.translator .translator-page #swap-btn:hover,
+    body.dark-mode.translator .translator-page #swap-btn:focus,
+    body.dark-mode.translator .translator-page #swap-btn:focus-visible,
+    body.dark-mode.translator .translator-page #swap-btn:active,
+    body.dark-mode.translator .translator-page #swap-btn.tap-active {
+        background: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        font-weight: 400 !important;
+        box-shadow: none !important;
+    }
 }
 
 /* ============================================
    SOLO MOBILE (max-width: 480px) - DESKTOP NON TOCCARE
    ============================================ */
 @media (max-width: 480px) {
-    /* Mobile: bottoni = effetto Word Counter (scale solo su :active, niente blu scuro) */
-    body.translator .translator-page #translate-btn,
+    /* Mobile: Translate = Word Counter; lingua + swap = stesso stile */
+    body.translator .translator-page #translate-btn {
+        border: 2px solid #003f7f !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        transform: scale(1) !important;
+        transition: transform 0.15s ease !important;
+    }
     body.translator .translator-page .custom-select-trigger,
     body.translator .translator-page #swap-btn {
         border: 2px solid #003f7f !important;
         border-radius: 12px !important;
         background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
         color: #003f7f !important;
-        font-weight: 700 !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 400 !important;
         transform: scale(1) !important;
         transition: transform 0.15s ease !important;
     }
@@ -391,6 +508,12 @@ body.dark-mode .translator .result-area.error {
     }
     body.translator .translator-page .custom-select-trigger::after {
         color: #003f7f !important;
+    }
+    body.translator .translator-page #swap-btn:hover {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border-color: #003f7f !important;
+        color: #003f7f !important;
+        transform: scale(1) !important;
     }
 
     /* Mobile: Italian|Swap|English sopra, Translate SOTTO - display:contents + order */
@@ -510,7 +633,6 @@ body.dark-mode .translator .result-area.error {
     .translator .translator-controls .custom-select-option {
         color: #003f7f;
         padding: 10px 12px;
-        font-size: 0.9rem;
     }
     .translator .translator-controls .custom-select-option:hover {
         background: rgba(0, 63, 127, 0.12);
@@ -529,22 +651,51 @@ body.dark-mode .translator .result-area.error {
         padding: 0;
         font-size: 1.2em;
     }
-    /* Dark: stesso effetto Word Counter (opacity su active) */
-    body.dark-mode.translator .translator-page #translate-btn,
-    body.dark-mode.translator .translator-page .custom-select-trigger,
-    body.dark-mode.translator .translator-page #swap-btn {
+    /* Dark: Translate come Word Counter; lingua + swap come CV Generator */
+    body.dark-mode.translator .translator-page #translate-btn {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border-color: var(--text-secondary) !important;
         color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
+    }
+    body.dark-mode.translator .translator-page #swap-btn,
+    body.dark-mode.translator .translator-page #swap-btn:hover,
+    body.dark-mode.translator .translator-page #swap-btn:focus,
+    body.dark-mode.translator .translator-page #swap-btn:focus-visible,
+    body.dark-mode.translator .translator-page #swap-btn:active,
+    body.dark-mode.translator .translator-page #swap-btn.tap-active {
+        background: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        font-weight: 400 !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.translator .translator-page .custom-select-trigger,
+    body.dark-mode.translator .translator-page .custom-select-trigger:hover,
+    body.dark-mode.translator .translator-page .custom-select-trigger:focus,
+    body.dark-mode.translator .translator-page .custom-select-trigger:focus-visible,
+    body.dark-mode.translator .translator-page .custom-select-trigger:active,
+    body.dark-mode.translator .translator-page .custom-select-trigger.tap-active {
+        background: #1e2a3a !important;
+        background-image: none !important;
+        border: 2px solid var(--text-secondary, #b0c4de) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
+        font-weight: 400 !important;
+        box-shadow: none !important;
     }
     body.dark-mode.translator .translator-page #translate-btn:active,
-    body.dark-mode.translator .translator-page .custom-select-trigger:active,
     body.dark-mode.translator .translator-page #swap-btn:active {
         transform: scale(1) !important;
     }
     body.dark-mode.translator .translator-page #translate-btn.tap-active,
-    body.dark-mode.translator .translator-page .custom-select-trigger.tap-active,
     body.dark-mode.translator .translator-page #swap-btn.tap-active {
+        transform: scale(0.96) !important;
+    }
+    body.dark-mode.translator .translator-page .custom-select-trigger:active,
+    body.dark-mode.translator .translator-page .custom-select-trigger.tap-active {
         transform: scale(0.96) !important;
     }
     body.dark-mode.translator .translator-page .custom-select-trigger::after {
@@ -575,21 +726,6 @@ body.dark-mode .translator .result-area.error {
     body.dark-mode.translator textarea::placeholder,
     body.dark-mode.translator .result:empty::before {
         color: #555 !important;
-    }
-    body.dark-mode.translator .translator-controls .custom-select-wrap .custom-select-dropdown {
-        border-color: rgba(176, 196, 222, 0.5) !important;
-        background: #1a1e2e !important;
-        color: #b0c4de !important;
-    }
-    body.dark-mode.translator .translator-controls .custom-select-option {
-        color: #b0c4de !important;
-    }
-    body.dark-mode.translator .translator-controls .custom-select-option:hover {
-        background: rgba(176, 196, 222, 0.2) !important;
-    }
-    body.dark-mode.translator .translator-controls .custom-select-option.selected {
-        background: rgba(176, 196, 222, 0.25) !important;
-        color: #ffffff !important;
     }
     body.dark-mode.translator h1 {
         color: #b0c4de !important;

@@ -9,6 +9,7 @@ html.theme-switching *::after {
 
 /* Theme: light (default) and dark */
 :root {
+    color-scheme: light;
     --btn-primary: #003f7f;
     --btn-primary-dark: #002d5c;
     --bg-body: radial-gradient(circle at bottom right, #6a0dad, #3554a6 30%, #f4f4f4 70%);
@@ -20,6 +21,10 @@ html.theme-switching *::after {
     --border-color: #b8d4f0;
     --accent: #007BFF;
     --accent-hover: #0066cc;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
 }
 
 body.dark-mode {
@@ -93,19 +98,26 @@ body {
         background: hsl(42, 70%, 88%) !important;
         mix-blend-mode: color !important;
         opacity: 0.45 !important;
-        z-index: 201 !important;
+        z-index: 240 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
+        transition: opacity 0.28s ease !important;
     }
     body.nav-open.warm-tone::after {
         content: '' !important;
         position: fixed !important;
         inset: 0 !important;
-        background: rgba(0, 0, 0, 0.25) !important;
+        background: rgba(0, 0, 0, 0.45) !important;
         mix-blend-mode: normal !important;
         opacity: 1 !important;
+        visibility: visible !important;
         pointer-events: none !important;
-        z-index: 202 !important;
+        z-index: 241 !important;
+        transition: opacity 0.28s ease !important;
+    }
+    body.nav-open.warm-tone.nav-closing::before,
+    body.nav-open.warm-tone.nav-closing::after {
+        opacity: 0 !important;
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
@@ -169,8 +181,8 @@ body {
         outline: none !important;
     }
     /* Light: bottone hamburger senza shadow quando menu aperto */
-    body:not(.dark-mode).nav-open .header-menu-btn,
-    body:not(.dark-mode).nav-open .header-menu-btn:hover {
+    body:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-btn,
+    body:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-btn:hover {
         box-shadow: none !important;
     }
     /* Dark: header e menu hamburger stesso colore opaco */
@@ -189,8 +201,8 @@ body {
         border-radius: 0 !important;
     }
     /* Dark: bottone hamburger senza shadow quando menu aperto */
-    body.dark-mode.nav-open .header-menu-btn,
-    body.dark-mode.nav-open .header-menu-btn:hover {
+    body.dark-mode.nav-open:not(.nav-closing) .header-menu-btn,
+    body.dark-mode.nav-open:not(.nav-closing) .header-menu-btn:hover {
         box-shadow: none !important;
     }
 
@@ -258,7 +270,26 @@ body {
     body.dark-mode.qr-generator .site-main .container .qr-field-input,
     body.dark-mode.qr-generator .site-main .container .qr-field-input:focus,
     body.dark-mode.data-viz .site-main .container #data-input,
+    body.dark-mode.data-viz .site-main .container #data-input:hover,
     body.dark-mode.data-viz .site-main .container #data-input:focus,
+    body.dark-mode.data-viz .site-main .container #data-input:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:not(:focus),
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:hover,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:hover,
+    body.dark-mode.data-viz .site-main .container #chart-title,
+    body.dark-mode.data-viz .site-main .container #chart-title:focus,
+    body.dark-mode.data-viz .site-main .container #chart-title:not(:focus),
+    body.dark-mode.data-viz .site-main .container #viz-top-n,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:focus,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:not(:focus),
+    body.dark-mode.data-viz .site-main .container #viz-y-unit,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:focus,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:not(:focus),
     body.dark-mode.web-seo .site-main .container .form-group textarea,
     body.dark-mode.web-seo .site-main .container .form-group textarea:focus,
     body.dark-mode.cover-letter-generator .site-main .container textarea,
@@ -270,7 +301,31 @@ body {
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
         color: #1a1a2e !important;
         -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
         font-family: Arial, sans-serif !important;
+    }
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]::placeholder,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]::placeholder,
+    body.dark-mode.data-viz .site-main .container #chart-title::placeholder,
+    body.dark-mode.data-viz .site-main .container #viz-top-n::placeholder,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit::placeholder {
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+        opacity: 1 !important;
+    }
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container #chart-title:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:-webkit-autofill,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container #chart-title:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container #viz-top-n:-webkit-autofill:focus,
+    body.dark-mode.data-viz .site-main .container #viz-y-unit:-webkit-autofill:focus {
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+        transition: background-color 99999s ease-out 0s;
     }
     body.dark-mode.markdown-preview .site-main .container .preview-output p,
     body.dark-mode.markdown-preview .site-main .container .preview-output h1,
@@ -306,12 +361,12 @@ body {
     }
 
     /* Dark mode mobile: bottoni tool (default). Tool con CSS dedicato sono esclusi. */
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container button:not(.split-preset-btn),
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .button-group button:not(.split-preset-btn),
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .faq-container button,
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="submit"],
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="button"],
-    body.dark-mode:not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .btn {
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container button:not(.split-preset-btn),
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .button-group button:not(.split-preset-btn),
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .faq-container button,
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="submit"],
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container input[type="button"],
+    body.dark-mode:not(.homepage):not(.hidden-tools-page):not(.robots-txt-gen):not(.image-editor):not(.interview-simulator):not(.cv-generator):not(.qr-generator):not(.data-viz):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.markdown-preview):not(.file-analyzer):not(.pdf-merger):not(.pdf-split):not(.cover-letter-generator):not(.application-email-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.color-converter):not(.calculators) .site-main .container .btn {
         background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
         border: 2px solid #b0c4de !important;
         color: #b0c4de !important;
@@ -339,12 +394,20 @@ body {
         fill: #002d5c !important;
     }
 
-    /* Overlay menu: niente blur; warm tone ha overlay dedicato sopra */
+    /* Overlay menu: scurimento pagina sotto header/menu (warm tone ha overlay dedicato) */
     body.nav-open:not(.warm-tone)::before {
+        content: "" !important;
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background: rgba(0, 0, 0, 0.35) !important;
-        z-index: 201 !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        z-index: 240 !important;
+        transition: opacity 0.28s ease !important;
         /* Copre tutta la viewport inclusa FAB e safe area iPhone */
         top: 0;
         left: 0;
@@ -352,6 +415,13 @@ body {
         bottom: 0;
         min-height: 100vh;
         min-height: 100dvh;
+    }
+    body.nav-open.nav-closing:not(.warm-tone)::before {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    body.dark-mode.nav-open:not(.warm-tone)::before {
+        background: rgba(0, 0, 0, 0.7) !important;
     }
     /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
     body.nav-open .site-header {
@@ -528,6 +598,18 @@ body.dark-mode .word-counter .container {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Desktop home: contenitore + testi come light mode (bianco / blu / grigio) */
+@media (min-width: 769px) {
+    body.dark-mode .homepage .container {
+        background: #fff !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25) !important;
+    }
+    body.dark-mode .homepage .intro {
+        color: #555 !important;
+        background: transparent !important;
+    }
+}
+
 /* Dark mode: container bianco per file/PDF/image/data/calc/QR */
 body.dark-mode.file-analyzer .container,
 body.dark-mode.pdf-merger .container,
@@ -640,21 +722,25 @@ body.dark-mode .home-link svg {
     fill: currentColor !important;
 }
 
-body.dark-mode .shortcuts-section .shortcuts-title {
-    color: #e84c4c !important;
-}
+@media (min-width: 769px) {
+    body.dark-mode .shortcuts-section .shortcuts-title {
+        color: #c41e3a !important;
+    }
 
-body.dark-mode .shortcuts-btn {
-    background: rgba(232, 76, 76, 0.25);
-    color: #e84c4c;
-    border-color: #e84c4c;
-}
+    body.dark-mode .shortcuts-btn {
+        background: rgba(196, 30, 58, 0.25);
+        color: #c41e3a;
+        -webkit-text-fill-color: #c41e3a;
+        border-color: #c41e3a;
+    }
 
-@media (hover: hover) and (pointer: fine) {
-    body.dark-mode .shortcuts-btn:hover {
-        background: #e84c4c;
-        color: white;
-        border-color: #b01830;
+    @media (hover: hover) and (pointer: fine) {
+        body.dark-mode .shortcuts-btn:hover {
+            background: #c41e3a;
+            color: #fff;
+            -webkit-text-fill-color: #fff;
+            border-color: #991b1b;
+        }
     }
 }
 
@@ -1085,6 +1171,10 @@ body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-mai
     .site-main .container {
         max-width: 1040px !important;
     }
+    /* Home Gadly: anche width (altrimenti resta bloccata a 900px come Drose non fa). */
+    body.homepage .site-main .container {
+        width: min(1040px, calc(100vw - 48px)) !important;
+    }
     /* Come a 900px vs 1000px: header/footer un filo più larghi della card centrale. */
     .header-inner,
     .footer-inner {
@@ -1094,6 +1184,9 @@ body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-mai
 @media (min-width: 3400px) {
     .site-main .container {
         max-width: 1120px !important;
+    }
+    body.homepage .site-main .container {
+        width: min(1120px, calc(100vw - 48px)) !important;
     }
     .header-inner,
     .footer-inner {

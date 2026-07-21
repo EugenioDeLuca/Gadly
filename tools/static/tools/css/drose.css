@@ -1,16 +1,29 @@
-﻿/* Drose landing page */
+/* Drose landing page */
 .drose-landing {
     width: 100%;
 }
 
 .drose-landing__container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 32px 36px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 8px 16px 28px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
     box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+    .drose-landing__container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 32px 36px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+    }
 }
 
 .drose-hero {
@@ -1462,6 +1475,75 @@ body.drose-works-manage-page .drose-works-choose-file-btn * {
     border-radius: 50%;
     background: linear-gradient(135deg, #007BFF 0%, #003f7f 100%);
     flex-shrink: 0;
+}
+
+/* Home: box Perché Drose + voci con spunte (stesso aspetto desktop/mobile) */
+body.drose-home .drose-why {
+    margin-top: 24px;
+    margin-bottom: 28px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 20px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #e8f4fd 0%, #f8fcff 100%);
+    border: 2px solid rgba(0, 63, 127, 0.14);
+    text-align: center;
+}
+
+body.drose-home .drose-why h2 {
+    margin: 0 0 18px;
+    font-size: 1.35rem;
+}
+
+body.drose-home .drose-benefits {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border: none;
+    list-style: none;
+}
+
+body.drose-home .drose-benefits li {
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 63, 127, 0.35);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    color: #1a1a1a;
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 400;
+    box-sizing: border-box;
+}
+
+body.drose-home .drose-benefits li::before,
+body.drose-home .drose-benefits li::after {
+    content: "\2713";
+    display: inline-block;
+    flex-shrink: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    color: #22c55e !important;
+    -webkit-text-fill-color: #22c55e !important;
+    font-size: 0.95em;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .drose-cta {
@@ -3352,74 +3434,6 @@ body.drose-page.faq-page .faq-item h3 {
             transition: opacity 0.25s ease, visibility 0s;
         }
     }
-
-    body.drose-home .drose-why {
-        margin-top: 24px;
-        margin-bottom: 28px;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 24px 20px;
-        border-radius: 14px;
-        background: linear-gradient(145deg, #e8f4fd 0%, #f8fcff 100%);
-        border: 2px solid rgba(0, 63, 127, 0.14);
-        text-align: center;
-    }
-
-    body.drose-home .drose-why h2 {
-        margin: 0 0 18px;
-        font-size: 1.35rem;
-    }
-
-    body.drose-home .drose-benefits {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        border: none;
-        list-style: none;
-    }
-
-    body.drose-home .drose-benefits li {
-        width: 100%;
-        min-height: 0;
-        margin: 0;
-        padding: 12px 16px;
-        border: 1px solid rgba(0, 63, 127, 0.35);
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.72);
-        box-shadow: none;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 12px;
-        color: #1a1a1a;
-        font-size: 16px;
-        line-height: 1.4;
-        font-weight: 400;
-        box-sizing: border-box;
-    }
-
-    body.drose-home .drose-benefits li::before,
-    body.drose-home .drose-benefits li::after {
-        content: "\2713";
-        display: inline-block;
-        flex-shrink: 0;
-        width: auto;
-        height: auto;
-        margin: 0;
-        border-radius: 0;
-        background: none;
-        color: #22c55e !important;
-        -webkit-text-fill-color: #22c55e !important;
-        font-size: 0.95em;
-        font-weight: 700;
-        line-height: 1;
-    }
 }
 
 @media (min-width: 769px) {
@@ -3854,6 +3868,31 @@ body.drose-page.faq-page .faq-item h3 {
         border: none !important;
     }
 
+    /*
+     * Home Drose: annulla il flex desktop (flex:1 su landing/container).
+     * Altrimenti, passando da desktop→mobile in DevTools senza refresh,
+     * resta un’altezza “fantasma” e il hero sembra sospeso a metà schermo.
+     */
+    body.drose-page.drose-home .site-main {
+        display: block;
+    }
+
+    body.drose-page.drose-home .site-main .drose-landing,
+    body.drose-page.drose-home .site-main .drose-landing__container {
+        display: block;
+        flex: none;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
+        height: auto;
+        align-self: auto;
+        min-height: 0;
+    }
+
+    body.drose-home .drose-landing__container {
+        min-height: var(--gadly-drose-home-min-h, 0px);
+    }
+
     .drose-card-grid {
         grid-template-columns: 1fr;
     }
@@ -4092,6 +4131,16 @@ body.drose-page.faq-page .faq-item h3 {
     body.drose-home .drose-hero__actions .drose-works-cta--mobile {
         width: 338px;
         max-width: 338px;
+        box-sizing: border-box;
+    }
+
+    /* Perché Drose + preventivo: stessa larghezza delle card servizi (338px) */
+    body.drose-home .drose-why,
+    body.drose-home .drose-cta {
+        width: 338px;
+        max-width: 338px;
+        margin-left: auto;
+        margin-right: auto;
         box-sizing: border-box;
     }
 

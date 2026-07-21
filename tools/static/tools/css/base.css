@@ -12,10 +12,14 @@
 
 html {
     overflow-x: hidden;
-    scrollbar-width: none; /* Firefox: scrollbar nascosta = niente spostamento */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
 html::-webkit-scrollbar {
-    display: none; /* Chrome/Safari/Edge: scrollbar nascosta = niente spostamento */
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 body {
@@ -227,7 +231,7 @@ h1, h2 {
     height: 2.5px;
     background: #003f7f;
     border-radius: 3px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.32s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .header-menu-icon {
@@ -245,35 +249,35 @@ h1, h2 {
 .header-menu-icon::after { top: 6px; }
 
 /* Asterisco quando menu aperto (stesso in light e dark) */
-body.nav-open .header-menu-icon {
+body.nav-open:not(.nav-closing) .header-menu-icon {
     transform: rotate(90deg);
 }
-body.nav-open .header-menu-icon::before {
+body.nav-open:not(.nav-closing) .header-menu-icon::before {
     transform: translateY(6px) rotate(-60deg);
     background: #003f7f;
 }
-body.nav-open .header-menu-icon::after {
+body.nav-open:not(.nav-closing) .header-menu-icon::after {
     transform: translateY(-6px) rotate(60deg);
     background: #003f7f;
 }
 
 /* Bottone hamburger quando menu aperto: stesso effetto in light e dark */
-body.nav-open .header-menu-btn {
+body.nav-open:not(.nav-closing) .header-menu-btn {
     background: linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-body.nav-open .header-menu-btn:hover {
+body.nav-open:not(.nav-closing) .header-menu-btn:hover {
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
-body.nav-open .header-menu-icon::before,
-body.nav-open .header-menu-icon::after {
+body.nav-open:not(.nav-closing) .header-menu-icon::before,
+body.nav-open:not(.nav-closing) .header-menu-icon::after {
     background: #003f7f;
 }
-body.dark-mode.nav-open .header-menu-icon {
+body.dark-mode.nav-open:not(.nav-closing) .header-menu-icon {
     background: var(--text-secondary, #e8f4fd);
 }
-body.dark-mode.nav-open .header-menu-icon::before,
-body.dark-mode.nav-open .header-menu-icon::after {
+body.dark-mode.nav-open:not(.nav-closing) .header-menu-icon::before,
+body.dark-mode.nav-open:not(.nav-closing) .header-menu-icon::after {
     background: var(--text-secondary, #e8f4fd);
 }
 
@@ -861,11 +865,11 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         box-shadow: none;
         border: none;
         border-radius: 0 0 12px 12px;
-        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 99;
     }
     .header-nav.is-open {
-        max-height: 360px;
+        /* fallback se JS non setta scrollHeight; JS usa l’altezza reale */
+        max-height: 80vh;
         overflow: hidden;
         padding: 10px 28px 12px;
         box-shadow: none;
@@ -952,6 +956,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         gap: 8px;
         margin-top: 4px;
         padding-top: 10px;
+        padding-bottom: 10px;
         border-top: 1px solid rgba(0, 63, 127, 0.15);
     }
     body.dark-mode .header-nav .header-auth-wrap {
@@ -971,23 +976,55 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         }
     }
     body.nav-open {
-        overflow: hidden;
+        overflow: hidden !important;
+    }
+
+    /* Menu aperto: blocca scroll pagina (html + body, anche iOS) */
+    html.nav-open {
+        overflow: hidden !important;
+        height: 100%;
+        overscroll-behavior: none;
+    }
+
+    html.nav-open body {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: var(--nav-scroll-lock-y, 0px) !important;
+        overscroll-behavior: none !important;
+    }
+
+    html.nav-open body .site-header,
+    html.nav-open body .header-nav,
+    html.nav-open body .header-nav.is-open {
+        touch-action: auto !important;
+        overscroll-behavior: contain;
     }
     body.nav-open::before {
         content: "";
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.04);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        z-index: 98;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        z-index: 240;
         cursor: pointer;
-        animation: fadeIn 0.25s ease;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
-    /* Warm tone overlay: theme.css (scuro, senza blur) */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    body.nav-open:not(.nav-closing)::before {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+    /* Chiusura: fade overlay mentre il pannello collassa (niente sparizione a scatto) */
+    body.nav-open.nav-closing::before {
+        opacity: 0 !important;
+        pointer-events: none;
+        cursor: default;
     }
     .site-main {
         padding: 20px 16px 36px;
@@ -1023,7 +1060,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         justify-content: center;
     }
     .header-nav.is-open {
-        max-height: 440px;
+        max-height: 80vh;
     }
 }
 
@@ -1233,14 +1270,14 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         border-color: #002d5c !important;
         color: #003f7f !important;
     }
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus-visible,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:focus,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .faq-container button:focus-visible,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:focus,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="submit"]:focus-visible,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:focus,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen) .site-main .container input[type="button"]:focus-visible {
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container button:not(.interview-settings-toggle):not(.split-preset-btn):focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .faq-container button:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .faq-container button:focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container input[type="submit"]:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container input[type="submit"]:focus-visible,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container input[type="button"]:focus,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.data-viz) .site-main .container input[type="button"]:focus-visible {
         outline: none !important;
         box-shadow: none !important;
         transform: scale(1) !important;
@@ -1417,8 +1454,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
     body.dark-mode.help-page .site-main .container .home-link-wrap .home-link {
         color: var(--text-secondary) !important;
-        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-        border-color: var(--text-secondary);
+        background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%) !important;
+        border-color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
     }
 
     /* Mobile FAB Home: default sotto 768px (non se l’utente ha già fissato posizione/misure inline). */
@@ -1433,12 +1471,16 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         touch-action: none;
         -webkit-touch-callout: none;
     }
-    /* Mobile: Back to Home sopra cookie-banner (1000); con menu header aperto resta sotto overlay (theme.css) */
+    /* Mobile FAB: sopra cookie-banner a menu chiuso; sotto overlay durante menu aperto/chiusura */
     body:not(.homepage):not(.nav-open) .mobile-home-fab {
         z-index: 1100 !important;
     }
     body:not(.homepage):not(.nav-open) .mobile-home-fab.is-dragging {
         z-index: 1200 !important;
+    }
+    body.nav-open:not(.homepage) .mobile-home-fab {
+        z-index: 200 !important;
+        pointer-events: none !important;
     }
     body:not(.homepage) .mobile-home-fab:not(.mobile-home-fab--user-positioned) .mobile-home-fab-link {
         display: flex;

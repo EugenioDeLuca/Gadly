@@ -19,6 +19,141 @@
         transform: none !important;
     }
 
+    /* Mobile: primo paint allineato al layout finale (evita salto al refresh) */
+    @media (max-width: 768px) {
+        body.drose-home .drose-landing__container {
+            margin: 0 !important;
+            padding: 8px 16px 28px !important;
+            max-width: none !important;
+            width: 100% !important;
+            min-height: var(--gadly-drose-home-min-h, 0px);
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            box-sizing: border-box;
+        }
+
+        body.drose-home .drose-hero__logo {
+            width: 96px;
+            height: 96px;
+        }
+
+        body.drose-home .drose-hero__actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        body.drose-home .drose-hero__actions .drose-works-cta--desktop {
+            display: none !important;
+        }
+
+        body.drose-home .drose-hero__actions .drose-works-cta--mobile,
+        body.drose-home .drose-hero__actions .drose-btn {
+            display: inline-flex;
+            width: 338px;
+            max-width: 338px;
+            box-sizing: border-box;
+        }
+
+        body.drose-home .drose-card-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+            justify-items: center;
+        }
+
+        body.drose-home .drose-card-grid > .drose-card--service {
+            position: relative;
+            display: block;
+            width: 338px;
+            max-width: 338px;
+            min-height: 0;
+            height: auto;
+            aspect-ratio: 16 / 10;
+            padding: 0 !important;
+            margin: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #1a1a1a;
+            border: 2px solid rgba(0, 63, 127, 0.18);
+            box-sizing: border-box;
+        }
+
+        body.drose-home .drose-card--service .drose-card__media {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            max-height: none !important;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            object-fit: cover;
+            object-position: center center;
+            z-index: 0;
+        }
+
+        body.drose-home .drose-card--service::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.78) 0%,
+                rgba(0, 0, 0, 0.28) 42%,
+                rgba(0, 0, 0, 0) 70%
+            );
+        }
+
+        body.drose-home .drose-card--service .drose-card__label {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 12px;
+            top: auto;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 0 10px;
+            background: none;
+            pointer-events: none;
+        }
+
+        body.drose-home .drose-card--service .drose-card__title,
+        body.drose-home .drose-card--service .drose-card__desc {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: #ffffff;
+            text-align: center;
+            text-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.95),
+                0 0 12px rgba(0, 0, 0, 0.65);
+        }
+
+        body.drose-home .drose-card--service .drose-card__desc,
+        body.drose-home .drose-card--service .drose-card__unavailable {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        body.drose-home .drose-why,
+        body.drose-home .drose-cta {
+            width: 338px;
+            max-width: 338px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+        }
+    }
+
     /* Desktop: foto servizi già presenti al primo paint (data-URI inline) */
     @media (min-width: 769px) {
         body.drose-home .drose-card-grid > .drose-card--service {
@@ -78,6 +213,126 @@
         }
     }
 </style>
+<script>
+(function () {
+    try {
+        var HKEY = "gadly-drose-home-container-h-v2";
+        var OLD_HKEY = "gadly-drose-home-container-h-v1";
+        var mq = window.matchMedia ? window.matchMedia("(max-width: 768px)") : null;
+
+        function clearMinH() {
+            document.documentElement.style.removeProperty("--gadly-drose-home-min-h");
+        }
+
+        function readStoredHeight() {
+            try {
+                sessionStorage.removeItem(OLD_HKEY);
+                var raw = sessionStorage.getItem(HKEY);
+                if (!raw) return 0;
+                var data = JSON.parse(raw);
+                if (!data || typeof data.h !== "number") return 0;
+                var w = typeof data.w === "number" ? data.w : 0;
+                /* Solo se la larghezza è ancora tipicamente mobile e simile */
+                if (w < 320 || w > 768) return 0;
+                if (Math.abs(w - window.innerWidth) > 80) return 0;
+                return data.h > 200 ? data.h : 0;
+            } catch (eRead) {
+                return 0;
+            }
+        }
+
+        function saveHeight() {
+            try {
+                if (!mq || !mq.matches) return;
+                var c = document.querySelector("body.drose-home .drose-landing__container");
+                if (!c) return;
+                var next = Math.round(c.offsetHeight);
+                if (next > 200) {
+                    sessionStorage.setItem(HKEY, JSON.stringify({
+                        h: next,
+                        w: Math.round(window.innerWidth)
+                    }));
+                }
+            } catch (eSave) { /* ignore */ }
+        }
+
+        function flushFlexLeftovers() {
+            var landing = document.querySelector("body.drose-home .drose-landing");
+            var container = document.querySelector("body.drose-home .drose-landing__container");
+            [landing, container].forEach(function (el) {
+                if (!el || !el.style) return;
+                el.style.setProperty("height", "auto", "important");
+                el.style.setProperty("flex", "none", "important");
+                void el.offsetHeight;
+                el.style.removeProperty("height");
+                el.style.removeProperty("flex");
+            });
+        }
+
+        function onEnterMobileFromResize() {
+            clearMinH();
+            try { sessionStorage.removeItem(HKEY); } catch (eClr) { /* ignore */ }
+            try {
+                window.scrollTo(0, 0);
+                if (document.documentElement) document.documentElement.scrollTop = 0;
+                if (document.body) document.body.scrollTop = 0;
+            } catch (eScroll) { /* ignore */ }
+            flushFlexLeftovers();
+            requestAnimationFrame(function () {
+                flushFlexLeftovers();
+                saveHeight();
+            });
+        }
+
+        function onLeaveMobile() {
+            clearMinH();
+            try { sessionStorage.removeItem(HKEY); } catch (eClr2) { /* ignore */ }
+        }
+
+        window.__gadlySaveDroseHomeContainerHeight = saveHeight;
+
+        if (mq && mq.matches) {
+            if ("scrollRestoration" in history) {
+                history.scrollRestoration = "manual";
+            }
+            var nav = performance.getEntriesByType("navigation")[0];
+            var isReload = nav && nav.type === "reload";
+            if (isReload) {
+                var h = readStoredHeight();
+                if (h > 200) {
+                    document.documentElement.style.setProperty("--gadly-drose-home-min-h", h + "px");
+                }
+            }
+            window.addEventListener("pagehide", saveHeight);
+            window.addEventListener("load", function () {
+                saveHeight();
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        clearMinH();
+                        saveHeight();
+                    });
+                });
+            });
+        }
+
+        /* Desktop ↔ mobile senza reload (DevTools device mode): reset layout + scroll */
+        if (mq) {
+            var onMq = function (e) {
+                if (e.matches) {
+                    onEnterMobileFromResize();
+                } else {
+                    onLeaveMobile();
+                }
+            };
+            if (typeof mq.addEventListener === "function") {
+                mq.addEventListener("change", onMq);
+            } else if (typeof mq.addListener === "function") {
+                mq.addListener(onMq);
+            }
+        }
+    } catch (eDroseHome) { /* ignore */ }
+})();
+</script>
 {% endblock %}
 {% block extra_css %}
 {% endblock %}

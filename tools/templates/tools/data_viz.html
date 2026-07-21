@@ -93,10 +93,15 @@ body.data-viz #data-input {
 @media (max-width: 768px) {
   body.data-viz #data-input {
     min-height: 130px;
-    height: 152px;
+    max-height: 280px;
     padding: 12px;
     font-size: 17px;
     line-height: 1.5;
+    overflow-y: hidden;
+    resize: none;
+  }
+  body.data-viz #data-input.viz-data-input-scroll {
+    overflow-y: auto;
   }
   body.data-viz #data-input::placeholder {
     font-size: 17px;
@@ -113,9 +118,9 @@ body.data-viz #data-input {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 47.5px;
-    min-height: 47.5px;
-    max-height: 47.5px;
+    height: 47.5px !important;
+    min-height: 47.5px !important;
+    max-height: 47.5px !important;
     padding: 0 36px 0 16px;
     box-sizing: border-box;
     border-radius: 12px;
@@ -123,6 +128,14 @@ body.data-viz #data-input {
     font-weight: 600;
     cursor: pointer;
     position: relative;
+  }
+  body.data-viz .site-main .data-viz > .container .viz-options-panel .viz-opt-field .text-tool-select.viz-opt-select,
+  body.data-viz .site-main .data-viz > .container .viz-options-panel #viz-palette + .text-tool-select-trigger,
+  body.data-viz .site-main .data-viz > .container .viz-options-panel #viz-sort + .text-tool-select-trigger {
+    height: 47.5px !important;
+    min-height: 47.5px !important;
+    max-height: 47.5px !important;
+    box-sizing: border-box;
   }
   body.data-viz:not(.dark-mode) .text-tool-select-trigger {
     background: #d0e8f9;
@@ -133,6 +146,31 @@ body.data-viz #data-input {
     background: #1e2a3a;
     border: 2px solid #b0c4de;
     color: #b0c4de;
+    -webkit-text-fill-color: #b0c4de;
+  }
+  body.dark-mode.data-viz #data-input,
+  body.dark-mode.data-viz #data-input:focus,
+  body.dark-mode.data-viz #data-input:not(:focus) {
+    background: rgba(240, 242, 245, 0.95);
+    border: 1px solid rgba(220, 224, 230, 0.9);
+    color: #1a1a2e;
+    -webkit-text-fill-color: #1a1a2e;
+    caret-color: #1a1a2e;
+  }
+  body.dark-mode.data-viz #chart-title,
+  body.dark-mode.data-viz #chart-title:focus,
+  body.dark-mode.data-viz #chart-title:not(:focus),
+  body.dark-mode.data-viz #viz-top-n,
+  body.dark-mode.data-viz #viz-top-n:focus,
+  body.dark-mode.data-viz #viz-top-n:not(:focus),
+  body.dark-mode.data-viz #viz-y-unit,
+  body.dark-mode.data-viz #viz-y-unit:focus,
+  body.dark-mode.data-viz #viz-y-unit:not(:focus) {
+    background: rgba(240, 242, 245, 0.95);
+    border: 1px solid rgba(220, 224, 230, 0.9);
+    color: #1a1a2e;
+    -webkit-text-fill-color: #1a1a2e;
+    caret-color: #1a1a2e;
   }
   body.data-viz .text-tool-select > select {
     position: absolute;
@@ -141,10 +179,10 @@ body.data-viz #data-input {
     opacity: 0;
     pointer-events: none;
   }
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):hover,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus-visible {
     background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
     background-color: #d0e8f9 !important;
     background-image: none !important;
@@ -154,23 +192,97 @@ body.data-viz #data-input {
     box-shadow: none !important;
     filter: none !important;
   }
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
-  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
-    background: #28a745 !important;
-    background-color: #28a745 !important;
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:not(:active):not(.tap-active):not(.copied),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link:not(:active):not(.tap-active):not(.copied) {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
     background-image: none !important;
-    border: 2px solid #28a745 !important;
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
     box-shadow: none !important;
     filter: none !important;
   }
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active),
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):hover,
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus,
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):focus-visible {
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active:not(.downloaded),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active:not(.downloaded) {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded.tap-active {
+    background: rgba(40, 167, 69, 0.22) !important;
+    background-color: rgba(40, 167, 69, 0.22) !important;
+    background-image: none !important;
+    border: 2px solid #28a745 !important;
+    color: #1f7a35 !important;
+    -webkit-text-fill-color: #1f7a35 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active:not(.copied),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.tap-active:not(.copied),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active:not(.copied),
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active:not(.copied) {
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
+    background: #ffe6e6 !important;
+    background-color: #ffe6e6 !important;
+    background-image: none !important;
+    border: 2px solid #e8a5a5 !important;
+    color: #c82333 !important;
+    -webkit-text-fill-color: #c82333 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(1) !important;
+  }
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied.tap-active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:active,
+  body.data-viz:not(.dark-mode) .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied.tap-active {
+    background: #ffe6e6 !important;
+    background-color: #ffe6e6 !important;
+    background-image: none !important;
+    border: 2px solid #e8a5a5 !important;
+    color: #c82333 !important;
+    -webkit-text-fill-color: #c82333 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):hover,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:not(:active):not(.tap-active):not(.downloaded):focus-visible {
     background: #1e2a3a !important;
     background-color: #1e2a3a !important;
     background-image: none !important;
@@ -180,25 +292,88 @@ body.data-viz #data-input {
     box-shadow: none !important;
     filter: none !important;
   }
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active,
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active,
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
-  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
-    background: #28a745 !important;
-    background-color: #28a745 !important;
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn:active:not(.downloaded),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.tap-active:not(.downloaded) {
+    background: #1e2a3a !important;
+    background-color: #1e2a3a !important;
     background-image: none !important;
-    border: 2px solid #28a745 !important;
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
     box-shadow: none !important;
     filter: none !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:hover {
+    background: rgba(126, 226, 160, 0.20) !important;
+    background-color: rgba(126, 226, 160, 0.20) !important;
+    background-image: none !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded:active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-download-btn.downloaded.tap-active {
+    background: rgba(126, 226, 160, 0.20) !important;
+    background-color: rgba(126, 226, 160, 0.20) !important;
+    background-image: none !important;
+    border: 2px solid #7ee2a0 !important;
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link:active:not(.copied),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.tap-active:not(.copied),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn:active:not(.copied),
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.tap-active:not(.copied) {
+    background: #1e2a3a !important;
+    background-color: #1e2a3a !important;
+    background-image: none !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:hover {
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(1) !important;
+  }
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied.tap-active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied:active,
+  body.dark-mode.data-viz .site-main .data-viz > .container .viz-export-buttons .viz-copy-btn.copied.tap-active {
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transform: scale(0.96) !important;
   }
 }
 </style>
 {% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260531b">
-<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=85">
+<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=120">
 {% endblock %}
 {% block content %}
 <div class="data-viz">
@@ -269,7 +444,7 @@ body.data-viz #data-input {
             moreRows: "{% filter escapejs %}{% trans '… and %(count)s more rows' %}{% endfilter %}"
         };
         </script>
-        <script src="{% static 'tools/js/data-viz-boot.js' %}?v=3"></script>
+        <script src="{% static 'tools/js/data-viz-boot.js' %}?v=4"></script>
 
         <div class="viz-options-panel">
             <p class="viz-options-title">{% trans "Chart options" %}</p>
@@ -527,10 +702,10 @@ body.data-viz #data-input {
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{% static 'tools/js/vendor/chart.umd.min.js' %}"></script>
+<script src="{% static 'tools/js/vendor/xlsx.full.min.js' %}"></script>
+<script src="{% static 'tools/js/vendor/jspdf.umd.min.js' %}"></script>
 {% endblock %}
 {% block page_scripts %}
-<script src="{% static 'tools/js/data-viz.js' %}?v=20260617e"></script>
+<script src="{% static 'tools/js/data-viz.js' %}?v=20260617x"></script>
 {% endblock %}

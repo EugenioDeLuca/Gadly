@@ -48,7 +48,7 @@
 
             var anchor = getMainAnchor();
 
-            if (anchor && trash.parentElement !== anchor) {
+            if (anchor && !anchor.contains(trash)) {
 
                 anchor.appendChild(trash);
 

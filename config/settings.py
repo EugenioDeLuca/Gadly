@@ -173,6 +173,7 @@ TEMPLATES = [
                 'tools.context_processors.canonical_url',
                 'tools.context_processors.drose_site',
                 'tools.context_processors.user_profile',
+                'tools.context_processors.home_layout',
                 'tools.context_processors.drose_staff_quotes',
             ],
         },

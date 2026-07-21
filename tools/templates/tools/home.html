@@ -1,6 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static %}
 {% load i18n %}
+{% load home_hidden_tags %}
 
 {% block title %}{% trans "Gadly - Free Online Tools" %}{% endblock %}
 {% block body_class %}homepage{% if user.is_authenticated %} user-authenticated{% endif %}{% endblock %}
@@ -28,29 +29,90 @@
 (function (uid) {
     try {
         var favs = JSON.parse(localStorage.getItem("gadly-favorites:" + uid) || "[]");
-        if (!favs.length) return;
+        if (!Array.isArray(favs) || !favs.length) return;
         var root = document.documentElement;
         root.classList.add("gadly-has-shortcuts");
         root.style.setProperty("--gadly-shortcuts-count", String(favs.length));
+        root.style.setProperty("--gadly-shortcuts-rows", String(Math.ceil(favs.length / 4)));
+
+        // Preferiti già dal primo paint (niente ☆→★ al DOMContentLoaded).
+        function norm(raw) {
+            if (!raw) return "";
+            var s = String(raw).split("?")[0].split("#")[0];
+            if (s.length > 1 && s.charAt(s.length - 1) === "/") s = s.slice(0, -1);
+            return s;
+        }
+        function esc(v) {
+            return String(v).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+        }
+        var rules = [];
+        var seen = {};
+        favs.forEach(function (url) {
+            var u = norm(url);
+            if (!u || seen[u]) return;
+            seen[u] = true;
+            [u, u + "/"].forEach(function (href) {
+                rules.push(
+                    'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc(href) + '"]) .tool-fav' +
+                    '{color:#dc3545!important}'
+                );
+                rules.push(
+                    'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc(href) + '"]) .tool-fav::before' +
+                    '{content:"★"!important;color:#dc3545!important}'
+                );
+            });
+        });
+        if (!rules.length) return;
+        var style = document.createElement("style");
+        style.id = "gadly-home-fav-prehide";
+        style.textContent = rules.join("");
+        (document.head || document.documentElement).appendChild(style);
     } catch (e) {}
 })("{{ user.id }}");
 </script>
 {% endif %}
 <script>
+window.GADLY_HOME_SECTION_PATHS = {{ home_section_paths_json|safe }};
+</script>
+{% if user.is_authenticated %}
+<script>
+(function () {
+    var root = document.documentElement;
+    {% if user_home_hidden_tools %}
+    root.classList.add("gadly-has-hidden-tools", "gadly-home-has-hidden-tools");
+    try {
+        if ("scrollRestoration" in history) {
+            history.scrollRestoration = "manual";
+        }
+    } catch (eScroll) { /* ignore */ }
+    {% endif %}
+})();
+</script>
+{% endif %}
+{% if not user.is_authenticated %}
+<script>
 (function () {
     var PREFIX = "gadly-hidden-tools-v2:";
     var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
-    var authenticated = !!window.GADLY_USER_AUTHENTICATED;
     var urls = [];
     var seen = {};
 
     function normalizeUrl(raw) {
         if (!raw) return "";
-        var u = String(raw).split("?")[0].split("#")[0];
-        if (u.length > 1 && u.charAt(u.length - 1) === "/") {
-            u = u.slice(0, -1);
+        try {
+            var u = new URL(raw, window.location.origin);
+            var path = u.pathname || "/";
+            if (path.length > 1 && path.charAt(path.length - 1) === "/") {
+                path = path.slice(0, -1);
+            }
+            return path;
+        } catch (e) {
+            var s = String(raw).split("?")[0].split("#")[0];
+            if (s.length > 1 && s.charAt(s.length - 1) === "/") {
+                s = s.slice(0, -1);
+            }
+            return s;
         }
-        return u;
     }
 
     function addUrl(u) {
@@ -71,31 +133,15 @@
         } catch (e) {}
     }
 
-    if (authenticated) {
-        var serverEl = document.getElementById("gadly-server-hidden-tools");
-        if (serverEl) {
-            try {
-                var server = JSON.parse(serverEl.textContent);
-                if (Array.isArray(server)) {
-                    server.forEach(function (item) {
-                        if (item && item.url) addUrl(item.url);
-                    });
-                }
-            } catch (e) {}
-        }
-    } else {
-        addFromKey(PREFIX + suffix);
-        try {
-            for (var i = 0; i < localStorage.length; i++) {
-                var k = localStorage.key(i);
-                if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
-            }
-        } catch (e2) {}
-    }
-
+    addFromKey(PREFIX + suffix);
     if (!urls.length) return;
 
-    document.documentElement.classList.add("gadly-has-hidden-tools");
+    document.documentElement.classList.add("gadly-has-hidden-tools", "gadly-home-has-hidden-tools");
+    try {
+        if ("scrollRestoration" in history) {
+            history.scrollRestoration = "manual";
+        }
+    } catch (eScroll) { /* ignore */ }
 
     function cssEscapeAttr(value) {
         if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
@@ -104,17 +150,60 @@
         return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
     }
 
-    var rules = urls.map(function (u) {
-        var esc = cssEscapeAttr(u);
-        return 'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc + '"]){display:none!important}';
-    }).join("");
+    function hrefVariants(u) {
+        var variants = [u];
+        if (u.length > 1) {
+            if (u.charAt(u.length - 1) === "/") {
+                variants.push(u.slice(0, -1));
+            } else {
+                variants.push(u + "/");
+            }
+        }
+        return variants;
+    }
+
+    var rules = [];
+    var hiddenMap = {};
+    urls.forEach(function (u) {
+        hiddenMap[u] = true;
+        hrefVariants(u).forEach(function (href) {
+            rules.push(
+                'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' +
+                cssEscapeAttr(href) +
+                '"]){display:none!important}'
+            );
+        });
+    });
+
+    var sections = window.GADLY_HOME_SECTION_PATHS || {};
+    Object.keys(sections).forEach(function (catId) {
+        var paths = sections[catId];
+        if (!paths || !paths.length) return;
+        var allHidden = true;
+        for (var i = 0; i < paths.length; i++) {
+            if (!hiddenMap[paths[i]]) {
+                allHidden = false;
+                break;
+            }
+        }
+        if (allHidden) {
+            rules.push(
+                'body.homepage .tool-section:has(#' +
+                cssEscapeAttr(catId) +
+                '){display:none!important}'
+            );
+        }
+    });
+
+    if (!rules.length) return;
 
     var style = document.createElement("style");
     style.id = "gadly-hidden-tools-prehide";
-    style.textContent = rules;
+    style.textContent = rules.join("");
     document.head.appendChild(style);
 })();
 </script>
+{% endif %}
 <script>
 (function () {
     if (window.innerWidth > 768) return;
@@ -134,9 +223,43 @@
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=100">
-<link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=73">
-<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=89">
+{# Ultimo CSS della home (dopo base/theme/drose): vince sul cascade, niente override tardivo #}
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=133">
+<link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=75">
+<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=102">
+<style id="gadly-home-shortcuts-title-mobile">
+@media (max-width: 768px) {
+    body.dark-mode.homepage .site-main .container #shortcuts-section > h2.shortcuts-title {
+        color: #ee8888 !important;
+        -webkit-text-fill-color: #ee8888 !important;
+    }
+}
+</style>
+<style id="gadly-home-btn-boot-lock">
+/* Durante il boot: zero transition/animation sui tool-btn (evita lampeggio al load CSS). */
+html.gadly-home-booting body.homepage .tool-btn,
+html.gadly-home-booting body.homepage .tool-btn-wrap .tool-fav,
+html.gadly-home-booting body.homepage .tool-btn-wrap .tool-fav::before {
+    transition: none !important;
+    animation: none !important;
+}
+</style>
+<script>
+(function () {
+    try {
+        document.documentElement.classList.add("gadly-home-booting");
+        function unlock() {
+            document.documentElement.classList.remove("gadly-home-booting");
+        }
+        window.addEventListener("load", function () {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(unlock);
+            });
+        });
+        setTimeout(unlock, 2500);
+    } catch (e) {}
+})();
+</script>
 {% endblock %}
 
 {% block content %}
@@ -151,6 +274,50 @@
     </div>
 </div>
 <div class="container">
+    {% include "tools/includes/desktop_trash_bin.html" %}
+{% if user.is_authenticated %}
+<script>
+(function (uid) {
+    try {
+        var favs = JSON.parse(localStorage.getItem("gadly-favorites:" + uid) || "[]");
+        if (favs.length) document.currentScript.parentElement.classList.add("has-shortcuts");
+    } catch (e) {}
+})("{{ user.id }}");
+</script>
+{% endif %}
+{% if not user.is_authenticated %}
+<script>
+(function () {
+    var PREFIX = "gadly-hidden-tools-v2:";
+    var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
+    var count = 0;
+    var seen = {};
+    try {
+        var arr = JSON.parse(localStorage.getItem(PREFIX + suffix) || "[]");
+        if (Array.isArray(arr)) {
+            arr.forEach(function (item) {
+                if (!item || !item.url) return;
+                var u = String(item.url).split("?")[0].split("#")[0];
+                if (u.length > 1 && u.charAt(u.length - 1) === "/") u = u.slice(0, -1);
+                if (!u || seen[u]) return;
+                seen[u] = true;
+                count += 1;
+            });
+        }
+    } catch (e) {}
+    var badge = document.getElementById("desktop-trash-bin-count");
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = String(count);
+            badge.classList.toggle("desktop-trash-bin__count--wide", count >= 10);
+            badge.removeAttribute("hidden");
+            badge.removeAttribute("aria-hidden");
+            document.documentElement.classList.add("gadly-home-has-hidden-tools");
+        }
+    }
+})();
+</script>
+{% endif %}
 
     <div class="home-hero">
     <h1 class="home-main-title">{% trans "Free tools for everyday tasks" %}</h1>
@@ -162,7 +329,7 @@
 
     <div class="home-drose-entry">
         <a href="{% url 'drose' %}" class="home-drose-entry__link" draggable="false">
-            <img src="{% static 'tools/images/drose-favicon-96.png' %}" alt="" width="40" height="40" class="home-drose-entry__icon" decoding="async" draggable="false">
+            <img src="{% static 'tools/images/drose-favicon-96.png' %}" alt="" width="46" height="46" class="home-drose-entry__icon" decoding="async" draggable="false">
             <span class="home-drose-entry__text">
                 <span class="home-drose-entry__title">{% trans "Drose - Drone Services" %}</span>
                 <span class="home-drose-entry__subtitle">{% trans "Drone photos and video for marketing, inspections, and events." %}</span>
@@ -170,160 +337,172 @@
             <span class="home-drose-entry__chevron" aria-hidden="true">›</span>
         </a>
     </div>
-    <script src="{% static 'tools/js/home-drose-entry.js' %}?v=2"></script>
+    <script src="{% static 'tools/js/home-drose-entry.js' %}?v=3"></script>
 
-    <section class="shortcuts-section" id="shortcuts-section"{% if user.is_authenticated %} hidden{% endif %}>
+    <section class="shortcuts-section" id="shortcuts-section" aria-hidden="true">
         <h2 class="shortcuts-title">{% trans "Quick access" %}</h2>
         <div class="shortcuts-grid" id="shortcuts-grid"></div>
     </section>
 
     <div class="home-categories-wrap" id="home-categories-wrap">
     <!-- Text Tools -->
-    <section class="tool-section" data-icon="T">
+    {% home_section_is_hidden 'category-text' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-text' %}"{% home_hidden_section_hidden 'category-text' %} data-icon="T">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-text" id="category-text" data-icon="📝">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Text Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Text" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-text">
-            <div class="tool-btn-wrap"><a href="{% url 'word_counter' %}" class="tool-btn">{% trans "Word Counter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'translator' %}" class="tool-btn">{% trans "Translator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'markdown_preview' %}" class="tool-btn">{% trans "Markdown Preview" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'remove_spaces' %}" class="tool-btn">{% trans "Remove Spaces" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'username_generator' %}" class="tool-btn">{% trans "Username Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'diff_checker' %}" class="tool-btn">{% trans "Diff Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'json_formatter' %}" class="tool-btn">{% trans "JSON Formatter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'case_converter' %}" class="tool-btn">{% trans "Case Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'uuid_generator' %}" class="tool-btn">{% trans "UUID Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'word_counter' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'word_counter' %}"{% home_hidden_tool_hidden 'word_counter' %}><a href="{% url 'word_counter' %}" class="tool-btn">{% trans "Word Counter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'translator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'translator' %}"{% home_hidden_tool_hidden 'translator' %}><a href="{% url 'translator' %}" class="tool-btn">{% trans "Translator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'markdown_preview' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'markdown_preview' %}"{% home_hidden_tool_hidden 'markdown_preview' %}><a href="{% url 'markdown_preview' %}" class="tool-btn">{% trans "Markdown Preview" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'remove_spaces' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'remove_spaces' %}"{% home_hidden_tool_hidden 'remove_spaces' %}><a href="{% url 'remove_spaces' %}" class="tool-btn">{% trans "Remove Spaces" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'username_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'username_generator' %}"{% home_hidden_tool_hidden 'username_generator' %}><a href="{% url 'username_generator' %}" class="tool-btn">{% trans "Username Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'diff_checker' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'diff_checker' %}"{% home_hidden_tool_hidden 'diff_checker' %}><a href="{% url 'diff_checker' %}" class="tool-btn">{% trans "Diff Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'json_formatter' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'json_formatter' %}"{% home_hidden_tool_hidden 'json_formatter' %}><a href="{% url 'json_formatter' %}" class="tool-btn">{% trans "JSON Formatter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'case_converter' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'case_converter' %}"{% home_hidden_tool_hidden 'case_converter' %}><a href="{% url 'case_converter' %}" class="tool-btn">{% trans "Case Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'uuid_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'uuid_generator' %}"{% home_hidden_tool_hidden 'uuid_generator' %}><a href="{% url 'uuid_generator' %}" class="tool-btn">{% trans "UUID Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="S">
+    {% home_section_is_hidden 'category-social' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-social' %}"{% home_hidden_section_hidden 'category-social' %} data-icon="S">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-social" id="category-social" data-icon="📱">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Social Media" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Social" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-social">
-            <div class="tool-btn-wrap"><a href="{% url 'bio_generator' %}" class="tool-btn">{% trans "Bio Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'hashtag_generator' %}" class="tool-btn">{% trans "Hashtag Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'caption_generator' %}" class="tool-btn">{% trans "Caption Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'bio_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'bio_generator' %}"{% home_hidden_tool_hidden 'bio_generator' %}><a href="{% url 'bio_generator' %}" class="tool-btn">{% trans "Bio Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'hashtag_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'hashtag_generator' %}"{% home_hidden_tool_hidden 'hashtag_generator' %}><a href="{% url 'hashtag_generator' %}" class="tool-btn">{% trans "Hashtag Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'caption_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'caption_generator' %}"{% home_hidden_tool_hidden 'caption_generator' %}><a href="{% url 'caption_generator' %}" class="tool-btn">{% trans "Caption Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="C">
+    {% home_section_is_hidden 'category-career' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-career' %}"{% home_hidden_section_hidden 'category-career' %} data-icon="C">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-career" id="category-career" data-icon="💼">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Career & CV" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Career" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
-        <div class="tool-grid" id="tool-grid-career">
-            <div class="tool-btn-wrap">
+            <div class="tool-grid" id="tool-grid-career">
+            {% home_tool_is_hidden 'career_cv_page' as ht_hidden %}{% if not ht_hidden %}
+            <div class="tool-btn-wrap{% home_hidden_tool_class 'career_cv_page' %}"{% home_hidden_tool_hidden 'career_cv_page' %}>
                 <a href="{% url 'career_cv_page' %}" class="tool-btn tool-btn--kit">{% trans "Application kit" %}</a>
                 <button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button>
             </div>
-            <div class="tool-btn-wrap"><a href="{% url 'cv_generator' %}" class="tool-btn">{% trans "CV Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'cv_optimizer' %}" class="tool-btn">{% trans "CV Optimizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'cover_letter_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'application_email_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'interview_simulator' %}" class="tool-btn">{% trans "Interview Simulator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% endif %}
+            {% home_tool_is_hidden 'cv_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'cv_generator' %}"{% home_hidden_tool_hidden 'cv_generator' %}><a href="{% url 'cv_generator' %}" class="tool-btn">{% trans "CV Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'cv_optimizer' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'cv_optimizer' %}"{% home_hidden_tool_hidden 'cv_optimizer' %}><a href="{% url 'cv_optimizer' %}" class="tool-btn">{% trans "CV Optimizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'cover_letter_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'cover_letter_generator' %}"{% home_hidden_tool_hidden 'cover_letter_generator' %}><a href="{% url 'cover_letter_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera{% else %}Cover Letter{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'application_email_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'application_email_generator' %}"{% home_hidden_tool_hidden 'application_email_generator' %}><a href="{% url 'application_email_generator' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Email candidatura{% else %}Application Email{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'interview_simulator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'interview_simulator' %}"{% home_hidden_tool_hidden 'interview_simulator' %}><a href="{% url 'interview_simulator' %}" class="tool-btn">{% trans "Interview Simulator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="F">
+    {% home_section_is_hidden 'category-file' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-file' %}"{% home_hidden_section_hidden 'category-file' %} data-icon="F">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-file" id="category-file" data-icon="📁">
             <span class="category-btn-label category-btn-label--desktop">{% trans "File Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "File" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-file">
-            <div class="tool-btn-wrap"><a href="{% url 'file_analyzer' %}" class="tool-btn">{% trans "File Analyzer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'pdf_merger' %}" class="tool-btn">{% trans "PDF Merge" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'pdf_split' %}" class="tool-btn">{% trans "PDF Split" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'file_analyzer' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'file_analyzer' %}"{% home_hidden_tool_hidden 'file_analyzer' %}><a href="{% url 'file_analyzer' %}" class="tool-btn">{% trans "File Analyzer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'pdf_merger' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'pdf_merger' %}"{% home_hidden_tool_hidden 'pdf_merger' %}><a href="{% url 'pdf_merger' %}" class="tool-btn">{% trans "PDF Merge" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'pdf_split' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'pdf_split' %}"{% home_hidden_tool_hidden 'pdf_split' %}><a href="{% url 'pdf_split' %}" class="tool-btn">{% trans "PDF Split" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="I">
+    {% home_section_is_hidden 'category-image' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-image' %}"{% home_hidden_section_hidden 'category-image' %} data-icon="I">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-image" id="category-image" data-icon="🖼️">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Image & Data Tools" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Image" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-image">
-            <div class="tool-btn-wrap"><a href="{% url 'image_editor' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'data_viz' %}" class="tool-btn">{% trans "Data Visualizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'color_converter' %}" class="tool-btn">{% trans "Color Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'image_editor' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'image_editor' %}"{% home_hidden_tool_hidden 'image_editor' %}><a href="{% url 'image_editor' %}" class="tool-btn">{% if LANGUAGE_CODE|slice:":2" == "it" %}Foto Editor{% else %}{% trans "Image Editor" %}{% endif %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'data_viz' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'data_viz' %}"{% home_hidden_tool_hidden 'data_viz' %}><a href="{% url 'data_viz' %}" class="tool-btn">{% trans "Data Visualizer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'color_converter' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'color_converter' %}"{% home_hidden_tool_hidden 'color_converter' %}><a href="{% url 'color_converter' %}" class="tool-btn">{% trans "Color Converter" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="$">
+    {% home_section_is_hidden 'category-finance' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-finance' %}"{% home_hidden_section_hidden 'category-finance' %} data-icon="$">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-finance" id="category-finance" data-icon="💰">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Finance" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Finance" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-finance">
-            <div class="tool-btn-wrap"><a href="{% url 'calc_percentage' %}" class="tool-btn">{% trans "Percentage" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_vat' %}" class="tool-btn">{% trans "VAT" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_net_salary' %}" class="tool-btn">{% trans "Net Salary" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_interest' %}" class="tool-btn">{% trans "Interest" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_currency' %}" class="tool-btn">{% trans "Currency" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_loan' %}" class="tool-btn">{% trans "Loan" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_discount' %}" class="tool-btn">{% trans "Discount" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_margin' %}" class="tool-btn">{% trans "Margin" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'calc_split_bill' %}" class="tool-btn">{% trans "Split Bill" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'calc_percentage' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_percentage' %}"{% home_hidden_tool_hidden 'calc_percentage' %}><a href="{% url 'calc_percentage' %}" class="tool-btn">{% trans "Percentage" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_vat' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_vat' %}"{% home_hidden_tool_hidden 'calc_vat' %}><a href="{% url 'calc_vat' %}" class="tool-btn">{% trans "VAT" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_net_salary' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_net_salary' %}"{% home_hidden_tool_hidden 'calc_net_salary' %}><a href="{% url 'calc_net_salary' %}" class="tool-btn">{% trans "Net Salary" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_interest' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_interest' %}"{% home_hidden_tool_hidden 'calc_interest' %}><a href="{% url 'calc_interest' %}" class="tool-btn">{% trans "Interest" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_currency' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_currency' %}"{% home_hidden_tool_hidden 'calc_currency' %}><a href="{% url 'calc_currency' %}" class="tool-btn">{% trans "Currency" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_loan' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_loan' %}"{% home_hidden_tool_hidden 'calc_loan' %}><a href="{% url 'calc_loan' %}" class="tool-btn">{% trans "Loan" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_discount' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_discount' %}"{% home_hidden_tool_hidden 'calc_discount' %}><a href="{% url 'calc_discount' %}" class="tool-btn">{% trans "Discount" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_margin' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_margin' %}"{% home_hidden_tool_hidden 'calc_margin' %}><a href="{% url 'calc_margin' %}" class="tool-btn">{% trans "Margin" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'calc_split_bill' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'calc_split_bill' %}"{% home_hidden_tool_hidden 'calc_split_bill' %}><a href="{% url 'calc_split_bill' %}" class="tool-btn">{% trans "Split Bill" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="W">
+    {% home_section_is_hidden 'category-web' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-web' %}"{% home_hidden_section_hidden 'category-web' %} data-icon="W">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-web" id="category-web" data-icon="🔍">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Web / SEO" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "SEO" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-web">
-            <div class="tool-btn-wrap"><a href="{% url 'meta_tag_checker' %}" class="tool-btn">{% trans "Meta Tag Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'sitemap_extractor' %}" class="tool-btn">{% trans "Sitemap Extractor" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'robots_txt_generator' %}" class="tool-btn">{% trans "Robots.txt Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'site_speed_check' %}" class="tool-btn">{% trans "Site Speed Check" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'lorem_ipsum' %}" class="tool-btn">{% trans "Lorem Ipsum" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'regex_tester' %}" class="tool-btn">{% trans "Regex Tester" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'cron_explainer' %}" class="tool-btn">{% trans "Cron Explainer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'meta_tag_checker' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'meta_tag_checker' %}"{% home_hidden_tool_hidden 'meta_tag_checker' %}><a href="{% url 'meta_tag_checker' %}" class="tool-btn">{% trans "Meta Tag Checker" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'sitemap_extractor' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'sitemap_extractor' %}"{% home_hidden_tool_hidden 'sitemap_extractor' %}><a href="{% url 'sitemap_extractor' %}" class="tool-btn">{% trans "Sitemap Extractor" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'robots_txt_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'robots_txt_generator' %}"{% home_hidden_tool_hidden 'robots_txt_generator' %}><a href="{% url 'robots_txt_generator' %}" class="tool-btn">{% trans "Robots.txt Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'site_speed_check' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'site_speed_check' %}"{% home_hidden_tool_hidden 'site_speed_check' %}><a href="{% url 'site_speed_check' %}" class="tool-btn">{% trans "Site Speed Check" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'lorem_ipsum' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'lorem_ipsum' %}"{% home_hidden_tool_hidden 'lorem_ipsum' %}><a href="{% url 'lorem_ipsum' %}" class="tool-btn">{% trans "Lorem Ipsum" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'regex_tester' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'regex_tester' %}"{% home_hidden_tool_hidden 'regex_tester' %}><a href="{% url 'regex_tester' %}" class="tool-btn">{% trans "Regex Tester" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'cron_explainer' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'cron_explainer' %}"{% home_hidden_tool_hidden 'cron_explainer' %}><a href="{% url 'cron_explainer' %}" class="tool-btn">{% trans "Cron Explainer" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
-    <section class="tool-section" data-icon="L">
+    {% home_section_is_hidden 'category-security' as hs_hidden %}{% if not hs_hidden %}<section class="tool-section{% home_hidden_section_class 'category-security' %}"{% home_hidden_section_hidden 'category-security' %} data-icon="L">
         <button type="button" class="category-btn" aria-expanded="true" aria-controls="tool-grid-security" id="category-security" data-icon="🔒">
             <span class="category-btn-label category-btn-label--desktop">{% trans "Security & Misc" %}</span>
             <span class="category-btn-label category-btn-label--mobile">{% trans "Security" %}</span>
             <span class="category-btn-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="tool-grid" id="tool-grid-security">
-            <div class="tool-btn-wrap"><a href="{% url 'password_gen' %}" class="tool-btn">{% trans "Password Gen" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'qr_generator' %}" class="tool-btn">{% trans "QR Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'qr_decoder' %}" class="tool-btn">{% trans "QR Decoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'base64_encoder' %}" class="tool-btn">{% trans "Base64 Encoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
-            <div class="tool-btn-wrap"><a href="{% url 'hash_generator' %}" class="tool-btn">{% trans "Hash Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>
+            {% home_tool_is_hidden 'password_gen' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'password_gen' %}"{% home_hidden_tool_hidden 'password_gen' %}><a href="{% url 'password_gen' %}" class="tool-btn">{% trans "Password Gen" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'qr_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'qr_generator' %}"{% home_hidden_tool_hidden 'qr_generator' %}><a href="{% url 'qr_generator' %}" class="tool-btn">{% trans "QR Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'qr_decoder' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'qr_decoder' %}"{% home_hidden_tool_hidden 'qr_decoder' %}><a href="{% url 'qr_decoder' %}" class="tool-btn">{% trans "QR Decoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'base64_encoder' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'base64_encoder' %}"{% home_hidden_tool_hidden 'base64_encoder' %}><a href="{% url 'base64_encoder' %}" class="tool-btn">{% trans "Base64 Encoder" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
+            {% home_tool_is_hidden 'hash_generator' as ht_hidden %}{% if not ht_hidden %}<div class="tool-btn-wrap{% home_hidden_tool_class 'hash_generator' %}"{% home_hidden_tool_hidden 'hash_generator' %}><a href="{% url 'hash_generator' %}" class="tool-btn">{% trans "Hash Generator" %}</a><button type="button" class="tool-fav" title="{% trans 'Add to favorites' %}" aria-label="{% trans 'Favorite' %}">☆</button></div>{% endif %}
         </div>
-    </section>
+    </section>{% endif %}
 
     </div>
 
+    {% if not user.is_authenticated %}
     <script>
     (function () {
+        var root = document.documentElement;
         var PREFIX = "gadly-hidden-tools-v2:";
         var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
-        var authenticated = !!window.GADLY_USER_AUTHENTICATED;
         var hidden = {};
         var seen = {};
 
         function normalizeUrl(raw) {
             if (!raw) return "";
-            var u = String(raw).split("?")[0].split("#")[0];
-            if (u.length > 1 && u.charAt(u.length - 1) === "/") {
-                u = u.slice(0, -1);
+            try {
+                var u = new URL(raw, window.location.origin);
+                var path = u.pathname || "/";
+                if (path.length > 1 && path.charAt(path.length - 1) === "/") {
+                    path = path.slice(0, -1);
+                }
+                return path;
+            } catch (e) {
+                var s = String(raw).split("?")[0].split("#")[0];
+                if (s.length > 1 && s.charAt(s.length - 1) === "/") {
+                    s = s.slice(0, -1);
+                }
+                return s;
             }
-            return u;
         }
 
         function markUrl(raw) {
@@ -344,56 +523,43 @@
             } catch (e) {}
         }
 
-        if (authenticated) {
-            var serverEl = document.getElementById("gadly-server-hidden-tools");
-            if (serverEl) {
-                try {
-                    var server = JSON.parse(serverEl.textContent);
-                    if (Array.isArray(server)) {
-                        server.forEach(function (item) {
-                            if (item && item.url) markUrl(item.url);
-                        });
+        addFromKey(PREFIX + suffix);
+
+        if (Object.keys(hidden).length) {
+            root.classList.add("gadly-has-hidden-tools", "gadly-home-has-hidden-tools");
+            document.querySelectorAll("#home-categories-wrap .tool-section").forEach(function (section) {
+                var total = 0;
+                var visible = 0;
+                section.querySelectorAll(".tool-btn-wrap").forEach(function (wrap) {
+                    total += 1;
+                    var a = wrap.querySelector("a.tool-btn");
+                    var u = a ? normalizeUrl(a.getAttribute("href")) : "";
+                    if (u && hidden[u]) {
+                        wrap.classList.add("tool-btn-wrap--hidden-home");
+                        wrap.hidden = true;
+                        wrap.style.setProperty("display", "none", "important");
+                    } else {
+                        visible += 1;
                     }
-                } catch (e) {}
-            }
-        } else {
-            addFromKey(PREFIX + suffix);
-            try {
-                for (var i = 0; i < localStorage.length; i++) {
-                    var k = localStorage.key(i);
-                    if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
-                }
-            } catch (e2) {}
-        }
-
-        if (!Object.keys(hidden).length) {
-            document.documentElement.classList.add("gadly-home-hidden-tools-ready");
-            return;
-        }
-
-        document.querySelectorAll("#home-categories-wrap .tool-section").forEach(function (section) {
-            var total = 0;
-            var visible = 0;
-            section.querySelectorAll(".tool-btn-wrap").forEach(function (wrap) {
-                total += 1;
-                var a = wrap.querySelector("a.tool-btn");
-                var u = a ? normalizeUrl(a.getAttribute("href")) : "";
-                if (u && hidden[u]) {
-                    wrap.classList.add("tool-btn-wrap--hidden-home");
-                } else {
-                    visible += 1;
+                });
+                if (total > 0 && visible === 0) {
+                    section.classList.add("tool-section--all-hidden");
+                    section.hidden = true;
+                    section.style.setProperty("display", "none", "important");
                 }
             });
-            if (total > 0 && visible === 0) {
-                section.classList.add("tool-section--all-hidden");
-            }
-        });
+        }
 
-        document.documentElement.classList.add("gadly-home-hidden-tools-ready");
+        root.dataset.gadlyHomeHiddenSynced = "1";
     })();
     </script>
-
-    {% include "tools/includes/desktop_trash_bin.html" %}
+    {% else %}
+    <script>document.documentElement.dataset.gadlyHomeHiddenSynced = "1";</script>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <script src="{% static 'tools/js/home-shortcuts-sync.js' %}?v=4"></script>
+    <script>window.gadlyRenderHomeShortcuts("{{ user.id }}");</script>
+    {% endif %}
 
     <div id="gadly-trash-onboarding-slot" class="gadly-trash-onboarding-slot" aria-hidden="true">
         <div id="home-trash-onboarding" class="home-trash-onboarding" role="dialog" aria-labelledby="home-trash-onboarding-title" hidden>
@@ -418,73 +584,6 @@
         panel.removeAttribute("aria-hidden");
     })();
     </script>
-    <script>
-    (function () {
-        var PREFIX = "gadly-hidden-tools-v2:";
-        var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
-        var authenticated = !!window.GADLY_USER_AUTHENTICATED;
-        var seen = {};
-        var count = 0;
-
-        function markUrl(raw) {
-            var u = String(raw).split("?")[0].split("#")[0];
-            if (u.length > 1 && u.charAt(u.length - 1) === "/") u = u.slice(0, -1);
-            if (!u || seen[u]) return;
-            seen[u] = true;
-            count += 1;
-        }
-
-        function addFromKey(key) {
-            try {
-                var arr = JSON.parse(localStorage.getItem(key) || "[]");
-                if (!Array.isArray(arr)) return;
-                arr.forEach(function (item) {
-                    if (!item || !item.url) return;
-                    markUrl(item.url);
-                });
-            } catch (e) {}
-        }
-
-        if (authenticated) {
-            var serverEl = document.getElementById("gadly-server-hidden-tools");
-            if (serverEl) {
-                try {
-                    var server = JSON.parse(serverEl.textContent);
-                    if (Array.isArray(server)) {
-                        server.forEach(function (item) {
-                            if (item && item.url) markUrl(item.url);
-                        });
-                    }
-                } catch (e) {}
-            }
-        } else {
-            addFromKey(PREFIX + suffix);
-            try {
-                for (var i = 0; i < localStorage.length; i++) {
-                    var k = localStorage.key(i);
-                    if (k && k.indexOf(PREFIX) === 0) addFromKey(k);
-                }
-            } catch (e2) {}
-        }
-
-        var badge = document.getElementById("desktop-trash-bin-count");
-        if (badge) {
-            if (count > 0) {
-                badge.textContent = String(count);
-                badge.classList.toggle("desktop-trash-bin__count--wide", count >= 10);
-                badge.removeAttribute("hidden");
-                badge.removeAttribute("aria-hidden");
-            } else {
-                badge.textContent = "";
-                badge.classList.remove("desktop-trash-bin__count--wide");
-                badge.setAttribute("hidden", "hidden");
-                badge.setAttribute("aria-hidden", "true");
-            }
-        }
-        document.documentElement.classList.toggle("gadly-home-has-hidden-tools", count > 0);
-    })();
-    </script>
-
     <div id="home-trash-undo-toast" class="home-trash-undo-toast" role="status" aria-live="polite" hidden>
         <span class="home-trash-undo-toast__msg"></span>
         <button type="button" class="home-trash-undo-toast__undo">{% trans "Undo" %}</button>
@@ -505,11 +604,7 @@
     {% endif %}
     </script>
 </div>
-{% if user.is_authenticated %}
-<script src="{% static 'tools/js/home-shortcuts-sync.js' %}"></script>
-<script>window.gadlyRenderHomeShortcuts("{{ user.id }}");</script>
-{% endif %}
-<script src="{% static 'tools/js/desktop-trash-bin.js' %}?v=29"></script>
-<script src="{% static 'tools/js/home-trash.js' %}?v=88"></script>
-<script src="{% static 'tools/js/home.js' %}?v=20260604b"></script>
+<script src="{% static 'tools/js/desktop-trash-bin.js' %}?v=30"></script>
+<script src="{% static 'tools/js/home-trash.js' %}?v=90"></script>
+<script src="{% static 'tools/js/home.js' %}?v=20260720f"></script>
 {% endblock %}

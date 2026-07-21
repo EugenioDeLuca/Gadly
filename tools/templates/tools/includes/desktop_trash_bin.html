@@ -1,7 +1,8 @@
 {% load i18n %}
+{% with hidden_count=user_home_hidden_tools|length %}
 <div id="desktop-trash-bin" class="desktop-trash-bin">
     <a href="{% url 'hidden_tools' %}" class="desktop-trash-bin__btn" id="desktop-trash-bin-btn" aria-label="{% trans 'Trash — open removed tools' %}" title="{% trans 'Open removed tools' %}">
-        <span class="desktop-trash-bin__count" id="desktop-trash-bin-count" hidden aria-hidden="true"></span>
+        <span class="desktop-trash-bin__count{% if hidden_count >= 10 %} desktop-trash-bin__count--wide{% endif %}" id="desktop-trash-bin-count"{% if hidden_count < 1 %} hidden aria-hidden="true"{% endif %}>{% if hidden_count > 0 %}{{ hidden_count }}{% endif %}</span>
         <svg class="desktop-trash-bin__icon" viewBox="0 0 64 72" width="56" height="64" aria-hidden="true" focusable="false">
             <defs>
                 <linearGradient id="gadly-trash-can-body" x1="32" y1="26" x2="32" y2="66" gradientUnits="userSpaceOnUse">
@@ -24,3 +25,4 @@
         </svg>
     </a>
 </div>
+{% endwith %}

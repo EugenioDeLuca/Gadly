@@ -841,6 +841,79 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("reset-qr").addEventListener("click", resetParams);
 
+    (function initMobileResetTap() {
+        var resetBtn = document.getElementById("reset-qr");
+        if (!resetBtn) return;
+        var RESET_TAP_MS = 160;
+        var RESET_FLASH_MS = 2000;
+        var RESET_FLASH_CLASS = "qr-reset-flash";
+        var resetTapTimer = null;
+        var resetFlashTimer = null;
+
+        function clearResetTap() {
+            if (resetTapTimer) {
+                clearTimeout(resetTapTimer);
+                resetTapTimer = null;
+            }
+            resetBtn.classList.remove("tap-active");
+        }
+
+        function clearResetFlash() {
+            if (resetFlashTimer) {
+                clearTimeout(resetFlashTimer);
+                resetFlashTimer = null;
+            }
+            resetBtn.classList.remove(RESET_FLASH_CLASS);
+        }
+
+        function flashResetBtn() {
+            if (!MOBILE_QR_MQ.matches) return;
+            clearResetFlash();
+            resetBtn.classList.add(RESET_FLASH_CLASS);
+            if (typeof resetBtn.blur === "function") resetBtn.blur();
+            resetFlashTimer = setTimeout(function() {
+                resetBtn.classList.remove(RESET_FLASH_CLASS);
+                resetFlashTimer = null;
+            }, RESET_FLASH_MS);
+        }
+
+        resetBtn.addEventListener("pointerdown", function(e) {
+            if (!MOBILE_QR_MQ.matches || e.pointerType === "mouse") return;
+            if (resetTapTimer) clearTimeout(resetTapTimer);
+            resetBtn.classList.add("tap-active");
+        }, { passive: true });
+
+        function releaseResetTap() {
+            if (!MOBILE_QR_MQ.matches) return;
+            if (typeof resetBtn.blur === "function") resetBtn.blur();
+            if (resetTapTimer) clearTimeout(resetTapTimer);
+            resetTapTimer = setTimeout(function() {
+                requestAnimationFrame(function() {
+                    resetBtn.classList.remove("tap-active");
+                    resetTapTimer = null;
+                });
+            }, RESET_TAP_MS);
+        }
+
+        resetBtn.addEventListener("pointerup", releaseResetTap, { passive: true });
+        resetBtn.addEventListener("pointercancel", releaseResetTap, { passive: true });
+        resetBtn.addEventListener("click", function() {
+            flashResetBtn();
+        });
+
+        function onMqChange() {
+            if (!MOBILE_QR_MQ.matches) {
+                clearResetTap();
+                clearResetFlash();
+            }
+        }
+        if (typeof MOBILE_QR_MQ.addEventListener === "function") {
+            MOBILE_QR_MQ.addEventListener("change", onMqChange);
+        } else if (typeof MOBILE_QR_MQ.addListener === "function") {
+            MOBILE_QR_MQ.addListener(onMqChange);
+        }
+    })();
+
     btn.addEventListener("click", function() {
         generateQr(true);
     });

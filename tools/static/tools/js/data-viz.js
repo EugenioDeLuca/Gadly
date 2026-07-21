@@ -276,7 +276,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // --- Textarea auto-resize ---
     var resizeDataInput = null;
     if (dataInput) {
-        var MAX_HEIGHT = 750;
+        var MOBILE_DATA_INPUT_MAX = 280;
+        var DESKTOP_DATA_INPUT_MAX = 750;
+
+        function getDataInputMaxHeight() {
+            return isMobileView() ? MOBILE_DATA_INPUT_MAX : DESKTOP_DATA_INPUT_MAX;
+        }
+
         var placeholderFloorPx = 0;
 
         function capturePlaceholderFloor() {
@@ -291,15 +297,15 @@ document.addEventListener("DOMContentLoaded", function() {
             var measured = clone.scrollHeight;
             document.body.removeChild(clone);
             var cssMin = parseFloat(window.getComputedStyle(dataInput).minHeight);
-            if (!(cssMin > 0)) cssMin = 120;
-            var cssHeight = parseFloat(window.getComputedStyle(dataInput).height);
-            placeholderFloorPx = Math.max(measured, cssMin, cssHeight > 0 ? cssHeight : 0);
+            if (!(cssMin > 0)) cssMin = isMobileView() ? 130 : 120;
+            placeholderFloorPx = Math.max(measured, cssMin);
         }
 
         function applyHeight(px) {
-            var h = Math.min(Math.max(px, placeholderFloorPx), MAX_HEIGHT);
+            var maxH = getDataInputMaxHeight();
+            var h = Math.min(Math.max(px, placeholderFloorPx), maxH);
             dataInput.style.height = h + "px";
-            dataInput.style.overflowY = h >= MAX_HEIGHT ? "auto" : "hidden";
+            dataInput.classList.toggle("viz-data-input-scroll", h >= maxH);
         }
 
         function autoResize() {
@@ -311,16 +317,32 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         capturePlaceholderFloor();
-        resizeDataInput = autoResize;
+        resizeDataInput = function() {
+            capturePlaceholderFloor();
+            autoResize();
+        };
         dataInput.addEventListener("input", function() {
             autoResize();
-            activeExampleKey = detectExampleKey(dataInput.value, chartTitleInput ? chartTitleInput.value : "") || "";
+            /* Non auto-selezionare i bottoni esempio mentre digiti/ripristini i dati */
+            if (activeExampleKey) {
+                var detected = detectExampleKey(dataInput.value, chartTitleInput ? chartTitleInput.value : "") || "";
+                if (detected !== activeExampleKey) {
+                    activeExampleKey = "";
+                    syncExampleButtonSelection("");
+                }
+            }
             updatePreview();
             updateStats();
             saveState();
             if (autoGenerateCheck && autoGenerateCheck.checked) {
                 scheduleAutoGenerate();
             }
+        });
+        autoResize();
+        window.addEventListener("resize", function() {
+            if (!isMobileView()) return;
+            capturePlaceholderFloor();
+            autoResize();
         });
     }
 
@@ -408,10 +430,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         trigger.addEventListener("click", function(e) {
             e.stopPropagation();
+            var wasOpen = wrap.classList.contains("open");
             document.querySelectorAll(".data-viz .text-tool-select.open").forEach(function(w) {
                 w.classList.remove("open");
             });
-            wrap.classList.toggle("open");
+            if (!wasOpen) wrap.classList.add("open");
         });
         menu.addEventListener("click", function(e) { e.stopPropagation(); });
 
@@ -656,12 +679,14 @@ document.addEventListener("DOMContentLoaded", function() {
         downloadBlobFile(filename, new Blob([content], { type: "text/csv;charset=utf-8" }));
     }
 
-    function showDataMessage(message, isError) {
+    function showDataMessage(message, isError, skipScroll) {
         if (!resultArea) return;
         resultArea.textContent = message;
         resultArea.classList.toggle("error", !!isError);
         resultArea.classList.remove("hidden");
-        resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (!skipScroll) {
+            resultArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
     }
 
     function clearDataMessage() {
@@ -1043,6 +1068,24 @@ document.addEventListener("DOMContentLoaded", function() {
         return layouts;
     }
 
+    function getMobileOutlinedLabelColors() {
+        if (!isMobileView()) return null;
+        return {
+            fill: isDarkMode() ? "#003f7f" : "#001a33",
+            outline: "rgba(255,255,255,0.95)"
+        };
+    }
+
+    function getLineValueLabelColors(multiSeries, dsColor) {
+        if (!isMobileView()) {
+            if (multiSeries && dsColor) {
+                return { fill: dsColor, outline: "rgba(255,255,255,0.95)" };
+            }
+            return null;
+        }
+        return getMobileOutlinedLabelColors();
+    }
+
     function drawParsedValueLabels(chartInstance, labelData) {
         if (!labelData || !labelData.enabled || !chartInstance || !chartInstance.ctx) return;
 
@@ -1106,8 +1149,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             y = element.y;
                             ctx.textAlign = "left";
                             ctx.textBaseline = "middle";
-                            fillColor = textColor;
-                            outlineColor = "rgba(255,255,255,0.95)";
+                            var outsideBarColorsH = getMobileOutlinedLabelColors();
+                            fillColor = outsideBarColorsH ? outsideBarColorsH.fill : textColor;
+                            outlineColor = outsideBarColorsH ? outsideBarColorsH.outline : "rgba(255,255,255,0.95)";
                         }
                     } else {
                         var topY = Math.min(element.y, element.base);
@@ -1122,8 +1166,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             x = element.x;
                             y = topY - 6;
                             ctx.textBaseline = "bottom";
-                            fillColor = textColor;
-                            outlineColor = "rgba(255,255,255,0.95)";
+                            var outsideBarColorsV = getMobileOutlinedLabelColors();
+                            fillColor = outsideBarColorsV ? outsideBarColorsV.fill : textColor;
+                            outlineColor = outsideBarColorsV ? outsideBarColorsV.outline : "rgba(255,255,255,0.95)";
                         }
                     }
                 } else if (chartType === "line") {
@@ -1138,12 +1183,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         x = clampLineLabelCenterX(element.x, lineTextWidth, getChartAreaBounds(chartInstance));
                         y = element.y - 12;
                     }
+                    var dsColor = null;
                     if (multiSeries && chartInstance.data && chartInstance.data.datasets[dsIndex]) {
-                        var dsColor = chartInstance.data.datasets[dsIndex].borderColor;
-                        if (typeof dsColor === "string" && dsColor) {
-                            fillColor = dsColor;
-                            outlineColor = "rgba(255,255,255,0.95)";
-                        }
+                        dsColor = chartInstance.data.datasets[dsIndex].borderColor;
+                    }
+                    var lineLabelColors = getLineValueLabelColors(multiSeries, dsColor);
+                    if (lineLabelColors) {
+                        fillColor = lineLabelColors.fill;
+                        outlineColor = lineLabelColors.outline;
                     }
                 } else if (isSlice) {
                     var pieLayout = pieLabelLayouts && pieLabelLayouts[index];
@@ -1205,22 +1252,55 @@ document.addEventListener("DOMContentLoaded", function() {
         return PIE_LEGEND_GAP_PX[type] || 36;
     }
 
+    function isPieChartType(type) {
+        return ["pie", "doughnut", "polarArea"].indexOf(type) >= 0;
+    }
+
+    function getChartViewportSizes(type) {
+        var mobile = isMobileView();
+        var isPie = isPieChartType(type);
+        var baseMin = mobile ? 400 : (isPie ? 440 : 350);
+        var baseMax = mobile ? 540 : (isPie ? 540 : 450);
+        var gap = getPieLegendGap(type);
+        return { min: baseMin + gap, max: baseMax + gap, plotMin: baseMin, plotMax: baseMax };
+    }
+
     function syncChartViewport(type) {
         var preview = chartContainer && chartContainer.querySelector(".chart-preview");
         if (!preview || !canvas) return;
+        var sizes = getChartViewportSizes(type);
+        var mobile = isMobileView();
+        var isPie = isPieChartType(type);
         var gap = getPieLegendGap(type);
-        var mobile = window.matchMedia("(max-width: 600px)").matches;
-        var baseMin = mobile ? 280 : 350;
-        var baseMax = mobile ? 350 : 450;
-        if (gap > 0) {
-            preview.style.minHeight = (baseMin + gap) + "px";
-            preview.style.maxHeight = (baseMax + gap) + "px";
-            canvas.style.maxHeight = (baseMax + gap) + "px";
+        preview.classList.toggle("viz-chart-preview-pie", isPie);
+        if (mobile || gap > 0) {
+            var canvasHeight = mobile ? (gap > 0 ? sizes.max : sizes.plotMax) : sizes.plotMax;
+            preview.style.minHeight = sizes.min + "px";
+            preview.style.maxHeight = sizes.max + "px";
+            preview.style.height = mobile ? sizes.max + "px" : (isPie ? sizes.plotMax + "px" : "");
+            preview.style.aspectRatio = isPie ? "1" : "";
+            preview.style.maxWidth = !mobile && isPie ? sizes.plotMax + "px" : "";
+            canvas.style.maxHeight = mobile ? "none" : sizes.plotMax + "px";
+            canvas.style.minHeight = (mobile || isPie) ? sizes.plotMin + "px" : "";
+            canvas.style.height = mobile ? canvasHeight + "px" : "";
+            canvas.style.width = mobile ? "100%" : "";
+            canvas.style.display = mobile ? "block" : "";
+            canvas.style.marginLeft = mobile ? "auto" : "";
+            canvas.style.marginRight = mobile ? "auto" : "";
             return;
         }
         preview.style.minHeight = "";
         preview.style.maxHeight = "";
+        preview.style.height = "";
+        preview.style.aspectRatio = "";
+        preview.style.maxWidth = "";
         canvas.style.maxHeight = "";
+        canvas.style.minHeight = "";
+        canvas.style.width = "";
+        canvas.style.height = "";
+        canvas.style.display = "";
+        canvas.style.marginLeft = "";
+        canvas.style.marginRight = "";
     }
 
     function resetChartViewport() {
@@ -1321,6 +1401,54 @@ document.addEventListener("DOMContentLoaded", function() {
         if (parsed.labels.length > 0) generateChart();
     }
 
+    function bindThemeChangeListener() {
+        if (!document.body || typeof MutationObserver === "undefined") return;
+        var lastDark = isDarkMode();
+        var observer = new MutationObserver(function() {
+            var nowDark = isDarkMode();
+            if (nowDark === lastDark) return;
+            lastDark = nowDark;
+            if (chart) regenerateChartIfDataReady();
+        });
+        observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    }
+
+    function bindChartViewportListener() {
+        var lastMobile = isMobileView();
+        var resizeTimer = null;
+
+        function refreshChartForViewport() {
+            if (!chart) return;
+            var mobile = isMobileView();
+            if (mobile !== lastMobile) {
+                lastMobile = mobile;
+                regenerateChartIfDataReady();
+                return;
+            }
+            syncChartViewport(getActiveChartType());
+            chart.resize();
+            if (typeof chart.update === "function") chart.update("none");
+        }
+
+        function scheduleRefresh() {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                resizeTimer = null;
+                refreshChartForViewport();
+            }, 120);
+        }
+
+        window.addEventListener("resize", scheduleRefresh);
+        if (window.matchMedia) {
+            var mobileMq = window.matchMedia("(max-width: 768px)");
+            if (typeof mobileMq.addEventListener === "function") {
+                mobileMq.addEventListener("change", scheduleRefresh);
+            } else if (typeof mobileMq.addListener === "function") {
+                mobileMq.addListener(scheduleRefresh);
+            }
+        }
+    }
+
     function buildCartesianScales(type, indexAxis, parsed, ui, rotateLabels) {
         var isHorizontalBar = type === "bar" && indexAxis === "y";
         var categoryAxis = isHorizontalBar ? "y" : "x";
@@ -1335,7 +1463,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 maxRotation: rotateLabels ? 45 : 0,
                 minRotation: rotateLabels ? 45 : 0
             },
-            grid: { color: ui.grid }
+            grid: {
+                color: ui.grid,
+                offset: type === "bar"
+            }
         };
 
         var valueScale = {
@@ -1405,6 +1536,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var valueLabelsPlugin = createValueLabelsPlugin(labelCfg);
         var legendGap = getPieLegendGap(type);
         syncChartViewport(type);
+        var mobileChart = isMobileView();
         var chartPlugins = [];
         if (showValues) chartPlugins.push(valueLabelsPlugin);
         if (legendGap > 0) {
@@ -1454,7 +1586,8 @@ document.addEventListener("DOMContentLoaded", function() {
             plugins: chartPlugins,
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: !mobileChart,
+                aspectRatio: mobileChart ? 1 : undefined,
                 datasets: type === "bar" ? {
                     bar: {
                         categoryPercentage: 0.78,
@@ -1471,6 +1604,15 @@ document.addEventListener("DOMContentLoaded", function() {
                     padding: (function () {
                         var lineVals = type === "line" && showValues;
                         var multiLine = lineVals && parsed.datasets.length > 1;
+                        var barVals = type === "bar" && showValues;
+                        if (mobileChart && type === "bar") {
+                            return {
+                                top: barVals ? 22 : 14,
+                                bottom: 14,
+                                left: 14,
+                                right: 14
+                            };
+                        }
                         return {
                             top: multiLine ? 24 : (lineVals ? 18 : 12),
                             bottom: 12,
@@ -1549,6 +1691,123 @@ document.addEventListener("DOMContentLoaded", function() {
         return new Blob([bytes], { type: mime });
     }
 
+    function getActiveChartType() {
+        if (chart && chart.config && chart.config.type) return chart.config.type;
+        if (chartTypeSelect) return chartTypeSelect.value;
+        return "bar";
+    }
+
+    function getChartExportSizes(type) {
+        var isPie = isPieChartType(type);
+        var gap = getPieLegendGap(type);
+        var width = 800;
+        if (isPie) {
+            var plot = 680;
+            return { width: width, height: plot + gap, plotHeight: plot };
+        }
+        return { width: width, height: 560, plotHeight: 560 };
+    }
+
+    function beginMobileChartExport(type) {
+        var preview = chartContainer && chartContainer.querySelector(".chart-preview");
+        if (!preview || !canvas || !chart) return null;
+        var sizes = getChartExportSizes(type);
+        var state = {
+            type: type,
+            preview: {
+                width: preview.style.width,
+                minWidth: preview.style.minWidth,
+                maxWidth: preview.style.maxWidth,
+                minHeight: preview.style.minHeight,
+                maxHeight: preview.style.maxHeight,
+                height: preview.style.height,
+                aspectRatio: preview.style.aspectRatio,
+                overflow: preview.style.overflow
+            },
+            canvas: {
+                width: canvas.style.width,
+                minWidth: canvas.style.minWidth,
+                maxWidth: canvas.style.maxWidth,
+                minHeight: canvas.style.minHeight,
+                maxHeight: canvas.style.maxHeight,
+                height: canvas.style.height
+            },
+            chartContainer: chartContainer ? { overflow: chartContainer.style.overflow } : null
+        };
+        if (chartContainer) chartContainer.style.overflow = "visible";
+        preview.style.overflow = "visible";
+        preview.style.width = sizes.width + "px";
+        preview.style.maxWidth = sizes.width + "px";
+        preview.style.minHeight = sizes.height + "px";
+        preview.style.maxHeight = "none";
+        preview.style.height = sizes.height + "px";
+        preview.style.aspectRatio = "auto";
+        canvas.style.width = sizes.width + "px";
+        canvas.style.maxWidth = sizes.width + "px";
+        canvas.style.minHeight = sizes.height + "px";
+        canvas.style.maxHeight = "none";
+        canvas.style.height = sizes.height + "px";
+        chart.resize();
+        chart.update("none");
+        return state;
+    }
+
+    function endMobileChartExport(state) {
+        if (!state || !chart) return;
+        var preview = chartContainer && chartContainer.querySelector(".chart-preview");
+        if (!preview || !canvas) return;
+        var p = state.preview;
+        var c = state.canvas;
+        preview.style.width = p.width;
+        preview.style.minWidth = p.minWidth;
+        preview.style.maxWidth = p.maxWidth;
+        preview.style.minHeight = p.minHeight;
+        preview.style.maxHeight = p.maxHeight;
+        preview.style.height = p.height;
+        preview.style.aspectRatio = p.aspectRatio;
+        preview.style.overflow = p.overflow;
+        canvas.style.width = c.width;
+        canvas.style.minWidth = c.minWidth;
+        canvas.style.maxWidth = c.maxWidth;
+        canvas.style.minHeight = c.minHeight;
+        canvas.style.maxHeight = c.maxHeight;
+        canvas.style.height = c.height;
+        if (chartContainer && state.chartContainer) {
+            chartContainer.style.overflow = state.chartContainer.overflow;
+        }
+        syncChartViewport(state.type);
+        chart.resize();
+        chart.update("none");
+    }
+
+    function withChartExportImage(done) {
+        if (!chart) {
+            done("", 0, 0);
+            return;
+        }
+        if (!isMobileView()) {
+            done(getChartPngDataUrl(), chart.width, chart.height);
+            return;
+        }
+        var type = getActiveChartType();
+        var exportState = beginMobileChartExport(type);
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                var url = "";
+                var exportW = 0;
+                var exportH = 0;
+                try {
+                    if (chart && typeof chart.update === "function") chart.update("none");
+                    exportW = chart.width;
+                    exportH = chart.height;
+                    url = getChartPngDataUrl();
+                } catch (eExport) { /* ignore */ }
+                endMobileChartExport(exportState);
+                done(url, exportW, exportH);
+            });
+        });
+    }
+
     function getChartPngDataUrl() {
         if (!chart) return "";
         try {
@@ -1563,42 +1822,112 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function flashDownloadBtn(btn) {
         if (!btn) return;
-        var prev = downloadFlashTimers.get(btn);
-        if (prev) clearTimeout(prev);
+        var state = downloadFlashTimers.get(btn);
+        if (state) {
+            if (state.start) clearTimeout(state.start);
+            if (state.end) clearTimeout(state.end);
+        }
         btn.classList.add("downloaded");
-        downloadFlashTimers.set(btn, setTimeout(function() {
+        var endTimer = setTimeout(function() {
             btn.classList.remove("downloaded");
             downloadFlashTimers.delete(btn);
-        }, 2000));
+            try { btn.blur(); } catch (eBlur2) { /* ignore */ }
+        }, 2000);
+        downloadFlashTimers.set(btn, { start: null, end: endTimer });
+    }
+
+    function isDataVizMobile() {
+        return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
+    }
+
+    function bindDownloadPressFlash(btn) {
+        if (!btn) return;
+        btn.addEventListener("pointerdown", function(e) {
+            if (e.pointerType === "mouse" && e.button !== 0) return;
+            if (!isDataVizMobile()) return;
+            if (!getChartPngDataUrl()) return;
+            flashDownloadBtn(btn);
+        }, true);
+    }
+
+    var shareLinkFlashState = null;
+
+    function clearShareLinkFlash(btn) {
+        if (!btn || !shareLinkFlashState || shareLinkFlashState.btn !== btn) return;
+        if (shareLinkFlashState.end) clearTimeout(shareLinkFlashState.end);
+        if (shareLinkFlashState.orig) btn.textContent = shareLinkFlashState.orig;
+        btn.classList.remove("copied");
+        shareLinkFlashState = null;
+    }
+
+    function flashShareLinkBtn(btn) {
+        if (!btn) return;
+        if (shareLinkFlashState && shareLinkFlashState.btn === btn) {
+            if (shareLinkFlashState.end) clearTimeout(shareLinkFlashState.end);
+        } else if (shareLinkFlashState) {
+            clearShareLinkFlash(shareLinkFlashState.btn);
+        }
+        var orig = (shareLinkFlashState && shareLinkFlashState.btn === btn && shareLinkFlashState.orig)
+            ? shareLinkFlashState.orig
+            : btn.textContent;
+        btn.textContent = gettext("Copied!");
+        btn.classList.add("copied");
+        var endTimer = setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove("copied");
+            shareLinkFlashState = null;
+            try { btn.blur(); } catch (eBlur) { /* ignore */ }
+        }, 2000);
+        shareLinkFlashState = { btn: btn, end: endTimer, orig: orig };
+    }
+
+    function bindShareLinkPressFlash(btn) {
+        if (!btn) return;
+        btn.addEventListener("pointerdown", function(e) {
+            if (e.pointerType === "mouse" && e.button !== 0) return;
+            if (!isDataVizMobile()) return;
+            if (!buildShareUrl()) return;
+            flashShareLinkBtn(btn);
+        }, true);
     }
 
     function downloadChartPng(btn) {
-        var dataUrl = getChartPngDataUrl();
-        if (!dataUrl) {
+        if (!chart) {
             showDataMessage(gettext("Generate a chart first, then download the PNG."), true);
             return;
         }
         clearDataMessage();
-        downloadBlobFile("chart.png", dataUrlToBlob(dataUrl));
-        flashDownloadBtn(btn);
+        withChartExportImage(function(dataUrl, exportW, exportH) {
+            if (!dataUrl) {
+                showDataMessage(gettext("Generate a chart first, then download the PNG."), true);
+                return;
+            }
+            downloadBlobFile("chart.png", dataUrlToBlob(dataUrl));
+            flashDownloadBtn(btn);
+        });
     }
 
     function downloadChartSvg(btn) {
-        var dataUrl = getChartPngDataUrl();
-        if (!dataUrl) {
+        if (!chart) {
             showDataMessage(gettext("Generate a chart first, then download."), true);
             return;
         }
-        var w = chart.width || 800;
-        var h = chart.height || 500;
-        var svg = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '"><image width="100%" height="100%" xlink:href="' + dataUrl + '"/></svg>';
-        downloadBlobFile("chart.svg", new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
-        flashDownloadBtn(btn);
+        clearDataMessage();
+        withChartExportImage(function(dataUrl, exportW, exportH) {
+            if (!dataUrl) {
+                showDataMessage(gettext("Generate a chart first, then download."), true);
+                return;
+            }
+            var w = exportW || chart.width || 800;
+            var h = exportH || chart.height || 500;
+            var svg = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '"><image width="100%" height="100%" xlink:href="' + dataUrl + '"/></svg>';
+            downloadBlobFile("chart.svg", new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+            flashDownloadBtn(btn);
+        });
     }
 
     function downloadChartPdf(btn) {
-        var dataUrl = getChartPngDataUrl();
-        if (!dataUrl) {
+        if (!chart) {
             showDataMessage(gettext("Generate a chart first, then download."), true);
             return;
         }
@@ -1606,37 +1935,61 @@ document.addEventListener("DOMContentLoaded", function() {
             showDataMessage(gettext("PDF export is not available. Try PNG or SVG."), true);
             return;
         }
-        var pdf = new window.jspdf.jsPDF({ orientation: "landscape", unit: "px", format: [chart.width + 40, chart.height + 40] });
-        pdf.addImage(dataUrl, "PNG", 20, 20, chart.width, chart.height);
-        pdf.save("chart.pdf");
-        flashDownloadBtn(btn);
+        clearDataMessage();
+        withChartExportImage(function(dataUrl, exportW, exportH) {
+            if (!dataUrl) {
+                showDataMessage(gettext("Generate a chart first, then download."), true);
+                return;
+            }
+            var w = exportW || chart.width || 800;
+            var h = exportH || chart.height || 500;
+            var pdf = new window.jspdf.jsPDF({ orientation: "landscape", unit: "px", format: [w + 40, h + 40] });
+            pdf.addImage(dataUrl, "PNG", 20, 20, w, h);
+            pdf.save("chart.pdf");
+            flashDownloadBtn(btn);
+        });
     }
 
     function copyData() {
+        var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+        var scrollY = window.scrollY || window.pageYOffset || 0;
+        var btn = document.getElementById("btn-copy-data");
+        if (btn) {
+            try { btn.blur(); } catch (e0) { /* ignore */ }
+        }
         if (!dataInput || !dataInput.value.trim()) {
-            showDataMessage(gettext("Nothing to copy."), true);
+            showDataMessage(gettext("Nothing to copy."), true, isMobile);
             return;
         }
         navigator.clipboard.writeText(dataInput.value).then(function() {
             clearDataMessage();
-            var btn = document.getElementById("btn-copy-data");
             if (btn) {
                 var orig = btn.textContent;
                 btn.textContent = gettext("Copied!");
                 btn.classList.add("copied");
+                try { btn.blur(); } catch (e1) { /* ignore */ }
                 setTimeout(function() {
                     btn.textContent = orig;
                     btn.classList.remove("copied");
+                    try { btn.blur(); } catch (e2) { /* ignore */ }
                 }, 1500);
             }
+            if (isMobile) {
+                window.scrollTo(0, scrollY);
+                requestAnimationFrame(function () {
+                    window.scrollTo(0, scrollY);
+                });
+            }
         }).catch(function() {
-            showDataMessage(gettext("Could not copy to clipboard."), true);
+            showDataMessage(gettext("Could not copy to clipboard."), true, isMobile);
+            if (isMobile) window.scrollTo(0, scrollY);
         });
     }
 
     function clearData() {
         if (!dataInput) return;
         activeExampleKey = "";
+        syncExampleButtonSelection("");
         dataInput.value = "";
         dataInput.dispatchEvent(new Event("input", { bubbles: true }));
         if (dataFileName) dataFileName.textContent = "";
@@ -1650,6 +2003,25 @@ document.addEventListener("DOMContentLoaded", function() {
         if (statsEl) statsEl.classList.add("hidden");
         clearDataMessage();
         saveState();
+        flashResetBtn();
+    }
+
+    var resetFlashTimer = null;
+    function flashResetBtn() {
+        var btn = document.getElementById("btn-clear-data");
+        if (!btn || !window.matchMedia || !window.matchMedia("(max-width: 768px)").matches) return;
+        if (resetFlashTimer) {
+            clearTimeout(resetFlashTimer);
+            resetFlashTimer = null;
+        }
+        btn.classList.remove("viz-reset-flash");
+        void btn.offsetWidth;
+        btn.classList.add("viz-reset-flash");
+        try { btn.blur(); } catch (eBlur) { /* ignore */ }
+        resetFlashTimer = setTimeout(function () {
+            btn.classList.remove("viz-reset-flash");
+            resetFlashTimer = null;
+        }, 2000);
     }
 
     function collectState() {
@@ -1667,7 +2039,7 @@ document.addEventListener("DOMContentLoaded", function() {
             autoChartType: autoChartTypeCheck ? autoChartTypeCheck.checked : false,
             autoGenerate: autoGenerateCheck ? autoGenerateCheck.checked : true,
             chartVisible: !!(chartContainer && !chartContainer.classList.contains("hidden")),
-            exampleKey: activeExampleKey || detectExampleKey(dataInput ? dataInput.value : "", chartTitleInput ? chartTitleInput.value : "") || ""
+            exampleKey: activeExampleKey || ""
         };
     }
 
@@ -1696,7 +2068,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (yAxisUnitInput && state.yUnit != null) yAxisUnitInput.value = state.yUnit;
         if (autoChartTypeCheck) autoChartTypeCheck.checked = !!state.autoChartType;
         if (autoGenerateCheck) autoGenerateCheck.checked = state.autoGenerate !== false;
-        syncExampleButtonSelection(state.exampleKey || activeExampleKey);
+        /* Selezione esempio solo dopo tap utente — mai pre-selezionata al restore */
+        activeExampleKey = "";
+        syncExampleButtonSelection("");
         if (resizeDataInput) resizeDataInput();
         if (!options.skipPreviewStats) {
             updatePreview();
@@ -1790,19 +2164,12 @@ document.addEventListener("DOMContentLoaded", function() {
             showDataMessage(gettext("Data is too large to share in a link. Try fewer rows."), true);
             return;
         }
+        var btn = document.getElementById("btn-share-link");
         navigator.clipboard.writeText(url).then(function() {
             clearDataMessage();
-            var btn = document.getElementById("btn-share-link");
-            if (btn) {
-                var orig = btn.textContent;
-                btn.textContent = gettext("Copied!");
-                btn.classList.add("copied");
-                setTimeout(function() {
-                    btn.textContent = orig;
-                    btn.classList.remove("copied");
-                }, 1500);
-            }
+            if (btn) flashShareLinkBtn(btn);
         }).catch(function() {
+            if (btn && isDataVizMobile()) clearShareLinkFlash(btn);
             showDataMessage(url, false);
         });
     }
@@ -1939,10 +2306,25 @@ document.addEventListener("DOMContentLoaded", function() {
     var btnDownloadSvg = document.getElementById("btn-download-svg");
     var btnDownloadPdf = document.getElementById("btn-download-pdf");
     var btnShareLink = document.getElementById("btn-share-link");
-    if (btnDownloadPng) btnDownloadPng.addEventListener("click", function() { downloadChartPng(btnDownloadPng); });
-    if (btnDownloadSvg) btnDownloadSvg.addEventListener("click", function() { downloadChartSvg(btnDownloadSvg); });
-    if (btnDownloadPdf) btnDownloadPdf.addEventListener("click", function() { downloadChartPdf(btnDownloadPdf); });
-    if (btnShareLink) btnShareLink.addEventListener("click", shareChartLink);
+    if (btnDownloadPng) {
+        bindDownloadPressFlash(btnDownloadPng);
+        btnDownloadPng.addEventListener("click", function() { downloadChartPng(btnDownloadPng); });
+    }
+    if (btnDownloadSvg) {
+        bindDownloadPressFlash(btnDownloadSvg);
+        btnDownloadSvg.addEventListener("click", function() { downloadChartSvg(btnDownloadSvg); });
+    }
+    if (btnDownloadPdf) {
+        bindDownloadPressFlash(btnDownloadPdf);
+        btnDownloadPdf.addEventListener("click", function() { downloadChartPdf(btnDownloadPdf); });
+    }
+    if (btnShareLink) {
+        bindShareLinkPressFlash(btnShareLink);
+        btnShareLink.addEventListener("click", shareChartLink);
+    }
 
     if (btnGenerate) btnGenerate.addEventListener("click", generateChart);
+
+    bindThemeChangeListener();
+    bindChartViewportListener();
 });

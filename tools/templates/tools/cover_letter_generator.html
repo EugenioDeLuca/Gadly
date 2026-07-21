@@ -562,9 +562,17 @@ body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:acti
     font-weight: 400 !important;
     border-radius: 12px !important;
     box-shadow: none !important;
-    transform: none !important;
     text-align: center !important;
     position: relative !important;
+    transition: transform 0.05s ease-out !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger:not(.tap-active) {
+    transform: none !important;
+  }
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger.tap-active {
+    transform: scale(0.96) !important;
   }
   body.cover-letter-generator .site-main .container textarea::placeholder,
   body.cover-letter-generator .site-main .container .form-group input::placeholder {
@@ -1026,6 +1034,7 @@ body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:acti
   body.cover-letter-generator .site-main .container #cl-template-actions button,
   body.cover-letter-generator .site-main .container #cl-hook-actions button,
   body.cover-letter-generator .site-main .container #cl-tone,
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger,
   body.cover-letter-generator .site-main .container .format-toggle {
     transition: transform 0.05s ease-out !important;
     -webkit-tap-highlight-color: transparent !important;
@@ -1044,6 +1053,8 @@ body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:acti
   body.cover-letter-generator .site-main .container #cl-generate:active,
   body.cover-letter-generator .site-main .container #cl-copy:active,
   body.cover-letter-generator .site-main .container #cl-tone:active,
+  body.cover-letter-generator .site-main .container #cl-tone.tap-active,
+  body.cover-letter-generator .site-main .container #cl-tone-wrap .text-tool-select-trigger.tap-active,
   body.cover-letter-generator .site-main .container .format-toggle:active,
   body.cover-letter-generator .site-main .container .format-toggle.tap-active,
   body.cover-letter-generator .site-main .container .panel-actions button:active,

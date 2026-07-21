@@ -1,9 +1,11 @@
-/* Home — tool rimossi: prehide in <head> (niente flash al refresh) */
-body.homepage .tool-btn-wrap--hidden-home {
+/* Home — tool rimossi (nascosti dal primo paint: prehide + classi + [hidden]) */
+body.homepage .tool-btn-wrap--hidden-home,
+body.homepage .tool-btn-wrap[hidden] {
     display: none !important;
 }
 
-body.homepage .tool-section--all-hidden {
+body.homepage .tool-section--all-hidden,
+body.homepage .tool-section[hidden] {
     display: none !important;
 }
 
@@ -507,16 +509,42 @@ body.homepage .tool-section--all-hidden {
     padding-bottom: 0;
 }
 
-/* Desktop/tablet (≥769px): altezza minima stabile anche quando All Tools si nasconde (≤1280px in JS) */
+/* Desktop/tablet (≥769px): min-height solo con tool; vuoto = naturale */
 @media (min-width: 769px) {
-    body.hidden-tools-page .hidden-tools-panel,
-    body.hidden-tools-page .static-container.hidden-tools-container {
-        min-height: 372px !important;
+    html.gadly-hidden-tools-has-items body.hidden-tools-page .hidden-tools-panel,
+    html.gadly-hidden-tools-has-items body.hidden-tools-page .static-container.hidden-tools-container {
+        min-height: var(--gadly-hidden-tools-min-h, 372px) !important;
+    }
+
+    html.gadly-hidden-tools-empty body.hidden-tools-page .hidden-tools-panel,
+    html.gadly-hidden-tools-empty body.hidden-tools-page .static-container.hidden-tools-container {
+        min-height: 0 !important;
     }
 
     body.hidden-tools-page .hidden-tools-container {
         display: flex;
         flex-direction: column;
+    }
+
+    /* Vuoto: layout compatto (niente box alto con link assoluto in fondo) */
+    html.gadly-hidden-tools-empty body.hidden-tools-page #hidden-tools-empty:not([hidden]) {
+        flex: 0 0 auto;
+        position: static;
+        width: 100%;
+        min-height: 0;
+        padding: 28px 0 8px;
+    }
+
+    html.gadly-hidden-tools-empty body.hidden-tools-page #hidden-tools-empty:not([hidden]) p {
+        margin: 0 0 20px;
+        padding: 0;
+        text-align: center;
+    }
+
+    html.gadly-hidden-tools-empty body.hidden-tools-page #hidden-tools-empty:not([hidden]) .hidden-tools-home-link {
+        position: static;
+        display: inline-flex;
+        margin: 0 auto;
     }
 
     body.hidden-tools-page #hidden-tools-empty:not([hidden]) {
@@ -876,20 +904,32 @@ body.homepage .tool-section--all-hidden {
         box-shadow: none !important;
         transform: none !important;
         text-decoration: none !important;
+        cursor: default !important;
+        pointer-events: none !important;
+        user-select: none;
     }
 
     body.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn {
         position: static;
         flex-shrink: 0;
         margin: 0 12px 0 8px;
-        padding: 6px 10px !important;
+        padding: 0 !important;
         min-width: 44px;
+        width: auto !important;
+        max-width: none !important;
+        min-height: 44px !important;
+        height: auto !important;
         font-size: 1.35rem !important;
         line-height: 1;
         color: #dc3545 !important;
+        -webkit-text-fill-color: #dc3545 !important;
         background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
         border: none !important;
-        border-radius: 0;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-weight: 400 !important;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
     }
@@ -1096,13 +1136,16 @@ body.homepage .tool-section--all-hidden {
         line-height: 1.1;
         text-decoration: none !important;
         border-radius: 12px;
-        transition: transform 0.2s, background 0.2s;
+        transition: none;
         box-sizing: border-box;
         padding: 0 12px !important;
         white-space: normal;
         overflow-wrap: break-word;
         word-break: break-word;
         overflow: hidden;
+        cursor: default !important;
+        pointer-events: none !important;
+        user-select: none;
     }
 
     .hidden-tools-page .hidden-tools-list .tool-btn:hover,
@@ -1116,12 +1159,13 @@ body.homepage .tool-section--all-hidden {
     body.dark-mode.hidden-tools-page .hidden-tools-list .tool-btn:visited {
         color: #fff !important;
         -webkit-text-fill-color: #fff !important;
+        text-decoration: none !important;
     }
 
     @media (hover: hover) and (pointer: fine) {
         .hidden-tools-page .hidden-tools-list .tool-btn:hover {
-            background: #0056b3;
-            transform: scale(1.05);
+            background: #003f7f;
+            transform: none;
         }
     }
 
@@ -1277,8 +1321,25 @@ body.dark-mode .site-main.hidden-tools-page .static-container .hidden-tools-empt
         -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
     }
 
-    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn {
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn,
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn:hover,
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn:focus,
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn:focus-visible,
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn:active,
+    body.dark-mode.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn.tap-active {
         color: #ff6b6b !important;
+        -webkit-text-fill-color: #ff6b6b !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        width: auto !important;
+        max-width: none !important;
+        min-height: 44px !important;
+        height: auto !important;
+        font-weight: 400 !important;
     }
 
     body.dark-mode.hidden-tools-page .hidden-tools-divider {

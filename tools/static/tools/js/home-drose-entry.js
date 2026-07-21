@@ -35,12 +35,10 @@
 
     function applyScale() {
         link.classList.add(TAP_CLASS);
-        link.style.setProperty("transform", "scale(0.96)", "important");
     }
 
     function clearScale() {
         link.classList.remove(TAP_CLASS);
-        link.style.removeProperty("transform");
     }
 
     function setScaled(on) {

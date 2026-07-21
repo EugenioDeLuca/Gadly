@@ -95,8 +95,8 @@ body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:foc
 body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
 body:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
     background: #fff4e0 !important;
-    color: #d97706 !important;
-    -webkit-text-fill-color: #d97706 !important;
+    color: #b45309 !important;
+    -webkit-text-fill-color: #b45309 !important;
 }
 
 body.dark-mode:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:hover,
@@ -169,8 +169,8 @@ body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link
 body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose:active,
 body.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose.is-nav-link-hover {
     background: #fff4e0 !important;
-    color: #d97706 !important;
-    -webkit-text-fill-color: #d97706 !important;
+    color: #b45309 !important;
+    -webkit-text-fill-color: #b45309 !important;
 }
 
 body.dark-mode.warm-tone:not(.drose-page):not(.is-drose-brand) .footer-links a.footer-link-drose,

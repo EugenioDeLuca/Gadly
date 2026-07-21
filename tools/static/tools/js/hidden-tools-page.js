@@ -10,8 +10,22 @@
             .replace(/"/g, "&quot;");
     }
 
+    function syncEmptyClass(hasItems) {
+        var root = document.documentElement;
+        root.classList.toggle("gadly-hidden-tools-has-items", !!hasItems);
+        root.classList.toggle("gadly-hidden-tools-empty", !hasItems);
+        if (!hasItems) {
+            root.style.removeProperty("--gadly-hidden-tools-min-h");
+        }
+    }
+
     function markPageReady() {
         document.body.classList.add("hidden-tools-page--ready");
+        if (typeof window.__gadlySaveHiddenToolsContainerHeight === "function") {
+            requestAnimationFrame(function () {
+                window.__gadlySaveHiddenToolsContainerHeight();
+            });
+        }
     }
 
     function render() {
@@ -23,6 +37,7 @@
             if (bottom) bottom.hidden = true;
             if (container) container.classList.remove("hidden-tools-container--has-footer");
             if (empty) empty.hidden = false;
+            syncEmptyClass(false);
             markPageReady();
             return;
         }
@@ -33,9 +48,11 @@
             if (bottom) bottom.hidden = true;
             if (container) container.classList.remove("hidden-tools-container--has-footer");
             if (empty) empty.hidden = false;
+            syncEmptyClass(false);
             markPageReady();
             return;
         }
+        syncEmptyClass(true);
         if (empty) empty.hidden = true;
         if (bottom) bottom.hidden = true;
         if (container) container.classList.add("hidden-tools-container--has-footer");
@@ -62,7 +79,9 @@
             html += '<div class="tool-grid">';
             groups[catName].forEach(function (item) {
                 html += '<div class="tool-btn-wrap" data-hidden-tool-url="' + escapeHtml(item.url) + '">';
-                html += '<a href="' + escapeHtml(item.url) + '" class="tool-btn">' + escapeHtml(item.name) + "</a>";
+                /* Solo etichetta: tool rimosso non si apre da qui, solo ripristino. */
+                html += '<span class="tool-btn tool-btn--removed" aria-disabled="true">' +
+                    escapeHtml(item.name) + "</span>";
                 html += '<button type="button" class="tool-fav hidden-tools-restore-btn" data-url="' +
                     escapeHtml(item.url) + '" title="' + escapeHtml(restoreLabel) + '" aria-label="' +
                     escapeHtml(restoreLabel) + '">↩</button>';

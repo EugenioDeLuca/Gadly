@@ -156,6 +156,11 @@
         setupDragSources();
     }
 
+    function afterRestore() {
+        // I nodi tolti dal DOM non tornano senza reload (SSR li omette).
+        window.location.reload();
+    }
+
     function handleDrop(data) {
         if (!data || !window.gadlyHiddenTools) return;
         if (data.type === "tool" && data.entry) {
@@ -218,7 +223,7 @@
                 window.gadlyHiddenTools.restoreTool(url);
             });
         }
-        afterHide();
+        afterRestore();
     }
 
     function showUndoToast(data) {
@@ -789,6 +794,16 @@
         clearMobileTrashHideTimer();
         setMobileTrashPressActive(true);
         lockMobilePageScroll();
+        var captureEl = pointerDrag.captureEl || pointerDrag.el;
+        if (captureEl && captureEl.style) {
+            captureEl.style.touchAction = "none";
+            if (captureEl.classList && captureEl.classList.contains("tool-btn-wrap")) {
+                var pressLink = captureEl.querySelector("a.tool-btn");
+                if (pressLink && pressLink.style) {
+                    pressLink.style.touchAction = "none";
+                }
+            }
+        }
         setTrashHoldingVisual(pointerDrag.el, true);
         if (opts.vibrate) safeVibrate(12);
         ensureMobileGhostPreview(pointerDrag.lastX, pointerDrag.lastY);
@@ -1161,7 +1176,6 @@
             };
 
             clearMobileTrashHideTimer();
-            btn.style.touchAction = "none";
             beginMobileTrashTouchPress(btn);
             pointerDrag.longPressTimer = window.setTimeout(function () {
                 onMobileLongPressReady();
@@ -1298,8 +1312,6 @@
             };
 
             clearMobileTrashHideTimer();
-            wrap.style.touchAction = "none";
-            btn.style.touchAction = "none";
             beginMobileTrashTouchPress(btn);
             pointerDrag.longPressTimer = window.setTimeout(function () {
                 onMobileLongPressReady();

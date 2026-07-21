@@ -65,6 +65,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.documentElement.classList.contains("gadly-trash-drag-active")) {
                     return;
                 }
+                /* Blocca lo scroll rispetto al bottone: chiudere una categoria sopra
+                   altrimenti “alza” il bottone cliccato invece di aprire il menu sotto. */
+                var btnTopBefore = btn.getBoundingClientRect().top;
                 var wasOpen = section.classList.contains("is-open");
                 closeAllSectionsExcept(section);
                 if (!wasOpen) {
@@ -73,6 +76,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     section.classList.remove("is-open");
                     btn.setAttribute("aria-expanded", "false");
+                }
+                var delta = btn.getBoundingClientRect().top - btnTopBefore;
+                if (Math.abs(delta) > 0.5) {
+                    window.scrollBy(0, delta);
                 }
                 saveOpenSections();
             }
@@ -98,6 +105,13 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.persisted) restoreOpenSections();
     });
 
+    function normalizeFavUrl(raw) {
+        if (!raw) return "";
+        var s = String(raw).split("?")[0].split("#")[0];
+        if (s.length > 1 && s.charAt(s.length - 1) === "/") s = s.slice(0, -1);
+        return s;
+    }
+
     function getFavorites() {
         try {
             return JSON.parse(localStorage.getItem(favKey) || "[]");
@@ -110,7 +124,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function toggleFavorite(url) {
         var favs = getFavorites();
-        var i = favs.indexOf(url);
+        var norm = normalizeFavUrl(url);
+        var i = -1;
+        for (var fi = 0; fi < favs.length; fi++) {
+            if (normalizeFavUrl(favs[fi]) === norm) { i = fi; break; }
+        }
         if (i >= 0) favs.splice(i, 1);
         else favs.push(url);
         setFavorites(favs);
@@ -129,14 +147,19 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!section || !grid) return;
         var favs = getFavorites();
         if (favs.length === 0) {
-            section.hidden = true;
-            section.style.display = "none";
+            document.documentElement.classList.remove("gadly-has-shortcuts");
+            document.documentElement.style.removeProperty("--gadly-shortcuts-count");
+            document.documentElement.style.removeProperty("--gadly-shortcuts-rows");
             if (container) container.classList.remove("has-shortcuts");
+            section.setAttribute("aria-hidden", "true");
+            grid.innerHTML = "";
             return;
         }
-        section.hidden = false;
-        section.style.display = "block";
+        document.documentElement.classList.add("gadly-has-shortcuts");
+        document.documentElement.style.setProperty("--gadly-shortcuts-count", String(favs.length));
+        document.documentElement.style.setProperty("--gadly-shortcuts-rows", String(Math.ceil(favs.length / 4)));
         if (container) container.classList.add("has-shortcuts");
+        section.removeAttribute("aria-hidden");
         grid.innerHTML = favs.map(function(url) {
             var a = document.querySelector('.tool-btn-wrap a[href="' + url + '"]');
             var name = a ? a.textContent.trim() : url.replace(/\//g, "").replace(/-/g, " ");
@@ -147,17 +170,56 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    function syncFavPrehideStyle(favUrls) {
+        // Lo style early-boot #gadly-home-fav-prehide forza ★ rosso via CSS.
+        // Va riallineato a ogni toggle, altrimenti la stellina resta piena dopo remove.
+        var style = document.getElementById("gadly-home-fav-prehide");
+        var favs = (favUrls || getFavorites()).map(normalizeFavUrl).filter(Boolean);
+        if (!favs.length) {
+            if (style && style.parentNode) style.parentNode.removeChild(style);
+            return;
+        }
+        function esc(v) {
+            return String(v).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+        }
+        var rules = [];
+        var seen = {};
+        favs.forEach(function (u) {
+            if (seen[u]) return;
+            seen[u] = true;
+            [u, u + "/"].forEach(function (href) {
+                rules.push(
+                    'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc(href) + '"]) .tool-fav' +
+                    '{color:#dc3545!important}'
+                );
+                rules.push(
+                    'body.homepage .tool-btn-wrap:has(> a.tool-btn[href="' + esc(href) + '"]) .tool-fav::before' +
+                    '{content:"★"!important;color:#dc3545!important}'
+                );
+            });
+        });
+        if (!style) {
+            style = document.createElement("style");
+            style.id = "gadly-home-fav-prehide";
+            (document.head || document.documentElement).appendChild(style);
+        }
+        style.textContent = rules.join("");
+    }
+
     function updateStarIcons() {
-        var favs = getFavorites();
+        var favs = getFavorites().map(normalizeFavUrl);
         document.querySelectorAll(".tool-btn-wrap").forEach(function(wrap) {
             var a = wrap.querySelector("a.tool-btn");
             var star = wrap.querySelector(".tool-fav");
             if (!a || !star) return;
-            var url = a.getAttribute("href");
+            var url = normalizeFavUrl(a.getAttribute("href"));
             var isFav = favs.indexOf(url) >= 0;
-            star.textContent = isFav ? "★" : "☆";
-            star.classList.toggle("is-favorite", isFav);
+            // Solo classe: il glifo ★/☆ è CSS (::before). Evita rewrite textContent = flash.
+            if (star.classList.contains("is-favorite") !== isFav) {
+                star.classList.toggle("is-favorite", isFav);
+            }
         });
+        syncFavPrehideStyle(favs);
     }
 
     function pulseSearchGridMatch(grid) {
@@ -185,8 +247,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var btns = section.querySelectorAll(".tool-btn-wrap");
             var visible = 0;
             btns.forEach(function(wrap) {
-                if (wrap.classList.contains("tool-btn-wrap--hidden-home")) {
-                    wrap.style.display = "none";
+                if (wrap.classList.contains("tool-btn-wrap--hidden-home") || wrap.hidden) {
                     return;
                 }
                 var a = wrap.querySelector("a.tool-btn");
@@ -195,6 +256,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 wrap.style.display = match ? "" : "none";
                 if (match) visible++;
             });
+            if (section.classList.contains("tool-section--all-hidden") || section.hidden) {
+                return;
+            }
             section.style.display = !isSearching || visible > 0 ? "" : "none";
             if (isMobileView()) {
                 if (isSearching && visible > 0) {

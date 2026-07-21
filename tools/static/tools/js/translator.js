@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+(function () {
     const translateBtn = document.getElementById("translate-btn");
     const inputText = document.getElementById("input-text");
     const languageSelect = document.getElementById("language");
@@ -9,37 +9,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function initCustomSelect(selectEl) {
         const wrap = selectEl.closest(".custom-select-wrap");
-        if (!wrap) return;
-        const trigger = document.createElement("div");
-        trigger.className = "custom-select-trigger";
-        trigger.textContent = selectEl.options[selectEl.selectedIndex].text;
-        const dropdown = document.createElement("div");
-        dropdown.className = "custom-select-dropdown";
-        const optionsWrap = document.createElement("div");
-        optionsWrap.className = "custom-select-options-wrap";
-        for (let i = 0; i < selectEl.options.length; i++) {
-            const opt = selectEl.options[i];
-            const div = document.createElement("div");
-            div.className = "custom-select-option" + (opt.selected ? " selected" : "");
-            div.textContent = opt.text;
-            div.dataset.value = opt.value;
-            div.addEventListener("click", () => {
-                selectEl.value = opt.value;
-                trigger.textContent = opt.text;
-                dropdown.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("selected"));
-                div.classList.add("selected");
-                wrap.classList.remove("open");
-            });
-            optionsWrap.appendChild(div);
+        if (!wrap || wrap.dataset.customSelectInit === "1") return;
+
+        let trigger = wrap.querySelector(".custom-select-trigger");
+        if (!trigger) {
+            trigger = document.createElement("div");
+            trigger.className = "custom-select-trigger";
+            wrap.insertBefore(trigger, selectEl);
         }
-        dropdown.appendChild(optionsWrap);
-        trigger.addEventListener("click", (e) => {
-            e.stopPropagation();
-            document.querySelectorAll(".custom-select-wrap.open").forEach(w => w.classList.remove("open"));
-            wrap.classList.toggle("open");
-        });
-        wrap.insertBefore(trigger, selectEl);
-        wrap.appendChild(dropdown);
+        trigger.removeAttribute("aria-hidden");
+        trigger.textContent = selectEl.options[selectEl.selectedIndex].text;
+
+        let dropdown = wrap.querySelector(".custom-select-dropdown");
+        if (!dropdown) {
+            dropdown = document.createElement("div");
+            dropdown.className = "custom-select-dropdown";
+            const optionsWrap = document.createElement("div");
+            optionsWrap.className = "custom-select-options-wrap";
+            for (let i = 0; i < selectEl.options.length; i++) {
+                const opt = selectEl.options[i];
+                const div = document.createElement("div");
+                div.className = "custom-select-option" + (opt.selected ? " selected" : "");
+                div.textContent = opt.text;
+                div.dataset.value = opt.value;
+                div.addEventListener("click", () => {
+                    selectEl.value = opt.value;
+                    trigger.textContent = opt.text;
+                    dropdown.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("selected"));
+                    div.classList.add("selected");
+                    wrap.classList.remove("open");
+                });
+                optionsWrap.appendChild(div);
+            }
+            dropdown.appendChild(optionsWrap);
+            wrap.appendChild(dropdown);
+        }
+
+        if (!trigger.dataset.clickBound) {
+            trigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const wasOpen = wrap.classList.contains("open");
+                document.querySelectorAll(".custom-select-wrap.open").forEach(w => w.classList.remove("open"));
+                if (!wasOpen) {
+                    wrap.classList.add("open");
+                }
+            });
+            trigger.dataset.clickBound = "1";
+        }
+
+        wrap.dataset.customSelectInit = "1";
     }
     document.addEventListener("click", () => {
         document.querySelectorAll(".custom-select-wrap.open").forEach(w => w.classList.remove("open"));
@@ -120,4 +138,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Evento per il bottone di traduzione
     translateBtn.addEventListener("click", translateText);
-});
+})();

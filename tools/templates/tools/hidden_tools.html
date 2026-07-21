@@ -5,36 +5,130 @@
 {% block body_class %}static-page hidden-tools-page{% endblock %}
 {% block extrahead %}
 <meta name="description" content="{% trans 'Restore tools you removed from the Gadly homepage.' %}">
+<script>
+(function () {
+    try {
+        var PREFIX = "gadly-hidden-tools-v2:";
+        var suffix = window.GADLY_USER_STORAGE_KEY || "anon";
+        {% if user.is_authenticated %}
+        suffix = "{{ user.id }}";
+        {% endif %}
+        var arr = JSON.parse(localStorage.getItem(PREFIX + suffix) || "[]");
+        var count = 0;
+        if (Array.isArray(arr)) {
+            arr.forEach(function (item) {
+                if (item && item.url) count += 1;
+            });
+        }
+        var root = document.documentElement;
+        if (count > 0) root.classList.add("gadly-hidden-tools-has-items");
+        else root.classList.add("gadly-hidden-tools-empty");
+
+        // Lock altezza solo con tool in lista (vuoto = altezza naturale, niente card alta).
+        var HKEY = "gadly-hidden-tools-container-h-v1";
+        if (count > 0) {
+            var saved = parseInt(sessionStorage.getItem(HKEY) || "0", 10) || 0;
+            var est = 220 + 56 + Math.ceil(count / 4) * 72 + 120;
+            var lock = Math.max(saved, est);
+            if (lock > 200) {
+                root.style.setProperty("--gadly-hidden-tools-min-h", lock + "px");
+            }
+        } else {
+            root.style.removeProperty("--gadly-hidden-tools-min-h");
+            try { sessionStorage.removeItem(HKEY); } catch (eClr) {}
+        }
+
+        window.__gadlySaveHiddenToolsContainerHeight = function () {
+            try {
+                if (root.classList.contains("gadly-hidden-tools-empty")) {
+                    root.style.removeProperty("--gadly-hidden-tools-min-h");
+                    return;
+                }
+                var c = document.querySelector("body.hidden-tools-page .static-container.hidden-tools-container");
+                if (!c) return;
+                var next = Math.round(c.offsetHeight);
+                if (next > 200) {
+                    sessionStorage.setItem(HKEY, String(next));
+                    root.style.setProperty("--gadly-hidden-tools-min-h", next + "px");
+                }
+            } catch (eSave) {}
+        };
+        window.addEventListener("pagehide", function () {
+            if (typeof window.__gadlySaveHiddenToolsContainerHeight === "function") {
+                window.__gadlySaveHiddenToolsContainerHeight();
+            }
+        });
+        window.addEventListener("load", function () {
+            if (typeof window.__gadlySaveHiddenToolsContainerHeight === "function") {
+                window.__gadlySaveHiddenToolsContainerHeight();
+            }
+        });
+    } catch (e) {}
+})();
+</script>
 <style>
 /* Evita flash Restore all / Back to Home prima del render JS */
-body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-bottom,
-body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-empty {
+body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-bottom {
     display: none !important;
     visibility: hidden !important;
+}
+/* Con tool: empty nascosto finché JS non decide. Vuoto: messaggio subito. */
+html.gadly-hidden-tools-has-items body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-empty {
+    display: none !important;
+    visibility: hidden !important;
+}
+html.gadly-hidden-tools-empty body.hidden-tools-page #hidden-tools-empty {
+    display: block !important;
+    visibility: visible !important;
 }
 @media (min-width: 769px) {
     body.hidden-tools-page .static-container {
         max-width: 900px;
         margin: 0 auto;
         padding: 40px 32px;
+        padding-bottom: 40px;
         background: #fff;
         border-radius: 16px;
         box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
+        box-sizing: border-box;
+        text-align: center;
     }
-    body.hidden-tools-page .hidden-tools-panel,
-    body.hidden-tools-page .static-container.hidden-tools-container {
-        min-height: 372px;
+    html[data-theme="dark"] body.hidden-tools-page .static-container,
+    body.dark-mode.hidden-tools-page .static-container {
+        background: #fff !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2) !important;
+    }
+    html.gadly-hidden-tools-has-items body.hidden-tools-page .static-container.hidden-tools-container {
+        padding-bottom: 0 !important;
+    }
+    /* Solo con tool: min-height anti-flash. Vuoto = altezza naturale. */
+    html.gadly-hidden-tools-has-items body.hidden-tools-page .hidden-tools-panel,
+    html.gadly-hidden-tools-has-items body.hidden-tools-page .static-container.hidden-tools-container {
+        min-height: var(--gadly-hidden-tools-min-h, 372px) !important;
+    }
+    html.gadly-hidden-tools-empty body.hidden-tools-page .hidden-tools-panel,
+    html.gadly-hidden-tools-empty body.hidden-tools-page .static-container.hidden-tools-container {
+        min-height: 0 !important;
     }
 }
 </style>
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260515b">
-<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=97">
+<link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}?v=20260720c">
+<link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=104">
 {% endblock %}
 {% block content %}
 <div class="hidden-tools-panel">
 <div class="static-container hidden-tools-container">
+<script>
+(function () {
+    try {
+        if (document.documentElement.classList.contains("gadly-hidden-tools-has-items")) {
+            document.currentScript.parentElement.classList.add("hidden-tools-container--has-footer");
+        }
+    } catch (e) {}
+})();
+</script>
     <div class="hidden-tools-head">
     <h1>{% trans "Removed tools" %}</h1>
     <p class="hidden-tools-intro">{% trans "Tools you removed from the homepage appear here. Restore them individually or all at once." %}</p>
@@ -45,6 +139,16 @@ body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-empty {
         <p>{% trans "No removed tools. Everything is visible on the homepage." %}</p>
         <a href="{% url 'home' %}" class="hidden-tools-home-link">{% trans "Back to Home" %}</a>
     </div>
+    <script>
+    (function () {
+        try {
+            if (document.documentElement.classList.contains("gadly-hidden-tools-empty")) {
+                var el = document.getElementById("hidden-tools-empty");
+                if (el) el.hidden = false;
+            }
+        } catch (e) {}
+    })();
+    </script>
 
     <div id="hidden-tools-list" class="hidden-tools-list" aria-live="polite"></div>
 
@@ -62,7 +166,7 @@ body.hidden-tools-page:not(.hidden-tools-page--ready) #hidden-tools-empty {
     window.GADLY_HOME_URL = "{% url 'home' %}";
     </script>
     <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=24"></script>
-    <script src="{% static 'tools/js/hidden-tools-page.js' %}?v=14"></script>
+    <script src="{% static 'tools/js/hidden-tools-page.js' %}?v=18"></script>
 </div>
 </div>
 {% endblock %}

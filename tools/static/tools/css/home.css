@@ -120,7 +120,13 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section {
 }
 
 html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-title {
-    margin-bottom: 2px;
+    margin-bottom: 12px;
+}
+
+@media (min-width: 769px) {
+    html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-title {
+        margin: 0 0 18px 0;
+    }
 }
 
 @media (min-width: 769px) {
@@ -130,7 +136,11 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
     }
 
     html.gadly-has-shortcuts body.homepage #shortcuts-section {
-        min-height: 4.75rem;
+        min-height: calc(
+            2.8rem + 56px * var(--gadly-shortcuts-rows, 1) +
+            16px * max(0, var(--gadly-shortcuts-rows, 1) - 1) +
+            18px
+        );
     }
 }
 
@@ -169,10 +179,31 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
         padding-bottom: 24px !important;
     }
     .homepage .container {
+        width: min(900px, calc(100vw - 48px));
+        max-width: none;
         padding-left: 36px;
         padding-right: 36px;
         margin-top: 24px !important;
         margin-bottom: 24px !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Ultrawide: stesse larghezze della home Drose (.drose-landing__container) */
+@media (min-width: 2200px) {
+    body.homepage .site-main > .container,
+    .homepage .container {
+        width: min(1040px, calc(100vw - 48px)) !important;
+        max-width: 1040px !important;
+    }
+}
+
+@media (min-width: 3400px) {
+    body.homepage .site-main > .container,
+    .homepage .container {
+        width: min(1120px, calc(100vw - 48px)) !important;
+        max-width: 1120px !important;
     }
 }
 
@@ -254,9 +285,15 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
     outline: none;
 }
 
-/* Press feedback solo via .tap-active: solo scale, niente cambio colore. */
+/* Press feedback solo via .tap-active: scale interno, hit box piena (tap sul bordo ok). */
 .homepage .home-drose-entry__link.tap-active {
-    transform: scale(0.98);
+    transform: none;
+}
+.homepage .home-drose-entry__link.tap-active .home-drose-entry__icon,
+.homepage .home-drose-entry__link.tap-active .home-drose-entry__text,
+.homepage .home-drose-entry__link.tap-active .home-drose-entry__chevron {
+    transform: scale(0.96);
+    transition: transform 0.05s ease-out;
 }
 
 body.dark-mode.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
@@ -265,8 +302,8 @@ body.dark-mode.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
 
 .homepage .home-drose-entry__icon {
     flex: 0 0 auto;
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     border-radius: 10px;
     object-fit: contain;
     pointer-events: none;
@@ -367,13 +404,28 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     box-sizing: border-box;
 }
 
+/* Desktop: titolo Quick access come le categorie */
+@media (min-width: 769px) {
+    .shortcuts-section {
+        margin-bottom: 18px;
+    }
+
+    .shortcuts-section .shortcuts-title {
+        font-size: 1.32em;
+        font-weight: bold;
+        margin: 0 0 18px 0;
+        letter-spacing: 0.02em;
+        color: #c41e3a;
+    }
+}
+
 .homepage .container.has-shortcuts .shortcuts-section {
     margin-top: 0;
 }
 
 .shortcuts-section .shortcuts-title {
     font-size: 1em;
-    color: #e84c4c;
+    color: #c41e3a;
     margin: 0 0 4px 0;
     font-weight: 600;
     text-align: center;
@@ -399,35 +451,55 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     min-height: 52px;
     padding: 14px 44px 14px 20px;
     font-size: 1.05rem;
-    font-weight: 700;
-    background: rgba(232, 76, 76, 0.25) !important;
-    color: #e84c4c !important;
-    border: 2px solid #e84c4c !important;
-    transition: all 0.2s;
+    font-weight: 600;
     border-radius: 12px;
     text-decoration: none;
     text-align: center;
 }
-.homepage .shortcuts-btn {
-    border-radius: 12px !important;
-    justify-content: center !important;
-    text-align: center !important;
-    background: rgba(232, 76, 76, 0.25) !important;
-    color: #e84c4c !important;
-    border: 2px solid #e84c4c !important;
+
+/* Desktop Quick access: rosso (mobile resta blu/gradiente sotto @media max-width 768px) */
+@media (min-width: 769px) {
+    .shortcuts-btn {
+        background: rgba(196, 30, 58, 0.22) !important;
+        color: #c41e3a !important;
+        -webkit-text-fill-color: #c41e3a !important;
+        border: 2px solid #c41e3a !important;
+        /*
+         Solo scale in transition. Bg/bordo/colore testo devono cambiare insieme e istantanei:
+         se il bg fa fade e il testo no (o viceversa), all’uscita hover si vede un “secondo step” sul font.
+        */
+        transition: transform 0.2s ease;
+    }
+
+    .homepage .shortcuts-btn {
+        border-radius: 12px !important;
+        justify-content: center !important;
+        text-align: center !important;
+        background: rgba(196, 30, 58, 0.22) !important;
+        color: #c41e3a !important;
+        -webkit-text-fill-color: #c41e3a !important;
+        border: 2px solid #c41e3a !important;
+        font-weight: 600 !important;
+        transition: transform 0.2s ease !important;
+    }
 }
 
 /* Hover scorciatoie desktop: solo con puntatore fine */
 @media (min-width: 769px) and (hover: hover) and (pointer: fine) {
     .homepage .shortcuts-btn:hover {
-        background: #e84c4c !important;
-        color: white !important;
-        border-color: #b01830 !important;
+        background: #c41e3a !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        border-color: #991b1b !important;
+        font-weight: 600 !important;
+        transform: scale(1.05) !important;
     }
     .shortcuts-btn:hover {
-        background: #e84c4c;
-        color: white;
-        border-color: #b01830;
+        background: #c41e3a;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+        border-color: #991b1b;
+        font-weight: 600 !important;
         transform: scale(1.05);
     }
 }
@@ -444,24 +516,33 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     background: rgba(0,0,0,0.2);
     border: none;
     border-radius: 6px;
-    font-size: 1.1rem;
+    font-size: 0;
     color: rgba(255,255,255,0.9);
     cursor: pointer;
     padding: 2px 6px;
     line-height: 1;
     z-index: 1;
+    transition: none;
+}
+
+.tool-fav::before {
+    content: "☆";
+    font-size: 1.1rem;
+    line-height: 1;
+    color: inherit;
 }
 
 .tool-fav:hover {
     background: rgba(0,0,0,0.3);
 }
 
-.tool-fav.is-favorite {
+.tool-fav.is-favorite,
+.tool-fav.is-favorite::before {
     color: #dc3545;
 }
 
-.tool-fav.is-favorite:hover {
-    color: #ff4d5a;
+.tool-fav.is-favorite::before {
+    content: "★";
 }
 
 
@@ -568,8 +649,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         overflow: hidden;
     }
 
-    /* Desktop: etichette su più righe centrate, altezza fissa 56px */
-    .homepage .tool-btn,
+    /* Desktop: solo bottoni tool (NON Quick access / shortcuts-btn) */
     .homepage .tool-section .tool-grid .tool-btn {
         display: grid !important;
         place-items: center;
@@ -586,13 +666,29 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         text-align: center !important;
         box-sizing: border-box;
         overflow: hidden;
+        background: #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
     }
 
-    .homepage .tool-btn.tool-btn--kit {
+    .homepage .tool-section .tool-grid .tool-btn.tool-btn--kit {
         padding: 0 12px !important;
         height: 56px !important;
         min-height: 56px !important;
         max-height: 56px !important;
+        background: #003f7f !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    /* Quick access: rosso (non ereditare blu dei tool-btn) */
+    .homepage .container.has-shortcuts .shortcuts-grid .shortcuts-btn,
+    .homepage .shortcuts-grid .shortcuts-btn.tool-btn {
+        background: rgba(196, 30, 58, 0.22) !important;
+        color: #c41e3a !important;
+        -webkit-text-fill-color: #c41e3a !important;
+        border: 2px solid #c41e3a !important;
+        font-weight: 600 !important;
     }
 }
 
@@ -604,22 +700,31 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     min-height: 52px !important;
 }
 
+/* Identico al critical first-paint in base.html: evita flash grid→flex al load di home.css */
 .homepage .tool-btn {
     width: 180px;
-    height: 56px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    padding: 0 12px !important;
+    display: grid !important;
+    place-items: center;
+    place-content: center;
+    text-align: center !important;
     background: #003f7f;
     color: white;
     font-weight: 600;
     font-size: 1em;
+    line-height: 1.1;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
     text-decoration: none;
     border-radius: 12px;
     border: 2px solid transparent;
     box-sizing: border-box;
-    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    overflow: hidden;
+    /* transition gestita da @media (hover) sotto — non forzare none qui */
 }
 
 .homepage .tool-btn.tool-btn--kit {
@@ -630,12 +735,40 @@ body.dark-mode.homepage .home-drose-entry__chevron {
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .homepage .tool-btn:hover {
-        background: #0056b3;
+    /* Stessa specificità del blocco desktop grid: altrimenti transition:none vinceva e lo scale scattava */
+    body.homepage .tool-btn,
+    body.homepage .tool-section .tool-grid .tool-btn {
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    /* Quick access: solo scale — bg/testo/bordo istantanei (niente mismatch all’uscita hover) */
+    body.homepage .shortcuts-btn,
+    body.homepage .shortcuts-btn.tool-btn,
+    body.homepage .shortcuts-grid .shortcuts-btn {
+        transition: transform 0.2s ease !important;
+    }
+
+    body.homepage .tool-btn:hover,
+    body.homepage .tool-section .tool-grid .tool-btn:hover {
+        background: #0056b3 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
         transform: scale(1.05);
     }
 
-    .homepage .tool-btn.tool-btn--kit:hover {
+    body.homepage .shortcuts-btn.tool-btn:hover,
+    body.homepage .shortcuts-grid .shortcuts-btn.tool-btn:hover,
+    body.homepage .shortcuts-btn:hover,
+    body.homepage .container.has-shortcuts .shortcuts-grid .shortcuts-btn:hover {
+        background: #c41e3a !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+        border-color: #991b1b !important;
+        font-weight: 600 !important;
+        transform: scale(1.05) !important;
+    }
+
+    body.homepage .tool-btn.tool-btn--kit:hover {
         border-color: #e8f4fd;
         box-shadow: 0 0 0 1px rgba(0, 63, 127, 0.4), 0 6px 18px rgba(0, 63, 127, 0.28);
     }
@@ -647,8 +780,22 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     .homepage .intro a {
         color: #003f7f;
     }
+    body.homepage:not(.dark-mode) .shortcuts-section .shortcuts-title,
+    body:not(.dark-mode) .shortcuts-section .shortcuts-title {
+        font-size: 16px !important;
+        font-weight: 600;
+        color: #cc0000 !important;
+        -webkit-text-fill-color: #cc0000 !important;
+    }
+    body.dark-mode.homepage .site-main .container #shortcuts-section > h2.shortcuts-title,
+    body.dark-mode .shortcuts-section .shortcuts-title {
+        font-size: 16px !important;
+        font-weight: 600;
+        color: rgb(238, 136, 136) !important;
+        -webkit-text-fill-color: rgb(238, 136, 136) !important;
+    }
     .shortcuts-section .shortcuts-title {
-        color: #003f7f;
+        margin-bottom: 12px !important;
     }
     .shortcuts-grid {
         flex-direction: column;
@@ -656,6 +803,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         width: 100%;
     }
     .shortcuts-btn,
+    .homepage .shortcuts-btn,
     .homepage .shortcuts-grid .shortcuts-btn {
         display: flex !important;
         width: 100% !important;
@@ -664,13 +812,17 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         padding: 14px 44px 14px 20px !important;
         font-size: 1.05rem !important;
         font-weight: 700 !important;
-        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
-        color: #003f7f !important;
-        border: 2px solid #003f7f !important;
+        /* Light mobile: stessi colori dei box errore (base.css .result-area.error) */
+        background: #fff5f5 !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+        border: 2px solid #fcc !important;
         border-radius: 12px !important;
         justify-content: flex-start !important;
         align-items: center !important;
         text-align: left !important;
+        /* Niente fade colore/sfondo (né al cambio tema light↔dark) */
+        transition: transform 0.05s ease-out !important;
     }
     .homepage .shortcuts-btn {
         justify-content: flex-start !important;
@@ -695,7 +847,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         margin-top: 0;
     }
     .homepage .container.has-shortcuts .shortcuts-section .shortcuts-title {
-        margin-bottom: 2px;
+        margin-bottom: 12px;
     }
     .shortcuts-section {
         margin-bottom: 16px;
@@ -703,6 +855,8 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     }
     .tool-section {
         margin-bottom: 22px;
+        /* Evita che il browser “alzi” la categoria al toggle accordion */
+        overflow-anchor: none;
     }
     /* Category = bottone full width */
     .category-btn {
@@ -781,7 +935,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         transform: rotate(180deg);
     }
     .homepage .tool-section .tool-grid .tool-btn-wrap {
-        padding-left: 20px;
+        padding-left: 0;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         min-height: 52px !important;
@@ -794,7 +948,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid rgba(0, 63, 127, 0.08);
-        padding-left: 20px;
+        padding-left: 0;
     }
     .homepage .tool-btn-wrap:last-child {
         border-bottom: none;
@@ -805,13 +959,13 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         width: auto !important;
         height: 100% !important;
         min-width: 0;
-        min-height: 0 !important;
+        min-height: 52px !important;
         max-height: none !important;
-        padding: 2px 10px 2px 0 !important;
+        padding: 2px 10px 2px 20px !important;
         font-size: 15px !important;
         line-height: 1.15 !important;
         font-weight: 600 !important;
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: flex-start !important;
         text-align: left !important;
@@ -829,7 +983,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         min-width: 32px !important;
         min-height: 0 !important;
         height: auto !important;
-        font-size: 1rem !important;
+        font-size: 0 !important;
         color: #003f7f;
         background: transparent !important;
         border: none !important;
@@ -840,12 +994,16 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         margin-left: 8px;
         padding: 6px 8px;
         min-width: 40px;
-        font-size: 1.15rem;
+        font-size: 0 !important;
         color: #003f7f;
         background: transparent;
-        font-size: 1rem;
     }
-    .homepage .tool-btn-wrap .tool-fav.is-favorite {
+    .homepage .tool-btn-wrap .tool-fav::before {
+        font-size: 1rem;
+        color: inherit;
+    }
+    .homepage .tool-btn-wrap .tool-fav.is-favorite,
+    .homepage .tool-btn-wrap .tool-fav.is-favorite::before {
         color: #dc3545;
     }
 
@@ -899,14 +1057,41 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     body.homepage .site-main .home-drose-entry__link:not(.tap-active):is(:hover, :focus, :focus-visible) {
         transform: none !important;
     }
-    body.homepage .site-main .category-btn.tap-active,
+    body.homepage .site-main .category-btn.tap-active {
+        transform: none !important;
+    }
+    body.homepage .site-main .category-btn.tap-active .category-btn-label,
+    body.homepage .site-main .category-btn.tap-active .category-btn-chevron {
+        transform: scale(0.96);
+        transition: transform 0.05s ease-out;
+    }
     body.homepage .site-main .shortcuts-btn.tap-active,
     body.homepage .site-main .shortcuts-grid .shortcuts-btn.tap-active,
     body.homepage .site-main .tool-section .tool-grid .tool-btn.tap-active,
     body.homepage .site-main .tool-fav.tap-active,
-    body.homepage .site-main .login-required-btn.tap-active,
+    body.homepage .site-main .login-required-btn.tap-active {
+        transform: none !important;
+        filter: brightness(0.94);
+    }
     body.homepage .site-main .home-drose-entry__link.tap-active {
-        transform: scale(0.96) !important;
+        transform: none !important;
+        filter: none !important;
+        background: linear-gradient(135deg, #fff8eb 0%, #ffefd1 100%) !important;
+        border-color: #b45309 !important;
+        color: #92400e !important;
+        box-shadow: 0 8px 22px rgba(180, 83, 9, 0.12) !important;
+    }
+    body.dark-mode.homepage .site-main .home-drose-entry__link.tap-active {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%) !important;
+        border-color: #fbbf24 !important;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28) !important;
+    }
+    body.homepage .site-main .home-drose-entry__link.tap-active .home-drose-entry__icon,
+    body.homepage .site-main .home-drose-entry__link.tap-active .home-drose-entry__text,
+    body.homepage .site-main .home-drose-entry__link.tap-active .home-drose-entry__chevron {
+        transform: scale(0.96);
+        transition: transform 0.05s ease-out;
+        filter: none;
     }
 }
 
@@ -929,9 +1114,11 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         color: #ff4d5a;
     }
     body.dark-mode .shortcuts-btn:hover,
+    body.dark-mode .homepage .shortcuts-btn:hover,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn:hover {
         background: rgba(220, 80, 80, 0.28) !important;
         color: #fcc !important;
+        -webkit-text-fill-color: #fcc !important;
         border-color: #fcc !important;
     }
     body.dark-mode .category-btn:hover {
@@ -1041,12 +1228,16 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     }
 
     /* base.css centra i bottoni a ≤480px: solo sulla home, testo DENTRO i bottoni a sinistra + tap come Word Counter */
-    body.homepage .site-main .container .category-btn,
+    body.homepage .site-main .container .category-btn {
+        justify-content: flex-start !important;
+        text-align: left !important;
+        transition: transform 0.05s ease-out, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+    }
     body.homepage .site-main .container .shortcuts-btn,
     body.homepage .site-main .container .shortcuts-grid .shortcuts-btn {
         justify-content: flex-start !important;
         text-align: left !important;
-        transition: transform 0.05s ease-out, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+        transition: transform 0.05s ease-out !important;
     }
     body.homepage .site-main .container .category-btn .category-btn-label,
     body.homepage .site-main .container .category-btn .category-btn-label--desktop,
@@ -1069,14 +1260,18 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     }
 }
 
-/* Desktop: categorie sempre blu #003f7f */
+/* Desktop: categorie e titoli come light anche in dark mode */
 @media (min-width: 769px) {
     .category-btn,
     body.dark-mode .category-btn {
         color: #003f7f;
     }
     body.dark-mode .homepage .home-main-title {
-        color: #7eb8ff;
+        color: #003f7f !important;
+    }
+    body.dark-mode .homepage .intro,
+    body.dark-mode .homepage .intro a {
+        color: #555 !important;
     }
 }
 
@@ -1088,9 +1283,11 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         color: var(--text-secondary);
     }
     body.dark-mode .shortcuts-section .shortcuts-title {
-        color: #e88 !important;
+        color: rgb(238, 136, 136) !important;
+        -webkit-text-fill-color: rgb(238, 136, 136) !important;
     }
     body.dark-mode .shortcuts-btn,
+    body.dark-mode .homepage .shortcuts-btn,
     body.dark-mode .homepage .shortcuts-grid .shortcuts-btn {
         width: 100% !important;
         min-height: 52px !important;
@@ -1100,6 +1297,7 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         font-weight: 600 !important;
         background: rgba(220, 80, 80, 0.15) !important;
         color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
         border: 2px solid #fcc !important;
         border-radius: 12px !important;
     }
@@ -1180,12 +1378,14 @@ body.dark-mode.homepage .home-drose-entry__chevron {
         color: var(--text-secondary) !important;
     }
     body.dark-mode.homepage .shortcuts-section .shortcuts-title {
-        color: #e88 !important;
+        color: rgb(238, 136, 136) !important;
+        -webkit-text-fill-color: rgb(238, 136, 136) !important;
     }
     body.dark-mode.homepage .shortcuts-btn,
     body.dark-mode.homepage .shortcuts-grid .shortcuts-btn {
         background: rgba(220, 80, 80, 0.15) !important;
         color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
         border: 2px solid #fcc !important;
     }
 
@@ -1296,6 +1496,15 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     }
     body.dark-mode.homepage .tool-grid.tool-search-match {
         animation: homepage-tool-search-border-flash-dark 1s ease-in-out 3;
+    }
+}
+
+/* Mobile dark: titolo Quick access #ee8888 — ultima parola sul cascade */
+@media (max-width: 768px) {
+    body.dark-mode.homepage .site-main .container #shortcuts-section > h2.shortcuts-title,
+    html.gadly-has-shortcuts body.dark-mode.homepage .container #shortcuts-section > h2.shortcuts-title {
+        color: #ee8888 !important;
+        -webkit-text-fill-color: #ee8888 !important;
     }
 }
 

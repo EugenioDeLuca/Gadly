@@ -443,7 +443,7 @@
 
 .qr-select-menu li {
     padding: 10px 14px;
-    font-size: 0.9rem;
+    font-size: 15.2px;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -520,11 +520,13 @@
     min-height: 44px;
 }
 
-.reset-qr-btn:hover {
-    border-color: #e8a5a5;
-    background: #ffe6e6;
-    color: #c82333;
-    -webkit-text-fill-color: #c82333;
+@media (hover: hover) and (pointer: fine) {
+    .reset-qr-btn:hover {
+        border-color: #e8a5a5;
+        background: #ffe6e6;
+        color: #c82333;
+        -webkit-text-fill-color: #c82333;
+    }
 }
 
 .qr-controls textarea:focus {
@@ -1437,7 +1439,7 @@ body.dark-mode.qr-generator #qr-output {
     }
 
     .qr-actions #generate-qr:not(:active):not(.tap-active),
-    .qr-actions .reset-qr-btn:not(:active):not(.tap-active) {
+    .qr-actions .reset-qr-btn:not(.tap-active) {
         transition: transform 0.05s ease-out !important;
         -webkit-tap-highlight-color: transparent !important;
         touch-action: manipulation !important;
@@ -1594,18 +1596,19 @@ body.dark-mode.qr-generator #qr-output {
         border-radius: 12px !important;
     }
 
+    /* Mobile light: Reset — default neutro; rosso errore ~2s (qr-reset-flash) */
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn,
     body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:hover,
     body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:focus,
     body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:focus-visible,
-    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:active,
-    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.tap-active {
-        background: #ffe6e6 !important;
-        background-color: #ffe6e6 !important;
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:active {
+        background: #fff !important;
+        background-color: #fff !important;
         background-image: none !important;
-        border: 2px solid #e8a5a5 !important;
-        border-color: #e8a5a5 !important;
-        color: #c82333 !important;
-        -webkit-text-fill-color: #c82333 !important;
+        border: 2px solid #ddd !important;
+        border-color: #ddd !important;
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
         font-weight: 600 !important;
         box-shadow: none !important;
         filter: none !important;
@@ -1614,9 +1617,25 @@ body.dark-mode.qr-generator #qr-output {
         border-radius: 12px !important;
     }
 
-    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:not(:hover):not(:active):not(.tap-active) {
-        color: #000 !important;
-        -webkit-text-fill-color: #000 !important;
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash:hover,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash:focus,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash:focus-visible,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash:active,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.qr-reset-flash.tap-active {
+        background: #fff5f5 !important;
+        background-color: #fff5f5 !important;
+        background-image: none !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #c00 !important;
+        -webkit-text-fill-color: #c00 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
     }
 
     body.qr-generator:not(.dark-mode) .site-main .container .qr-options .qr-custom-select .qr-select-trigger,
@@ -1731,23 +1750,40 @@ body.dark-mode.qr-generator #qr-output {
         border-radius: 12px !important;
     }
 
-    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:not(:hover):not(:active):not(.tap-active) {
-        color: #000 !important;
-        -webkit-text-fill-color: #000 !important;
-    }
-
+    /* Mobile dark: Reset — default neutro; rosso errore ~2s (qr-reset-flash) */
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn,
     body.dark-mode.qr-generator .site-main .container .reset-qr-btn:hover,
     body.dark-mode.qr-generator .site-main .container .reset-qr-btn:focus,
     body.dark-mode.qr-generator .site-main .container .reset-qr-btn:focus-visible,
-    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:active,
-    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.tap-active {
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:active {
+        background: #fff !important;
+        background-color: #fff !important;
+        background-image: none !important;
+        border: 2px solid #ddd !important;
+        border-color: #ddd !important;
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        filter: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 12px !important;
+    }
+
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash:hover,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash:focus,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash:focus-visible,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash:active,
+    body.dark-mode.qr-generator .site-main .container .reset-qr-btn.qr-reset-flash.tap-active {
         background: rgba(220, 80, 80, 0.15) !important;
         background-color: rgba(220, 80, 80, 0.15) !important;
         background-image: none !important;
-        border: 2px solid #e8a5a5 !important;
-        border-color: #e8a5a5 !important;
-        color: #c82333 !important;
-        -webkit-text-fill-color: #c82333 !important;
+        border: 2px solid #fcc !important;
+        border-color: #fcc !important;
+        color: #e88 !important;
+        -webkit-text-fill-color: #e88 !important;
         font-weight: 600 !important;
         box-shadow: none !important;
         filter: none !important;
@@ -1925,22 +1961,19 @@ body.dark-mode.qr-generator #qr-output {
     }
 
     body.qr-generator .site-main .container #generate-qr:not(:active):not(.tap-active),
-    body.qr-generator .site-main .container .reset-qr-btn:not(:active):not(.tap-active) {
+    body.qr-generator .site-main .container .reset-qr-btn:not(.tap-active) {
         transition: transform 0.05s ease-out !important;
         transform: scale(1) !important;
     }
 
     body.qr-generator .site-main .container #generate-qr:active,
     body.qr-generator .site-main .container #generate-qr.tap-active,
-    body.qr-generator .site-main .container .reset-qr-btn:active,
-    body.qr-generator .site-main .container .reset-qr-btn.tap-active,
     body.qr-generator:not(.dark-mode) .site-main .container #generate-qr:active,
     body.qr-generator:not(.dark-mode) .site-main .container #generate-qr.tap-active,
-    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn:active,
-    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.tap-active,
     body.dark-mode.qr-generator .site-main .container #generate-qr:active,
     body.dark-mode.qr-generator .site-main .container #generate-qr.tap-active,
-    body.dark-mode.qr-generator .site-main .container .reset-qr-btn:active,
+    body.qr-generator .site-main .container .reset-qr-btn.tap-active,
+    body.qr-generator:not(.dark-mode) .site-main .container .reset-qr-btn.tap-active,
     body.dark-mode.qr-generator .site-main .container .reset-qr-btn.tap-active {
         transition: transform 0.05s ease-out !important;
         transform: scale(0.96) !important;
