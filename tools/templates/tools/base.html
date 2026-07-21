@@ -2269,7 +2269,12 @@
             }
 
             function setNavOpenChrome() {
-                /* Allinea theme-color + body al nero scrim: niente striscia bianca/blu dietro Safari */
+                /*
+                 * Solo chrome IN BASSO → nero (niente striscia bianca/blu dietro Safari).
+                 * Status bar / header restano sul colore tema (niente fascia nera in cima).
+                 */
+                var isDark = document.body.classList.contains('dark-mode');
+                var headerColor = isDark ? '#0f0f23' : '#ffffff';
                 var meta = document.getElementById('gadly-theme-color');
                 if (meta) meta.setAttribute('content', '#000000');
                 var root = document.documentElement;
@@ -2279,8 +2284,22 @@
                     body.style.setProperty('background-color', '#000000', 'important');
                     body.style.setProperty('background-image', 'none', 'important');
                 }
+                var header = document.querySelector('.site-header');
+                if (header) {
+                    header.style.setProperty('background', headerColor, 'important');
+                    header.style.setProperty('background-color', headerColor, 'important');
+                    header.style.setProperty('background-image', 'none', 'important');
+                }
                 var topTint = document.getElementById('gadly-safari-tint');
-                if (topTint) topTint.style.backgroundColor = '#000000';
+                if (topTint) {
+                    /* Non far comparire una fascia nera sotto la status bar */
+                    topTint.style.display = 'none';
+                }
+                var nav = document.getElementById('header-nav');
+                if (nav) {
+                    nav.style.setProperty('background', headerColor, 'important');
+                    nav.style.setProperty('background-color', headerColor, 'important');
+                }
                 ensureSafariBottomTint();
                 try {
                     var y = window.scrollY || window.pageYOffset || 0;
