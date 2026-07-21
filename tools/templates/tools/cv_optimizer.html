@@ -1433,7 +1433,7 @@ body.cv-optimizer:not(.dark-mode) .site-main .container .tool-desc {
   <h1>{% trans "CV Optimizer" %}</h1>
   <p class="tool-desc">{% trans "Upload your CV and get practical improvement tips." %}</p>
   <p class="tool-help">
-    <a href="{% url 'help_cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Ottimizza CV{% else %}Quick CV Optimizer guide{% endif %}</a>
+    <a href="{% url 'help_cv_optimizer' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida ottimizza{% else %}Quick CV Optimizer guide{% endif %}</a>
   </p>
 
   <div class="form-group">

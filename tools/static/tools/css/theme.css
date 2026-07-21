@@ -185,8 +185,7 @@ body {
         background: #0f0f23 !important;
     }
     body.dark-mode:not(.warm-tone) .site-header,
-    body.dark-mode:not(.warm-tone) .header-nav,
-    body.dark-mode:not(.warm-tone) .header-nav.is-open {
+    body.dark-mode:not(.warm-tone) .header-nav {
         background: #0f0f23 !important;
         background-color: #0f0f23 !important;
         backdrop-filter: none !important;
@@ -194,6 +193,16 @@ body {
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+    }
+    body.dark-mode:not(.warm-tone) .header-nav.is-open {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 0 14px 14px !important;
+        overflow: hidden !important;
     }
     /* Dark: bottone hamburger senza shadow quando menu aperto */
     body.dark-mode.nav-open:not(.nav-closing) .header-menu-btn,
@@ -502,8 +511,7 @@ body.dark-mode.warm-tone {
 /* Mobile ≤480px: dark mode (no warm tone) header = menu */
 @media (max-width: 480px) {
     body.dark-mode:not(.warm-tone) .site-header,
-    body.dark-mode:not(.warm-tone) .header-nav,
-    body.dark-mode:not(.warm-tone) .header-nav.is-open {
+    body.dark-mode:not(.warm-tone) .header-nav {
         background: #0f0f23 !important;
         background-color: #0f0f23 !important;
         backdrop-filter: none !important;
@@ -511,6 +519,16 @@ body.dark-mode.warm-tone {
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+    }
+    body.dark-mode:not(.warm-tone) .header-nav.is-open {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 0 14px 14px !important;
+        overflow: hidden !important;
     }
 }
 

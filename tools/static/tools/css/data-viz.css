@@ -1110,6 +1110,10 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.data-viz .site-main .data-viz > .container > .tool-help a:visited {
         display: inline-block !important;
         white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        width: max-content !important;
+        max-width: none !important;
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
         background: none !important;

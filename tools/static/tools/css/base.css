@@ -874,6 +874,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         padding: 10px 28px 12px;
         box-shadow: none;
         border: none;
+        border-radius: 0 0 14px 14px;
         overscroll-behavior: none;
         -webkit-overflow-scrolling: auto;
         touch-action: pan-x pan-y;
@@ -1002,27 +1003,11 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         background: #ffffff !important;
         background-color: #ffffff !important;
     }
-    /* Copre safe-area / rubber-band Safari in basso (niente gradiente blu del body) */
-    html.nav-open::after {
-        content: "";
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: max(120px, env(safe-area-inset-bottom, 0px));
-        z-index: 238;
-        pointer-events: none;
-    }
-    html.nav-open:has(body.dark-mode)::after {
-        background: #0f0f23;
-    }
-    html.nav-open:has(body:not(.dark-mode))::after {
-        background: #ffffff;
-    }
 
     html.nav-open body {
         overflow: hidden !important;
         position: fixed !important;
+        z-index: 1;
         width: 100% !important;
         left: 0 !important;
         right: 0 !important;
@@ -1055,6 +1040,13 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         content: "";
         position: fixed;
         inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
         background: rgba(0, 0, 0, 0.55);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
@@ -1396,18 +1388,24 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        text-align: center;
     }
     .site-main .container .tool-help::-webkit-scrollbar {
         display: none;
         width: 0;
         height: 0;
     }
-    .site-main .container .tool-help a {
+    .site-main .container .tool-help a,
+    .site-main .container .tool-help a:visited {
         white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
         display: inline-block !important;
-        font-size: clamp(0.78rem, 3.4vw, 1rem) !important;
-        line-height: 1.35 !important;
+        width: max-content !important;
         max-width: none !important;
+        font-size: 1rem !important;
+        line-height: 1.35 !important;
     }
     body.text-tool .site-main .container .form-group label,
     body.text-tool .site-main .container .diff-column label {

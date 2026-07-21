@@ -2739,7 +2739,7 @@ msgstr "Inserisci un'espressione cron per ottenere una descrizione leggibile."
 #: .\tools\templates\tools\help_cron_explainer.html:5
 #: .\tools\templates\tools\help_cron_explainer.html:16
 msgid "Cron Explainer help"
-msgstr "Guida Cron Explainer"
+msgstr "Guida cron"
 
 #: .\tools\templates\tools\cron_explainer.html:27
 msgid "Cron expression (5 or 6 fields)"
@@ -2935,7 +2935,7 @@ msgstr ""
 
 #: .\tools\templates\tools\data_viz.html:215
 msgid "Data Visualizer help"
-msgstr "Guida Data Visualizer"
+msgstr "Guida grafici"
 
 #: .\tools\templates\tools\data_viz.html:219
 msgid "Examples"
@@ -3182,7 +3182,7 @@ msgstr ""
 
 #: .\tools\templates\tools\diff_checker.html:330
 msgid "How text diffing works and what the colors mean"
-msgstr "Come funziona il confronto testi e cosa indicano i colori"
+msgstr "Guida confronto"
 
 #: .\tools\templates\tools\diff_checker.html:335
 msgid "Text 1 (original)"
@@ -6386,7 +6386,7 @@ msgstr ""
 
 #: .\tools\templates\tools\json_formatter.html:228
 msgid "What is JSON and how to fix common errors"
-msgstr "Cosa è JSON e come correggere gli errori comuni"
+msgstr "Guida JSON"
 
 #: .\tools\templates\tools\json_formatter.html:232
 msgid "JSON input"
@@ -6527,7 +6527,7 @@ msgstr ""
 
 #: .\tools\templates\tools\password_gen.html:20
 msgid "Password Generator help: length, options, and result field"
-msgstr "Lunghezza, opzioni obbligatorie e campo risultato"
+msgstr "Guida password"
 
 #: .\tools\templates\tools\password_gen.html:23
 msgid "Password length"
@@ -7138,7 +7138,7 @@ msgstr ""
 
 #: .\tools\templates\tools\robots_txt_generator.html:17
 msgid "Learn more about robots.txt and how search engines use it"
-msgstr "Scopri di più su \"Robots.txt\" e su come lo usano i motori di ricerca"
+msgstr "Guida robots.txt"
 
 #: .\tools\templates\tools\robots_txt_generator.html:22
 msgid "Import an existing file"
@@ -8051,7 +8051,7 @@ msgstr ""
 
 #: .\tools\templates\tools\word_counter.html:22
 msgid "Tips for preparing text for publishing or SEO"
-msgstr "Consigli per preparare testi per pubblicazione o SEO"
+msgstr "Guida testi e SEO"
 
 #: .\tools\templates\tools\word_counter.html:28
 msgid "Enter your text here..."

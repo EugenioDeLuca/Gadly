@@ -1354,7 +1354,7 @@ body.dark-mode.cover-letter-generator .site-main .container #cl-copy.copied:acti
   <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Lettera di presentazione{% else %}{% trans "Cover Letter Generator" %}{% endif %}</h1>
   <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Genera una lettera di presentazione personalizzata per la tua candidatura.{% else %}{% trans "Generate a tailored cover letter for your application." %}{% endif %}</p>
   <p class="tool-help">
-    <a href="{% url 'help_cover_letter' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Lettera di presentazione{% else %}Quick Cover Letter guide{% endif %}</a>
+    <a href="{% url 'help_cover_letter' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida lettera{% else %}Quick Cover Letter guide{% endif %}</a>
   </p>
 
   <div class="text-tool-grid">

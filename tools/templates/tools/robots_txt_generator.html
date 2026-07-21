@@ -14,7 +14,7 @@
     <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Generatore Robots.txt{% else %}{% trans "Robots.txt Generator" %}{% endif %}</h1>
     <p class="tool-desc">{% if LANGUAGE_CODE|slice:":2" == "it" %}Apri un file robots.txt dal tuo PC o scaricalo da un sito web, modifica le regole e genera il file finale.{% else %}{% trans "Open a robots.txt file from your computer or fetch it from a website, edit the rules, and build the final file." %}{% endif %}</p>
     <p class="tool-help">
-        <a href="{% url 'help_robots_txt' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Scopri di più su robots.txt e su come lo usano i motori di ricerca{% else %}{% trans "Learn more about robots.txt and how search engines use it" %}{% endif %}</a>
+        <a href="{% url 'help_robots_txt' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida robots.txt{% else %}{% trans "Learn more about robots.txt and how search engines use it" %}{% endif %}</a>
     </p>
 
     <section class="robots-import" aria-labelledby="robots-import-heading">

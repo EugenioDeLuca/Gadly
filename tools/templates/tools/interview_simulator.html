@@ -1284,7 +1284,7 @@ body.dark-mode.interview-simulator .interview-avatar--recruiter-female {
   <h1>{% if LANGUAGE_CODE|slice:":2" == "it" %}Simulatore colloquio{% else %}{% trans "Interview Simulator" %}{% endif %}</h1>
   <p class="tool-desc">{% trans "Answer like in a real interview: the recruiter asks, you reply in text, then you get a suggestion to improve your answer. Each session includes 50 different questions." %}</p>
   <p class="tool-help">
-    <a href="{% url 'help_interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Simulatore colloquio{% else %}Quick Interview Simulator guide{% endif %}</a>
+    <a href="{% url 'help_interview_simulator' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida colloquio{% else %}Quick Interview Simulator guide{% endif %}</a>
   </p>
 
   <div id="interview-recruiter-panel" class="interview-recruiter-panel">

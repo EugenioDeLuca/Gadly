@@ -292,6 +292,22 @@ body.word-counter.help-page .home-link-wrap {
     .word-counter .tool-help {
         margin-bottom: 20px;
         font-size: 1rem;
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .word-counter .tool-help::-webkit-scrollbar {
+        display: none;
+    }
+    .word-counter .tool-help a,
+    .word-counter .tool-help a:visited {
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        display: inline-block !important;
+        width: max-content !important;
+        max-width: none !important;
+        font-size: 1rem !important;
     }
     .word-counter textarea {
         min-height: 280px;

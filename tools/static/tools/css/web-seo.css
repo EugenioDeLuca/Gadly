@@ -757,6 +757,13 @@ body.dark-mode.web-seo.robots-txt-gen .robots-presets .preset-btn:focus-visible 
     body.web-seo.robots-txt-gen .site-main .container .tool-help a:visited {
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        display: inline-block !important;
+        width: max-content !important;
+        max-width: none !important;
+        font-size: 1rem !important;
         text-decoration: none !important;
     }
 

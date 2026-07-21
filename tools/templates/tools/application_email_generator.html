@@ -325,7 +325,7 @@ body.application-email-generator:not(.dark-mode) .site-main .container .tool-des
   <h1>{% trans "Application Email Generator" %}</h1>
   <p class="tool-desc">{% trans "Generate a clear email for job applications." %}</p>
   <p class="tool-help">
-    <a href="{% url 'help_application_email' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida rapida Email candidatura{% else %}Quick Application Email guide{% endif %}</a>
+    <a href="{% url 'help_application_email' %}">{% if LANGUAGE_CODE|slice:":2" == "it" %}Guida email{% else %}Quick Application Email guide{% endif %}</a>
   </p>
 
   <div class="form-group">

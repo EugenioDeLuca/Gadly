@@ -1474,8 +1474,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=180">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=108">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=183">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=109">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2041,7 +2041,7 @@
                 {% if user.is_authenticated and user.is_staff %}
                 <a href="{% url 'accounts_home' %}" class="header-link">Accounts</a>
                 {% endif %}
-                <a href="{% url 'hidden_tools' %}" class="header-link header-link-mobile-only header-link-bin-row" id="header-nav-bin">Bin</a>
+                <a href="{% if is_drose_site %}{% url 'drose_quote_staff_trash' %}{% else %}{% url 'hidden_tools' %}{% endif %}" class="header-link header-link-mobile-only header-link-bin-row" id="header-nav-bin">Bin</a>
                 {% if not user.is_authenticated %}
                 <div class="header-auth-wrap">
                     <a href="{% auth_link 'login' %}" class="header-link">Login</a>
