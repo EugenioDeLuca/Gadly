@@ -9,6 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
     <script>
     (function () {
         window.gadlySyncViewportChrome = function (isDark) {
@@ -16,126 +17,101 @@
             var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
             var root = document.documentElement;
             var body = document.body;
+
             root.dataset.theme = isDark ? 'dark' : 'light';
-            root.style.backgroundColor = color;
-            if (mobile) {
-                root.style.colorScheme = isDark ? 'dark' : 'light';
-            } else {
-                root.style.removeProperty('color-scheme');
-            }
+            /* Non usare color-scheme sul documento: su mobile tiene la chrome del browser “incollata” al dark. */
+            root.style.removeProperty('color-scheme');
 
-            function ensureTintBar() {
-                var bar = document.getElementById('gadly-viewport-chrome');
-                if (!bar) {
-                    bar = document.createElement('div');
-                    bar.id = 'gadly-viewport-chrome';
-                    bar.setAttribute('aria-hidden', 'true');
-                    var parent = body || document.documentElement;
-                    if (parent.firstChild) parent.insertBefore(bar, parent.firstChild);
-                    else parent.appendChild(bar);
-                }
-                return bar;
-            }
-
-            function paintSurfaces(c) {
+            function paint(c) {
                 root.style.setProperty('background-color', c, 'important');
-                if (body) {
-                    if (mobile) {
-                        body.style.setProperty('background-color', c, 'important');
-                        body.style.setProperty('background', c, 'important');
-                    } else {
-                        body.style.removeProperty('background-color');
-                        body.style.removeProperty('background');
-                    }
+                if (body && mobile) {
+                    body.style.setProperty('background-color', c, 'important');
+                    body.style.setProperty('background', c, 'important');
+                } else if (body) {
+                    body.style.removeProperty('background-color');
+                    body.style.removeProperty('background');
                 }
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (mobile) {
                         header.style.setProperty('background', c, 'important');
                         header.style.setProperty('background-color', c, 'important');
+                        header.style.setProperty('backdrop-filter', 'none', 'important');
+                        header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                     } else {
                         header.style.removeProperty('background');
                         header.style.removeProperty('background-color');
+                        header.style.removeProperty('backdrop-filter');
+                        header.style.removeProperty('-webkit-backdrop-filter');
                     }
                 }
-                var bar = ensureTintBar();
+                var bar = document.getElementById('gadly-viewport-chrome');
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'gadly-viewport-chrome';
+                    bar.setAttribute('aria-hidden', 'true');
+                    var parent = body || root;
+                    if (parent.firstChild) parent.insertBefore(bar, parent.firstChild);
+                    else parent.appendChild(bar);
+                }
                 if (mobile) {
                     bar.style.display = 'block';
                     bar.style.setProperty('background', c, 'important');
                     bar.style.setProperty('background-color', c, 'important');
                 } else {
                     bar.style.display = 'none';
-                    bar.style.removeProperty('background');
-                    bar.style.removeProperty('background-color');
                 }
             }
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
-                var meta = document.getElementById('gadly-theme-color');
-                if (!meta) {
-                    meta = document.querySelector('meta[name="theme-color"]');
-                }
-                if (!meta) {
-                    meta = document.createElement('meta');
-                    meta.setAttribute('name', 'theme-color');
-                    meta.id = 'gadly-theme-color';
-                    if (head) head.insertBefore(meta, head.firstChild);
-                }
-                /* Aggiorna in place (Chrome) + media light/dark dedicati */
-                meta.setAttribute('content', c);
-                meta.removeAttribute('media');
-
-                document.querySelectorAll('meta[name="theme-color"][data-gadly-scheme]').forEach(function (el) {
-                    el.parentNode && el.parentNode.removeChild(el);
+                /* Una sola meta theme-color: le varianti media confondono Chrome/Safari al toggle. */
+                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                    if (el.id !== 'gadly-theme-color') {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    }
                 });
-                if (mobile && head) {
-                    var lightMeta = document.createElement('meta');
-                    lightMeta.setAttribute('name', 'theme-color');
-                    lightMeta.setAttribute('media', '(prefers-color-scheme: light)');
-                    lightMeta.setAttribute('data-gadly-scheme', '1');
-                    lightMeta.setAttribute('content', isDark ? '#0f0f23' : '#ffffff');
-                    head.appendChild(lightMeta);
-                    var darkMeta = document.createElement('meta');
-                    darkMeta.setAttribute('name', 'theme-color');
-                    darkMeta.setAttribute('media', '(prefers-color-scheme: dark)');
-                    darkMeta.setAttribute('data-gadly-scheme', '1');
-                    darkMeta.setAttribute('content', isDark ? '#0f0f23' : '#ffffff');
-                    head.appendChild(darkMeta);
+                var meta = document.getElementById('gadly-theme-color');
+                if (!meta && head) {
+                    meta = document.createElement('meta');
+                    meta.id = 'gadly-theme-color';
+                    meta.setAttribute('name', 'theme-color');
+                    head.insertBefore(meta, head.firstChild);
                 }
-
-                var apple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+                if (meta) {
+                    /* Vuoto → colore: forza Chrome Android a riprendere il valore. */
+                    meta.setAttribute('content', '');
+                    meta.setAttribute('content', c);
+                }
+                var apple = document.getElementById('gadly-apple-status-bar') ||
+                    document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
                 if (!apple && head) {
                     apple = document.createElement('meta');
+                    apple.id = 'gadly-apple-status-bar';
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
                 if (apple) {
-                    apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
+                    /* Sempre translucent su mobile: la status bar lascia vedere header/html sotto. */
+                    apple.setAttribute('content', mobile ? 'black-translucent' : (isDark ? 'black-translucent' : 'default'));
                 }
             }
 
-            paintSurfaces(color);
+            paint(color);
             writeThemeColor(color);
 
-            /* Safari/Chrome: micro-scroll + re-paint forzano il re-sample della status bar */
             if (mobile) {
                 requestAnimationFrame(function () {
-                    paintSurfaces(color);
+                    paint(color);
                     writeThemeColor(color);
-                    try {
-                        var y = window.scrollY || 0;
-                        window.scrollTo(0, y + 1);
-                        window.scrollTo(0, y);
-                    } catch (eScroll) {}
                     setTimeout(function () {
-                        paintSurfaces(color);
+                        paint(color);
                         writeThemeColor(color);
-                    }, 50);
+                    }, 30);
                     setTimeout(function () {
-                        paintSurfaces(color);
+                        paint(color);
                         writeThemeColor(color);
-                    }, 180);
+                    }, 150);
                 });
             }
         };
@@ -147,6 +123,7 @@
     })();
     </script>
     <style id="gadly-viewport-chrome-style">
+    /* Striscia sotto la status bar (safe-area): il browser campiona questo colore */
     #gadly-viewport-chrome {
         display: none;
         position: fixed;
@@ -154,9 +131,9 @@
         left: 0;
         right: 0;
         width: 100%;
-        height: max(4px, env(safe-area-inset-top, 0px));
-        min-height: 4px;
-        z-index: 2147483646;
+        height: env(safe-area-inset-top, 0px);
+        min-height: env(safe-area-inset-top, 0px);
+        z-index: 230;
         pointer-events: none;
         border: 0;
         margin: 0;
@@ -165,6 +142,28 @@
     @media (max-width: 768px) {
         #gadly-viewport-chrome {
             display: block;
+            /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
+            min-height: 1px;
+        }
+        .site-header {
+            height: calc(82px + env(safe-area-inset-top, 0px)) !important;
+            min-height: calc(82px + env(safe-area-inset-top, 0px)) !important;
+            max-height: none !important;
+            padding-top: env(safe-area-inset-top, 0px) !important;
+            box-sizing: border-box !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        body:not(.dark-mode) .site-header {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+        body.dark-mode .site-header {
+            background: #0f0f23 !important;
+            background-color: #0f0f23 !important;
+        }
+        :root {
+            --site-header-height: calc(82px + env(safe-area-inset-top, 0px));
         }
     }
     </style>
@@ -464,6 +463,15 @@
             if (!p) p = "/";
             sessionStorage.removeItem(KEY_PREFIX + p);
             sessionStorage.removeItem(KEY_PREFIX + p + "/");
+            /* Mobile reload/pull-to-refresh: torna sempre in cima. */
+            try {
+                var navTop = performance.getEntriesByType("navigation")[0];
+                var mobileTop = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+                if (mobileTop && navTop && navTop.type === "reload") {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                }
+            } catch (eHomeTop) { /* ignore */ }
 
             // Blocca l'altezza del contenitore al valore dell'ultima visita:
             // al refresh (pagina alta, tutti i tool) non si ritira e poi ricresce.
@@ -631,6 +639,18 @@
                 isReloadCl = !!(navCl && navCl.type === "reload");
             } catch (eCl0) { /* ignore */ }
             if (isReloadCl) {
+                var isMobileCl = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+                /* Mobile pull-to-refresh: sempre in cima, niente restore scroll. */
+                if (isMobileCl) {
+                    try {
+                        sessionStorage.removeItem("gadly-page-scroll-y-v1:" + p);
+                        sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p);
+                    } catch (eClClear) { /* ignore */ }
+                    try {
+                        window.scrollTo(0, 0);
+                        document.documentElement.scrollTop = 0;
+                    } catch (eClTop) { /* ignore */ }
+                } else {
                 var scrollKeyCl = "gadly-page-scroll-y-v1:" + p;
                 var legacyKeyCl = "gadly-tool-scroll-y-v1:" + p;
                 var yCl = 0;
@@ -663,6 +683,7 @@
                         } catch (ePinCl) { /* ignore */ }
                         requestAnimationFrame(pinClScroll);
                     })();
+                }
                 }
             }
         }
@@ -743,8 +764,49 @@
             root.scrollTop = 0;
         }
 
+        function isMobileViewport() {
+            return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
+        }
+
+        function isReloadNavigation() {
+            try {
+                var nav = performance.getEntriesByType("navigation")[0];
+                return !!(nav && nav.type === "reload");
+            } catch (eRel) {
+                return false;
+            }
+        }
+
+        function forceScrollTop() {
+            try {
+                if ("scrollRestoration" in history) {
+                    history.scrollRestoration = "manual";
+                }
+            } catch (eSr) { /* ignore */ }
+            try {
+                window.scrollTo(0, 0);
+                root.scrollTop = 0;
+                if (document.body) document.body.scrollTop = 0;
+            } catch (eTop) { /* ignore */ }
+        }
+
+        /* Mobile pull-to-refresh / reload: sempre in cima, cancella scroll salvato. */
+        if (isMobileViewport() && isReloadNavigation()) {
+            clearPathScrollStorage(path);
+            try {
+                sessionStorage.removeItem(LEGACY_TOOL_KEY_PREFIX + normalizePath(path));
+            } catch (eLeg) { /* ignore */ }
+            forceScrollTop();
+            root.classList.remove("gadly-scroll-restore-pending");
+            root.classList.remove("gadly-cl-scroll-pending");
+            root.style.removeProperty("--gadly-restore-y");
+            root.style.removeProperty("--gadly-cl-restore-y");
+            root.style.removeProperty("min-height");
+        }
+
         function persistScroll(y) {
             if (isHomeScrollRestorePath()) return;
+            if (isMobileViewport() && isReloadNavigation()) return;
             try {
                 var rounded = Math.max(0, Math.round(y));
                 sessionStorage.setItem(scrollKey, String(rounded));
@@ -873,6 +935,8 @@
 
         function shouldRestoreScrollOnLoad() {
             try {
+                /* Su telefono, dopo pull-to-refresh la pagina deve restare in cima. */
+                if (isMobileViewport()) return false;
                 var nav = performance.getEntriesByType("navigation")[0];
                 return !!(nav && nav.type === "reload");
             } catch (e) {
@@ -1026,6 +1090,15 @@
         }
 
         restoreCommitted = true;
+        if (isMobileViewport() && isReloadNavigation()) {
+            forceScrollTop();
+            requestAnimationFrame(function () {
+                forceScrollTop();
+                setTimeout(forceScrollTop, 50);
+                setTimeout(forceScrollTop, 200);
+            });
+            window.addEventListener("load", forceScrollTop, { once: true });
+        }
         function maybeNotifyScrollRestoreSettled() {
             if (isCoverLetterScrollHold()) return;
             notifyScrollRestoreSettled();
@@ -1048,6 +1121,11 @@
         });
 
         window.addEventListener("pageshow", function(ev) {
+            if (isMobileViewport() && (ev.persisted || isReloadNavigation())) {
+                clearPathScrollStorage(path);
+                forceScrollTop();
+                return;
+            }
             if (!ev.persisted) return;
             var saved = readSavedScroll();
             if (saved < 1) return;
@@ -1189,7 +1267,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=176">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=177">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=107">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -1846,7 +1924,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=19"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=20"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}

@@ -7,14 +7,14 @@
 <meta name="description" content="{% trans 'Live Markdown preview with HTML rendering—headings, lists, links, code, bold, and italics. Handy for READMEs, articles, and technical notes; no file upload to our servers.' %}">
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520k">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520m">
 <style>
 .text-tool.markdown-preview .container { max-width: 900px; }
 .text-tool.markdown-preview .tool-desc { color: #555; line-height: 1.55; }
 .text-tool.markdown-preview .preview-layout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 0; align-items: flex-start; }
 .text-tool.markdown-preview .preview-panel { flex: 1; min-width: 280px; }
-/* Desktop: una sola riga per i due box — stessa altezza senza JS (niente salto al refresh). */
-@media (min-width: 481px) {
+/* Desktop only (≥769px): due colonne. Su mobile/tablet resta colonna singola a tutta larghezza. */
+@media (min-width: 769px) {
     .text-tool.markdown-preview .preview-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -54,6 +54,32 @@
         grid-column: 2;
         grid-row: 3;
         margin-top: 0;
+    }
+}
+@media (max-width: 768px) {
+    .text-tool.markdown-preview .preview-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+    .text-tool.markdown-preview .preview-panel {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: none !important;
+    }
+    .text-tool.markdown-preview #md-input,
+    .text-tool.markdown-preview .preview-output,
+    .text-tool.markdown-preview #md-preview {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
     }
 }
 .text-tool.markdown-preview .preview-panel label,
@@ -149,7 +175,7 @@ body.dark-mode.markdown-preview .preview-panel textarea { color: #1a1a2e !import
 .text-tool.markdown-preview .preview-output p { margin: 0.5em 0; }
 .text-tool.markdown-preview .preview-output .placeholder { color: #999; }
 /* Dopo le regole comuni su #md-input (height: auto): su desktop il grid deve vincere. */
-@media (min-width: 481px) {
+@media (min-width: 769px) {
     .text-tool.markdown-preview #md-input {
         height: 100%;
     }
@@ -207,16 +233,31 @@ Write **bold** or *italic* text.
     var input = document.getElementById('md-input');
     var preview = document.getElementById('md-preview');
     var copyBtn = document.getElementById('btn-copy');
-    function isMobile() { return window.innerWidth <= 480; }
+    function isMobile() { return window.innerWidth <= 768; }
 
     function applyMobilePanelHeights() {
-        if (!isMobile()) return;
-        var h = 250;
-        input.style.height = h + 'px';
-        preview.style.removeProperty('height');
-        preview.style.removeProperty('min-height');
-        preview.style.minHeight = h + 'px';
-        preview.style.height = h + 'px';
+        if (!isMobile()) {
+            input.style.removeProperty('height');
+            input.style.removeProperty('width');
+            preview.style.removeProperty('height');
+            preview.style.removeProperty('min-height');
+            preview.style.removeProperty('width');
+            preview.style.removeProperty('max-width');
+            preview.style.removeProperty('border-radius');
+            preview.style.removeProperty('display');
+            preview.style.removeProperty('box-sizing');
+            return;
+        }
+        var h = window.innerWidth <= 480 ? 250 : 280;
+        input.style.setProperty('width', '100%', 'important');
+        input.style.setProperty('height', h + 'px', 'important');
+        preview.style.setProperty('display', 'block', 'important');
+        preview.style.setProperty('width', '100%', 'important');
+        preview.style.setProperty('max-width', '100%', 'important');
+        preview.style.setProperty('box-sizing', 'border-box', 'important');
+        preview.style.setProperty('border-radius', '12px', 'important');
+        preview.style.setProperty('min-height', h + 'px', 'important');
+        preview.style.setProperty('height', h + 'px', 'important');
     }
 
     function scheduleSyncAfterLayout() {
@@ -285,23 +326,23 @@ Write **bold** or *italic* text.
     }
 
     function attachMarkdownPreviewUI() {
-        var obs = new MutationObserver(setTextareaColor);
+        var obs = new MutationObserver(function() {
+            setTextareaColor();
+            applyMobilePanelHeights();
+        });
         obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', function() {
             setTextareaColor();
-            if (isMobile()) {
-                applyMobilePanelHeights();
-            } else {
-                input.style.removeProperty('height');
-                preview.style.removeProperty('height');
-                preview.style.removeProperty('min-height');
-            }
+            applyMobilePanelHeights();
             syncScroll();
         });
         input.addEventListener('input', update);
         input.addEventListener('change', update);
         input.addEventListener('scroll', syncScroll);
-        requestAnimationFrame(bootPreview);
+        requestAnimationFrame(function() {
+            bootPreview();
+            requestAnimationFrame(applyMobilePanelHeights);
+        });
     }
 
     if (document.readyState === 'loading') {

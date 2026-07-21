@@ -2071,6 +2071,37 @@ body.text-tool.bio-gen .result-area .caption-pick {
     }
 }
 
+@media (max-width: 768px) {
+    /* Markdown Preview mobile/tablet: anteprima = stessa larghezza della textarea */
+    body.markdown-preview .site-main .container .preview-layout,
+    body.markdown-preview .preview-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+    body.markdown-preview .site-main .container .preview-panel,
+    body.markdown-preview .preview-panel {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: none !important;
+    }
+    body.markdown-preview .site-main .container .preview-panel textarea,
+    body.markdown-preview .site-main .container #md-input,
+    body.markdown-preview .site-main .container .preview-output,
+    body.markdown-preview .site-main .container #md-preview {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+    }
+}
+
 @media (max-width: 480px) {
     /* Markdown Preview: stessa larghezza e colori di Word Counter */
     /* Mobile: “Anteprima” (.preview-title) = stesso colore della label “Markdown” (in dark la label è #b0c4de dal theme) */
