@@ -164,25 +164,6 @@
             /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
             min-height: 1px;
         }
-        /* Menu aperto: copre rubber-band / fascia sopra la barra Safari (striscia blu) */
-        #gadly-nav-bottom-shield {
-            display: none;
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: calc(env(safe-area-inset-bottom, 0px) + 56px);
-            min-height: 56px;
-            z-index: 252;
-            pointer-events: none;
-            border: 0;
-            margin: 0;
-            padding: 0;
-        }
-        body.nav-open #gadly-nav-bottom-shield {
-            display: block;
-        }
         body.nav-open #cookie-banner {
             display: none !important;
             visibility: hidden !important;
@@ -1549,8 +1530,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=190">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=110">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=191">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=111">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2278,38 +2259,16 @@
                 e.preventDefault();
             }
 
-            function ensureNavBottomShield() {
-                var shield = document.getElementById('gadly-nav-bottom-shield');
-                if (!shield) {
-                    shield = document.createElement('div');
-                    shield.id = 'gadly-nav-bottom-shield';
-                    shield.setAttribute('aria-hidden', 'true');
-                    document.body.appendChild(shield);
-                }
-                var isDark = document.body.classList.contains('dark-mode');
-                var color = isDark ? '#0f0f23' : '#ffffff';
-                shield.style.setProperty('background', color, 'important');
-                shield.style.setProperty('background-color', color, 'important');
-            }
-
-            function removeNavBottomShield() {
-                var shield = document.getElementById('gadly-nav-bottom-shield');
-                if (shield) {
-                    shield.style.removeProperty('background');
-                    shield.style.removeProperty('background-color');
-                }
-            }
-
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
+                document.body.style.width = '100%';
                 syncNavThemeColor(true);
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
                 }
-                ensureNavBottomShield();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2320,7 +2279,7 @@
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
-                removeNavBottomShield();
+                document.body.style.removeProperty('width');
                 syncNavThemeColor(false);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });

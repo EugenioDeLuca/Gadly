@@ -1041,14 +1041,10 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
     }
 
-    /* Menu aperto: blocca scroll pagina (html + body, anche iOS) */
+    /* Menu aperto: blocca scroll (solo body fixed; html resta nel flusso → niente gap in basso su iOS) */
     html.nav-open {
         overflow: hidden !important;
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100% !important;
         height: 100% !important;
-        max-height: 100dvh !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
         touch-action: none !important;
@@ -1070,24 +1066,15 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         left: 0 !important;
         right: 0 !important;
         top: var(--nav-scroll-lock-y, 0px) !important;
-        /* Con top negativo (pagina scrollata) copri comunque tutta la viewport */
-        min-height: calc(100vh - var(--nav-scroll-lock-y, 0px)) !important;
-        min-height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
-        height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
-        max-height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
+        /* Altezza naturale del documento: con top negativo copre tutta la viewport senza gap */
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
+    }
+    html.nav-open body:not(.dark-mode) {
         background-image: none !important;
-    }
-    html.nav-open:has(body:not(.dark-mode)) body {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        box-shadow: 0 72px 0 72px #ffffff;
-    }
-    html.nav-open:has(body.dark-mode) body {
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
-        box-shadow: 0 72px 0 72px #0f0f23;
     }
 
     html.nav-open body .site-header,
@@ -1119,27 +1106,6 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         isolation: isolate;
         transform: translateZ(0);
     }
-    /* Rubber-band Safari / safe-area: niente striscia blu sotto il menu */
-    html.nav-open::after {
-        content: "";
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: calc(env(safe-area-inset-bottom, 0px) + 56px);
-        min-height: 56px;
-        z-index: 251;
-        pointer-events: none;
-    }
-    html.nav-open:has(body:not(.dark-mode))::after {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-    }
-    html.nav-open:has(body.dark-mode)::after {
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
-    }
     html.nav-open body .drose-sky-layer {
         visibility: hidden !important;
         pointer-events: none !important;
@@ -1148,13 +1114,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         content: "";
         position: fixed;
         inset: 0;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: -56px;
-        min-height: calc(100vh + 56px);
-        min-height: calc(100dvh + 56px);
-        min-height: calc(-webkit-fill-available + 56px);
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
         background: rgba(0, 0, 0, 0.55);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
