@@ -1042,23 +1042,31 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
 
     /*
-     * Menu aperto: NIENTE position:fixed sul body (crea gap nero/striscia iOS).
-     * Solo overflow + touch lock: pagina ferma, nessun velo nero, chiusura in un passo.
+     * Menu aperto: body fixed (niente scroll sotto) + html nero SOLO dietro
+     * (visibile nel gap iOS sopra la toolbar, non come barra sul body).
+     * Chiusura in un unico passo JS.
      */
     html.nav-open {
         overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
-        height: 100% !important;
-        height: 100dvh !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
 
     html.nav-open body {
         overflow: hidden !important;
+        position: fixed !important;
+        z-index: 1;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: var(--nav-scroll-lock-y, 0px) !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
-        width: 100% !important;
-        /* niente position:fixed / top negativo → niente gap nero iOS */
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
     }
 
     html.nav-open body .site-header,

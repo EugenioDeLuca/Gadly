@@ -78,7 +78,6 @@
                     bar = document.createElement('div');
                     bar.id = 'gadly-viewport-chrome';
                     bar.setAttribute('aria-hidden', 'true');
-                    /* Su html, non sul body: così non si sposta col lock del menu. */
                     if (root.firstChild) root.insertBefore(bar, root.firstChild);
                     else root.appendChild(bar);
                 } else if (bar.parentNode !== root) {
@@ -95,6 +94,26 @@
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
+                var apple = document.getElementById('gadly-apple-status-bar') ||
+                    document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+                if (!apple && head) {
+                    apple = document.createElement('meta');
+                    apple.id = 'gadly-apple-status-bar';
+                    apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+                    head.appendChild(apple);
+                }
+                if (mobile) {
+                    /*
+                     * iOS Safari aggiorna theme-color in ritardo rispetto alla pagina.
+                     * Su mobile lo togliamo: status bar translucida = si vede header/html
+                     * che cambiano nello stesso frame → zero desync.
+                     */
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    });
+                    if (apple) apple.setAttribute('content', 'black-translucent');
+                    return;
+                }
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
                     if (el.id !== 'gadly-theme-color') {
                         el.parentNode && el.parentNode.removeChild(el);
@@ -107,23 +126,10 @@
                     meta.setAttribute('name', 'theme-color');
                     head.insertBefore(meta, head.firstChild);
                 }
-                if (meta) {
-                    meta.setAttribute('content', c);
-                }
-                var apple = document.getElementById('gadly-apple-status-bar') ||
-                    document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-                if (!apple && head) {
-                    apple = document.createElement('meta');
-                    apple.id = 'gadly-apple-status-bar';
-                    apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
-                    head.appendChild(apple);
-                }
-                if (apple) {
-                    apple.setAttribute('content', 'black-translucent');
-                }
+                if (meta) meta.setAttribute('content', c);
+                if (apple) apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
             }
 
-            /* Stesso frame: prima il colore pagina/header, poi theme-color (Safari). */
             paint(color);
             writeThemeColor(color);
             void root.offsetHeight;
@@ -155,13 +161,19 @@
     @media (max-width: 768px) {
         #gadly-viewport-chrome {
             display: block;
-            /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
-            min-height: max(1px, env(safe-area-inset-top, 0px));
+            /* Solo safe-area (dietro orologio), mai sopra il contenuto header */
+            height: env(safe-area-inset-top, 0px);
+            min-height: env(safe-area-inset-top, 0px);
         }
         body.nav-open #cookie-banner {
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
+        }
+        /* Gap sopra la toolbar Safari: nero dietro il body, come lo scrim — niente striscia chiara */
+        html.nav-open {
+            background: #000000 !important;
+            background-color: #000000 !important;
         }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1424,8 +1436,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=200">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=120">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=201">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=121">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2094,7 +2106,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=25"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=26"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2198,13 +2210,19 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
+                var y = Math.abs(navScrollY || window.scrollY || 0);
+                var vv = window.visualViewport;
+                var h = Math.max(
+                    window.innerHeight || 0,
+                    (vv && (vv.height + vv.offsetTop)) || 0,
+                    document.documentElement.clientHeight || 0
+                ) + y + 160;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
-                scrim.style.bottom = '0';
+                scrim.style.bottom = 'auto';
                 scrim.style.width = '100%';
-                scrim.style.height = '100%';
-                scrim.style.minHeight = '100dvh';
+                scrim.style.height = h + 'px';
                 scrim.style.opacity = '1';
                 scrim.classList.add('is-active');
                 return scrim;
@@ -2215,7 +2233,6 @@
                 if (!scrim) return;
                 scrim.classList.remove('is-active');
                 scrim.style.removeProperty('height');
-                scrim.style.removeProperty('min-height');
                 scrim.style.removeProperty('top');
                 scrim.style.removeProperty('left');
                 scrim.style.removeProperty('right');
@@ -2226,6 +2243,10 @@
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
+                /* Inline !important: batte il paint del tema su html, così il gap iOS è nero come lo scrim */
+                document.documentElement.style.setProperty('background-color', '#000000', 'important');
+                document.documentElement.style.setProperty('background', '#000000', 'important');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
@@ -2236,11 +2257,15 @@
             }
 
             function unlockNavScroll() {
+                /* Un solo passo: togli tutto insieme, nessun velo ritardato */
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 hideNavScrim();
                 window.scrollTo(0, navScrollY);
+                if (typeof window.gadlySyncViewportChrome === 'function') {
+                    window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
+                }
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
