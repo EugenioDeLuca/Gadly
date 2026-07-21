@@ -1474,7 +1474,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=187">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=188">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=109">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -2039,7 +2039,7 @@
                 <a href="{% if is_drose_site %}{% url 'drose_contact' %}{% else %}{% url 'contact' %}{% endif %}" class="header-link header-link-mobile-only">Contact</a>
                 <a href="{% if is_drose_site %}{% url 'drose_privacy' %}{% else %}{% url 'privacy' %}{% endif %}" class="header-link header-link-mobile-only">Privacy</a>
                 {% if not is_drose_site %}
-                <a href="{% url 'hidden_tools' %}" class="header-link header-link-mobile-only" id="header-nav-bin">Bin</a>
+                <a href="{% url 'hidden_tools' %}" class="header-link header-link-mobile-only header-link-bin-row" id="header-nav-bin">Bin</a>
                 {% endif %}
                 {% if is_drose_site or user.is_authenticated and user.is_staff %}
                 <div class="header-nav-manage-wrap">

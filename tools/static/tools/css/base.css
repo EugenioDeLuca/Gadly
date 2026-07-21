@@ -919,6 +919,15 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     .header-nav .header-link-mobile-only {
         display: inline-flex !important;
     }
+    .header-nav .header-link-bin-row {
+        flex: 0 0 100%;
+        width: 100%;
+        margin-top: 2px;
+        padding-top: 0;
+        border-top: none;
+        box-sizing: border-box;
+        justify-content: center;
+    }
     /* Menu hamburger: niente pill al tap in light/dark; warm tone → theme.css (evidenza ok) */
     .header-nav .header-link,
     .header-nav .header-auth-wrap .header-link,
