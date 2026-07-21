@@ -1456,7 +1456,7 @@
 
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=214">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=134">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=135">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2248,38 +2248,54 @@
             }
 
             function ensureSafariBottomTint() {
-                var tint = document.getElementById('gadly-safari-bottom-tint');
-                if (!tint) {
-                    tint = document.createElement('div');
-                    tint.id = 'gadly-safari-bottom-tint';
-                    tint.setAttribute('aria-hidden', 'true');
-                    document.body.appendChild(tint);
-                } else if (tint.parentNode !== document.body) {
-                    document.body.appendChild(tint);
-                }
-                tint.style.display = 'block';
-                tint.style.backgroundColor = '#000000';
+                var old = document.getElementById('gadly-safari-bottom-tint');
+                if (old && old.parentNode) old.parentNode.removeChild(old);
+                var tint = document.createElement('div');
+                tint.id = 'gadly-safari-bottom-tint';
+                tint.setAttribute('aria-hidden', 'true');
+                tint.style.cssText = [
+                    'display:block',
+                    'position:fixed',
+                    'left:0',
+                    'right:0',
+                    'bottom:0',
+                    'width:100%',
+                    'height:64px',
+                    'margin:0',
+                    'padding:0',
+                    'border:0',
+                    'pointer-events:none',
+                    'z-index:245',
+                    'background-color:#000000'
+                ].join(';');
+                document.body.appendChild(tint);
+                void tint.offsetHeight;
                 return tint;
             }
 
             function hideSafariBottomTint() {
                 var tint = document.getElementById('gadly-safari-bottom-tint');
                 if (!tint) return;
-                tint.style.display = 'none';
+                if (tint.parentNode) tint.parentNode.removeChild(tint);
             }
 
             function setNavOpenChrome() {
                 /*
-                 * Solo chrome IN BASSO → nero (niente striscia bianca/blu dietro Safari).
-                 * Status bar / header restano sul colore tema (niente fascia nera in cima).
+                 * Chrome IN BASSO → nero (striscia bianca dietro frecce/URL Safari).
+                 * Header resta sul colore tema.
                  */
                 var isDark = document.body.classList.contains('dark-mode');
                 var headerColor = isDark ? '#0f0f23' : '#ffffff';
+                if (document.body.classList.contains('warm-tone') && !isDark) {
+                    headerColor = '#fff8ec';
+                }
                 var meta = document.getElementById('gadly-theme-color');
                 if (meta) meta.setAttribute('content', '#000000');
                 var root = document.documentElement;
                 var body = document.body;
                 root.style.setProperty('background-color', '#000000', 'important');
+                /* Aiuta Safari a usare chrome scura in basso mentre il menu è aperto */
+                root.style.setProperty('color-scheme', 'dark');
                 if (body) {
                     body.style.setProperty('background-color', '#000000', 'important');
                     body.style.setProperty('background-image', 'none', 'important');
@@ -2291,16 +2307,14 @@
                     header.style.setProperty('background-image', 'none', 'important');
                 }
                 var topTint = document.getElementById('gadly-safari-tint');
-                if (topTint) {
-                    /* Non far comparire una fascia nera sotto la status bar */
-                    topTint.style.display = 'none';
-                }
-                var nav = document.getElementById('header-nav');
-                if (nav) {
-                    nav.style.setProperty('background', headerColor, 'important');
-                    nav.style.setProperty('background-color', headerColor, 'important');
+                if (topTint) topTint.style.display = 'none';
+                var navEl = document.getElementById('header-nav');
+                if (navEl) {
+                    navEl.style.setProperty('background', headerColor, 'important');
+                    navEl.style.setProperty('background-color', headerColor, 'important');
                 }
                 ensureSafariBottomTint();
+                void body.offsetHeight;
                 try {
                     var y = window.scrollY || window.pageYOffset || 0;
                     window.scrollTo(0, y + 1);
@@ -2310,6 +2324,8 @@
 
             function restoreThemeChrome() {
                 hideSafariBottomTint();
+                var root = document.documentElement;
+                root.style.removeProperty('color-scheme');
                 var isDark = document.body.classList.contains('dark-mode');
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(isDark, { forceResample: true });
