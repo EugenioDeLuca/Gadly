@@ -148,6 +148,28 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
+        /* Fascia sopra la toolbar Safari: NERO come lo scrim (niente bianco/blu) */
+        #gadly-nav-bottom-shield {
+            display: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(env(safe-area-inset-bottom, 0px) + 120px);
+            min-height: 120px;
+            z-index: 245;
+            pointer-events: none;
+            border: 0;
+            margin: 0;
+            padding: 0;
+            background: #000000 !important;
+            background-color: #000000 !important;
+        }
+        html.nav-open #gadly-nav-bottom-shield,
+        body.nav-open #gadly-nav-bottom-shield {
+            display: block !important;
+        }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
             min-height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1409,8 +1431,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=204">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=124">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=205">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=125">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2162,29 +2184,54 @@
             var navOverscrollBlock = null;
             var navThemeColorSaved = null;
 
-            function setMenuBottomChrome(on) {
-                /* theme-color nero = la fascia Safari in basso non resta bianca/blu */
+            function forceThemeColor(color) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
+                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                    el.parentNode && el.parentNode.removeChild(el);
+                });
+                var meta = document.createElement('meta');
+                meta.id = 'gadly-theme-color';
+                meta.setAttribute('name', 'theme-color');
+                meta.setAttribute('content', color);
+                head.insertBefore(meta, head.firstChild);
+            }
+
+            function setMenuBottomChrome(on) {
                 if (on) {
                     var cur = document.getElementById('gadly-theme-color');
                     if (navThemeColorSaved === null) {
                         navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
                     }
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    });
-                    var meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
-                    meta.setAttribute('name', 'theme-color');
-                    meta.setAttribute('content', '#000000');
-                    head.insertBefore(meta, head.firstChild);
+                    forceThemeColor('#000000');
                 } else if (navThemeColorSaved !== null) {
                     navThemeColorSaved = null;
                     if (typeof window.gadlySyncViewportChrome === 'function') {
                         window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
                     }
                 }
+            }
+
+            function ensureNavBottomShield() {
+                var shield = document.getElementById('gadly-nav-bottom-shield');
+                if (!shield) {
+                    shield = document.createElement('div');
+                    shield.id = 'gadly-nav-bottom-shield';
+                    shield.setAttribute('aria-hidden', 'true');
+                    document.documentElement.appendChild(shield);
+                } else if (shield.parentNode !== document.documentElement) {
+                    document.documentElement.appendChild(shield);
+                }
+                shield.style.setProperty('background', '#000000', 'important');
+                shield.style.setProperty('background-color', '#000000', 'important');
+                shield.style.setProperty('display', 'block', 'important');
+                return shield;
+            }
+
+            function hideNavBottomShield() {
+                var shield = document.getElementById('gadly-nav-bottom-shield');
+                if (!shield) return;
+                shield.style.setProperty('display', 'none', 'important');
             }
 
             function blockNavOverscroll(e) {
@@ -2214,7 +2261,7 @@
                     window.innerHeight || 0,
                     (vv && (vv.height + Math.abs(vv.offsetTop || 0))) || 0,
                     document.documentElement.clientHeight || 0
-                ) + 280;
+                ) + 320;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
@@ -2222,6 +2269,8 @@
                 scrim.style.width = '100%';
                 scrim.style.height = h + 'px';
                 scrim.style.opacity = '1';
+                /* Estende lo scuro sotto il bordo viewport (sopra Safari) */
+                scrim.style.boxShadow = '0 160px 0 160px rgba(0,0,0,0.92)';
                 scrim.style.removeProperty('background');
                 scrim.style.removeProperty('background-color');
                 scrim.classList.add('is-active');
@@ -2239,6 +2288,7 @@
                 scrim.style.removeProperty('bottom');
                 scrim.style.removeProperty('width');
                 scrim.style.removeProperty('opacity');
+                scrim.style.removeProperty('box-shadow');
             }
 
             function lockNavScroll() {
@@ -2246,6 +2296,7 @@
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 setMenuBottomChrome(true);
+                ensureNavBottomShield();
                 ensureNavScrim();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
@@ -2258,6 +2309,7 @@
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 hideNavScrim();
+                hideNavBottomShield();
                 setMenuBottomChrome(false);
                 window.scrollTo(0, navScrollY);
                 if (navOverscrollBlock) {
