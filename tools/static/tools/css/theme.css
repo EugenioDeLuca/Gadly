@@ -98,17 +98,12 @@ body {
         display: none !important;
     }
     body.nav-open.warm-tone #gadly-nav-scrim.is-active {
-        background: rgba(0, 0, 0, 0.85);
+        background: transparent;
         display: block;
     }
     body.nav-open.warm-tone #gadly-nav-scrim::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: hsl(42, 70%, 88%);
-        mix-blend-mode: color;
-        opacity: 0.22;
-        pointer-events: none;
+        content: none;
+        display: none;
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
@@ -399,7 +394,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Base scuro; il gradient finale lo imposta JS sul colore del tema */
+    /* Solo hit-area per chiudere il menu: niente scuro (lo scuro faceva vedere la fascia Safari) */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
@@ -409,13 +404,11 @@ body {
         bottom: 0;
         width: 100%;
         height: 100%;
-        min-height: 100vh;
-        min-height: 100dvh;
         margin: 0;
         padding: 0;
         border: 0;
         box-sizing: border-box;
-        background: rgba(0, 0, 0, 0.88);
+        background: transparent;
         z-index: 240;
         pointer-events: auto;
         cursor: pointer;
@@ -426,7 +419,7 @@ body {
         display: block;
     }
     body.dark-mode #gadly-nav-scrim.is-active {
-        background: rgba(0, 0, 0, 0.92);
+        background: transparent;
     }
     body.nav-open.nav-closing #gadly-nav-scrim {
         opacity: 1;

@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=211">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=131">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=212">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=132">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2183,9 +2183,6 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
-                var isDark = document.body.classList.contains('dark-mode');
-                var fade = isDark ? '#0f0f23' : '#ffffff';
-                var dim = isDark ? 'rgba(0,0,0,0.92)' : 'rgba(0,0,0,0.88)';
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
@@ -2193,9 +2190,8 @@
                 scrim.style.width = '100%';
                 scrim.style.height = '100%';
                 scrim.style.opacity = '1';
+                scrim.style.background = 'transparent';
                 scrim.style.removeProperty('box-shadow');
-                /* Sfumatura sul colore tema in basso: niente taglio bianco/blu sotto Safari */
-                scrim.style.background = 'linear-gradient(to bottom,' + dim + ' 0%,' + dim + ' calc(100% - 130px),' + fade + ' 100%)';
                 scrim.classList.add('is-active');
                 return scrim;
             }
