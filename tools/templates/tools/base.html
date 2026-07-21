@@ -148,11 +148,6 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
-        /* Gap sopra la toolbar Safari: nero dietro il body, come lo scrim — niente striscia chiara */
-        html.nav-open {
-            background: #000000 !important;
-            background-color: #000000 !important;
-        }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
             min-height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1414,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=203">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=123">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=204">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=124">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2084,7 +2079,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=28"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=29"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2165,6 +2160,32 @@
         if (menuBtn && nav) {
             var navScrollY = 0;
             var navOverscrollBlock = null;
+            var navThemeColorSaved = null;
+
+            function setMenuBottomChrome(on) {
+                /* theme-color nero = la fascia Safari in basso non resta bianca/blu */
+                var head = document.head || document.getElementsByTagName('head')[0];
+                if (!head) return;
+                if (on) {
+                    var cur = document.getElementById('gadly-theme-color');
+                    if (navThemeColorSaved === null) {
+                        navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
+                    }
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    });
+                    var meta = document.createElement('meta');
+                    meta.id = 'gadly-theme-color';
+                    meta.setAttribute('name', 'theme-color');
+                    meta.setAttribute('content', '#000000');
+                    head.insertBefore(meta, head.firstChild);
+                } else if (navThemeColorSaved !== null) {
+                    navThemeColorSaved = null;
+                    if (typeof window.gadlySyncViewportChrome === 'function') {
+                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
+                    }
+                }
+            }
 
             function blockNavOverscroll(e) {
                 if (!document.body.classList.contains('nav-open')) return;
@@ -2188,13 +2209,12 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
-                var y = Math.abs(navScrollY || window.scrollY || 0);
                 var vv = window.visualViewport;
                 var h = Math.max(
                     window.innerHeight || 0,
-                    (vv && (vv.height + vv.offsetTop)) || 0,
+                    (vv && (vv.height + Math.abs(vv.offsetTop || 0))) || 0,
                     document.documentElement.clientHeight || 0
-                ) + y + 240;
+                ) + 280;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
@@ -2202,7 +2222,6 @@
                 scrim.style.width = '100%';
                 scrim.style.height = h + 'px';
                 scrim.style.opacity = '1';
-                /* Non forzare nero pieno: lo stile CSS (rgba) scurisce senza azzerare il body */
                 scrim.style.removeProperty('background');
                 scrim.style.removeProperty('background-color');
                 scrim.classList.add('is-active');
@@ -2224,12 +2243,9 @@
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
-                /* Solo html dietro il body: chiude il gap iOS senza annerire la pagina */
-                document.documentElement.style.setProperty('background-color', '#000000', 'important');
-                document.documentElement.style.setProperty('background', '#000000', 'important');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
+                setMenuBottomChrome(true);
                 ensureNavScrim();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
@@ -2242,10 +2258,8 @@
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 hideNavScrim();
+                setMenuBottomChrome(false);
                 window.scrollTo(0, navScrollY);
-                if (typeof window.gadlySyncViewportChrome === 'function') {
-                    window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                }
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;

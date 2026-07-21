@@ -3,11 +3,45 @@
     var warmKey = 'gadly-warm-tone';
     var darkClass = 'dark-mode';
     var warmClass = 'warm-tone';
+    var statusMaskTimer = null;
 
     function syncViewportChrome(isDark) {
         if (typeof window.gadlySyncViewportChrome === 'function') {
             window.gadlySyncViewportChrome(isDark);
         }
+    }
+
+    function showSafeAreaMask(color) {
+        var mask = document.getElementById('gadly-theme-status-mask');
+        if (!mask) {
+            mask = document.createElement('div');
+            mask.id = 'gadly-theme-status-mask';
+            mask.setAttribute('aria-hidden', 'true');
+            document.documentElement.appendChild(mask);
+        }
+        /* SOLO safe-area (dietro orologio), non copre logo/header */
+        mask.style.cssText = [
+            'position:fixed',
+            'top:0',
+            'left:0',
+            'right:0',
+            'width:100%',
+            'height:env(safe-area-inset-top, 0px)',
+            'min-height:env(safe-area-inset-top, 0px)',
+            'z-index:2147483646',
+            'pointer-events:none',
+            'margin:0',
+            'padding:0',
+            'border:0',
+            'display:block',
+            'background:' + color,
+            'background-color:' + color
+        ].join(';');
+    }
+
+    function hideSafeAreaMask() {
+        var mask = document.getElementById('gadly-theme-status-mask');
+        if (mask) mask.style.display = 'none';
     }
 
     function applyTheme(isDark) {
@@ -16,8 +50,12 @@
         var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
 
         root.classList.add('theme-switching');
+        if (statusMaskTimer) {
+            clearTimeout(statusMaskTimer);
+            statusMaskTimer = null;
+        }
 
-        /* 1) Colore su html/header/theme-color PRIMA del toggle classe */
+        if (mobile) showSafeAreaMask(color);
         syncViewportChrome(isDark);
         if (mobile) {
             var header = document.querySelector('.site-header');
@@ -26,10 +64,13 @@
                 header.style.setProperty('background-color', color, 'important');
             }
             root.style.setProperty('background-color', color, 'important');
+            if (document.body) {
+                document.body.style.setProperty('background-color', color, 'important');
+                document.body.style.setProperty('background', color, 'important');
+            }
         }
         void root.offsetHeight;
 
-        /* 2) Toggle tema nello stesso turn */
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = isDark ? '☀️' : '🌙';
@@ -40,6 +81,15 @@
         syncViewportChrome(isDark);
         void root.offsetHeight;
         root.classList.remove('theme-switching');
+
+        if (mobile) {
+            statusMaskTimer = setTimeout(function() {
+                hideSafeAreaMask();
+                statusMaskTimer = null;
+            }, 400);
+        } else {
+            hideSafeAreaMask();
+        }
     }
 
     function applyWarmTone(isWarm) {
