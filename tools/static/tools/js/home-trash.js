@@ -608,24 +608,24 @@
         if (document.documentElement.classList.contains("gadly-trash-scroll-lock")) return;
         mobileScrollLockY = window.scrollY || window.pageYOffset || 0;
         document.documentElement.classList.add("gadly-trash-scroll-lock");
-        document.body.style.position = "fixed";
-        document.body.style.top = (-mobileScrollLockY) + "px";
-        document.body.style.left = "0";
-        document.body.style.right = "0";
-        document.body.style.width = "100%";
-        /* Dopo body fixed il bottom CSS può “saltare”: ripinna subito. */
+        /* Niente body position:fixed: taglia i tool e fa saltare il cestino.
+           Blocco scroll con overflow + preventDefault su touchmove. */
+        document.body.style.removeProperty("position");
+        document.body.style.removeProperty("top");
+        document.body.style.removeProperty("left");
+        document.body.style.removeProperty("right");
+        document.body.style.removeProperty("width");
         pinMobileTrashPosition();
     }
 
     function unlockMobilePageScroll() {
         if (!document.documentElement.classList.contains("gadly-trash-scroll-lock")) return;
         document.documentElement.classList.remove("gadly-trash-scroll-lock");
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.right = "";
-        document.body.style.width = "";
-        window.scrollTo(0, mobileScrollLockY);
+        document.body.style.removeProperty("position");
+        document.body.style.removeProperty("top");
+        document.body.style.removeProperty("left");
+        document.body.style.removeProperty("right");
+        document.body.style.removeProperty("width");
         mobileScrollLockY = 0;
         if (!document.documentElement.classList.contains("gadly-mobile-trash-visible")) {
             unpinMobileTrashPosition();
@@ -709,14 +709,9 @@
         if (!isMobileTrashHome()) return;
         var bin = document.getElementById("desktop-trash-bin");
         if (!bin) return;
-        var h = bin.offsetHeight || 65;
-        var gap = 40;
-        var safe = getSafeAreaInsetBottom();
-        var vv = window.visualViewport;
-        var viewBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
-        var top = Math.round(viewBottom - h - gap - safe);
-        bin.style.setProperty("top", top + "px", "important");
-        bin.style.setProperty("bottom", "auto", "important");
+        /* Posizione stabile via bottom (niente top in px → niente scatto). */
+        bin.style.removeProperty("top");
+        bin.style.setProperty("bottom", "calc(40px + env(safe-area-inset-bottom, 0px))", "important");
         bin.style.setProperty("left", "12px", "important");
         bin.style.setProperty("right", "auto", "important");
         bin.style.setProperty("transform", "none", "important");
@@ -740,8 +735,9 @@
         if (!isMobileTrashHome()) return;
         var bin = document.getElementById("desktop-trash-bin");
         if (bin && visible) {
-            /* Niente bounce onboarding mentre si usa il drag */
             bin.classList.remove("desktop-trash-bin--hint");
+            /* Prima ancora della classe visible: posizione già corretta. */
+            pinMobileTrashPosition();
         }
         document.documentElement.classList.toggle("gadly-mobile-trash-visible", !!visible);
         if (visible) {

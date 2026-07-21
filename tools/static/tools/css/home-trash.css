@@ -197,10 +197,34 @@ body.homepage .tool-section[hidden] {
 
     /* ========== MOBILE (≤768px) — long press, testo rosso, cestino on demand ========== */
     @media (max-width: 768px) {
-        html.gadly-trash-scroll-lock,
+        /* Blocca scroll senza position:fixed sul body (quello tagliava i tool). */
+        html.gadly-trash-scroll-lock {
+            overflow: hidden !important;
+            overscroll-behavior: none;
+            touch-action: none;
+        }
         html.gadly-trash-scroll-lock body {
             overflow: hidden !important;
             overscroll-behavior: none;
+            touch-action: none;
+            /* Esplicitamente NON fixed: evita clip e salto cestino */
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            width: auto !important;
+        }
+
+        html.gadly-trash-scroll-lock .site-main,
+        html.gadly-trash-drag-active .site-main,
+        html.gadly-trash-mobile-press .site-main,
+        html.gadly-trash-scroll-lock body.homepage .container,
+        html.gadly-trash-drag-active body.homepage .container,
+        html.gadly-trash-mobile-press body.homepage .container,
+        html.gadly-trash-scroll-lock body.homepage .tool-section .tool-grid,
+        html.gadly-trash-drag-active body.homepage .tool-section .tool-grid,
+        html.gadly-trash-mobile-press body.homepage .tool-section .tool-grid {
+            overflow: visible !important;
         }
 
         .gadly-trash-drag-shield {
@@ -250,6 +274,7 @@ body.homepage .tool-section[hidden] {
             transform: scale(0.96) !important;
         }
 
+        /* Slot resta nello stesso posto (non collassa); solo il ghost si muove */
         body.homepage a.tool-btn.tool-btn--dragging,
         body.homepage .category-btn.category-btn--dragging {
             opacity: 0 !important;
@@ -257,6 +282,11 @@ body.homepage .tool-section[hidden] {
             pointer-events: none !important;
             outline: none !important;
             transform: none !important;
+        }
+
+        body.homepage .tool-btn-wrap:has(> a.tool-btn.tool-btn--dragging) {
+            min-height: 52px !important;
+            height: 52px !important;
         }
 
         body.homepage .tool-btn-wrap:has(> a.tool-btn.tool-btn--dragging) .tool-fav {

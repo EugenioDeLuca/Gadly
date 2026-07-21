@@ -160,7 +160,7 @@
     }
 }
 
-/* Mobile home — cestino fisso in basso a sinistra; visibile solo con long press / drag / onboarding */
+/* Mobile home — cestino fisso in basso a sinistra; sempre montato (no display:none → no scatto) */
 @media (max-width: 768px) {
     body.homepage .desktop-trash-bin {
         --desktop-trash-light: #3d73b8;
@@ -168,9 +168,11 @@
         --desktop-trash-stroke: #002a55;
         --desktop-trash-rim: #5a8fd0;
         --desktop-trash-lid: #6a9fd4;
-        display: none !important;
+        display: block !important;
         position: fixed;
         left: 12px;
+        right: auto;
+        top: auto;
         bottom: calc(40px + env(safe-area-inset-bottom, 0px));
         z-index: 2147482998;
         width: 56px;
@@ -178,15 +180,21 @@
         pointer-events: none;
         visibility: hidden;
         opacity: 0;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        overflow: visible;
     }
 
     html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin,
     html.gadly-trash-drag-active body.homepage .desktop-trash-bin {
-        display: block !important;
         visibility: visible !important;
         pointer-events: auto !important;
         opacity: 1 !important;
         overflow: visible;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
     }
 
     body.homepage .desktop-trash-bin__btn {
