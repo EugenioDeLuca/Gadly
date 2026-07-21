@@ -129,17 +129,10 @@
             writeThemeColor(color);
 
             if (mobile) {
+                /* Solo stesso frame + 1 rAF: niente setTimeout che aggiornano la status bar in ritardo. */
                 requestAnimationFrame(function () {
                     paint(color);
                     writeThemeColor(color);
-                    setTimeout(function () {
-                        paint(color);
-                        writeThemeColor(color);
-                    }, 30);
-                    setTimeout(function () {
-                        paint(color);
-                        writeThemeColor(color);
-                    }, 150);
                 });
             }
         };
@@ -1440,7 +1433,7 @@
 
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=195">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=114">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=115">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2109,7 +2102,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=20"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=21"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}

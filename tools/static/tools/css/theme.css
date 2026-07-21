@@ -98,7 +98,7 @@ body {
         display: none !important;
     }
     body.nav-open.warm-tone #gadly-nav-scrim {
-        background: rgba(0, 0, 0, 0.45);
+        background: rgba(0, 0, 0, 0.85);
         display: block;
     }
     body.nav-open.warm-tone #gadly-nav-scrim::before {
@@ -107,7 +107,7 @@ body {
         inset: 0;
         background: hsl(42, 70%, 88%);
         mix-blend-mode: color;
-        opacity: 0.45;
+        opacity: 0.22;
         pointer-events: none;
     }
     body.warm-tone .header-nav,
@@ -417,7 +417,7 @@ body {
         box-sizing: content-box;
         margin: 0;
         border: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.88);
         z-index: 240;
         pointer-events: auto;
         cursor: pointer;
@@ -427,7 +427,7 @@ body {
         display: block;
     }
     body.dark-mode.nav-open #gadly-nav-scrim {
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.92);
     }
     body.nav-open.nav-closing #gadly-nav-scrim {
         opacity: 0;

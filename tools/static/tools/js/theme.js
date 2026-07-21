@@ -23,6 +23,14 @@
 
     function applyTheme(isDark) {
         withInstantThemeSwitch(function() {
+            /*
+             * Status bar iOS: campiona lo sfondo sotto l’orologio.
+             * Dark→light: pinta subito il chrome bianco PRIMA di togliere dark-mode,
+             * così fascia e pagina cambiano nello stesso frame (niente ritardo).
+             */
+            if (!isDark) {
+                syncViewportChrome(false);
+            }
             document.body.classList.toggle(darkClass, isDark);
             var btn = document.getElementById('theme-toggle');
             if (btn) btn.textContent = isDark ? '☀️' : '🌙';
@@ -32,11 +40,9 @@
             }
             syncViewportChrome(isDark);
         });
-        /* Riesegui dopo il paint: status bar mobile (Safari/Chrome) a volte campiona in ritardo. */
+        /* Un solo riafferma dopo paint (Safari); niente timeout lunghi che “sbiadiscono” in ritardo. */
         requestAnimationFrame(function() {
             syncViewportChrome(isDark);
-            setTimeout(function() { syncViewportChrome(isDark); }, 60);
-            setTimeout(function() { syncViewportChrome(isDark); }, 200);
         });
     }
 
