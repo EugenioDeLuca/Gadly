@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=207">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=127">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=208">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=128">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2183,12 +2183,13 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
+                /* Non coprire la zona Safari: lì sotto resta il colore pagina = niente striscia */
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
-                scrim.style.bottom = '0';
+                scrim.style.bottom = '100px';
                 scrim.style.width = '100%';
-                scrim.style.height = '100%';
+                scrim.style.height = 'auto';
                 scrim.style.opacity = '1';
                 scrim.style.removeProperty('box-shadow');
                 scrim.classList.add('is-active');

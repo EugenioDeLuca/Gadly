@@ -399,16 +399,16 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Scrim: solo scurisce la pagina, niente padding/estensioni che creano fasce */
+    /* Scrim: si ferma PRIMA della zona Safari → niente contrasto bianco/blu dietro la toolbar */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
         width: 100%;
-        height: 100%;
+        height: auto;
         margin: 0;
         padding: 0;
         border: 0;

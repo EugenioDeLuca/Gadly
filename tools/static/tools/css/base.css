@@ -1038,23 +1038,17 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         }
     }
     body.nav-open {
-        overflow: hidden !important;
+        /* niente overflow:hidden su html/body: su iOS fa apparire la fascia colorata dietro Safari */
+        overscroll-behavior: none !important;
     }
 
-    /*
-     * Menu aperto: niente position:fixed, niente html colorato.
-     * Quelli creavano la striscia bianca/blu intorno alla chrome Safari.
-     */
     html.nav-open {
-        overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
     }
 
     html.nav-open body {
-        overflow: hidden !important;
         overscroll-behavior: none !important;
-        touch-action: none !important;
         width: 100% !important;
     }
 
