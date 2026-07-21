@@ -1093,6 +1093,53 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     html.nav-open body .header-nav.is-open {
         touch-action: auto !important;
         overscroll-behavior: contain;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    html.nav-open:has(body:not(.dark-mode)) body .site-header,
+    html.nav-open:has(body:not(.dark-mode)) body .header-nav,
+    html.nav-open:has(body:not(.dark-mode)) body .header-nav.is-open {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+    }
+    html.nav-open:has(body.dark-mode) body .site-header,
+    html.nav-open:has(body.dark-mode) body .header-nav,
+    html.nav-open:has(body.dark-mode) body .header-nav.is-open {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+        background-image: none !important;
+    }
+    /* Chiude gap subpixel tra header e pannello menu */
+    html.nav-open body .header-nav.is-open {
+        top: calc(var(--site-header-height) - 1px);
+        padding-top: 11px;
+        isolation: isolate;
+        transform: translateZ(0);
+    }
+    /* Rubber-band Safari / safe-area: niente striscia blu sotto il menu */
+    html.nav-open::after {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: calc(env(safe-area-inset-bottom, 0px) + 28px);
+        z-index: 247;
+        pointer-events: none;
+    }
+    html.nav-open:has(body:not(.dark-mode))::after {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+    }
+    html.nav-open:has(body.dark-mode)::after {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+    }
+    html.nav-open body .drose-sky-layer {
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
     body.nav-open::before {
         content: "";

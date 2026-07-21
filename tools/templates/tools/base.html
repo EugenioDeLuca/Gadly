@@ -15,6 +15,20 @@
         try {
             if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
                 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+                var backForward = false;
+                try {
+                    var navEarly = performance.getEntriesByType('navigation')[0];
+                    backForward = !!(navEarly && navEarly.type === 'back_forward');
+                } catch (eNavEarly) {
+                    try {
+                        backForward = !!(performance.navigation && performance.navigation.type === 2);
+                    } catch (eNavLegacy) {}
+                }
+                if (!backForward && !location.hash) {
+                    window.__gadlyMobileReloadTop = true;
+                    window.scrollTo(0, 0);
+                    if (document.documentElement) document.documentElement.scrollTop = 0;
+                }
             }
         } catch (eSrEarly) {}
         window.gadlySyncViewportChrome = function (isDark) {
@@ -468,17 +482,19 @@
             if (!p) p = "/";
             sessionStorage.removeItem(KEY_PREFIX + p);
             sessionStorage.removeItem(KEY_PREFIX + p + "/");
-            /* Mobile: solo reload/pull-to-refresh → in cima (senza bloccare lo scroll normale). */
+            /* Mobile: ogni caricamento (incluso PTR) → in cima; indietro browser escluso. */
             try {
-                var navTop = performance.getEntriesByType("navigation")[0];
                 var mobileTop = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-                var isReloadTop = !!(navTop && navTop.type === "reload");
-                if (!isReloadTop) {
+                var backForwardTop = false;
+                try {
+                    var navTop = performance.getEntriesByType("navigation")[0];
+                    backForwardTop = !!(navTop && navTop.type === "back_forward");
+                } catch (eNavTop) {
                     try {
-                        isReloadTop = !!(performance.navigation && performance.navigation.type === 1);
+                        backForwardTop = !!(performance.navigation && performance.navigation.type === 2);
                     } catch (eNavLegacy) {}
                 }
-                if (mobileTop && isReloadTop && !location.hash) {
+                if (mobileTop && !backForwardTop && !location.hash) {
                     window.__gadlyMobileReloadTop = true;
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
@@ -736,8 +752,7 @@
             }
             if (navType === "back_forward") return;
 
-            var isReload = navType === "reload";
-            if (isReload) window.__gadlyMobileReloadTop = true;
+            window.__gadlyMobileReloadTop = true;
 
             var p = location.pathname || "/";
             if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
@@ -784,8 +799,6 @@
                     }
                 } catch (eTop) {}
             }
-
-            if (!isReload) return;
 
             toTop();
 
@@ -947,8 +960,21 @@
             return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
         }
 
+        function isBackForwardNavigation() {
+            try {
+                var nav = performance.getEntriesByType("navigation")[0];
+                if (nav && nav.type === "back_forward") return true;
+            } catch (eBf) {}
+            try {
+                return !!(performance.navigation && performance.navigation.type === 2);
+            } catch (eBf2) {
+                return false;
+            }
+        }
+
         function isReloadNavigation() {
             if (window.__gadlyMobileReloadTop) return true;
+            if (isMobileViewport() && !location.hash && !isBackForwardNavigation()) return true;
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
                 if (nav && nav.type === "reload") return true;
@@ -961,8 +987,8 @@
         }
 
         function shouldForceMobileTop() {
-            /* Reload/PTR: il guard anti-Safari è nello script early (si spegne al tocco). */
-            return isMobileViewport() && isReloadNavigation() && !location.hash;
+            /* Mobile: ogni caricamento/PTR in cima; indietro browser escluso. */
+            return isMobileViewport() && !location.hash && !isBackForwardNavigation();
         }
 
         function forceScrollTop() {
@@ -999,7 +1025,7 @@
             } catch (eTop) { /* ignore */ }
         }
 
-        /* Mobile reload: cancella scroll salvato (il riposizionamento è gestito dallo script early). */
+        /* Mobile: cancella scroll salvato e forza cima (PTR/reload; indietro escluso). */
         if (shouldForceMobileTop()) {
             clearPathScrollStorage(path);
             try {
@@ -1011,6 +1037,25 @@
             root.style.removeProperty("--gadly-restore-y");
             root.style.removeProperty("--gadly-cl-restore-y");
             root.style.removeProperty("min-height");
+            if (document.body) {
+                document.body.style.removeProperty("position");
+                document.body.style.removeProperty("top");
+                document.body.style.removeProperty("left");
+                document.body.style.removeProperty("right");
+                document.body.style.removeProperty("width");
+            }
+            window.addEventListener("load", function () {
+                forceScrollTop();
+            }, { once: true });
+            document.addEventListener("DOMContentLoaded", function () {
+                forceScrollTop();
+            }, { once: true });
+            requestAnimationFrame(function () {
+                forceScrollTop();
+                setTimeout(forceScrollTop, 0);
+                setTimeout(forceScrollTop, 100);
+                setTimeout(forceScrollTop, 300);
+            });
         }
 
         function persistScroll(y) {
@@ -1326,10 +1371,16 @@
 
         window.addEventListener("pageshow", function(ev) {
             if (isMobileViewport()) {
-                if (!ev.persisted && isReloadNavigation() && !location.hash) {
+                /* Solo subito dopo caricamento/PTR: non resettare scroll al ritorno da altro tab. */
+                if (!ev.persisted && !isBackForwardNavigation() && !location.hash && performance.now() < 4000) {
                     clearPathScrollStorage(path);
                     releaseScrollRestorePending();
                     forceScrollTop();
+                    requestAnimationFrame(forceScrollTop);
+                    setTimeout(forceScrollTop, 0);
+                    setTimeout(forceScrollTop, 80);
+                    setTimeout(forceScrollTop, 200);
+                    setTimeout(forceScrollTop, 500);
                 }
                 return;
             }
@@ -1474,7 +1525,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=188">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=189">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=109">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -2208,6 +2259,9 @@
                 document.body.classList.add('nav-open');
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 syncNavThemeColor(true);
+                if (typeof window.gadlySyncViewportChrome === 'function') {
+                    window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
+                }
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
