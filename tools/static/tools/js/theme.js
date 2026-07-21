@@ -12,17 +12,20 @@
 
     function applyTheme(isDark) {
         var root = document.documentElement;
+        var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 
         root.classList.add('theme-switching');
-        /* Stesso frame: chrome + classe. Niente maschera sopra l'header. */
+        /* Meta theme-color PRIMA, poi pagina: evita striscia scura su header già chiaro */
         syncViewportChrome(isDark);
+        void root.offsetHeight;
+
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = isDark ? '☀️' : '🌙';
         if (document.body.classList.contains('cv-generator')) {
-            var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
+
         syncViewportChrome(isDark);
         void root.offsetHeight;
         root.classList.remove('theme-switching');

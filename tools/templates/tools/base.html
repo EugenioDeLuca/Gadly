@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="default">
     <script>
     (function () {
         try {
@@ -94,44 +94,44 @@
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
+                if (!head) return;
+
+                /* Mai rimuovere theme-color su iOS: Safari resta bloccato sull’ultimo colore (striscia scura). */
+                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                    el.parentNode && el.parentNode.removeChild(el);
+                });
+                var meta = document.createElement('meta');
+                meta.id = 'gadly-theme-color';
+                meta.setAttribute('name', 'theme-color');
+                meta.setAttribute('content', c);
+                head.insertBefore(meta, head.firstChild);
+                /* Stesso colore per entrambe le scheme: niente conflitto con il sistema */
+                var metaLight = document.createElement('meta');
+                metaLight.setAttribute('name', 'theme-color');
+                metaLight.setAttribute('media', '(prefers-color-scheme: light)');
+                metaLight.setAttribute('content', c);
+                head.insertBefore(metaLight, head.firstChild);
+                var metaDark = document.createElement('meta');
+                metaDark.setAttribute('name', 'theme-color');
+                metaDark.setAttribute('media', '(prefers-color-scheme: dark)');
+                metaDark.setAttribute('content', c);
+                head.insertBefore(metaDark, head.firstChild);
+
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-                if (!apple && head) {
+                if (!apple) {
                     apple = document.createElement('meta');
                     apple.id = 'gadly-apple-status-bar';
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                if (mobile) {
-                    /*
-                     * iOS Safari aggiorna theme-color in ritardo rispetto alla pagina.
-                     * Su mobile lo togliamo: status bar translucida = si vede header/html
-                     * che cambiano nello stesso frame → zero desync.
-                     */
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    });
-                    if (apple) apple.setAttribute('content', 'black-translucent');
-                    return;
-                }
-                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                    if (el.id !== 'gadly-theme-color') {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    }
-                });
-                var meta = document.getElementById('gadly-theme-color');
-                if (!meta && head) {
-                    meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
-                    meta.setAttribute('name', 'theme-color');
-                    head.insertBefore(meta, head.firstChild);
-                }
-                if (meta) meta.setAttribute('content', c);
-                if (apple) apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
+                /* default = status bar opaca dal theme-color (niente “fantasma” del tema precedente) */
+                apple.setAttribute('content', mobile ? 'default' : (isDark ? 'black-translucent' : 'default'));
             }
 
-            paint(color);
+            /* Prima meta (status bar), poi paint pagina — stesso turn */
             writeThemeColor(color);
+            paint(color);
             void root.offsetHeight;
         };
         try {
@@ -2106,7 +2106,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=26"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=27"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
