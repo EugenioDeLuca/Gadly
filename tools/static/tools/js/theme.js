@@ -15,8 +15,13 @@
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 
         root.classList.add('theme-switching');
-        syncViewportChrome(isDark, false);
-        void root.offsetHeight;
+
+        if (mobile) {
+            /* Status bar prima (sync), poi classe tema — stesso giro, niente ritardo */
+            syncViewportChrome(isDark, true);
+        } else {
+            syncViewportChrome(isDark, false);
+        }
 
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
@@ -25,8 +30,7 @@
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
 
-        /* forceResample: iOS 26 aggiorna la status bar solo se si ri-campiona (non basta il paint) */
-        syncViewportChrome(isDark, mobile);
+        syncViewportChrome(isDark, false);
         void root.offsetHeight;
         root.classList.remove('theme-switching');
     }

@@ -138,8 +138,7 @@
             void root.offsetHeight;
 
             /*
-             * iOS 26: la status bar si aggiorna al load, non al toggle (fixed “congelato”).
-             * Togliamo fixed per 1 frame → body live → rimettiamo fixed + tint nuovo colore.
+             * iOS 26: ri-campiona in sincrono (niente rAF → niente ritardo vs tema pagina).
              */
             if (mobile && forceResample && body) {
                 var header = document.querySelector('.site-header');
@@ -154,19 +153,18 @@
                 }
                 body.style.setProperty('background-color', color, 'important');
                 void body.offsetHeight;
-                requestAnimationFrame(function () {
-                    if (header) {
-                        header.style.setProperty('position', 'fixed', 'important');
-                        header.style.setProperty('background', color, 'important');
-                        header.style.setProperty('background-color', color, 'important');
-                    }
-                    remountSafariTint(color);
-                    try {
-                        var y = window.scrollY || window.pageYOffset || 0;
-                        window.scrollTo(0, y + 1);
-                        window.scrollTo(0, y);
-                    } catch (eNudge) {}
-                });
+                if (header) {
+                    header.style.setProperty('position', 'fixed', 'important');
+                    header.style.setProperty('background', color, 'important');
+                    header.style.setProperty('background-color', color, 'important');
+                }
+                remountSafariTint(color);
+                void root.offsetHeight;
+                try {
+                    var y = window.scrollY || window.pageYOffset || 0;
+                    window.scrollTo(0, y + 1);
+                    window.scrollTo(0, y);
+                } catch (eNudge) {}
             } else if (mobile && body) {
                 remountSafariTint(color);
             }
@@ -2127,7 +2125,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=34"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=35"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
