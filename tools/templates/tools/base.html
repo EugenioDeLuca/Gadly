@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=212">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=132">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=213">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=133">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2183,14 +2183,19 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
+                var h = Math.max(
+                    window.innerHeight || 0,
+                    (window.visualViewport && window.visualViewport.height) || 0,
+                    document.documentElement.clientHeight || 0
+                ) + 160;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
-                scrim.style.bottom = '0';
                 scrim.style.width = '100%';
-                scrim.style.height = '100%';
+                scrim.style.height = h + 'px';
+                scrim.style.bottom = 'auto';
                 scrim.style.opacity = '1';
-                scrim.style.background = 'transparent';
+                scrim.style.removeProperty('background');
                 scrim.style.removeProperty('box-shadow');
                 scrim.classList.add('is-active');
                 return scrim;
