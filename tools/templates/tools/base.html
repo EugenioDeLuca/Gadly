@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=209">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=129">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=210">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=130">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2170,14 +2170,10 @@
                     if (navThemeColorSaved === null) {
                         navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
                     }
+                    /* Rimuovi theme-color: è quello che colora di bianco/blu la fascia sotto Safari */
                     document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
                         el.parentNode && el.parentNode.removeChild(el);
                     });
-                    var meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
-                    meta.setAttribute('name', 'theme-color');
-                    meta.setAttribute('content', '#000000');
-                    head.insertBefore(meta, head.firstChild);
                 } else if (navThemeColorSaved !== null) {
                     navThemeColorSaved = null;
                     if (typeof window.gadlySyncViewportChrome === 'function') {
