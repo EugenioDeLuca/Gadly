@@ -15,6 +15,24 @@
         try {
             if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
                 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+                /* Mobile: niente restore scroll del browser; al load si va sempre in cima
+                   (tranne cronologia indietro/avanti). */
+                var navType = '';
+                try {
+                    var nav0 = performance.getEntriesByType('navigation')[0];
+                    navType = nav0 && nav0.type ? nav0.type : '';
+                } catch (eNav0) {
+                    try {
+                        if (performance.navigation) {
+                            if (performance.navigation.type === 2) navType = 'back_forward';
+                            else if (performance.navigation.type === 1) navType = 'reload';
+                            else navType = 'navigate';
+                        }
+                    } catch (eNav1) {}
+                }
+                if (navType !== 'back_forward' && !location.hash) {
+                    window.__gadlyMobileForceTop = true;
+                }
             }
         } catch (eSrEarly) {}
         window.gadlySyncViewportChrome = function (isDark) {
@@ -468,11 +486,13 @@
             if (!p) p = "/";
             sessionStorage.removeItem(KEY_PREFIX + p);
             sessionStorage.removeItem(KEY_PREFIX + p + "/");
-            /* Mobile reload/pull-to-refresh: torna sempre in cima. */
+            /* Mobile: refresh/apertura → torna sempre in cima. */
             try {
                 var navTop = performance.getEntriesByType("navigation")[0];
                 var mobileTop = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-                if (mobileTop && navTop && navTop.type === "reload") {
+                var navTypeTop = navTop && navTop.type ? navTop.type : "";
+                if (mobileTop && navTypeTop !== "back_forward" && !location.hash) {
+                    window.__gadlyMobileForceTop = true;
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
                 }
@@ -704,56 +724,80 @@
     {{ user_home_hidden_tools|json_script:"gadly-server-hidden-tools" }}
     {% endif %}
     <script>
-    /* Mobile: pull-to-refresh / reload → sempre in cima (prima di qualsiasi restore). */
+    /* Mobile: refresh / nuova apertura → sempre in cima (non solo se type===reload). */
     (function () {
         try {
             if (!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches)) return;
             if (location.hash) return;
             if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-            var isReload = false;
+
+            var navType = "";
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
-                isReload = !!(nav && nav.type === "reload");
+                navType = nav && nav.type ? nav.type : "";
             } catch (eNav) {
                 try {
-                    isReload = performance.navigation && performance.navigation.type === 1;
+                    if (performance.navigation) {
+                        if (performance.navigation.type === 2) navType = "back_forward";
+                        else if (performance.navigation.type === 1) navType = "reload";
+                        else navType = "navigate";
+                    }
                 } catch (eNav2) {}
             }
-            if (!isReload) return;
-            window.__gadlyMobileReloadTop = true;
+            if (navType === "back_forward") return;
+
+            window.__gadlyMobileForceTop = true;
             var p = location.pathname || "/";
             if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
             try {
                 sessionStorage.removeItem("gadly-page-scroll-y-v1:" + p);
                 sessionStorage.removeItem("gadly-page-scroll-y-v1:" + p + "/");
                 sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p);
+                sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p + "/");
             } catch (eClr) {}
+
             function toTop() {
-                window.scrollTo(0, 0);
+                try {
+                    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+                } catch (eSr) {}
+                try {
+                    window.scrollTo(0, 0);
+                    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                } catch (e1) {
+                    try { window.scrollTo(0, 0); } catch (e2) {}
+                }
                 document.documentElement.scrollTop = 0;
-                if (document.body) document.body.scrollTop = 0;
+                document.documentElement.scrollLeft = 0;
+                if (document.body) {
+                    document.body.scrollTop = 0;
+                    document.body.scrollLeft = 0;
+                }
             }
+
             toTop();
-            var until = Date.now() + 2500;
-            function guard() {
+            var until = Date.now() + 4000;
+            function guard(e) {
                 if (Date.now() > until) {
-                    window.removeEventListener("scroll", guard);
+                    window.removeEventListener("scroll", guard, true);
                     return;
                 }
-                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) toTop();
+                var y = window.scrollY || document.documentElement.scrollTop || 0;
+                if (y > 1) toTop();
             }
-            window.addEventListener("scroll", guard, { passive: true });
-            window.addEventListener("pageshow", toTop);
+            window.addEventListener("scroll", guard, { passive: true, capture: true });
+            window.addEventListener("pageshow", function () { toTop(); });
             window.addEventListener("load", toTop, { once: true });
             document.addEventListener("DOMContentLoaded", toTop, { once: true });
             requestAnimationFrame(function () {
                 toTop();
                 setTimeout(toTop, 0);
                 setTimeout(toTop, 50);
-                setTimeout(toTop, 150);
-                setTimeout(toTop, 400);
-                setTimeout(toTop, 900);
-                setTimeout(toTop, 1600);
+                setTimeout(toTop, 100);
+                setTimeout(toTop, 250);
+                setTimeout(toTop, 500);
+                setTimeout(toTop, 1000);
+                setTimeout(toTop, 2000);
+                setTimeout(toTop, 3000);
             });
         } catch (eTopEarly) {}
     })();
@@ -829,7 +873,7 @@
         }
 
         function isReloadNavigation() {
-            if (window.__gadlyMobileReloadTop) return true;
+            if (window.__gadlyMobileForceTop || window.__gadlyMobileReloadTop) return true;
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
                 if (nav && nav.type === "reload") return true;
@@ -841,6 +885,22 @@
             }
         }
 
+        function isBackForwardNavigation() {
+            try {
+                var nav = performance.getEntriesByType("navigation")[0];
+                if (nav && nav.type === "back_forward") return true;
+            } catch (eBf) {}
+            try {
+                return !!(performance.navigation && performance.navigation.type === 2);
+            } catch (eBf2) {
+                return false;
+            }
+        }
+
+        function shouldForceMobileTop() {
+            return isMobileViewport() && !isBackForwardNavigation() && !location.hash;
+        }
+
         function forceScrollTop() {
             if (location.hash) return;
             try {
@@ -850,13 +910,21 @@
             } catch (eSr) { /* ignore */ }
             try {
                 window.scrollTo(0, 0);
+                try {
+                    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                } catch (eInst) { /* ignore */ }
                 root.scrollTop = 0;
-                if (document.body) document.body.scrollTop = 0;
+                root.scrollLeft = 0;
+                if (document.body) {
+                    document.body.scrollTop = 0;
+                    document.body.scrollLeft = 0;
+                }
             } catch (eTop) { /* ignore */ }
         }
 
-        /* Mobile pull-to-refresh / reload: sempre in cima, cancella scroll salvato. */
-        if (isMobileViewport() && isReloadNavigation()) {
+        /* Mobile: ogni apertura/refresh → cima (non solo type===reload). */
+        if (shouldForceMobileTop()) {
+            window.__gadlyMobileForceTop = true;
             clearPathScrollStorage(path);
             try {
                 sessionStorage.removeItem(LEGACY_TOOL_KEY_PREFIX + normalizePath(path));
@@ -871,6 +939,8 @@
 
         function persistScroll(y) {
             if (isHomeScrollRestorePath()) return;
+            /* Su mobile non salvare: al refresh deve sempre ripartire dall'alto. */
+            if (isMobileViewport()) return;
             if (isMobileViewport() && isReloadNavigation()) return;
             try {
                 var rounded = Math.max(0, Math.round(y));
@@ -943,6 +1013,7 @@
         }
 
         function saveScroll() {
+            if (isMobileViewport()) return;
             if (isScrollSaveBlocked()) return;
             if (!isScrollRestorePath() || isHiddenToolsPath()) return;
             if (isHomeScrollRestorePath()) return;
@@ -962,6 +1033,7 @@
         }
 
         function saveScrollOnExit() {
+            if (isMobileViewport()) return;
             if (!isScrollRestorePath() || isHiddenToolsPath()) return;
             if (isRestorePending()) {
                 var p = pendingScrollY();
@@ -1155,25 +1227,27 @@
         }
 
         restoreCommitted = true;
-        if (isMobileViewport() && isReloadNavigation() && !location.hash) {
+        if (shouldForceMobileTop()) {
             forceScrollTop();
-            var keepTopUntil = Date.now() + 2500;
+            var keepTopUntil = Date.now() + 4000;
             function keepTopOnScroll() {
                 if (Date.now() > keepTopUntil) {
-                    window.removeEventListener("scroll", keepTopOnScroll);
+                    window.removeEventListener("scroll", keepTopOnScroll, true);
                     return;
                 }
-                if ((window.scrollY || 0) > 1) forceScrollTop();
+                if ((window.scrollY || root.scrollTop || 0) > 1) forceScrollTop();
             }
-            window.addEventListener("scroll", keepTopOnScroll, { passive: true });
+            window.addEventListener("scroll", keepTopOnScroll, { passive: true, capture: true });
             requestAnimationFrame(function () {
                 forceScrollTop();
                 setTimeout(forceScrollTop, 0);
                 setTimeout(forceScrollTop, 50);
-                setTimeout(forceScrollTop, 150);
-                setTimeout(forceScrollTop, 400);
-                setTimeout(forceScrollTop, 900);
-                setTimeout(forceScrollTop, 1600);
+                setTimeout(forceScrollTop, 100);
+                setTimeout(forceScrollTop, 250);
+                setTimeout(forceScrollTop, 500);
+                setTimeout(forceScrollTop, 1000);
+                setTimeout(forceScrollTop, 2000);
+                setTimeout(forceScrollTop, 3000);
             });
             window.addEventListener("load", forceScrollTop, { once: true });
         }
@@ -1199,7 +1273,7 @@
         });
 
         window.addEventListener("pageshow", function(ev) {
-            if (isMobileViewport() && (ev.persisted || isReloadNavigation())) {
+            if (shouldForceMobileTop() || (isMobileViewport() && ev.persisted)) {
                 clearPathScrollStorage(path);
                 forceScrollTop();
                 return;
