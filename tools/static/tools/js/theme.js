@@ -13,12 +13,23 @@
     function applyTheme(isDark) {
         var root = document.documentElement;
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
 
         root.classList.add('theme-switching');
-        /* Meta theme-color PRIMA, poi pagina: evita striscia scura su header già chiaro */
+
+        /* 1) Colore su html/header/theme-color PRIMA del toggle classe */
         syncViewportChrome(isDark);
+        if (mobile) {
+            var header = document.querySelector('.site-header');
+            if (header) {
+                header.style.setProperty('background', color, 'important');
+                header.style.setProperty('background-color', color, 'important');
+            }
+            root.style.setProperty('background-color', color, 'important');
+        }
         void root.offsetHeight;
 
+        /* 2) Toggle tema nello stesso turn */
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = isDark ? '☀️' : '🌙';

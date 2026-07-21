@@ -98,12 +98,17 @@ body {
         display: none !important;
     }
     body.nav-open.warm-tone #gadly-nav-scrim.is-active {
-        background: #000000;
+        background: rgba(0, 0, 0, 0.85);
         display: block;
     }
     body.nav-open.warm-tone #gadly-nav-scrim::before {
-        content: none;
-        display: none;
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: hsl(42, 70%, 88%);
+        mix-blend-mode: color;
+        opacity: 0.22;
+        pointer-events: none;
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
@@ -394,7 +399,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Scrim menu: nero pieno = stesso del gap iOS → nessuna striscia in basso */
+    /* Scrim menu: scurisce la pagina, NON nero pieno sul body */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
@@ -404,16 +409,14 @@ body {
         bottom: 0;
         width: 100%;
         height: 100%;
-        height: 100lvh;
         min-height: 100vh;
         min-height: 100dvh;
-        min-height: 100lvh;
         min-height: -webkit-fill-available;
         margin: 0;
         padding: 0;
         border: 0;
         box-sizing: border-box;
-        background: #000000;
+        background: rgba(0, 0, 0, 0.88);
         z-index: 240;
         pointer-events: auto;
         cursor: pointer;
@@ -424,14 +427,12 @@ body {
         display: block;
     }
     body.dark-mode #gadly-nav-scrim.is-active {
-        background: #000000;
+        background: rgba(0, 0, 0, 0.92);
     }
-    /* Niente fade in chiusura: lo fade scopriva la striscia in basso */
     body.nav-open.nav-closing #gadly-nav-scrim {
         opacity: 1;
         pointer-events: none;
     }
-    /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
     body.nav-open .site-header {
         z-index: 250 !important;
     }
