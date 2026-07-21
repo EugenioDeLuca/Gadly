@@ -1439,7 +1439,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=193">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=194">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=113">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -2225,8 +2225,7 @@
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
-                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
-                document.body.style.width = '100%';
+                /* Niente top negativo: evita la striscia in basso su iOS. */
                 syncNavThemeColor(true);
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
@@ -2247,6 +2246,7 @@
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
                 }
+                /* Posizione scroll già intatta (non abbiamo spostato il body). */
                 var curY = window.scrollY || document.documentElement.scrollTop || 0;
                 if (Math.abs(curY - navScrollY) > 2) {
                     window.scrollTo(0, navScrollY);

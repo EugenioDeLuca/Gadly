@@ -1041,13 +1041,14 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
     }
 
-    /* Menu aperto: blocca scroll (solo body fixed; html resta nel flusso → niente gap in basso su iOS) */
+    /* Menu aperto: blocca scroll SENZA position:fixed sul body
+       (il top negativo lasciava un gap in basso = striscia su iOS). */
     html.nav-open {
         overflow: hidden !important;
-        height: 100% !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
         touch-action: none !important;
+        height: 100% !important;
     }
     html.nav-open:has(body.dark-mode) {
         background: #0f0f23 !important;
@@ -1060,21 +1061,27 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
 
     html.nav-open body {
         overflow: hidden !important;
-        position: fixed !important;
-        z-index: 1;
-        width: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: var(--nav-scroll-lock-y, 0px) !important;
-        /* Altezza naturale del documento: con top negativo copre tutta la viewport senza gap */
-        height: auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
+        /* Niente position:fixed / top negativo: niente gap sotto il menu */
+        position: relative !important;
+        top: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        width: 100% !important;
+        left: auto !important;
+        right: auto !important;
     }
     html.nav-open body:not(.dark-mode) {
         background-image: none !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+    }
+    html.nav-open:has(body.dark-mode) body {
+        background-image: none !important;
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
     }
 
     html.nav-open body .site-header,
@@ -1099,7 +1106,6 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         background-color: #0f0f23 !important;
         background-image: none !important;
     }
-    /* Chiude gap subpixel tra header e pannello menu */
     html.nav-open body .header-nav.is-open {
         top: calc(var(--site-header-height) - 1px);
         padding-top: 11px;
@@ -1117,10 +1123,13 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        min-height: 100vh;
-        min-height: 100dvh;
-        min-height: -webkit-fill-available;
+        /* Estende sotto la viewport: niente pixel blu sopra la barra Safari */
+        bottom: -48px;
+        width: 100%;
+        height: auto;
+        min-height: calc(100vh + 48px);
+        min-height: calc(100dvh + 48px);
+        min-height: calc(-webkit-fill-available + 48px);
         background: rgba(0, 0, 0, 0.55);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
