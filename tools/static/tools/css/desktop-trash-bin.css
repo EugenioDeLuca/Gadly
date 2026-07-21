@@ -313,10 +313,28 @@
         animation: gadly-trash-hint 1.6s ease-in-out infinite;
     }
 
-    /* Durante drag: niente bounce (evita lo scatto verso l'alto all'apparizione) */
-    html.gadly-trash-drag-active body.homepage .desktop-trash-bin--hint .desktop-trash-bin__btn,
-    html.gadly-trash-drag-active body.homepage .desktop-trash-bin__btn {
+    /* Apparizione in drag/long-press: fermo, niente bounce/hint/scatto */
+    html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin,
+    html.gadly-trash-scroll-lock body.homepage .desktop-trash-bin {
+        transition: none !important;
         animation: none !important;
+        transform: none !important;
+    }
+
+    html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin--hint .desktop-trash-bin__btn,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin--hint .desktop-trash-bin__btn,
+    html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin__btn,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin__btn,
+    html.gadly-trash-scroll-lock body.homepage .desktop-trash-bin__btn,
+    html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin__icon,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin__icon,
+    html.gadly-trash-scroll-lock body.homepage .desktop-trash-bin__icon,
+    html.gadly-mobile-trash-visible body.homepage .desktop-trash-bin:not(.desktop-trash-bin--drop-target) .desktop-trash-bin__lid,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin:not(.desktop-trash-bin--drop-target) .desktop-trash-bin__lid,
+    html.gadly-trash-scroll-lock body.homepage .desktop-trash-bin:not(.desktop-trash-bin--drop-target) .desktop-trash-bin__lid {
+        animation: none !important;
+        transition: none !important;
         transform: none !important;
     }
 

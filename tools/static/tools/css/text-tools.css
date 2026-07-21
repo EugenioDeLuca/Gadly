@@ -11,7 +11,7 @@
     box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
 }
 
-.text-tool h1 {
+.text-tool .container > h1 {
     text-align: center;
     color: #003f7f;
     margin: 0 0 8px 0;
@@ -528,7 +528,7 @@ body.text-tool.bio-gen .result-area .caption-pick {
         box-shadow: none !important;
         border-radius: 0 !important;
     }
-    .text-tool h1 {
+    .text-tool .container > h1 {
         font-size: 1.4em;
     }
     .text-tool .tool-desc {
@@ -2081,6 +2081,7 @@ body.text-tool.bio-gen .result-area .caption-pick {
         align-items: stretch !important;
         gap: 10px !important;
         width: 100% !important;
+        max-width: 100% !important;
     }
     body.markdown-preview .site-main .container .preview-panel,
     body.markdown-preview .preview-panel {
@@ -2095,10 +2096,54 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.markdown-preview .site-main .container .preview-output,
     body.markdown-preview .site-main .container #md-preview {
         display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
         border-radius: 12px !important;
+        min-height: 250px !important;
+        height: 250px !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        padding: 12px !important;
+        overflow-y: auto !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 17px !important;
+        line-height: 1.5 !important;
+        text-align: left !important;
+    }
+    body.dark-mode.markdown-preview .site-main .container #md-input,
+    body.dark-mode.markdown-preview .site-main .container .preview-output,
+    body.dark-mode.markdown-preview .site-main .container #md-preview {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    body.markdown-preview .site-main .container .preview-output h1,
+    body.markdown-preview .site-main .container .preview-output h2,
+    body.markdown-preview .site-main .container .preview-output h3,
+    body.markdown-preview .site-main .container #md-preview h1,
+    body.markdown-preview .site-main .container #md-preview h2,
+    body.markdown-preview .site-main .container #md-preview h3 {
+        text-align: left !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        margin-top: 0.75em;
+        margin-bottom: 0.4em;
+        font-size: 1.35em;
+        font-weight: 700;
+    }
+    body.markdown-preview .site-main .container .preview-output h2,
+    body.markdown-preview .site-main .container #md-preview h2 {
+        font-size: 1.2em;
+    }
+    body.markdown-preview .site-main .container .preview-output h3,
+    body.markdown-preview .site-main .container #md-preview h3 {
+        font-size: 1.05em;
     }
 }
 

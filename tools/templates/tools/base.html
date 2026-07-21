@@ -12,6 +12,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
     <script>
     (function () {
+        try {
+            if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+                if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+            }
+        } catch (eSrEarly) {}
         window.gadlySyncViewportChrome = function (isDark) {
             var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
             var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
@@ -699,6 +704,61 @@
     {{ user_home_hidden_tools|json_script:"gadly-server-hidden-tools" }}
     {% endif %}
     <script>
+    /* Mobile: pull-to-refresh / reload → sempre in cima (prima di qualsiasi restore). */
+    (function () {
+        try {
+            if (!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches)) return;
+            if (location.hash) return;
+            if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+            var isReload = false;
+            try {
+                var nav = performance.getEntriesByType("navigation")[0];
+                isReload = !!(nav && nav.type === "reload");
+            } catch (eNav) {
+                try {
+                    isReload = performance.navigation && performance.navigation.type === 1;
+                } catch (eNav2) {}
+            }
+            if (!isReload) return;
+            window.__gadlyMobileReloadTop = true;
+            var p = location.pathname || "/";
+            if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+            try {
+                sessionStorage.removeItem("gadly-page-scroll-y-v1:" + p);
+                sessionStorage.removeItem("gadly-page-scroll-y-v1:" + p + "/");
+                sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p);
+            } catch (eClr) {}
+            function toTop() {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                if (document.body) document.body.scrollTop = 0;
+            }
+            toTop();
+            var until = Date.now() + 2500;
+            function guard() {
+                if (Date.now() > until) {
+                    window.removeEventListener("scroll", guard);
+                    return;
+                }
+                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) toTop();
+            }
+            window.addEventListener("scroll", guard, { passive: true });
+            window.addEventListener("pageshow", toTop);
+            window.addEventListener("load", toTop, { once: true });
+            document.addEventListener("DOMContentLoaded", toTop, { once: true });
+            requestAnimationFrame(function () {
+                toTop();
+                setTimeout(toTop, 0);
+                setTimeout(toTop, 50);
+                setTimeout(toTop, 150);
+                setTimeout(toTop, 400);
+                setTimeout(toTop, 900);
+                setTimeout(toTop, 1600);
+            });
+        } catch (eTopEarly) {}
+    })();
+    </script>
+    <script>
     (function() {
         var KEY_PREFIX = "gadly-page-scroll-y-v1:";
         var root = document.documentElement;
@@ -769,15 +829,20 @@
         }
 
         function isReloadNavigation() {
+            if (window.__gadlyMobileReloadTop) return true;
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
-                return !!(nav && nav.type === "reload");
-            } catch (eRel) {
+                if (nav && nav.type === "reload") return true;
+            } catch (eRel) {}
+            try {
+                return !!(performance.navigation && performance.navigation.type === 1);
+            } catch (eRel2) {
                 return false;
             }
         }
 
         function forceScrollTop() {
+            if (location.hash) return;
             try {
                 if ("scrollRestoration" in history) {
                     history.scrollRestoration = "manual";
@@ -1090,12 +1155,25 @@
         }
 
         restoreCommitted = true;
-        if (isMobileViewport() && isReloadNavigation()) {
+        if (isMobileViewport() && isReloadNavigation() && !location.hash) {
             forceScrollTop();
+            var keepTopUntil = Date.now() + 2500;
+            function keepTopOnScroll() {
+                if (Date.now() > keepTopUntil) {
+                    window.removeEventListener("scroll", keepTopOnScroll);
+                    return;
+                }
+                if ((window.scrollY || 0) > 1) forceScrollTop();
+            }
+            window.addEventListener("scroll", keepTopOnScroll, { passive: true });
             requestAnimationFrame(function () {
                 forceScrollTop();
+                setTimeout(forceScrollTop, 0);
                 setTimeout(forceScrollTop, 50);
-                setTimeout(forceScrollTop, 200);
+                setTimeout(forceScrollTop, 150);
+                setTimeout(forceScrollTop, 400);
+                setTimeout(forceScrollTop, 900);
+                setTimeout(forceScrollTop, 1600);
             });
             window.addEventListener("load", forceScrollTop, { once: true });
         }
@@ -1268,7 +1346,7 @@
 
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=177">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=107">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=108">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {

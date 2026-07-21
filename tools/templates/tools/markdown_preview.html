@@ -7,7 +7,7 @@
 <meta name="description" content="{% trans 'Live Markdown preview with HTML rendering—headings, lists, links, code, bold, and italics. Handy for READMEs, articles, and technical notes; no file upload to our servers.' %}">
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520m">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260520n">
 <style>
 .text-tool.markdown-preview .container { max-width: 900px; }
 .text-tool.markdown-preview .tool-desc { color: #555; line-height: 1.55; }
@@ -64,6 +64,7 @@
         align-items: stretch !important;
         gap: 10px !important;
         width: 100% !important;
+        max-width: 100% !important;
     }
     .text-tool.markdown-preview .preview-panel {
         display: block !important;
@@ -76,11 +77,44 @@
     .text-tool.markdown-preview .preview-output,
     .text-tool.markdown-preview #md-preview {
         display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
         box-sizing: border-box !important;
         border-radius: 12px !important;
+        min-height: 250px !important;
+        background: #f8f9fa !important;
+        border: 1px solid #ddd !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
     }
+    body.dark-mode.markdown-preview #md-input,
+    body.dark-mode.markdown-preview .preview-output,
+    body.dark-mode.markdown-preview #md-preview {
+        background: rgba(240, 242, 245, 0.95) !important;
+        border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+    }
+    .text-tool.markdown-preview #md-preview h1,
+    .text-tool.markdown-preview #md-preview h2,
+    .text-tool.markdown-preview #md-preview h3,
+    .text-tool.markdown-preview .preview-output h1,
+    .text-tool.markdown-preview .preview-output h2,
+    .text-tool.markdown-preview .preview-output h3 {
+        text-align: left !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        font-size: 1.35em !important;
+        margin-top: 0.75em !important;
+        margin-bottom: 0.4em !important;
+    }
+    .text-tool.markdown-preview #md-preview h2,
+    .text-tool.markdown-preview .preview-output h2 { font-size: 1.2em !important; }
+    .text-tool.markdown-preview #md-preview h3,
+    .text-tool.markdown-preview .preview-output h3 { font-size: 1.05em !important; }
 }
 .text-tool.markdown-preview .preview-panel label,
 .text-tool.markdown-preview .preview-panel .preview-title { display: block; font-size: 0.9rem; font-weight: 600; color: #333; margin-bottom: 8px; text-align: center; }
@@ -209,7 +243,7 @@ Write **bold** or *italic* text.
         </div>
         <div class="preview-panel">
             <div class="preview-title">{% trans "Preview" %}</div>
-            <div id="md-preview" class="preview-output"></div>
+            <div id="md-preview" class="preview-output" style="min-height:280px;box-sizing:border-box;background:#f8f9fa;border:1px solid #ddd;border-radius:12px;color:#1a1a2e;visibility:visible;opacity:1;"></div>
             <div class="preview-actions">
                 <div class="button-group">
                     <button type="button" id="btn-copy">{{ md_copy }}</button>
@@ -235,34 +269,71 @@ Write **bold** or *italic* text.
     var copyBtn = document.getElementById('btn-copy');
     function isMobile() { return window.innerWidth <= 768; }
 
+    function clearMobilePreviewInline() {
+        ['height', 'width', 'min-height', 'max-width', 'border-radius', 'display',
+         'box-sizing', 'background', 'border', 'color', '-webkit-text-fill-color',
+         'visibility', 'opacity', 'padding'].forEach(function (prop) {
+            input.style.removeProperty(prop);
+            preview.style.removeProperty(prop);
+        });
+    }
+
     function applyMobilePanelHeights() {
+        if (!input || !preview) return;
         if (!isMobile()) {
-            input.style.removeProperty('height');
-            input.style.removeProperty('width');
-            preview.style.removeProperty('height');
-            preview.style.removeProperty('min-height');
-            preview.style.removeProperty('width');
-            preview.style.removeProperty('max-width');
-            preview.style.removeProperty('border-radius');
-            preview.style.removeProperty('display');
-            preview.style.removeProperty('box-sizing');
+            clearMobilePreviewInline();
             return;
         }
         var h = window.innerWidth <= 480 ? 250 : 280;
-        input.style.setProperty('width', '100%', 'important');
+        var panel = input.closest('.preview-panel') || input.parentElement;
+        var boxW = 0;
+        try {
+            boxW = Math.round(input.getBoundingClientRect().width);
+            if (boxW < 40 && panel) boxW = Math.round(panel.getBoundingClientRect().width);
+            if (boxW < 40) boxW = Math.round((document.querySelector('.markdown-preview .container') || document.body).getBoundingClientRect().width - 24);
+        } catch (eW) {}
+        var wCss = boxW > 40 ? (boxW + 'px') : '100%';
+        var bg = document.body.classList.contains('dark-mode')
+            ? 'rgba(240, 242, 245, 0.95)'
+            : '#f8f9fa';
+        var border = document.body.classList.contains('dark-mode')
+            ? '1px solid rgba(220, 224, 230, 0.9)'
+            : '1px solid #ddd';
+
+        input.style.setProperty('display', 'block', 'important');
+        input.style.setProperty('width', wCss, 'important');
+        input.style.setProperty('max-width', '100%', 'important');
         input.style.setProperty('height', h + 'px', 'important');
+        input.style.setProperty('min-height', h + 'px', 'important');
+        input.style.setProperty('box-sizing', 'border-box', 'important');
+        input.style.setProperty('border-radius', '12px', 'important');
+        input.style.setProperty('background', bg, 'important');
+        input.style.setProperty('border', border, 'important');
+        input.style.setProperty('color', '#1a1a2e', 'important');
+        input.style.setProperty('-webkit-text-fill-color', '#1a1a2e', 'important');
+
         preview.style.setProperty('display', 'block', 'important');
-        preview.style.setProperty('width', '100%', 'important');
+        preview.style.setProperty('visibility', 'visible', 'important');
+        preview.style.setProperty('opacity', '1', 'important');
+        preview.style.setProperty('width', wCss, 'important');
         preview.style.setProperty('max-width', '100%', 'important');
         preview.style.setProperty('box-sizing', 'border-box', 'important');
         preview.style.setProperty('border-radius', '12px', 'important');
         preview.style.setProperty('min-height', h + 'px', 'important');
         preview.style.setProperty('height', h + 'px', 'important');
+        preview.style.setProperty('background', bg, 'important');
+        preview.style.setProperty('border', border, 'important');
+        preview.style.setProperty('color', '#1a1a2e', 'important');
+        preview.style.setProperty('-webkit-text-fill-color', '#1a1a2e', 'important');
+        preview.style.setProperty('padding', '12px', 'important');
     }
 
     function scheduleSyncAfterLayout() {
         applyMobilePanelHeights();
-        syncScroll();
+        requestAnimationFrame(function () {
+            applyMobilePanelHeights();
+            syncScroll();
+        });
     }
 
     function syncScroll() {
@@ -325,10 +396,25 @@ Write **bold** or *italic* text.
         }
     }
 
+    function whenMarkedReady(cb) {
+        if (typeof marked !== 'undefined' && marked.parse) {
+            cb();
+            return;
+        }
+        var n = 0;
+        var t = setInterval(function () {
+            if ((typeof marked !== 'undefined' && marked.parse) || ++n > 60) {
+                clearInterval(t);
+                cb();
+            }
+        }, 50);
+    }
+
     function attachMarkdownPreviewUI() {
         var obs = new MutationObserver(function() {
             setTextareaColor();
             applyMobilePanelHeights();
+            update();
         });
         obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', function() {
@@ -336,13 +422,31 @@ Write **bold** or *italic* text.
             applyMobilePanelHeights();
             syncScroll();
         });
+        if (typeof ResizeObserver !== 'undefined') {
+            try {
+                var ro = new ResizeObserver(function () {
+                    applyMobilePanelHeights();
+                });
+                ro.observe(input);
+                if (input.parentElement) ro.observe(input.parentElement);
+            } catch (eRo) {}
+        }
         input.addEventListener('input', update);
         input.addEventListener('change', update);
         input.addEventListener('scroll', syncScroll);
-        requestAnimationFrame(function() {
+        applyMobilePanelHeights();
+        whenMarkedReady(function () {
             bootPreview();
-            requestAnimationFrame(applyMobilePanelHeights);
+            applyMobilePanelHeights();
+            setTimeout(applyMobilePanelHeights, 0);
+            setTimeout(applyMobilePanelHeights, 100);
+            setTimeout(applyMobilePanelHeights, 300);
+            setTimeout(function () { update(); applyMobilePanelHeights(); }, 500);
         });
+        window.addEventListener('load', function () {
+            applyMobilePanelHeights();
+            update();
+        }, { once: true });
     }
 
     if (document.readyState === 'loading') {

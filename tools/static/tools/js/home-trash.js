@@ -613,6 +613,8 @@
         document.body.style.left = "0";
         document.body.style.right = "0";
         document.body.style.width = "100%";
+        /* Dopo body fixed il bottom CSS può “saltare”: ripinna subito. */
+        pinMobileTrashPosition();
     }
 
     function unlockMobilePageScroll() {
@@ -625,6 +627,11 @@
         document.body.style.width = "";
         window.scrollTo(0, mobileScrollLockY);
         mobileScrollLockY = 0;
+        if (!document.documentElement.classList.contains("gadly-mobile-trash-visible")) {
+            unpinMobileTrashPosition();
+        } else {
+            pinMobileTrashPosition();
+        }
     }
 
     function cancelMobileTouchDrag(clientX, clientY) {
@@ -684,11 +691,64 @@
         }
     }
 
+    function getSafeAreaInsetBottom() {
+        try {
+            var probe = document.createElement("div");
+            probe.setAttribute("aria-hidden", "true");
+            probe.style.cssText = "position:fixed;left:0;bottom:0;width:0;height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;";
+            document.documentElement.appendChild(probe);
+            var h = probe.getBoundingClientRect().height || 0;
+            probe.parentNode.removeChild(probe);
+            return h;
+        } catch (eSafe) {
+            return 0;
+        }
+    }
+
+    function pinMobileTrashPosition() {
+        if (!isMobileTrashHome()) return;
+        var bin = document.getElementById("desktop-trash-bin");
+        if (!bin) return;
+        var h = bin.offsetHeight || 65;
+        var gap = 40;
+        var safe = getSafeAreaInsetBottom();
+        var vv = window.visualViewport;
+        var viewBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+        var top = Math.round(viewBottom - h - gap - safe);
+        bin.style.setProperty("top", top + "px", "important");
+        bin.style.setProperty("bottom", "auto", "important");
+        bin.style.setProperty("left", "12px", "important");
+        bin.style.setProperty("right", "auto", "important");
+        bin.style.setProperty("transform", "none", "important");
+        bin.style.setProperty("transition", "none", "important");
+        bin.style.setProperty("animation", "none", "important");
+    }
+
+    function unpinMobileTrashPosition() {
+        var bin = document.getElementById("desktop-trash-bin");
+        if (!bin) return;
+        bin.style.removeProperty("top");
+        bin.style.removeProperty("bottom");
+        bin.style.removeProperty("left");
+        bin.style.removeProperty("right");
+        bin.style.removeProperty("transform");
+        bin.style.removeProperty("transition");
+        bin.style.removeProperty("animation");
+    }
+
     function setMobileTrashVisible(visible) {
         if (!isMobileTrashHome()) return;
+        var bin = document.getElementById("desktop-trash-bin");
+        if (bin && visible) {
+            /* Niente bounce onboarding mentre si usa il drag */
+            bin.classList.remove("desktop-trash-bin--hint");
+        }
         document.documentElement.classList.toggle("gadly-mobile-trash-visible", !!visible);
-        if (visible && pointerDrag) {
-            pointerDrag.trashWasVisible = true;
+        if (visible) {
+            pinMobileTrashPosition();
+            if (pointerDrag) pointerDrag.trashWasVisible = true;
+        } else if (!document.documentElement.classList.contains("gadly-trash-drag-active")) {
+            unpinMobileTrashPosition();
         }
     }
 
