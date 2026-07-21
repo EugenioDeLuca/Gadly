@@ -53,6 +53,10 @@
             function paint(c) {
                 root.style.setProperty('background-color', c, 'important');
                 if (body && mobile) {
+                    /*
+                     * iOS 26 Safari: ignora theme-color. Campiona fixed in alto (colore “congelato”)
+                     * oppure body (observer LIVE). Body solido = status bar al passo col tema.
+                     */
                     body.style.setProperty('background-color', c, 'important');
                     body.style.setProperty('background', c, 'important');
                 } else if (body) {
@@ -62,41 +66,30 @@
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (mobile) {
-                        header.style.setProperty('background', c, 'important');
-                        header.style.setProperty('background-color', c, 'important');
+                        /* Trasparente al campionamento Safari; il riempimento è ::before */
+                        header.style.setProperty('background', 'transparent', 'important');
+                        header.style.setProperty('background-color', 'transparent', 'important');
                         header.style.setProperty('backdrop-filter', 'none', 'important');
                         header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                        header.style.setProperty('--gadly-header-fill', c);
                     } else {
                         header.style.removeProperty('background');
                         header.style.removeProperty('background-color');
                         header.style.removeProperty('backdrop-filter');
                         header.style.removeProperty('-webkit-backdrop-filter');
+                        header.style.removeProperty('--gadly-header-fill');
                     }
                 }
+                /* Niente barra fixed in cima: su iOS 26 congela il tint e desincronizza */
                 var bar = document.getElementById('gadly-viewport-chrome');
-                if (!bar) {
-                    bar = document.createElement('div');
-                    bar.id = 'gadly-viewport-chrome';
-                    bar.setAttribute('aria-hidden', 'true');
-                    if (root.firstChild) root.insertBefore(bar, root.firstChild);
-                    else root.appendChild(bar);
-                } else if (bar.parentNode !== root) {
-                    root.insertBefore(bar, root.firstChild);
-                }
-                if (mobile) {
-                    bar.style.display = 'block';
-                    bar.style.setProperty('background', c, 'important');
-                    bar.style.setProperty('background-color', c, 'important');
-                } else {
-                    bar.style.display = 'none';
-                }
+                if (bar) bar.style.display = 'none';
             }
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
 
-                /* Solo aggiorna content: ricreare il meta provoca il grigio intermedio su iOS */
+                /* Chrome/Android + iOS < 26; su iOS 26 è ignorato ma non fa danni */
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
                     if (el.id !== 'gadly-theme-color') {
                         el.parentNode && el.parentNode.removeChild(el);
@@ -119,16 +112,17 @@
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                /*
-                 * black-translucent: niente fascia “lattea” opaca in basso da theme-color.
-                 * theme-color resta aggiornato in-place (no ricrea meta → meno grigio in alto).
-                 */
                 apple.setAttribute('content', 'black-translucent');
             }
 
             writeThemeColor(color);
             paint(color);
             void root.offsetHeight;
+            if (body && mobile) {
+                /* Secondo write: forza l’observer WebKit sul body */
+                body.style.setProperty('background-color', color, 'important');
+                void body.offsetHeight;
+            }
         };
         try {
             var s = localStorage.getItem('gadly-theme');
@@ -138,55 +132,50 @@
     })();
     </script>
     <style id="gadly-viewport-chrome-style">
-    /* Striscia sotto la status bar (safe-area): il browser campiona questo colore */
     #gadly-viewport-chrome {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: env(safe-area-inset-top, 0px);
-        min-height: env(safe-area-inset-top, 0px);
-        z-index: 260;
-        pointer-events: none;
-        border: 0;
-        margin: 0;
-        padding: 0;
+        display: none !important;
     }
     @media (max-width: 768px) {
-        #gadly-viewport-chrome {
-            display: block;
-            /* Solo safe-area (dietro orologio), mai sopra il contenuto header */
-            height: env(safe-area-inset-top, 0px);
-            min-height: env(safe-area-inset-top, 0px);
-        }
         body.nav-open #cookie-banner {
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
         }
+        /*
+         * iOS 26: Safari campiona background-color degli elementi fixed in cima e lo congela.
+         * Header trasparente → vince body (observer live al toggle tema).
+         * Riempimento visivo solo su ::before (non campionato come bg dell’elemento).
+         */
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
             min-height: calc(82px + env(safe-area-inset-top, 0px)) !important;
             max-height: none !important;
             padding-top: env(safe-area-inset-top, 0px) !important;
             box-sizing: border-box !important;
+            background: transparent !important;
+            background-color: transparent !important;
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
-        }
-        body:not(.dark-mode) .site-header {
-            background: #ffffff !important;
-            background-color: #ffffff !important;
+            --gadly-header-fill: #ffffff;
         }
         body.dark-mode .site-header {
-            background: #0f0f23 !important;
-            background-color: #0f0f23 !important;
+            --gadly-header-fill: #0f0f23;
+        }
+        .site-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-color: var(--gadly-header-fill, #ffffff);
+        }
+        .site-header .header-inner {
+            position: relative;
+            z-index: 1;
         }
         :root {
             --site-header-height: calc(82px + env(safe-area-inset-top, 0px));
         }
-        /* In cima: niente rubber-band verso l'alto; scroll verso il basso ok */
         html,
         body {
             overscroll-behavior-y: none;
@@ -1429,6 +1418,36 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=213">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=133">
+    <style id="gadly-ios26-chrome-sync">
+    /* Dopo theme.css: header fixed non deve dare un bg “congelato” a Safari 26 */
+    @media (max-width: 768px) {
+        .site-header {
+            background: transparent !important;
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        body:not(.dark-mode) .site-header {
+            --gadly-header-fill: #ffffff;
+        }
+        body.dark-mode .site-header {
+            --gadly-header-fill: #0f0f23;
+        }
+        .site-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-color: var(--gadly-header-fill, #ffffff) !important;
+            background-image: none !important;
+        }
+        .site-header .header-inner {
+            position: relative;
+            z-index: 1;
+        }
+    }
+    </style>
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2097,7 +2116,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=30"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=31"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}

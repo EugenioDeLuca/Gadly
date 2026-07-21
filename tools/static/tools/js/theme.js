@@ -10,12 +10,20 @@
         }
     }
 
+    function nudgeSafariChrome() {
+        /* Micro-scroll: su Safari a volte ri-campiona la chrome dopo il cambio body */
+        try {
+            var y = window.scrollY || window.pageYOffset || 0;
+            window.scrollTo(0, y + 1);
+            window.scrollTo(0, y);
+        } catch (e) {}
+    }
+
     function applyTheme(isDark) {
         var root = document.documentElement;
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 
         root.classList.add('theme-switching');
-        /* theme-color + header insieme, senza ricreare meta (evita grigio intermedio) */
         syncViewportChrome(isDark);
         void root.offsetHeight;
 
@@ -28,6 +36,7 @@
 
         syncViewportChrome(isDark);
         void root.offsetHeight;
+        if (mobile) nudgeSafariChrome();
         root.classList.remove('theme-switching');
     }
 
