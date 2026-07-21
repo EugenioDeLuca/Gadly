@@ -1047,14 +1047,17 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         -webkit-overflow-scrolling: auto;
         touch-action: none !important;
         height: 100% !important;
+        /* Nero: Safari 26 tinge la chrome in basso da qui; bianco/#0f0f23 = striscia dietro Safari */
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
     html.nav-open:has(body.dark-mode) {
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
     html.nav-open:has(body:not(.dark-mode)) {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
 
     html.nav-open body {
@@ -1069,16 +1072,19 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         width: 100% !important;
         left: auto !important;
         right: auto !important;
+        background-image: none !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
     html.nav-open body:not(.dark-mode) {
         background-image: none !important;
-        background: #ffffff !important;
-        background-color: #ffffff !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
     html.nav-open:has(body.dark-mode) body {
         background-image: none !important;
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
 
     html.nav-open body .site-header,

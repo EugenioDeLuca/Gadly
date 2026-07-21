@@ -1455,8 +1455,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=213">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=133">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=214">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=134">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2247,6 +2247,56 @@
                 return scrim;
             }
 
+            function ensureSafariBottomTint() {
+                var tint = document.getElementById('gadly-safari-bottom-tint');
+                if (!tint) {
+                    tint = document.createElement('div');
+                    tint.id = 'gadly-safari-bottom-tint';
+                    tint.setAttribute('aria-hidden', 'true');
+                    document.body.appendChild(tint);
+                } else if (tint.parentNode !== document.body) {
+                    document.body.appendChild(tint);
+                }
+                tint.style.display = 'block';
+                tint.style.backgroundColor = '#000000';
+                return tint;
+            }
+
+            function hideSafariBottomTint() {
+                var tint = document.getElementById('gadly-safari-bottom-tint');
+                if (!tint) return;
+                tint.style.display = 'none';
+            }
+
+            function setNavOpenChrome() {
+                /* Allinea theme-color + body al nero scrim: niente striscia bianca/blu dietro Safari */
+                var meta = document.getElementById('gadly-theme-color');
+                if (meta) meta.setAttribute('content', '#000000');
+                var root = document.documentElement;
+                var body = document.body;
+                root.style.setProperty('background-color', '#000000', 'important');
+                if (body) {
+                    body.style.setProperty('background-color', '#000000', 'important');
+                    body.style.setProperty('background-image', 'none', 'important');
+                }
+                var topTint = document.getElementById('gadly-safari-tint');
+                if (topTint) topTint.style.backgroundColor = '#000000';
+                ensureSafariBottomTint();
+                try {
+                    var y = window.scrollY || window.pageYOffset || 0;
+                    window.scrollTo(0, y + 1);
+                    window.scrollTo(0, y);
+                } catch (eNudge) {}
+            }
+
+            function restoreThemeChrome() {
+                hideSafariBottomTint();
+                var isDark = document.body.classList.contains('dark-mode');
+                if (typeof window.gadlySyncViewportChrome === 'function') {
+                    window.gadlySyncViewportChrome(isDark, { forceResample: true });
+                }
+            }
+
             function hideNavScrim() {
                 var scrim = document.getElementById('gadly-nav-scrim');
                 if (!scrim) return;
@@ -2267,6 +2317,7 @@
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
+                setNavOpenChrome();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2279,6 +2330,7 @@
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 document.body.style.removeProperty('width');
                 hideNavScrim();
+                restoreThemeChrome();
                 window.scrollTo(0, navScrollY);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2362,6 +2414,12 @@
                     document.body.style.removeProperty('--nav-scroll-lock-y');
                     var scrim = document.getElementById('gadly-nav-scrim');
                     if (scrim) scrim.classList.remove('is-active');
+                    var bottomTint = document.getElementById('gadly-safari-bottom-tint');
+                    if (bottomTint) bottomTint.style.display = 'none';
+                    var isDark = document.body.classList.contains('dark-mode');
+                    if (typeof window.gadlySyncViewportChrome === 'function') {
+                        window.gadlySyncViewportChrome(isDark, { forceResample: true });
+                    }
                 }
             });
             document.addEventListener('click', function() {

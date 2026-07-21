@@ -423,6 +423,25 @@ body {
         -webkit-tap-highlight-color: transparent;
         opacity: 1;
     }
+    /* Tint solido per Safari 26 (campiona fixed in basso): evita striscia bianca/#0f0f23 */
+    #gadly-safari-bottom-tint {
+        display: none;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: -8px;
+        width: 100%;
+        height: 16px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background-color: #000000;
+        z-index: 239;
+        pointer-events: none;
+    }
+    body.nav-open #gadly-safari-bottom-tint {
+        display: block;
+    }
     #gadly-nav-scrim.is-active,
     body.nav-open #gadly-nav-scrim {
         display: block;
