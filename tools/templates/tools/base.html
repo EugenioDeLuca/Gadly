@@ -95,37 +95,39 @@
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
+                if (!head) return;
+                /* Safari applica theme-color in ritardo se si aggiorna solo content:
+                   rimuovi e ricrea i meta nello stesso turn, tutti allo stesso colore. */
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                    if (el.id !== 'gadly-theme-color') {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    }
+                    el.parentNode && el.parentNode.removeChild(el);
                 });
-                var meta = document.getElementById('gadly-theme-color');
-                if (!meta && head) {
-                    meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
+                function addThemeMeta(content, media) {
+                    var meta = document.createElement('meta');
                     meta.setAttribute('name', 'theme-color');
+                    meta.setAttribute('content', content);
+                    if (media) meta.setAttribute('media', media);
+                    if (!media) meta.id = 'gadly-theme-color';
                     head.insertBefore(meta, head.firstChild);
+                    return meta;
                 }
-                if (meta) {
-                    /* Niente content vuoto: su iOS provoca flash/ritardo in status bar. */
-                    meta.setAttribute('content', c);
-                }
+                addThemeMeta(c, null);
+                addThemeMeta(c, '(prefers-color-scheme: light)');
+                addThemeMeta(c, '(prefers-color-scheme: dark)');
+
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-                if (!apple && head) {
+                if (!apple) {
                     apple = document.createElement('meta');
                     apple.id = 'gadly-apple-status-bar';
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                if (apple) {
-                    apple.setAttribute('content', mobile ? 'black-translucent' : (isDark ? 'black-translucent' : 'default'));
-                }
+                /* black-translucent: la pagina (e la maschera) arrivano sotto la status bar. */
+                apple.setAttribute('content', 'black-translucent');
             }
 
-            paint(color);
             writeThemeColor(color);
+            paint(color);
             /* Reflow forzato: Safari campiona la status bar sullo stesso frame. */
             void root.offsetHeight;
         };
@@ -159,10 +161,30 @@
             /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
             min-height: max(1px, env(safe-area-inset-top, 0px));
         }
-        body.nav-open #cookie-banner {
+        body.nav-open #cookie-banner,
+        html.nav-veil #cookie-banner {
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
+        }
+        /* Solo in chiusura (menu già chiuso): copre il gap iOS senza scurire il pannello */
+        #gadly-nav-gap-cover {
+            display: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 240px;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: #000000;
+            z-index: 2147483645;
+            pointer-events: none;
+        }
+        html.nav-veil #gadly-nav-gap-cover {
+            display: block;
         }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1425,8 +1447,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=198">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=118">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=199">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=119">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2095,7 +2117,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=23"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=24"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2185,16 +2207,32 @@
                     if (navThemeColorSaved === null) {
                         navThemeColorSaved = meta.getAttribute('content') || '';
                     }
-                    var isDark = document.body.classList.contains('dark-mode');
-                    var overlayColor = isDark ? '#0f0f23' : '#ffffff';
-                    meta.setAttribute('content', overlayColor);
+                    /* Nero = stesso del gap html: niente striscia chiara sotto lo scrim */
+                    meta.setAttribute('content', '#000000');
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.setAttribute('content', '#000000');
+                    });
                 } else if (navThemeColorSaved !== null) {
-                    meta.setAttribute('content', navThemeColorSaved);
+                    var restore = navThemeColorSaved;
                     navThemeColorSaved = null;
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.setAttribute('content', restore);
+                    });
                     if (typeof window.gadlySyncViewportChrome === 'function') {
                         window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
                     }
                 }
+            }
+
+            function ensureGapCover() {
+                var cover = document.getElementById('gadly-nav-gap-cover');
+                if (!cover) {
+                    cover = document.createElement('div');
+                    cover.id = 'gadly-nav-gap-cover';
+                    cover.setAttribute('aria-hidden', 'true');
+                    document.documentElement.appendChild(cover);
+                }
+                return cover;
             }
 
             function blockNavOverscroll(e) {
@@ -2255,18 +2293,25 @@
                 scrim.style.removeProperty('opacity');
             }
 
-            function lockNavScroll() {
-                navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+            function paintNavBlack() {
                 document.documentElement.style.setProperty('background-color', '#000000', 'important');
                 document.documentElement.style.setProperty('background', '#000000', 'important');
+            }
+
+            function clearNavBlack() {
+                document.documentElement.style.removeProperty('background-color');
+                document.documentElement.style.removeProperty('background');
+            }
+
+            function lockNavScroll() {
+                navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                document.documentElement.classList.remove('nav-veil');
+                paintNavBlack();
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
                 syncNavThemeColor(true);
-                if (typeof window.gadlySyncViewportChrome === 'function') {
-                    window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                }
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2274,10 +2319,11 @@
             }
 
             function unlockNavScroll() {
-                /* html resta nero + scrim attivo mentre sblocchiamo: zero flash striscia */
-                document.documentElement.style.setProperty('background-color', '#000000', 'important');
-                document.documentElement.style.setProperty('background', '#000000', 'important');
-                ensureNavScrim();
+                /* Menu già chiuso: solo velo basso + html nero (niente scrim a tutto schermo). */
+                ensureGapCover();
+                document.documentElement.classList.add('nav-veil');
+                paintNavBlack();
+                hideNavScrim();
 
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
@@ -2294,14 +2340,10 @@
                     window.scrollTo(0, navScrollY);
                     requestAnimationFrame(function () {
                         setTimeout(function () {
-                            hideNavScrim();
+                            document.documentElement.classList.remove('nav-veil');
+                            clearNavBlack();
                             syncNavThemeColor(false);
-                            document.documentElement.style.removeProperty('background-color');
-                            document.documentElement.style.removeProperty('background');
-                            if (typeof window.gadlySyncViewportChrome === 'function') {
-                                window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                            }
-                        }, 80);
+                        }, 200);
                     });
                 });
             }
@@ -2331,13 +2373,19 @@
                 if (!nav.classList.contains('is-open') && !document.body.classList.contains('nav-open')) {
                     return;
                 }
+                /* Prima chiudi il pannello, poi unlock col velo (niente flash) */
                 nav.classList.remove('is-open', 'is-closing');
                 nav.style.maxHeight = '';
                 nav.style.paddingTop = '';
                 nav.style.paddingBottom = '';
                 menuBtn.setAttribute('aria-expanded', 'false');
                 clearMenuFocus();
-                unlockNavScroll();
+                ensureGapCover();
+                document.documentElement.classList.add('nav-veil');
+                paintNavBlack();
+                requestAnimationFrame(function () {
+                    unlockNavScroll();
+                });
             }
 
             menuBtn.addEventListener('click', function() {
