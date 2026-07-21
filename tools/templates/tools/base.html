@@ -711,25 +711,37 @@
     {{ user_home_hidden_tools|json_script:"gadly-server-hidden-tools" }}
     {% endif %}
     <script>
-    /* Mobile pull-to-refresh / reload → in cima, senza impedire lo scroll dopo. */
+    /*
+     * Mobile Safari pull-to-refresh: ripristina lo scroll DOPO il load e ignora
+     * history.scrollRestoration. Strategia:
+     * - per ~2s annulla solo gli scroll “automatici” (senza tocco utente)
+     * - al primo touchstart/wheel il guard si spegne → scroll normale ok
+     * - non gira su back_forward / hash
+     */
     (function () {
         try {
             if (!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches)) return;
             if (location.hash) return;
             if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
-            var isReload = false;
+            var navType = "";
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
-                isReload = !!(nav && nav.type === "reload");
+                navType = nav && nav.type ? nav.type : "";
             } catch (eNav) {
                 try {
-                    isReload = !!(performance.navigation && performance.navigation.type === 1);
+                    if (performance.navigation) {
+                        if (performance.navigation.type === 2) navType = "back_forward";
+                        else if (performance.navigation.type === 1) navType = "reload";
+                        else navType = "navigate";
+                    }
                 } catch (eNav2) {}
             }
-            if (!isReload) return;
+            if (navType === "back_forward") return;
 
-            window.__gadlyMobileReloadTop = true;
+            var isReload = navType === "reload";
+            if (isReload) window.__gadlyMobileReloadTop = true;
+
             var p = location.pathname || "/";
             if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
             try {
@@ -741,6 +753,7 @@
 
             function toTop() {
                 try {
+                    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
                     if (document.body) document.body.scrollTop = 0;
@@ -748,16 +761,62 @@
             }
 
             toTop();
-            /* Solo pochi ritentativi contro il restore del browser — niente guard da 4s sullo scroll utente. */
+
+            var armed = true;
+            var until = Date.now() + (isReload ? 2200 : 900);
+
+            function disarm() {
+                if (!armed) return;
+                armed = false;
+                window.removeEventListener("scroll", onScroll, true);
+                window.removeEventListener("touchstart", disarm, true);
+                window.removeEventListener("wheel", disarm, true);
+                window.removeEventListener("pointerdown", disarm, true);
+            }
+
+            function onScroll() {
+                if (!armed) return;
+                if (Date.now() > until) {
+                    disarm();
+                    return;
+                }
+                /* Safari PTR ripristina senza tocco: riportiamo in cima.
+                   Dopo il primo tocco disarm() → l’utente scrolla libero. */
+                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) {
+                    toTop();
+                }
+            }
+
+            window.addEventListener("scroll", onScroll, { capture: true, passive: true });
+            window.addEventListener("touchstart", disarm, { capture: true, passive: true });
+            window.addEventListener("wheel", disarm, { capture: true, passive: true });
+            window.addEventListener("pointerdown", disarm, { capture: true, passive: true });
+
             requestAnimationFrame(function () {
                 toTop();
                 setTimeout(toTop, 0);
                 setTimeout(toTop, 50);
-                setTimeout(toTop, 150);
-                setTimeout(toTop, 350);
+                setTimeout(toTop, 120);
+                setTimeout(toTop, 300);
+                if (isReload) {
+                    setTimeout(toTop, 600);
+                    setTimeout(toTop, 1100);
+                    setTimeout(toTop, 1800);
+                }
             });
-            window.addEventListener("load", toTop, { once: true });
-            document.addEventListener("DOMContentLoaded", toTop, { once: true });
+            window.addEventListener("load", function () {
+                if (armed) toTop();
+            }, { once: true });
+            document.addEventListener("DOMContentLoaded", function () {
+                if (armed) toTop();
+            }, { once: true });
+            window.addEventListener("pageshow", function (ev) {
+                if (ev.persisted) {
+                    disarm();
+                    return;
+                }
+                if (armed) toTop();
+            });
         } catch (eTopEarly) {}
     })();
     </script>
@@ -845,7 +904,7 @@
         }
 
         function shouldForceMobileTop() {
-            /* Solo refresh / pull-to-refresh: non bloccare lo scroll sulle visite normali. */
+            /* Reload/PTR: il guard anti-Safari è nello script early (si spegne al tocco). */
             return isMobileViewport() && isReloadNavigation() && !location.hash;
         }
 
@@ -863,7 +922,7 @@
             } catch (eTop) { /* ignore */ }
         }
 
-        /* Mobile reload/pull-to-refresh: cima + cancella scroll salvato. */
+        /* Mobile reload: cancella scroll salvato (il riposizionamento è gestito dallo script early). */
         if (shouldForceMobileTop()) {
             clearPathScrollStorage(path);
             try {
@@ -1166,17 +1225,7 @@
         }
 
         restoreCommitted = true;
-        if (shouldForceMobileTop()) {
-            forceScrollTop();
-            requestAnimationFrame(function () {
-                forceScrollTop();
-                setTimeout(forceScrollTop, 0);
-                setTimeout(forceScrollTop, 50);
-                setTimeout(forceScrollTop, 150);
-                setTimeout(forceScrollTop, 350);
-            });
-            window.addEventListener("load", forceScrollTop, { once: true });
-        }
+        /* Force-top Safari/PTR: solo nello script early (si spegne al primo tocco). */
         function maybeNotifyScrollRestoreSettled() {
             if (isCoverLetterScrollHold()) return;
             notifyScrollRestoreSettled();
@@ -1199,13 +1248,14 @@
         });
 
         window.addEventListener("pageshow", function(ev) {
-            if (isMobileViewport() && isReloadNavigation() && !location.hash) {
-                clearPathScrollStorage(path);
-                forceScrollTop();
+            if (isMobileViewport()) {
+                if (!ev.persisted && isReloadNavigation() && !location.hash) {
+                    clearPathScrollStorage(path);
+                    forceScrollTop();
+                }
                 return;
             }
             if (!ev.persisted) return;
-            if (isMobileViewport()) return;
             var saved = readSavedScroll();
             if (saved < 1) return;
             releaseScrollRestorePending();
