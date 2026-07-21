@@ -90,29 +90,25 @@ body {
     }
     /* Warm tone + menu aperto: pagina sotto resta warm (non tornare a light/dark) */
     body.nav-open.warm-tone::before {
-        background: hsl(42, 70%, 88%) !important;
-        mix-blend-mode: color !important;
-        opacity: 0.45 !important;
-        z-index: 240 !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        transition: opacity 0.28s ease !important;
+        content: none !important;
+        display: none !important;
     }
     body.nav-open.warm-tone::after {
-        content: '' !important;
-        position: fixed !important;
-        inset: 0 !important;
-        background: rgba(0, 0, 0, 0.45) !important;
-        mix-blend-mode: normal !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: none !important;
-        z-index: 241 !important;
-        transition: opacity 0.28s ease !important;
+        content: none !important;
+        display: none !important;
     }
-    body.nav-open.warm-tone.nav-closing::before,
-    body.nav-open.warm-tone.nav-closing::after {
-        opacity: 0 !important;
+    body.nav-open.warm-tone #gadly-nav-scrim {
+        background: rgba(0, 0, 0, 0.45);
+        display: block;
+    }
+    body.nav-open.warm-tone #gadly-nav-scrim::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: hsl(42, 70%, 88%);
+        mix-blend-mode: color;
+        opacity: 0.45;
+        pointer-events: none;
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
@@ -400,25 +396,43 @@ body {
 
     /* Overlay menu: scurimento pagina sotto header/menu (warm tone ha overlay dedicato) */
     body.nav-open:not(.warm-tone)::before {
-        content: "" !important;
-        display: block !important;
-        position: fixed !important;
-        inset: 0 !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        background: rgba(0, 0, 0, 0.6) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        z-index: 240 !important;
-        transition: opacity 0.28s ease !important;
+        content: none !important;
+        display: none !important;
     }
-    body.nav-open.nav-closing:not(.warm-tone)::before {
-        opacity: 0 !important;
-        pointer-events: none !important;
+    /* Scrim reale (JS): copre anche la fascia sopra la barra Safari su iOS */
+    #gadly-nav-scrim {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        /* Extra sotto: visualViewport / chrome Safari */
+        padding-bottom: 120px;
+        box-sizing: content-box;
+        margin: 0;
+        border: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 240;
+        pointer-events: auto;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
     }
-    body.dark-mode.nav-open:not(.warm-tone)::before {
-        background: rgba(0, 0, 0, 0.7) !important;
+    body.nav-open #gadly-nav-scrim {
+        display: block;
+    }
+    body.dark-mode.nav-open #gadly-nav-scrim {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    body.nav-open.nav-closing #gadly-nav-scrim {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.28s ease;
     }
     /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
     body.nav-open .site-header {

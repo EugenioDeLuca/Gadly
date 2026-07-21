@@ -1116,40 +1116,10 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         visibility: hidden !important;
         pointer-events: none !important;
     }
+    /* ::before disattivato: lo scrim reale #gadly-nav-scrim copre tutta la viewport */
     body.nav-open::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        top: 0;
-        left: 0;
-        right: 0;
-        /* Estende sotto la viewport: niente pixel blu sopra la barra Safari */
-        bottom: -48px;
-        width: 100%;
-        height: auto;
-        min-height: calc(100vh + 48px);
-        min-height: calc(100dvh + 48px);
-        min-height: calc(-webkit-fill-available + 48px);
-        background: rgba(0, 0, 0, 0.55);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        z-index: 240;
-        cursor: pointer;
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        overscroll-behavior: none;
-        touch-action: none;
-    }
-    body.nav-open:not(.nav-closing)::before {
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-    }
-    body.nav-open.nav-closing::before {
-        opacity: 0 !important;
-        pointer-events: none;
-        cursor: default;
+        content: none !important;
+        display: none !important;
     }
     .site-main {
         padding: 20px 16px 36px;
