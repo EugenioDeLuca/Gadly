@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
     <script>
     (function () {
         try {
@@ -119,8 +119,11 @@
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                /* default = colore solido da theme-color, niente blend grigio da translucent */
-                apple.setAttribute('content', mobile ? 'default' : (isDark ? 'black-translucent' : 'default'));
+                /*
+                 * black-translucent: niente fascia “lattea” opaca in basso da theme-color.
+                 * theme-color resta aggiornato in-place (no ricrea meta → meno grigio in alto).
+                 */
+                apple.setAttribute('content', 'black-translucent');
             }
 
             writeThemeColor(color);
