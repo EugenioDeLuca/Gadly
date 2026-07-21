@@ -2367,6 +2367,15 @@ body.dark-mode.drose-page .footer-links a.footer-link-quote-requests:is(:hover, 
         0 1px 2px rgba(15, 23, 42, 0.75);
 }
 
+@media (max-width: 768px) {
+    .header-nav .header-link.footer-link-quote-requests {
+        display: inline-flex;
+        align-items: baseline;
+        justify-content: center;
+        white-space: nowrap;
+    }
+}
+
 @media (min-width: 769px) {
     body.drose-page .footer-links,
     body.is-drose-brand .footer-links {
