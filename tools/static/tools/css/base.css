@@ -1060,7 +1060,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     html.nav-open body {
         overflow: hidden !important;
         position: fixed !important;
-        z-index: 1;
+        /* Niente z-index: altrimenti header/menu restano sotto lo scrim su html */
         width: 100% !important;
         left: 0 !important;
         right: 0 !important;

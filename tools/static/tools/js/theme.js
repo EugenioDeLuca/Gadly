@@ -10,57 +10,54 @@
         }
     }
 
-    function withInstantThemeSwitch(applyFn) {
+    function applyTheme(isDark) {
         var root = document.documentElement;
         root.classList.add('theme-switching');
-        applyFn();
-        requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-                root.classList.remove('theme-switching');
-            });
-        });
-    }
+        /*
+         * Ordine critico per iOS status bar:
+         * 1) pinta chrome (html/header/meta) al nuovo colore
+         * 2) reflow
+         * 3) toggle classe body
+         * 4) ripinta + reflow
+         * Tutto sincrono nello stesso task → niente ritardo percettibile.
+         */
+        syncViewportChrome(isDark);
+        void root.offsetHeight;
 
-    function applyTheme(isDark) {
-        withInstantThemeSwitch(function() {
-            /*
-             * Status bar iOS: campiona lo sfondo sotto l’orologio.
-             * Dark→light: pinta subito il chrome bianco PRIMA di togliere dark-mode,
-             * così fascia e pagina cambiano nello stesso frame (niente ritardo).
-             */
-            if (!isDark) {
-                syncViewportChrome(false);
-            }
-            document.body.classList.toggle(darkClass, isDark);
-            var btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-            if (document.body.classList.contains('cv-generator')) {
-                var mobile = window.innerWidth <= 768;
-                document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
-            }
-            syncViewportChrome(isDark);
-        });
-        /* Un solo riafferma dopo paint (Safari); niente timeout lunghi che “sbiadiscono” in ritardo. */
+        document.body.classList.toggle(darkClass, isDark);
+        var btn = document.getElementById('theme-toggle');
+        if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        if (document.body.classList.contains('cv-generator')) {
+            var mobile = window.innerWidth <= 768;
+            document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
+        }
+
+        syncViewportChrome(isDark);
+        void root.offsetHeight;
+
         requestAnimationFrame(function() {
             syncViewportChrome(isDark);
+            root.classList.remove('theme-switching');
         });
     }
 
     function applyWarmTone(isWarm) {
-        withInstantThemeSwitch(function() {
-            document.body.classList.toggle(warmClass, isWarm);
-            var btn = document.getElementById('warm-tone-toggle');
-            if (btn) {
-                btn.classList.toggle('is-active', isWarm);
-                btn.setAttribute('aria-pressed', isWarm ? 'true' : 'false');
-            }
+        var root = document.documentElement;
+        root.classList.add('theme-switching');
+        document.body.classList.toggle(warmClass, isWarm);
+        var btn = document.getElementById('warm-tone-toggle');
+        if (btn) {
+            btn.classList.toggle('is-active', isWarm);
+            btn.setAttribute('aria-pressed', isWarm ? 'true' : 'false');
+        }
+        requestAnimationFrame(function() {
+            root.classList.remove('theme-switching');
         });
     }
 
     function init() {
         var saved = localStorage.getItem(key);
         var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        /* Inline in base.html ha già applicato tema: evita toggle ridondanti e un reflow inutile al load. */
         if (document.body.classList.contains(darkClass) !== isDark) {
             applyTheme(isDark);
         } else {
@@ -87,7 +84,6 @@
                 isDark = !document.body.classList.contains(darkClass);
                 localStorage.setItem(key, isDark ? 'dark' : 'light');
                 applyTheme(isDark);
-                /* Touch: evita che il bottone resti con focus/hover “incollato” dopo il tap. */
                 if (typeof btn.blur === 'function') {
                     requestAnimationFrame(function() {
                         btn.blur();

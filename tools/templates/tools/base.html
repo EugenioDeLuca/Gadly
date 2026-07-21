@@ -78,9 +78,11 @@
                     bar = document.createElement('div');
                     bar.id = 'gadly-viewport-chrome';
                     bar.setAttribute('aria-hidden', 'true');
-                    var parent = body || root;
-                    if (parent.firstChild) parent.insertBefore(bar, parent.firstChild);
-                    else parent.appendChild(bar);
+                    /* Su html, non sul body: così non si sposta col lock del menu. */
+                    if (root.firstChild) root.insertBefore(bar, root.firstChild);
+                    else root.appendChild(bar);
+                } else if (bar.parentNode !== root) {
+                    root.insertBefore(bar, root.firstChild);
                 }
                 if (mobile) {
                     bar.style.display = 'block';
@@ -93,7 +95,6 @@
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
-                /* Una sola meta theme-color: le varianti media confondono Chrome/Safari al toggle. */
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
                     if (el.id !== 'gadly-theme-color') {
                         el.parentNode && el.parentNode.removeChild(el);
@@ -107,8 +108,7 @@
                     head.insertBefore(meta, head.firstChild);
                 }
                 if (meta) {
-                    /* Vuoto → colore: forza Chrome Android a riprendere il valore. */
-                    meta.setAttribute('content', '');
+                    /* Niente content vuoto: su iOS provoca flash/ritardo in status bar. */
                     meta.setAttribute('content', c);
                 }
                 var apple = document.getElementById('gadly-apple-status-bar') ||
@@ -120,21 +120,14 @@
                     head.appendChild(apple);
                 }
                 if (apple) {
-                    /* Sempre translucent su mobile: la status bar lascia vedere header/html sotto. */
                     apple.setAttribute('content', mobile ? 'black-translucent' : (isDark ? 'black-translucent' : 'default'));
                 }
             }
 
             paint(color);
             writeThemeColor(color);
-
-            if (mobile) {
-                /* Solo stesso frame + 1 rAF: niente setTimeout che aggiornano la status bar in ritardo. */
-                requestAnimationFrame(function () {
-                    paint(color);
-                    writeThemeColor(color);
-                });
-            }
+            /* Reflow forzato: Safari campiona la status bar sullo stesso frame. */
+            void root.offsetHeight;
         };
         try {
             var s = localStorage.getItem('gadly-theme');
@@ -1432,8 +1425,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=196">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=116">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=197">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=117">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2102,7 +2095,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=21"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=22"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2220,16 +2213,19 @@
                     scrim = document.createElement('div');
                     scrim.id = 'gadly-nav-scrim';
                     scrim.setAttribute('aria-hidden', 'true');
-                    document.body.appendChild(scrim);
+                    /* Su html: non si muove col body fixed → niente flash striscia in chiusura. */
+                    document.documentElement.appendChild(scrim);
                     scrim.addEventListener('click', function () {
                         closeMenu();
                     });
+                } else if (scrim.parentNode !== document.documentElement) {
+                    document.documentElement.appendChild(scrim);
                 }
                 var h = Math.max(
                     window.innerHeight || 0,
                     (window.visualViewport && window.visualViewport.height) || 0,
                     document.documentElement.clientHeight || 0
-                ) + 160;
+                ) + 200;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
@@ -2256,7 +2252,6 @@
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                /* Scrim prima del lock: copre subito eventuale gap */
                 ensureNavScrim();
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 document.documentElement.classList.add('nav-open');
@@ -2272,21 +2267,22 @@
             }
 
             function unlockNavScroll() {
+                /* 1) Ripristina scroll mentre lo scrim (su html) copre ancora tutto */
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 document.body.style.removeProperty('width');
+                window.scrollTo(0, navScrollY);
                 syncNavThemeColor(false);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
                 }
-                window.scrollTo(0, navScrollY);
-                /* Scrim resta opaco finché lo scroll è ripristinato: niente flash striscia */
+                /* 2) Togli lo scrim solo dopo che il layout è stabile */
                 requestAnimationFrame(function () {
                     window.scrollTo(0, navScrollY);
                     requestAnimationFrame(function () {
-                        hideNavScrim();
+                        setTimeout(hideNavScrim, 40);
                     });
                 });
             }
