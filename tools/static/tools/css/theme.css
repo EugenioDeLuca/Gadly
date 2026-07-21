@@ -412,13 +412,13 @@ body {
         pointer-events: auto !important;
         z-index: 240 !important;
         transition: opacity 0.28s ease !important;
-        /* Copre tutta la viewport inclusa FAB e safe area iPhone */
+        /* Copre tutta la viewport inclusa FAB, safe area e rubber-band iPhone */
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        min-height: 100vh;
-        min-height: 100dvh;
+        bottom: -56px;
+        min-height: calc(100vh + 56px);
+        min-height: calc(100dvh + 56px);
     }
     body.nav-open.nav-closing:not(.warm-tone)::before {
         opacity: 0 !important;

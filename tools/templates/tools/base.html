@@ -164,6 +164,30 @@
             /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
             min-height: 1px;
         }
+        /* Menu aperto: copre rubber-band / fascia sopra la barra Safari (striscia blu) */
+        #gadly-nav-bottom-shield {
+            display: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(env(safe-area-inset-bottom, 0px) + 56px);
+            min-height: 56px;
+            z-index: 252;
+            pointer-events: none;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        body.nav-open #gadly-nav-bottom-shield {
+            display: block;
+        }
+        body.nav-open #cookie-banner {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
             min-height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1525,8 +1549,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=189">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=109">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=190">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=110">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2232,7 +2256,8 @@
                     if (navThemeColorSaved === null) {
                         navThemeColorSaved = meta.getAttribute('content') || '';
                     }
-                    var overlayColor = document.body.classList.contains('dark-mode') ? '#0f0f23' : '#000000';
+                    var isDark = document.body.classList.contains('dark-mode');
+                    var overlayColor = isDark ? '#0f0f23' : '#ffffff';
                     meta.setAttribute('content', overlayColor);
                 } else if (navThemeColorSaved !== null) {
                     meta.setAttribute('content', navThemeColorSaved);
@@ -2253,6 +2278,28 @@
                 e.preventDefault();
             }
 
+            function ensureNavBottomShield() {
+                var shield = document.getElementById('gadly-nav-bottom-shield');
+                if (!shield) {
+                    shield = document.createElement('div');
+                    shield.id = 'gadly-nav-bottom-shield';
+                    shield.setAttribute('aria-hidden', 'true');
+                    document.body.appendChild(shield);
+                }
+                var isDark = document.body.classList.contains('dark-mode');
+                var color = isDark ? '#0f0f23' : '#ffffff';
+                shield.style.setProperty('background', color, 'important');
+                shield.style.setProperty('background-color', color, 'important');
+            }
+
+            function removeNavBottomShield() {
+                var shield = document.getElementById('gadly-nav-bottom-shield');
+                if (shield) {
+                    shield.style.removeProperty('background');
+                    shield.style.removeProperty('background-color');
+                }
+            }
+
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
                 document.documentElement.classList.add('nav-open');
@@ -2262,6 +2309,7 @@
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
                 }
+                ensureNavBottomShield();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2272,6 +2320,7 @@
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
+                removeNavBottomShield();
                 syncNavThemeColor(false);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
