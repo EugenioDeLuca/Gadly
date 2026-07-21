@@ -10,17 +10,48 @@
         }
     }
 
+    function ensureStatusMask(color) {
+        var mask = document.getElementById('gadly-theme-status-mask');
+        if (!mask) {
+            mask = document.createElement('div');
+            mask.id = 'gadly-theme-status-mask';
+            mask.setAttribute('aria-hidden', 'true');
+            document.documentElement.appendChild(mask);
+        }
+        mask.style.cssText = [
+            'position:fixed',
+            'top:0',
+            'left:0',
+            'right:0',
+            'width:100%',
+            'height:calc(env(safe-area-inset-top, 0px) + 44px)',
+            'min-height:44px',
+            'z-index:2147483646',
+            'pointer-events:none',
+            'border:0',
+            'margin:0',
+            'padding:0',
+            'display:block',
+            'background:' + color,
+            'background-color:' + color
+        ].join(';');
+        return mask;
+    }
+
+    function hideStatusMask() {
+        var mask = document.getElementById('gadly-theme-status-mask');
+        if (mask) mask.style.display = 'none';
+    }
+
     function applyTheme(isDark) {
         var root = document.documentElement;
+        var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
+
         root.classList.add('theme-switching');
-        /*
-         * Ordine critico per iOS status bar:
-         * 1) pinta chrome (html/header/meta) al nuovo colore
-         * 2) reflow
-         * 3) toggle classe body
-         * 4) ripinta + reflow
-         * Tutto sincrono nello stesso task → niente ritardo percettibile.
-         */
+        /* Maschera status bar col colore NUOVO: Safari non può mostrare il ritardo. */
+        if (mobile) ensureStatusMask(color);
+
         syncViewportChrome(isDark);
         void root.offsetHeight;
 
@@ -28,7 +59,6 @@
         var btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = isDark ? '☀️' : '🌙';
         if (document.body.classList.contains('cv-generator')) {
-            var mobile = window.innerWidth <= 768;
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
 
@@ -37,7 +67,10 @@
 
         requestAnimationFrame(function() {
             syncViewportChrome(isDark);
-            root.classList.remove('theme-switching');
+            requestAnimationFrame(function() {
+                hideStatusMask();
+                root.classList.remove('theme-switching');
+            });
         });
     }
 

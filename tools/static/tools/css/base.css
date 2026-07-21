@@ -1041,26 +1041,19 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
     }
 
-    /* Menu aperto: body fixed (niente salto contenuto) + scrim DOM che copre il gap iOS */
+    /* Menu aperto: body fixed (niente salto) + html nero (gap = nero come lo scrim) */
     html.nav-open {
         overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
         touch-action: none !important;
-    }
-    html.nav-open:has(body.dark-mode) {
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
-    }
-    html.nav-open:has(body:not(.dark-mode)) {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
 
     html.nav-open body {
         overflow: hidden !important;
         position: fixed !important;
-        /* Niente z-index: altrimenti header/menu restano sotto lo scrim su html */
         width: 100% !important;
         left: 0 !important;
         right: 0 !important;
@@ -1089,6 +1082,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overscroll-behavior: contain;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
+        position: fixed !important;
     }
     html.nav-open:has(body:not(.dark-mode)) body .site-header,
     html.nav-open:has(body:not(.dark-mode)) body .header-nav,
@@ -1104,8 +1098,15 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         background-color: #0f0f23 !important;
         background-image: none !important;
     }
+    html.nav-open body .site-header {
+        z-index: 250 !important;
+    }
+    html.nav-open body .header-nav,
     html.nav-open body .header-nav.is-open {
+        z-index: 249 !important;
         top: calc(var(--site-header-height) - 1px);
+    }
+    html.nav-open body .header-nav.is-open {
         padding-top: 11px;
         isolation: isolate;
         transform: translateZ(0);
