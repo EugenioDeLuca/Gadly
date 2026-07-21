@@ -2368,7 +2368,7 @@ body.dark-mode.drose-page .footer-links a.footer-link-quote-requests:is(:hover, 
 }
 
 @media (max-width: 768px) {
-    .header-nav .header-link.footer-link-quote-requests {
+    .header-nav .header-nav-manage-wrap .header-link.footer-link-quote-requests {
         display: inline-flex;
         align-items: baseline;
         justify-content: center;
@@ -4127,9 +4127,10 @@ body.drose-page.faq-page .faq-item h3 {
         transition: opacity 0.25s ease, visibility 0s;
     }
 
+    body.drose-home .drose-hero__logo,
     .drose-hero__logo {
-        width: 96px;
-        height: 96px;
+        width: 120px;
+        height: 120px;
     }
 
     .drose-hero__actions {

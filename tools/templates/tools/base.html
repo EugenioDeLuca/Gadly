@@ -1474,7 +1474,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=183">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=187">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=109">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -1537,7 +1537,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=352">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=356">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2038,14 +2038,23 @@
                 <a href="{% if is_drose_site %}{% url 'drose_about' %}{% else %}{% url 'about' %}{% endif %}" class="header-link">About</a>
                 <a href="{% if is_drose_site %}{% url 'drose_contact' %}{% else %}{% url 'contact' %}{% endif %}" class="header-link header-link-mobile-only">Contact</a>
                 <a href="{% if is_drose_site %}{% url 'drose_privacy' %}{% else %}{% url 'privacy' %}{% endif %}" class="header-link header-link-mobile-only">Privacy</a>
+                {% if not is_drose_site %}
+                <a href="{% url 'hidden_tools' %}" class="header-link header-link-mobile-only" id="header-nav-bin">Bin</a>
+                {% endif %}
+                {% if is_drose_site or user.is_authenticated and user.is_staff %}
+                <div class="header-nav-manage-wrap">
                 {% if is_drose_site and user.is_authenticated and user.is_staff %}
-                <a href="{% url 'drose_quote_staff_list' %}" class="header-link header-link-mobile-only footer-link-quote-requests">{% trans "Quotes" %}{% if drose_unviewed_quote_count %}<sup class="footer-quote-badge{% if drose_unviewed_quote_count >= 10 %} footer-quote-badge--wide{% endif %}" aria-label="{% blocktrans count counter=drose_unviewed_quote_count %}{{ counter }} new quote request{% plural %}{{ counter }} new quote requests{% endblocktrans %}">{{ drose_unviewed_quote_count }}</sup>{% endif %}</a>
-                <a href="{% url 'drose_works_manage' %}" class="header-link header-link-mobile-only">{% trans "Portfolio" %}</a>
+                <a href="{% url 'drose_quote_staff_list' %}" class="header-link header-link-mobile-only header-link--manage footer-link-quote-requests">{% trans "Quotes" %}{% if drose_unviewed_quote_count %}<sup class="footer-quote-badge{% if drose_unviewed_quote_count >= 10 %} footer-quote-badge--wide{% endif %}" aria-label="{% blocktrans count counter=drose_unviewed_quote_count %}{{ counter }} new quote request{% plural %}{{ counter }} new quote requests{% endblocktrans %}">{{ drose_unviewed_quote_count }}</sup>{% endif %}</a>
+                <a href="{% url 'drose_works_manage' %}" class="header-link header-link-mobile-only header-link--manage">{% trans "Portfolio" %}</a>
                 {% endif %}
                 {% if user.is_authenticated and user.is_staff %}
-                <a href="{% url 'accounts_home' %}" class="header-link">Accounts</a>
+                <a href="{% url 'accounts_home' %}" class="header-link header-link--manage">Accounts</a>
                 {% endif %}
-                <a href="{% if is_drose_site %}{% url 'drose_quote_staff_trash' %}{% else %}{% url 'hidden_tools' %}{% endif %}" class="header-link header-link-mobile-only header-link-bin-row" id="header-nav-bin">Bin</a>
+                {% if is_drose_site %}
+                <a href="{% url 'drose_quote_staff_trash' %}" class="header-link header-link-mobile-only header-link--manage" id="header-nav-bin">Bin</a>
+                {% endif %}
+                </div>
+                {% endif %}
                 {% if not user.is_authenticated %}
                 <div class="header-auth-wrap">
                     <a href="{% auth_link 'login' %}" class="header-link">Login</a>

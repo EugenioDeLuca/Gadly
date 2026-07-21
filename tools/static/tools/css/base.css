@@ -536,6 +536,11 @@ body.dark-mode .header-dropdown-item:hover {
     -webkit-appearance: none;
 }
 
+/* Desktop: voci gestione nel flusso normale della barra */
+.header-nav-manage-wrap {
+    display: contents;
+}
+
 .header-link.active {
     background: #003f7f;
     color: white;
@@ -914,17 +919,10 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     .header-nav .header-link-mobile-only {
         display: inline-flex !important;
     }
-    .header-nav .header-link-bin-row {
-        flex: 0 0 100%;
-        width: 100%;
-        margin-top: 4px;
-        padding-top: 0;
-        border-top: none;
-        box-sizing: border-box;
-    }
     /* Menu hamburger: niente pill al tap in light/dark; warm tone → theme.css (evidenza ok) */
     .header-nav .header-link,
-    .header-nav .header-auth-wrap .header-link {
+    .header-nav .header-auth-wrap .header-link,
+    .header-nav .header-nav-manage-wrap .header-link {
         -webkit-tap-highlight-color: transparent;
     }
     body:not(.warm-tone) .header-nav .header-link:hover,
@@ -934,7 +932,11 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:hover,
     body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:active,
     body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus,
-    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible {
+    body:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible,
+    body:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:hover,
+    body:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:active,
+    body:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:focus,
+    body:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:focus-visible {
         background: transparent !important;
         box-shadow: none !important;
         color: #003f7f !important;
@@ -947,10 +949,57 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:hover,
     body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:active,
     body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus,
-    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible {
+    body.dark-mode:not(.warm-tone) .header-nav .header-auth-wrap .header-link:focus-visible,
+    body.dark-mode:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:hover,
+    body.dark-mode:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:active,
+    body.dark-mode:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:focus,
+    body.dark-mode:not(.warm-tone) .header-nav .header-nav-manage-wrap .header-link:focus-visible {
         background: transparent !important;
         box-shadow: none !important;
         color: var(--text-secondary, #b0c4de) !important;
+    }
+    .header-nav .header-nav-manage-wrap {
+        flex-basis: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-items: center;
+        align-items: center;
+        gap: 8px 12px;
+        width: 100%;
+        max-width: 360px;
+        margin: 4px auto 0;
+        padding: 10px 12px 8px;
+        border-top: 1px solid rgba(0, 63, 127, 0.15);
+        box-sizing: border-box;
+    }
+    body.dark-mode .header-nav .header-nav-manage-wrap {
+        border-top-color: rgba(255, 255, 255, 0.15);
+    }
+    .header-nav .header-nav-manage-wrap .header-link {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        width: 100%;
+        min-height: 40px;
+        margin: 0;
+        padding: 8px 6px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+  /* 4 voci: 3 sopra (Quotes, Portfolio, Accounts) + Bin centrato sotto */
+    .header-nav .header-nav-manage-wrap .header-link:nth-child(4) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: auto;
+        min-width: 120px;
+        max-width: 100%;
+    }
+    .header-nav .header-nav-manage-wrap .header-link:only-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: auto;
+        min-width: 120px;
     }
     .header-nav .header-auth-wrap {
         flex-basis: 100%;
