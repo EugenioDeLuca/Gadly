@@ -189,6 +189,11 @@
         :root {
             --site-header-height: calc(82px + env(safe-area-inset-top, 0px));
         }
+        /* In cima: niente rubber-band verso l'alto; scroll verso il basso ok */
+        html,
+        body {
+            overscroll-behavior-y: none;
+        }
     }
     </style>
     <style id="gadly-first-paint-critical">
@@ -2243,6 +2248,59 @@
     {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=148"></script>
+    <script>
+    /*
+     * Mobile: in cima alla pagina blocca solo l'overscroll verso l'alto (rubber-band).
+     * Scroll verso il basso resta libero; scroll verso l'alto ok se non sei già a y=0.
+     */
+    (function () {
+        try {
+            if (!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches)) return;
+            var lastY = 0;
+
+            function isScrollableEl(el) {
+                if (!el || el === document.body || el === document.documentElement) return false;
+                var style = window.getComputedStyle(el);
+                var oy = style.overflowY;
+                if (oy !== 'auto' && oy !== 'scroll' && oy !== 'overlay') return false;
+                return el.scrollHeight > el.clientHeight + 1;
+            }
+
+            function findScrollableParent(el) {
+                var node = el;
+                while (node && node !== document.body && node !== document.documentElement) {
+                    if (isScrollableEl(node)) return node;
+                    node = node.parentElement;
+                }
+                return null;
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                if (!e.touches || !e.touches.length) return;
+                lastY = e.touches[0].clientY;
+            }, { capture: true, passive: true });
+
+            document.addEventListener('touchmove', function (e) {
+                if (!e.touches || !e.touches.length) return;
+                if (document.body && document.body.classList.contains('nav-open')) return;
+                var y = e.touches[0].clientY;
+                var dy = y - lastY;
+                lastY = y;
+                /* Dito verso il basso (dy > 0) in cima = rubber-band / pull-up contenuto */
+                if (dy <= 0) return;
+                var scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                if (scrollY > 1) return;
+                var nested = findScrollableParent(e.target);
+                if (nested && nested.scrollTop > 0) return;
+                if (nested && nested.scrollTop <= 0 && dy > 0) {
+                    e.preventDefault();
+                    return;
+                }
+                e.preventDefault();
+            }, { capture: true, passive: false });
+        } catch (eTopLock) {}
+    })();
+    </script>
     <script>
     (function() {
         var menuBtn = document.getElementById('header-menu-btn');
