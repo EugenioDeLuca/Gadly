@@ -1436,8 +1436,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=201">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=121">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=202">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=122">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2187,6 +2187,37 @@
         if (menuBtn && nav) {
             var navScrollY = 0;
             var navOverscrollBlock = null;
+            var navThemeColorSaved = null;
+
+            function setNavThemeColorBlack(on) {
+                var head = document.head || document.getElementsByTagName('head')[0];
+                if (!head) return;
+                if (on) {
+                    if (navThemeColorSaved === null) {
+                        var cur = document.getElementById('gadly-theme-color');
+                        navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
+                    }
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.setAttribute('content', '#000000');
+                    });
+                    if (!document.getElementById('gadly-theme-color')) {
+                        var meta = document.createElement('meta');
+                        meta.id = 'gadly-theme-color';
+                        meta.setAttribute('name', 'theme-color');
+                        meta.setAttribute('content', '#000000');
+                        head.insertBefore(meta, head.firstChild);
+                    }
+                } else if (navThemeColorSaved !== null) {
+                    var restore = navThemeColorSaved;
+                    navThemeColorSaved = null;
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        el.setAttribute('content', restore || '#ffffff');
+                    });
+                    if (typeof window.gadlySyncViewportChrome === 'function') {
+                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
+                    }
+                }
+            }
 
             function blockNavOverscroll(e) {
                 if (!document.body.classList.contains('nav-open')) return;
@@ -2210,20 +2241,32 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
+                /* Copre viewport + gap sopra la toolbar Safari */
                 var y = Math.abs(navScrollY || window.scrollY || 0);
                 var vv = window.visualViewport;
                 var h = Math.max(
                     window.innerHeight || 0,
                     (vv && (vv.height + vv.offsetTop)) || 0,
                     document.documentElement.clientHeight || 0
-                ) + y + 160;
-                scrim.style.top = '0';
-                scrim.style.left = '0';
-                scrim.style.right = '0';
-                scrim.style.bottom = 'auto';
-                scrim.style.width = '100%';
-                scrim.style.height = h + 'px';
-                scrim.style.opacity = '1';
+                ) + y + 320;
+                scrim.style.cssText = [
+                    'display:block',
+                    'position:fixed',
+                    'top:0',
+                    'left:0',
+                    'right:0',
+                    'bottom:auto',
+                    'width:100%',
+                    'height:' + h + 'px',
+                    'margin:0',
+                    'padding:0',
+                    'border:0',
+                    'background:#000000',
+                    'background-color:#000000',
+                    'z-index:240',
+                    'opacity:1',
+                    'pointer-events:auto'
+                ].join(';');
                 scrim.classList.add('is-active');
                 return scrim;
             }
@@ -2232,23 +2275,17 @@
                 var scrim = document.getElementById('gadly-nav-scrim');
                 if (!scrim) return;
                 scrim.classList.remove('is-active');
-                scrim.style.removeProperty('height');
-                scrim.style.removeProperty('top');
-                scrim.style.removeProperty('left');
-                scrim.style.removeProperty('right');
-                scrim.style.removeProperty('bottom');
-                scrim.style.removeProperty('width');
-                scrim.style.removeProperty('opacity');
+                scrim.removeAttribute('style');
             }
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
-                /* Inline !important: batte il paint del tema su html, così il gap iOS è nero come lo scrim */
                 document.documentElement.style.setProperty('background-color', '#000000', 'important');
                 document.documentElement.style.setProperty('background', '#000000', 'important');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
+                setNavThemeColorBlack(true);
                 ensureNavScrim();
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
@@ -2257,15 +2294,12 @@
             }
 
             function unlockNavScroll() {
-                /* Un solo passo: togli tutto insieme, nessun velo ritardato */
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 hideNavScrim();
+                setNavThemeColorBlack(false);
                 window.scrollTo(0, navScrollY);
-                if (typeof window.gadlySyncViewportChrome === 'function') {
-                    window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                }
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
