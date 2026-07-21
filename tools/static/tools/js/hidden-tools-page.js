@@ -84,10 +84,7 @@
                     escapeHtml(item.name) + "</span>";
                 html += '<button type="button" class="tool-fav hidden-tools-restore-btn" data-url="' +
                     escapeHtml(item.url) + '" title="' + escapeHtml(restoreLabel) + '" aria-label="' +
-                    escapeHtml(restoreLabel) + '">' +
-                    '<svg class="hidden-tools-restore-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">' +
-                    '<path fill="currentColor" d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62C8.77 11.22 10.54 10.5 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>' +
-                    "</svg></button>";
+                    escapeHtml(restoreLabel) + '">\u21A9\uFE0E</button>';
                 html += "</div>";
             });
             html += "</div></section>";

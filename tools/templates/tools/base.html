@@ -15,6 +15,7 @@
             var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
             var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
             var root = document.documentElement;
+            var body = document.body;
             root.dataset.theme = isDark ? 'dark' : 'light';
             root.style.backgroundColor = color;
             if (mobile) {
@@ -22,38 +23,120 @@
             } else {
                 root.style.removeProperty('color-scheme');
             }
+
+            function ensureTintBar() {
+                var bar = document.getElementById('gadly-viewport-chrome');
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'gadly-viewport-chrome';
+                    bar.setAttribute('aria-hidden', 'true');
+                    var parent = body || document.documentElement;
+                    if (parent.firstChild) parent.insertBefore(bar, parent.firstChild);
+                    else parent.appendChild(bar);
+                }
+                return bar;
+            }
+
+            function paintSurfaces(c) {
+                root.style.setProperty('background-color', c, 'important');
+                if (body) {
+                    if (mobile) {
+                        body.style.setProperty('background-color', c, 'important');
+                        body.style.setProperty('background', c, 'important');
+                    } else {
+                        body.style.removeProperty('background-color');
+                        body.style.removeProperty('background');
+                    }
+                }
+                var header = document.querySelector('.site-header');
+                if (header) {
+                    if (mobile) {
+                        header.style.setProperty('background', c, 'important');
+                        header.style.setProperty('background-color', c, 'important');
+                    } else {
+                        header.style.removeProperty('background');
+                        header.style.removeProperty('background-color');
+                    }
+                }
+                var bar = ensureTintBar();
+                if (mobile) {
+                    bar.style.display = 'block';
+                    bar.style.setProperty('background', c, 'important');
+                    bar.style.setProperty('background-color', c, 'important');
+                } else {
+                    bar.style.display = 'none';
+                    bar.style.removeProperty('background');
+                    bar.style.removeProperty('background-color');
+                }
+            }
+
             function writeThemeColor(c) {
-                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                var head = document.head || document.getElementsByTagName('head')[0];
+                var meta = document.getElementById('gadly-theme-color');
+                if (!meta) {
+                    meta = document.querySelector('meta[name="theme-color"]');
+                }
+                if (!meta) {
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'theme-color');
+                    meta.id = 'gadly-theme-color';
+                    if (head) head.insertBefore(meta, head.firstChild);
+                }
+                /* Aggiorna in place (Chrome) + media light/dark dedicati */
+                meta.setAttribute('content', c);
+                meta.removeAttribute('media');
+
+                document.querySelectorAll('meta[name="theme-color"][data-gadly-scheme]').forEach(function (el) {
                     el.parentNode && el.parentNode.removeChild(el);
                 });
-                var meta = document.createElement('meta');
-                meta.setAttribute('name', 'theme-color');
-                meta.id = 'gadly-theme-color';
-                meta.setAttribute('content', c);
-                var head = document.head || document.getElementsByTagName('head')[0];
-                if (head) {
-                    head.insertBefore(meta, head.firstChild);
+                if (mobile && head) {
+                    var lightMeta = document.createElement('meta');
+                    lightMeta.setAttribute('name', 'theme-color');
+                    lightMeta.setAttribute('media', '(prefers-color-scheme: light)');
+                    lightMeta.setAttribute('data-gadly-scheme', '1');
+                    lightMeta.setAttribute('content', isDark ? '#0f0f23' : '#ffffff');
+                    head.appendChild(lightMeta);
+                    var darkMeta = document.createElement('meta');
+                    darkMeta.setAttribute('name', 'theme-color');
+                    darkMeta.setAttribute('media', '(prefers-color-scheme: dark)');
+                    darkMeta.setAttribute('data-gadly-scheme', '1');
+                    darkMeta.setAttribute('content', isDark ? '#0f0f23' : '#ffffff');
+                    head.appendChild(darkMeta);
                 }
+
                 var apple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-                if (!apple) {
+                if (!apple && head) {
                     apple = document.createElement('meta');
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
-                    if (head) head.appendChild(apple);
+                    head.appendChild(apple);
                 }
-                apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
+                if (apple) {
+                    apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
+                }
             }
-            /* Safari/iOS: un solo setAttribute spesso non aggiorna la barra; forza un cambio di colore. */
+
+            paintSurfaces(color);
+            writeThemeColor(color);
+
+            /* Safari/Chrome: micro-scroll + re-paint forzano il re-sample della status bar */
             if (mobile) {
-                writeThemeColor(isDark ? '#ffffff' : '#0f0f23');
-                void root.offsetHeight;
-                writeThemeColor(color);
                 requestAnimationFrame(function () {
+                    paintSurfaces(color);
                     writeThemeColor(color);
-                    setTimeout(function () { writeThemeColor(color); }, 40);
-                    setTimeout(function () { writeThemeColor(color); }, 120);
+                    try {
+                        var y = window.scrollY || 0;
+                        window.scrollTo(0, y + 1);
+                        window.scrollTo(0, y);
+                    } catch (eScroll) {}
+                    setTimeout(function () {
+                        paintSurfaces(color);
+                        writeThemeColor(color);
+                    }, 50);
+                    setTimeout(function () {
+                        paintSurfaces(color);
+                        writeThemeColor(color);
+                    }, 180);
                 });
-            } else {
-                writeThemeColor(color);
             }
         };
         try {
@@ -63,6 +146,28 @@
         } catch (e) {}
     })();
     </script>
+    <style id="gadly-viewport-chrome-style">
+    #gadly-viewport-chrome {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: max(4px, env(safe-area-inset-top, 0px));
+        min-height: 4px;
+        z-index: 2147483646;
+        pointer-events: none;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+    @media (max-width: 768px) {
+        #gadly-viewport-chrome {
+            display: block;
+        }
+    }
+    </style>
     <style id="gadly-first-paint-critical">
     html {
         overflow-x: hidden;
@@ -1741,7 +1846,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=18"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=19"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}

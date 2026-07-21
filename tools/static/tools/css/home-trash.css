@@ -731,13 +731,10 @@ body.homepage .tool-section[hidden] {
     display: none;
 }
 
-/* Freccia ripristino: SVG inline (niente emoji iOS; currentColor = rosso) */
-.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
-    display: block;
-    width: 1.15rem;
-    height: 1.15rem;
-    flex-shrink: 0;
-    pointer-events: none;
+/* Freccia ripristino ↩: testo (FE0E) così iOS non la trasforma in emoji e resta rossa */
+.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn {
+    font-variant-emoji: text;
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", "Noto Sans Symbols", sans-serif;
 }
 
 /* Mobile: pagina tool rimossi (layout come home, senza toccare desktop ≥769px) */
@@ -928,8 +925,8 @@ body.homepage .tool-section[hidden] {
         max-width: none !important;
         min-height: 44px !important;
         height: auto !important;
-        font-size: 0 !important;
-        line-height: 0;
+        font-size: 1.35rem !important;
+        line-height: 1;
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
@@ -944,11 +941,6 @@ body.homepage .tool-section[hidden] {
         font-weight: 400 !important;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
-    }
-
-    body.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
-        width: 1.35rem;
-        height: 1.35rem;
     }
 
     body.hidden-tools-page .hidden-tools-list .tool-btn-wrap.hidden-tools-item--highlight .tool-btn {
@@ -1215,8 +1207,8 @@ body.homepage .tool-section[hidden] {
         background: rgba(0, 0, 0, 0.2);
         border: none;
         border-radius: 6px;
-        font-size: 0;
-        line-height: 0;
+        font-size: 1.1rem;
+        line-height: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -1225,11 +1217,6 @@ body.homepage .tool-section[hidden] {
         padding: 2px 6px;
         z-index: 1;
         transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
-    }
-
-    .hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
-        width: 1.1rem;
-        height: 1.1rem;
     }
 
     .hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn:hover,

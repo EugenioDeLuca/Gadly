@@ -2088,12 +2088,23 @@ body.text-tool.bio-gen .result-area .caption-pick {
     }
     body.markdown-preview .preview-layout {
         gap: 10px !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+    }
+    body.markdown-preview .preview-panel {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: none !important;
     }
     body.markdown-preview .site-main .container .preview-panel textarea,
     body.markdown-preview .site-main .container #md-input {
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
+        border-radius: 12px !important;
         color: #1a1a2e !important;
+        width: 100% !important;
         height: 250px !important;
         min-height: 250px !important;
         padding: 12px !important;
@@ -2126,10 +2137,14 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.dark-mode.markdown-preview .site-main .container .preview-panel textarea::placeholder {
         color: #555 !important;
     }
-    body.markdown-preview .site-main .container .preview-output {
+    body.markdown-preview .site-main .container .preview-output,
+    body.markdown-preview .site-main .container #md-preview {
         background: #f8f9fa !important;
         border: 1px solid #ddd !important;
+        border-radius: 12px !important;
         color: #1a1a2e !important;
+        width: 100% !important;
+        max-width: 100% !important;
         height: 250px !important;
         min-height: 250px !important;
         padding: 12px !important;
@@ -2138,6 +2153,30 @@ body.text-tool.bio-gen .result-area .caption-pick {
         font-family: Arial, sans-serif !important;
         font-size: 17px !important;
         line-height: 1.5 !important;
+        text-align: left !important;
+    }
+    /* Evita che .text-tool h1 (titolo pagina, centrato) stilizzi i titoli dentro l’anteprima */
+    body.markdown-preview .site-main .container .preview-output h1,
+    body.markdown-preview .site-main .container .preview-output h2,
+    body.markdown-preview .site-main .container .preview-output h3,
+    body.markdown-preview .site-main .container #md-preview h1,
+    body.markdown-preview .site-main .container #md-preview h2,
+    body.markdown-preview .site-main .container #md-preview h3 {
+        text-align: left !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        margin-top: 0.75em;
+        margin-bottom: 0.4em;
+        font-size: 1.35em;
+        font-weight: 700;
+    }
+    body.markdown-preview .site-main .container .preview-output h2,
+    body.markdown-preview .site-main .container #md-preview h2 {
+        font-size: 1.2em;
+    }
+    body.markdown-preview .site-main .container .preview-output h3,
+    body.markdown-preview .site-main .container #md-preview h3 {
+        font-size: 1.05em;
     }
     body.markdown-preview .site-main .container .preview-output a {
         color: #002d5c !important;
@@ -2149,10 +2188,13 @@ body.text-tool.bio-gen .result-area .caption-pick {
         color: #999 !important;
     }
     body.dark-mode.markdown-preview .preview-panel textarea,
-    body.dark-mode.markdown-preview .preview-output {
+    body.dark-mode.markdown-preview .preview-output,
+    body.dark-mode.markdown-preview #md-preview {
         background: rgba(240, 242, 245, 0.95) !important;
         border: 1px solid rgba(220, 224, 230, 0.9) !important;
+        border-radius: 12px !important;
         color: #1a1a2e !important;
+        width: 100% !important;
     }
     body.dark-mode.markdown-preview .preview-output .placeholder {
         color: #555 !important;

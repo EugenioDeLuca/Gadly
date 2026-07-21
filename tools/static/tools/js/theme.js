@@ -47,18 +47,19 @@
     function applyTheme(isDark) {
         withInstantThemeSwitch(function() {
             document.body.classList.toggle(darkClass, isDark);
-            syncViewportChrome(isDark);
             var btn = document.getElementById('theme-toggle');
             if (btn) btn.textContent = isDark ? '☀️' : '🌙';
             if (document.body.classList.contains('cv-generator')) {
                 var mobile = window.innerWidth <= 768;
                 document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
             }
+            syncViewportChrome(isDark);
         });
-        /* Riesegui sync dopo il paint: Safari a volte ignora theme-color nel frame del toggle. */
+        /* Riesegui dopo il paint: status bar mobile (Safari/Chrome) a volte campiona in ritardo. */
         requestAnimationFrame(function() {
             syncViewportChrome(isDark);
-            setTimeout(function() { syncViewportChrome(isDark); }, 80);
+            setTimeout(function() { syncViewportChrome(isDark); }, 60);
+            setTimeout(function() { syncViewportChrome(isDark); }, 200);
         });
     }
 
