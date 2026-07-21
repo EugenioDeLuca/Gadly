@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=206">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=126">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=207">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=127">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2160,34 +2160,6 @@
         if (menuBtn && nav) {
             var navScrollY = 0;
             var navOverscrollBlock = null;
-            var navThemeColorSaved = null;
-
-            function syncNavThemeColor(locked) {
-                var head = document.head || document.getElementsByTagName('head')[0];
-                if (!head) return;
-                if (locked) {
-                    var cur = document.getElementById('gadly-theme-color');
-                    if (navThemeColorSaved === null) {
-                        navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
-                    }
-                    /* NERO = stesso dello scrim. Il bianco/blu ERA la striscia. */
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    });
-                    var meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
-                    meta.setAttribute('name', 'theme-color');
-                    meta.setAttribute('content', '#000000');
-                    head.insertBefore(meta, head.firstChild);
-                    document.documentElement.style.setProperty('background-color', '#000000', 'important');
-                    document.documentElement.style.setProperty('background', '#000000', 'important');
-                } else if (navThemeColorSaved !== null) {
-                    navThemeColorSaved = null;
-                    if (typeof window.gadlySyncViewportChrome === 'function') {
-                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                    }
-                }
-            }
 
             function blockNavOverscroll(e) {
                 if (!document.body.classList.contains('nav-open')) return;
@@ -2211,19 +2183,14 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
-                var y = Math.abs(navScrollY || window.scrollY || 0);
-                var h = Math.max(
-                    window.innerHeight || 0,
-                    (window.visualViewport && window.visualViewport.height) || 0,
-                    document.documentElement.clientHeight || 0
-                ) + y + 200;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
+                scrim.style.bottom = '0';
                 scrim.style.width = '100%';
-                scrim.style.height = h + 'px';
-                scrim.style.bottom = 'auto';
+                scrim.style.height = '100%';
                 scrim.style.opacity = '1';
+                scrim.style.removeProperty('box-shadow');
                 scrim.classList.add('is-active');
                 return scrim;
             }
@@ -2236,20 +2203,18 @@
                 scrim.style.removeProperty('top');
                 scrim.style.removeProperty('left');
                 scrim.style.removeProperty('right');
-                scrim.style.removeProperty('width');
                 scrim.style.removeProperty('bottom');
+                scrim.style.removeProperty('width');
                 scrim.style.removeProperty('opacity');
                 scrim.style.removeProperty('box-shadow');
             }
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                ensureNavScrim();
-                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
-                syncNavThemeColor(true);
-                /* NON chiamare gadlySyncViewportChrome qui: ridipingeva bianco e faceva la striscia */
+                ensureNavScrim();
+                /* Non toccare theme-color / html background: è quello che faceva la striscia */
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2261,18 +2226,12 @@
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 document.body.style.removeProperty('width');
-                syncNavThemeColor(false);
+                hideNavScrim();
+                window.scrollTo(0, navScrollY);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
                 }
-                window.scrollTo(0, navScrollY);
-                requestAnimationFrame(function () {
-                    window.scrollTo(0, navScrollY);
-                    requestAnimationFrame(function () {
-                        hideNavScrim();
-                    });
-                });
             }
 
             function clearMenuFocus() {
