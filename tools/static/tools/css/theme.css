@@ -89,7 +89,7 @@ body {
         box-shadow: none !important;
     }
     /* Warm tone + menu aperto: pagina sotto resta warm (non tornare a light/dark) */
-    body.nav-open.warm-tone::before {
+    html.nav-open:has(body.warm-tone)::before {
         background: hsl(42, 70%, 88%) !important;
         mix-blend-mode: color !important;
         opacity: 0.45 !important;
@@ -98,7 +98,7 @@ body {
         -webkit-backdrop-filter: none !important;
         transition: opacity 0.28s ease !important;
     }
-    body.nav-open.warm-tone::after {
+    html.nav-open:has(body.warm-tone)::after {
         content: '' !important;
         position: fixed !important;
         inset: 0 !important;
@@ -110,9 +110,14 @@ body {
         z-index: 241 !important;
         transition: opacity 0.28s ease !important;
     }
-    body.nav-open.warm-tone.nav-closing::before,
-    body.nav-open.warm-tone.nav-closing::after {
+    html.nav-open:has(body.warm-tone.nav-closing)::before,
+    html.nav-open:has(body.warm-tone.nav-closing)::after {
         opacity: 0 !important;
+    }
+    body.nav-open.warm-tone::before,
+    body.nav-open.warm-tone::after {
+        content: none !important;
+        display: none !important;
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
@@ -399,7 +404,7 @@ body {
     }
 
     /* Overlay menu: scurimento pagina sotto header/menu (warm tone ha overlay dedicato) */
-    body.nav-open:not(.warm-tone)::before {
+    html.nav-open:has(body:not(.warm-tone))::before {
         content: "" !important;
         display: block !important;
         position: fixed !important;
@@ -413,12 +418,16 @@ body {
         z-index: 240 !important;
         transition: opacity 0.28s ease !important;
     }
-    body.nav-open.nav-closing:not(.warm-tone)::before {
+    html.nav-open:has(body.nav-closing:not(.warm-tone))::before {
         opacity: 0 !important;
         pointer-events: none !important;
     }
-    body.dark-mode.nav-open:not(.warm-tone)::before {
+    html.nav-open:has(body.dark-mode:not(.warm-tone))::before {
         background: rgba(0, 0, 0, 0.7) !important;
+    }
+    body.nav-open:not(.warm-tone)::before {
+        content: none !important;
+        display: none !important;
     }
     /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
     body.nav-open .site-header {

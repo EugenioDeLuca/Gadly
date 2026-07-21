@@ -1110,10 +1110,16 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         visibility: hidden !important;
         pointer-events: none !important;
     }
-    body.nav-open::before {
+    /*
+     * Overlay sul html (non sul body): con body top negativo i fixed-child
+     * su iOS non coprono la viewport e lasciano la striscia in basso.
+     */
+    html.nav-open::before {
         content: "";
         position: fixed;
         inset: 0;
+        width: 100%;
+        height: 100%;
         min-height: 100vh;
         min-height: 100dvh;
         min-height: -webkit-fill-available;
@@ -1128,16 +1134,20 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overscroll-behavior: none;
         touch-action: none;
     }
-    body.nav-open:not(.nav-closing)::before {
+    html.nav-open:not(:has(body.nav-closing))::before {
         opacity: 1 !important;
         visibility: visible !important;
         pointer-events: auto !important;
     }
-    /* Chiusura: fade overlay mentre il pannello collassa (niente sparizione a scatto) */
-    body.nav-open.nav-closing::before {
+    html.nav-open:has(body.nav-closing)::before {
         opacity: 0 !important;
         pointer-events: none;
         cursor: default;
+    }
+    /* Disattiva l'overlay sul body: resterebbe spostato col top negativo */
+    body.nav-open::before {
+        content: none !important;
+        display: none !important;
     }
     .site-main {
         padding: 20px 16px 36px;

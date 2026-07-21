@@ -733,8 +733,9 @@
     {% endif %}
     <script>
     /*
-     * Mobile Safari pull-to-refresh: dopo reload torna in cima.
-     * Non resettare lo scroll mentre l'utente scorre (niente listener scroll aggressivo).
+     * Mobile Safari: dopo load/PTR/refresh forza sempre la cima.
+     * Importante: NON interpretare lo scroll ripristinato dal browser come gesto utente.
+     * Si spegne solo al tocco/wheel reale, o dopo un timeout.
      */
     (function () {
         try {
@@ -808,7 +809,7 @@
             toTop();
 
             var armed = true;
-            var until = Date.now() + 2200;
+            var until = Date.now() + 3500;
             var touchStartY = 0;
 
             function disarm() {
@@ -816,24 +817,16 @@
                 armed = false;
                 window.removeEventListener("touchstart", onTouchStartTrack, true);
                 window.removeEventListener("touchmove", onTouchMoveDisarm, true);
-                window.removeEventListener("wheel", disarm, true);
+                window.removeEventListener("wheel", onUserGesture, true);
+                window.removeEventListener("scroll", onBrowserScrollRestore, true);
                 if (window.visualViewport) {
                     window.visualViewport.removeEventListener("resize", onViewportChange);
                     window.visualViewport.removeEventListener("scroll", onViewportChange);
                 }
             }
 
-            function userScrolledDown() {
-                return (window.scrollY || document.documentElement.scrollTop || 0) > 48;
-            }
-
-            /* Solo rubber-band PTR bloccato in cima: non resettare scroll utente. */
-            function needsPtrTopFix() {
-                if (userScrolledDown()) return false;
-                var y = window.scrollY || document.documentElement.scrollTop || 0;
-                if (y > 20) return false;
-                var vv = window.visualViewport;
-                return !!(vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5));
+            function onUserGesture() {
+                disarm();
             }
 
             function onTouchStartTrack(e) {
@@ -841,7 +834,6 @@
                 if (e.touches && e.touches.length) {
                     touchStartY = e.touches[0].clientY;
                 }
-                if (userScrolledDown()) disarm();
             }
 
             function onTouchMoveDisarm(e) {
@@ -849,21 +841,31 @@
                 if (!e.touches || !e.touches.length) return;
                 var ty = e.touches[0].clientY;
                 if (!touchStartY) touchStartY = ty;
-                if (Math.abs(ty - touchStartY) > 8) disarm();
+                /* Solo gesto utente reale: spegne il force-top. */
+                if (Math.abs(ty - touchStartY) > 12) disarm();
+            }
+
+            function onBrowserScrollRestore() {
+                if (!armed) return;
+                /* Safari ripristina lo scroll dopo il load: riporta in cima finché armed. */
+                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) {
+                    toTop();
+                }
             }
 
             function onViewportChange() {
                 if (!armed) return;
-                if (Date.now() > until || userScrolledDown()) {
+                if (Date.now() > until) {
                     disarm();
                     return;
                 }
-                if (needsPtrTopFix()) toTop();
+                toTop();
             }
 
             window.addEventListener("touchstart", onTouchStartTrack, { capture: true, passive: true });
             window.addEventListener("touchmove", onTouchMoveDisarm, { capture: true, passive: true });
-            window.addEventListener("wheel", disarm, { capture: true, passive: true });
+            window.addEventListener("wheel", onUserGesture, { capture: true, passive: true });
+            window.addEventListener("scroll", onBrowserScrollRestore, { capture: true, passive: true });
             if (window.visualViewport) {
                 window.visualViewport.addEventListener("resize", onViewportChange);
                 window.visualViewport.addEventListener("scroll", onViewportChange);
@@ -872,26 +874,29 @@
             requestAnimationFrame(function () {
                 toTop();
                 setTimeout(toTop, 0);
-                setTimeout(toTop, 80);
-                setTimeout(toTop, 200);
-                setTimeout(toTop, 500);
+                setTimeout(toTop, 50);
+                setTimeout(toTop, 150);
+                setTimeout(toTop, 300);
+                setTimeout(toTop, 600);
                 setTimeout(toTop, 1000);
-                setTimeout(toTop, 1800);
+                setTimeout(toTop, 1600);
+                setTimeout(toTop, 2400);
+                setTimeout(toTop, 3200);
             });
             window.addEventListener("load", function () {
-                if (armed && !userScrolledDown()) toTop();
+                if (armed) toTop();
             }, { once: true });
             document.addEventListener("DOMContentLoaded", function () {
-                if (armed && !userScrolledDown()) toTop();
+                if (armed) toTop();
             }, { once: true });
             window.addEventListener("pageshow", function (ev) {
                 if (ev.persisted) {
                     disarm();
                     return;
                 }
-                if (armed && !userScrolledDown()) toTop();
+                if (armed) toTop();
             });
-            setTimeout(disarm, 2200);
+            setTimeout(disarm, 3500);
         } catch (eTopEarly) {}
     })();
     </script>
@@ -1060,7 +1065,24 @@
                 setTimeout(forceScrollTop, 0);
                 setTimeout(forceScrollTop, 100);
                 setTimeout(forceScrollTop, 300);
+                setTimeout(forceScrollTop, 700);
+                setTimeout(forceScrollTop, 1400);
+                setTimeout(forceScrollTop, 2500);
             });
+            var mobileTopUntil = Date.now() + 3500;
+            function onMobileBrowserScrollRestore() {
+                if (Date.now() > mobileTopUntil) {
+                    window.removeEventListener("scroll", onMobileBrowserScrollRestore, true);
+                    return;
+                }
+                if ((window.scrollY || root.scrollTop || 0) > 1) {
+                    forceScrollTop();
+                }
+            }
+            window.addEventListener("scroll", onMobileBrowserScrollRestore, { capture: true, passive: true });
+            setTimeout(function () {
+                window.removeEventListener("scroll", onMobileBrowserScrollRestore, true);
+            }, 3500);
         }
 
         function persistScroll(y) {
@@ -1530,8 +1552,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=191">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=111">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=192">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=112">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2337,10 +2359,11 @@
                     closeMenu();
                 });
             });
-            document.body.addEventListener('click', function(e) {
-                if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) {
-                    closeMenu();
-                }
+            document.addEventListener('click', function(e) {
+                if (!nav.classList.contains('is-open')) return;
+                if (nav.contains(e.target) || menuBtn.contains(e.target)) return;
+                /* Include tap sull'overlay html::before (target = html/documentElement). */
+                closeMenu();
             });
         }
     })();
