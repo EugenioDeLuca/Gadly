@@ -1041,22 +1041,39 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
     }
 
-    /*
-     * Menu aperto: NIENTE position:fixed sul body.
-     * Il fixed creava il vuoto nero + la striscia chiara sopra la toolbar Safari.
-     * Solo overflow + touch lock; lo scrim scurisce la pagina lasciandola visibile.
-     */
+    /* Menu aperto: body fixed + html nero (stesso dello scrim) = niente striscia chiara in basso */
     html.nav-open {
         overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
+        touch-action: none !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
 
     html.nav-open body {
         overflow: hidden !important;
+        position: fixed !important;
+        z-index: 1;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: var(--nav-scroll-lock-y, 0px) !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
-        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+    }
+    html.nav-open body:not(.dark-mode) {
+        background-image: none !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+    }
+    html.nav-open:has(body.dark-mode) body {
+        background-image: none !important;
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
     }
 
     html.nav-open body .site-header,
