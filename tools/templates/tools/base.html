@@ -1432,8 +1432,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=195">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=115">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=196">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=116">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2225,37 +2225,42 @@
                         closeMenu();
                     });
                 }
-                /* Copri visualViewport + chrome Safari (fascia bianca/blu in basso). */
                 var h = Math.max(
                     window.innerHeight || 0,
                     (window.visualViewport && window.visualViewport.height) || 0,
                     document.documentElement.clientHeight || 0
-                ) + 120;
+                ) + 160;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
                 scrim.style.width = '100%';
                 scrim.style.height = h + 'px';
                 scrim.style.bottom = 'auto';
+                scrim.style.opacity = '1';
+                scrim.classList.add('is-active');
                 return scrim;
             }
 
-            function clearNavScrim() {
+            function hideNavScrim() {
                 var scrim = document.getElementById('gadly-nav-scrim');
                 if (!scrim) return;
+                scrim.classList.remove('is-active');
                 scrim.style.removeProperty('height');
                 scrim.style.removeProperty('top');
                 scrim.style.removeProperty('left');
                 scrim.style.removeProperty('right');
                 scrim.style.removeProperty('width');
                 scrim.style.removeProperty('bottom');
+                scrim.style.removeProperty('opacity');
             }
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                /* Scrim prima del lock: copre subito eventuale gap */
+                ensureNavScrim();
+                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
-                ensureNavScrim();
                 syncNavThemeColor(true);
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
@@ -2271,16 +2276,19 @@
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 document.body.style.removeProperty('width');
-                clearNavScrim();
                 syncNavThemeColor(false);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
                 }
-                var curY = window.scrollY || document.documentElement.scrollTop || 0;
-                if (Math.abs(curY - navScrollY) > 2) {
+                window.scrollTo(0, navScrollY);
+                /* Scrim resta opaco finché lo scroll è ripristinato: niente flash striscia */
+                requestAnimationFrame(function () {
                     window.scrollTo(0, navScrollY);
-                }
+                    requestAnimationFrame(function () {
+                        hideNavScrim();
+                    });
+                });
             }
 
             function clearMenuFocus() {
@@ -2299,22 +2307,22 @@
                 nav.style.maxHeight = '';
                 nav.style.paddingTop = '';
                 nav.style.paddingBottom = '';
+                lockNavScroll();
                 nav.classList.add('is-open');
                 menuBtn.setAttribute('aria-expanded', 'true');
-                lockNavScroll();
             }
 
             function closeMenu() {
-                if (!nav.classList.contains('is-open')) {
+                if (!nav.classList.contains('is-open') && !document.body.classList.contains('nav-open')) {
                     return;
                 }
                 nav.classList.remove('is-open', 'is-closing');
                 nav.style.maxHeight = '';
                 nav.style.paddingTop = '';
                 nav.style.paddingBottom = '';
-                unlockNavScroll();
                 menuBtn.setAttribute('aria-expanded', 'false');
                 clearMenuFocus();
+                unlockNavScroll();
             }
 
             menuBtn.addEventListener('click', function() {
@@ -2357,6 +2365,8 @@
                     document.documentElement.classList.remove('nav-open');
                     document.body.classList.remove('nav-open', 'nav-closing');
                     document.body.style.removeProperty('--nav-scroll-lock-y');
+                    var scrim = document.getElementById('gadly-nav-scrim');
+                    if (scrim) scrim.classList.remove('is-active');
                 }
             });
             document.addEventListener('click', function() {

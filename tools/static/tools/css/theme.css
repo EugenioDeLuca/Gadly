@@ -97,7 +97,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    body.nav-open.warm-tone #gadly-nav-scrim {
+    body.nav-open.warm-tone #gadly-nav-scrim.is-active {
         background: rgba(0, 0, 0, 0.85);
         display: block;
     }
@@ -399,7 +399,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Scrim reale (JS): copre anche la fascia sopra la barra Safari su iOS */
+    /* Scrim reale (JS .is-active): visibilità solo via classe, così in chiusura non flasha */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
@@ -412,7 +412,6 @@ body {
         min-height: 100vh;
         min-height: 100dvh;
         min-height: -webkit-fill-available;
-        /* Extra sotto: visualViewport / chrome Safari */
         padding-bottom: 120px;
         box-sizing: content-box;
         margin: 0;
@@ -422,17 +421,18 @@ body {
         pointer-events: auto;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
+        opacity: 1;
     }
-    body.nav-open #gadly-nav-scrim {
+    #gadly-nav-scrim.is-active {
         display: block;
     }
-    body.dark-mode.nav-open #gadly-nav-scrim {
+    body.dark-mode #gadly-nav-scrim.is-active {
         background: rgba(0, 0, 0, 0.92);
     }
+    /* Niente fade in chiusura: lo fade scopriva la striscia in basso */
     body.nav-open.nav-closing #gadly-nav-scrim {
-        opacity: 0;
+        opacity: 1;
         pointer-events: none;
-        transition: opacity 0.28s ease;
     }
     /* Header e menu sopra overlay, FAB sotto overlay (così viene oscurato) */
     body.nav-open .site-header {
