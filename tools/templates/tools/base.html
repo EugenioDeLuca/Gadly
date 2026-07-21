@@ -40,20 +40,20 @@
                 }
             }
         } catch (eSrEarly) {}
-        window.gadlySyncViewportChrome = function (isDark) {
+        window.gadlySyncViewportChrome = function (isDark, opts) {
+            opts = opts || {};
+            var forceResample = !!opts.forceResample;
             var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
             var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
             var root = document.documentElement;
             var body = document.body;
 
             root.dataset.theme = isDark ? 'dark' : 'light';
-            /* Non usare color-scheme sul documento: su mobile tiene la chrome del browser “incollata” al dark. */
             root.style.removeProperty('color-scheme');
 
             function paint(c) {
                 root.style.setProperty('background-color', c, 'important');
                 if (body && mobile) {
-                    /* iOS 26: observer LIVE sul body → status bar segue il tema */
                     body.style.setProperty('background-color', c, 'important');
                     body.style.setProperty('background-image', 'none', 'important');
                 } else if (body) {
@@ -64,14 +64,9 @@
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (mobile) {
-                        /*
-                         * Header resta OPACO (gradient solido), ma background-color è transparent:
-                         * Safari 26 campiona solo background-color dei fixed → lascia passare il body.
-                         */
-                        header.style.removeProperty('background');
-                        header.style.setProperty('--gadly-chrome', c);
-                        header.style.setProperty('background-color', 'transparent', 'important');
-                        header.style.setProperty('background-image', 'linear-gradient(' + c + ', ' + c + ')', 'important');
+                        header.style.setProperty('background', c, 'important');
+                        header.style.setProperty('background-color', c, 'important');
+                        header.style.setProperty('background-image', 'none', 'important');
                         header.style.setProperty('backdrop-filter', 'none', 'important');
                         header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                     } else {
@@ -80,7 +75,6 @@
                         header.style.removeProperty('background-image');
                         header.style.removeProperty('backdrop-filter');
                         header.style.removeProperty('-webkit-backdrop-filter');
-                        header.style.removeProperty('--gadly-chrome');
                     }
                 }
                 var bar = document.getElementById('gadly-viewport-chrome');
@@ -90,7 +84,6 @@
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
-
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
                     if (el.id !== 'gadly-theme-color') {
                         el.parentNode && el.parentNode.removeChild(el);
@@ -104,7 +97,6 @@
                     head.insertBefore(meta, head.firstChild);
                 }
                 meta.setAttribute('content', c);
-
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
                 if (!apple) {
@@ -116,9 +108,68 @@
                 apple.setAttribute('content', 'black-translucent');
             }
 
+            function remountSafariTint(c) {
+                var old = document.getElementById('gadly-safari-tint');
+                if (old && old.parentNode) old.parentNode.removeChild(old);
+                var tint = document.createElement('div');
+                tint.id = 'gadly-safari-tint';
+                tint.setAttribute('aria-hidden', 'true');
+                tint.style.cssText = [
+                    'position:fixed',
+                    'top:0',
+                    'left:0',
+                    'right:0',
+                    'width:100%',
+                    'height:4px',
+                    'margin:0',
+                    'padding:0',
+                    'border:0',
+                    'pointer-events:none',
+                    'z-index:2147483646',
+                    'background-color:' + c
+                ].join(';');
+                if (body && body.firstChild) body.insertBefore(tint, body.firstChild);
+                else if (body) body.appendChild(tint);
+                else root.appendChild(tint);
+            }
+
             writeThemeColor(color);
             paint(color);
             void root.offsetHeight;
+
+            /*
+             * iOS 26: la status bar si aggiorna al load, non al toggle (fixed “congelato”).
+             * Togliamo fixed per 1 frame → body live → rimettiamo fixed + tint nuovo colore.
+             */
+            if (mobile && forceResample && body) {
+                var header = document.querySelector('.site-header');
+                var oldTint = document.getElementById('gadly-safari-tint');
+                if (oldTint && oldTint.parentNode) oldTint.parentNode.removeChild(oldTint);
+                if (header) {
+                    header.style.setProperty('position', 'absolute', 'important');
+                    header.style.setProperty('top', '0', 'important');
+                    header.style.setProperty('left', '0', 'important');
+                    header.style.setProperty('right', '0', 'important');
+                    header.style.setProperty('width', '100%', 'important');
+                }
+                body.style.setProperty('background-color', color, 'important');
+                void body.offsetHeight;
+                requestAnimationFrame(function () {
+                    if (header) {
+                        header.style.setProperty('position', 'fixed', 'important');
+                        header.style.setProperty('background', color, 'important');
+                        header.style.setProperty('background-color', color, 'important');
+                    }
+                    remountSafariTint(color);
+                    try {
+                        var y = window.scrollY || window.pageYOffset || 0;
+                        window.scrollTo(0, y + 1);
+                        window.scrollTo(0, y);
+                    } catch (eNudge) {}
+                });
+            } else if (mobile && body) {
+                remountSafariTint(color);
+            }
         };
         try {
             var s = localStorage.getItem('gadly-theme');
@@ -146,20 +197,22 @@
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
         }
-        /* Opaco visivamente; transparent solo su background-color (campionamento Safari 26) */
         body:not(.dark-mode) .site-header {
-            --gadly-chrome: #ffffff;
-            background-color: transparent !important;
-            background-image: linear-gradient(#ffffff, #ffffff) !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            background-image: none !important;
         }
         body.dark-mode .site-header {
-            --gadly-chrome: #0f0f23;
-            background-color: transparent !important;
-            background-image: linear-gradient(#0f0f23, #0f0f23) !important;
+            background: #0f0f23 !important;
+            background-color: #0f0f23 !important;
+            background-image: none !important;
         }
         .site-header::before {
             content: none !important;
             display: none !important;
+        }
+        #gadly-safari-tint {
+            pointer-events: none;
         }
         :root {
             --site-header-height: calc(82px + env(safe-area-inset-top, 0px));
@@ -1406,18 +1459,6 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=213">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=133">
-    <style id="gadly-status-bar-sync">
-    @media (max-width: 768px) {
-        .site-header {
-            background-color: transparent !important;
-            background-image: linear-gradient(var(--gadly-chrome, #ffffff), var(--gadly-chrome, #ffffff)) !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-        }
-        body:not(.dark-mode) .site-header { --gadly-chrome: #ffffff; }
-        body.dark-mode .site-header { --gadly-chrome: #0f0f23; }
-    }
-    </style>
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2086,7 +2127,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=33"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=34"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}

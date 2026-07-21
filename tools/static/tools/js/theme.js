@@ -4,19 +4,10 @@
     var darkClass = 'dark-mode';
     var warmClass = 'warm-tone';
 
-    function syncViewportChrome(isDark) {
+    function syncViewportChrome(isDark, forceResample) {
         if (typeof window.gadlySyncViewportChrome === 'function') {
-            window.gadlySyncViewportChrome(isDark);
+            window.gadlySyncViewportChrome(isDark, { forceResample: !!forceResample });
         }
-    }
-
-    function nudgeSafariChrome() {
-        /* Micro-scroll: su Safari a volte ri-campiona la chrome dopo il cambio body */
-        try {
-            var y = window.scrollY || window.pageYOffset || 0;
-            window.scrollTo(0, y + 1);
-            window.scrollTo(0, y);
-        } catch (e) {}
     }
 
     function applyTheme(isDark) {
@@ -24,7 +15,7 @@
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 
         root.classList.add('theme-switching');
-        syncViewportChrome(isDark);
+        syncViewportChrome(isDark, false);
         void root.offsetHeight;
 
         document.body.classList.toggle(darkClass, isDark);
@@ -34,9 +25,9 @@
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
 
-        syncViewportChrome(isDark);
+        /* forceResample: iOS 26 aggiorna la status bar solo se si ri-campiona (non basta il paint) */
+        syncViewportChrome(isDark, mobile);
         void root.offsetHeight;
-        if (mobile) nudgeSafariChrome();
         root.classList.remove('theme-switching');
     }
 
@@ -60,7 +51,7 @@
         if (document.body.classList.contains(darkClass) !== isDark) {
             applyTheme(isDark);
         } else {
-            syncViewportChrome(isDark);
+            syncViewportChrome(isDark, false);
             var syncBtn = document.getElementById('theme-toggle');
             if (syncBtn) syncBtn.textContent = isDark ? '☀️' : '🌙';
         }
