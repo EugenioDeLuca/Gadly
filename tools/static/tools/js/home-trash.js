@@ -107,6 +107,7 @@
 
     var MOBILE_TRASH_AFTER_DROP_MS = 2200;
     var mobileTrashHideTimer = null;
+    var mobileTrashLayoutCache = null;
 
     function clearMobileTrashHideTimer() {
         if (!mobileTrashHideTimer) return;
@@ -705,14 +706,50 @@
         }
     }
 
+    function resetMobileTrashLayoutCache() {
+        mobileTrashLayoutCache = null;
+        try {
+            document.documentElement.style.removeProperty("--gadly-mobile-trash-top");
+            document.documentElement.style.removeProperty("--gadly-mobile-trash-left");
+        } catch (eResetLayout) {}
+    }
+
+    function ensureMobileTrashLayout() {
+        if (!isMobileTrashHome()) return null;
+        if (mobileTrashLayoutCache) return mobileTrashLayoutCache;
+        var bin = document.getElementById("desktop-trash-bin");
+        if (!bin) return null;
+        var safeBottom = getSafeAreaInsetBottom();
+        var bottomGap = 40 + safeBottom;
+        var binHeight = 65;
+        try {
+            var measured = bin.getBoundingClientRect();
+            if (measured.height > 0) {
+                binHeight = Math.round(measured.height);
+            }
+        } catch (eMeasure) {}
+        var viewportH = window.innerHeight || document.documentElement.clientHeight || 0;
+        var top = Math.round(viewportH - bottomGap - binHeight);
+        if (top < 0) top = 0;
+        mobileTrashLayoutCache = { top: top, left: 12 };
+        try {
+            document.documentElement.style.setProperty("--gadly-mobile-trash-top", top + "px");
+            document.documentElement.style.setProperty("--gadly-mobile-trash-left", "12px");
+        } catch (eCssVar) {}
+        return mobileTrashLayoutCache;
+    }
+
     function pinMobileTrashPosition() {
         if (!isMobileTrashHome()) return;
         var bin = document.getElementById("desktop-trash-bin");
         if (!bin) return;
-        /* Posizione stabile via bottom (niente top in px → niente scatto). */
-        bin.style.removeProperty("top");
-        bin.style.setProperty("bottom", "calc(40px + env(safe-area-inset-bottom, 0px))", "important");
-        bin.style.setProperty("left", "12px", "important");
+        var layout = ensureMobileTrashLayout();
+        if (!layout) return;
+        /* Posizione fissa in px (calcolata una volta): niente salti tra un drag e l'altro. */
+        bin.style.setProperty("position", "fixed", "important");
+        bin.style.setProperty("top", layout.top + "px", "important");
+        bin.style.setProperty("bottom", "auto", "important");
+        bin.style.setProperty("left", layout.left + "px", "important");
         bin.style.setProperty("right", "auto", "important");
         bin.style.setProperty("transform", "none", "important");
         bin.style.setProperty("transition", "none", "important");
@@ -720,6 +757,7 @@
     }
 
     function unpinMobileTrashPosition() {
+        if (isMobileTrashHome()) return;
         var bin = document.getElementById("desktop-trash-bin");
         if (!bin) return;
         bin.style.removeProperty("top");
@@ -1562,6 +1600,9 @@
         setupDesktopClickSuppress();
         document.addEventListener("gadly-trash-onboarding-mounted", setupOnboarding, { once: true });
         setupOnboarding();
+        if (isMobileTrashHome()) {
+            pinMobileTrashPosition();
+        }
         if (!bootTrashDrag()) {
             window.setTimeout(function () {
                 bootTrashDrag();
@@ -1589,6 +1630,8 @@
         if (isMobileTrashHome()) {
             hideOnboardingUi();
             document.documentElement.classList.remove("gadly-home-trash-onboarding-active");
+            resetMobileTrashLayoutCache();
+            pinMobileTrashPosition();
         } else {
             document.documentElement.classList.remove("gadly-mobile-trash-visible");
         }

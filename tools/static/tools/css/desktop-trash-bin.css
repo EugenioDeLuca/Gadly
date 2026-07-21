@@ -170,10 +170,10 @@
         --desktop-trash-lid: #6a9fd4;
         display: block !important;
         position: fixed;
-        left: 12px;
+        left: var(--gadly-mobile-trash-left, 12px);
         right: auto;
-        top: auto;
-        bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+        top: var(--gadly-mobile-trash-top, auto);
+        bottom: auto;
         z-index: 2147482998;
         width: 56px;
         height: 65px;

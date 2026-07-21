@@ -712,11 +712,8 @@
     {% endif %}
     <script>
     /*
-     * Mobile Safari pull-to-refresh: ripristina lo scroll DOPO il load e ignora
-     * history.scrollRestoration. Strategia:
-     * - per ~2s annulla solo gli scroll “automatici” (senza tocco utente)
-     * - al primo touchstart/wheel il guard si spegne → scroll normale ok
-     * - non gira su back_forward / hash
+     * Mobile Safari pull-to-refresh: dopo reload torna in cima.
+     * Il touchstart del rilascio PTR non deve disarmare il guard (solo scroll reale).
      */
     (function () {
         try {
@@ -751,27 +748,70 @@
                 sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p + "/");
             } catch (eClr) {}
 
+            function clearBodyScrollPin() {
+                try {
+                    var root = document.documentElement;
+                    var body = document.body;
+                    root.classList.remove("gadly-scroll-restore-pending");
+                    root.classList.remove("gadly-cl-scroll-pending");
+                    root.style.removeProperty("--gadly-restore-y");
+                    root.style.removeProperty("--gadly-cl-restore-y");
+                    root.style.removeProperty("min-height");
+                    if (body) {
+                        body.style.removeProperty("position");
+                        body.style.removeProperty("top");
+                        body.style.removeProperty("left");
+                        body.style.removeProperty("right");
+                        body.style.removeProperty("width");
+                    }
+                } catch (ePin) {}
+            }
+
             function toTop() {
                 try {
+                    clearBodyScrollPin();
                     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
                     if (document.body) document.body.scrollTop = 0;
+                    if ((window.scrollY || document.documentElement.scrollTop || 0) !== 0) {
+                        window.scrollTo(0, 1);
+                        window.scrollTo(0, 0);
+                    }
+                    var vv = window.visualViewport;
+                    if (vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5)) {
+                        window.scrollTo(0, 0);
+                    }
                 } catch (eTop) {}
             }
+
+            if (!isReload) return;
 
             toTop();
 
             var armed = true;
-            var until = Date.now() + (isReload ? 2200 : 900);
+            var until = Date.now() + 4500;
+            var touchStartY = 0;
 
             function disarm() {
                 if (!armed) return;
                 armed = false;
                 window.removeEventListener("scroll", onScroll, true);
-                window.removeEventListener("touchstart", disarm, true);
+                window.removeEventListener("touchstart", onTouchStartTrack, true);
+                window.removeEventListener("touchmove", onTouchMoveDisarm, true);
                 window.removeEventListener("wheel", disarm, true);
-                window.removeEventListener("pointerdown", disarm, true);
+                if (window.visualViewport) {
+                    window.visualViewport.removeEventListener("resize", onViewportChange);
+                    window.visualViewport.removeEventListener("scroll", onViewportChange);
+                }
+            }
+
+            function needsTop() {
+                var y = window.scrollY || document.documentElement.scrollTop || 0;
+                if (y > 1) return true;
+                var vv = window.visualViewport;
+                if (vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5)) return true;
+                return false;
             }
 
             function onScroll() {
@@ -780,17 +820,41 @@
                     disarm();
                     return;
                 }
-                /* Safari PTR ripristina senza tocco: riportiamo in cima.
-                   Dopo il primo tocco disarm() → l’utente scrolla libero. */
-                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) {
-                    toTop();
+                if (needsTop()) toTop();
+            }
+
+            function onTouchStartTrack(e) {
+                if (!armed) return;
+                if (e.touches && e.touches.length) {
+                    touchStartY = e.touches[0].clientY;
                 }
             }
 
+            function onTouchMoveDisarm(e) {
+                if (!armed) return;
+                if (!e.touches || !e.touches.length) return;
+                var ty = e.touches[0].clientY;
+                if (!touchStartY) touchStartY = ty;
+                if (Math.abs(ty - touchStartY) > 10) disarm();
+            }
+
+            function onViewportChange() {
+                if (!armed) return;
+                if (Date.now() > until) {
+                    disarm();
+                    return;
+                }
+                if (needsTop()) toTop();
+            }
+
             window.addEventListener("scroll", onScroll, { capture: true, passive: true });
-            window.addEventListener("touchstart", disarm, { capture: true, passive: true });
+            window.addEventListener("touchstart", onTouchStartTrack, { capture: true, passive: true });
+            window.addEventListener("touchmove", onTouchMoveDisarm, { capture: true, passive: true });
             window.addEventListener("wheel", disarm, { capture: true, passive: true });
-            window.addEventListener("pointerdown", disarm, { capture: true, passive: true });
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener("resize", onViewportChange);
+                window.visualViewport.addEventListener("scroll", onViewportChange);
+            }
 
             requestAnimationFrame(function () {
                 toTop();
@@ -798,11 +862,11 @@
                 setTimeout(toTop, 50);
                 setTimeout(toTop, 120);
                 setTimeout(toTop, 300);
-                if (isReload) {
-                    setTimeout(toTop, 600);
-                    setTimeout(toTop, 1100);
-                    setTimeout(toTop, 1800);
-                }
+                setTimeout(toTop, 600);
+                setTimeout(toTop, 1100);
+                setTimeout(toTop, 1800);
+                setTimeout(toTop, 2800);
+                setTimeout(toTop, 4000);
             });
             window.addEventListener("load", function () {
                 if (armed) toTop();
@@ -916,9 +980,29 @@
                 }
             } catch (eSr) { /* ignore */ }
             try {
+                root.classList.remove("gadly-scroll-restore-pending");
+                root.classList.remove("gadly-cl-scroll-pending");
+                root.style.removeProperty("--gadly-restore-y");
+                root.style.removeProperty("--gadly-cl-restore-y");
+                root.style.removeProperty("min-height");
+                if (document.body) {
+                    document.body.style.removeProperty("position");
+                    document.body.style.removeProperty("top");
+                    document.body.style.removeProperty("left");
+                    document.body.style.removeProperty("right");
+                    document.body.style.removeProperty("width");
+                }
                 window.scrollTo(0, 0);
                 root.scrollTop = 0;
                 if (document.body) document.body.scrollTop = 0;
+                if ((window.scrollY || root.scrollTop || 0) !== 0) {
+                    window.scrollTo(0, 1);
+                    window.scrollTo(0, 0);
+                }
+                var vv = window.visualViewport;
+                if (vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5)) {
+                    window.scrollTo(0, 0);
+                }
             } catch (eTop) { /* ignore */ }
         }
 
@@ -1249,8 +1333,9 @@
 
         window.addEventListener("pageshow", function(ev) {
             if (isMobileViewport()) {
-                if (!ev.persisted && isReloadNavigation() && !location.hash) {
+                if (!ev.persisted && !location.hash) {
                     clearPathScrollStorage(path);
+                    releaseScrollRestorePending();
                     forceScrollTop();
                 }
                 return;
@@ -1396,7 +1481,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=177">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=179">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=108">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -1440,7 +1525,7 @@
     {% if not is_drose_site %}
     <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=31">
     {% endif %}
-    <link rel="stylesheet" href="{% static 'tools/css/tool-favorites.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'tools/css/tool-favorites.css' %}?v=3">
 <link rel="stylesheet" href="{% static 'tools/css/drose-entry.css' %}?v=59">
 <script src="{% static 'tools/js/drose-entry-boot.js' %}?v=5"></script>
 
@@ -2080,18 +2165,58 @@
         var nav = document.getElementById('header-nav');
         if (menuBtn && nav) {
             var navScrollY = 0;
+            var navOverscrollBlock = null;
+            var navThemeColorSaved = null;
+
+            function syncNavThemeColor(locked) {
+                var meta = document.getElementById('gadly-theme-color');
+                if (!meta) return;
+                if (locked) {
+                    if (navThemeColorSaved === null) {
+                        navThemeColorSaved = meta.getAttribute('content') || '';
+                    }
+                    var overlayColor = document.body.classList.contains('dark-mode') ? '#0f0f23' : '#000000';
+                    meta.setAttribute('content', overlayColor);
+                } else if (navThemeColorSaved !== null) {
+                    meta.setAttribute('content', navThemeColorSaved);
+                    navThemeColorSaved = null;
+                    if (typeof window.gadlySyncViewportChrome === 'function') {
+                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
+                    }
+                }
+            }
+
+            function blockNavOverscroll(e) {
+                if (!document.body.classList.contains('nav-open')) return;
+                /* Evita rubber-band Safari → striscia blu / barra gadly.it in basso */
+                var navEl = document.getElementById('header-nav');
+                if (navEl && navEl.contains(e.target) && navEl.scrollHeight > navEl.clientHeight + 2) {
+                    return;
+                }
+                e.preventDefault();
+            }
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
+                syncNavThemeColor(true);
+                if (!navOverscrollBlock) {
+                    navOverscrollBlock = blockNavOverscroll;
+                    document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
+                }
             }
 
             function unlockNavScroll() {
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
+                syncNavThemeColor(false);
+                if (navOverscrollBlock) {
+                    document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
+                    navOverscrollBlock = null;
+                }
                 var curY = window.scrollY || document.documentElement.scrollTop || 0;
                 if (Math.abs(curY - navScrollY) > 2) {
                     window.scrollTo(0, navScrollY);

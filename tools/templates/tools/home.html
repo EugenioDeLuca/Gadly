@@ -224,8 +224,8 @@ window.GADLY_HOME_SECTION_PATHS = {{ home_section_paths_json|safe }};
 
 {% block extra_css %}
 {# Ultimo CSS della home (dopo base/theme/drose): vince sul cascade, niente override tardivo #}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=133">
-<link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=79">
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=135">
+<link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=80">
 <link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=109">
 <style id="gadly-home-shortcuts-title-mobile">
 @media (max-width: 768px) {
@@ -605,6 +605,6 @@ html.gadly-home-booting body.homepage .tool-btn-wrap .tool-fav::before {
     </script>
 </div>
 <script src="{% static 'tools/js/desktop-trash-bin.js' %}?v=30"></script>
-<script src="{% static 'tools/js/home-trash.js' %}?v=93"></script>
+<script src="{% static 'tools/js/home-trash.js' %}?v=94"></script>
 <script src="{% static 'tools/js/home.js' %}?v=20260720f"></script>
 {% endblock %}

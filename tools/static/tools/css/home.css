@@ -35,6 +35,38 @@
     gap: 12px;
     justify-content: flex-end;
 }
+@media (max-width: 768px) {
+    .login-required-box {
+        text-align: center;
+    }
+    .login-required-text {
+        text-align: center;
+    }
+    .login-required-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .login-required-btn:not(.login-required-btn--close),
+    .login-required-btn:not(.login-required-btn--close):link,
+    .login-required-btn:not(.login-required-btn--close):visited,
+    .login-required-btn:not(.login-required-btn--close):hover,
+    .login-required-btn:not(.login-required-btn--close):active,
+    .login-required-btn:not(.login-required-btn--close):focus,
+    .login-required-btn:not(.login-required-btn--close):focus-visible {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    body.dark-mode .login-required-btn:not(.login-required-btn--close),
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):link,
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):visited,
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):hover,
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):active,
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):focus,
+    body.dark-mode .login-required-btn:not(.login-required-btn--close):focus-visible {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+}
 @media (max-width: 480px) {
     .login-required-buttons {
         flex-direction: column;

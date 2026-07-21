@@ -874,6 +874,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         padding: 10px 28px 12px;
         box-shadow: none;
         border: none;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: auto;
+        touch-action: pan-x pan-y;
     }
     body.dark-mode .header-nav.is-open {
         box-shadow: none;
@@ -982,8 +985,39 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     /* Menu aperto: blocca scroll pagina (html + body, anche iOS) */
     html.nav-open {
         overflow: hidden !important;
-        height: 100%;
-        overscroll-behavior: none;
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100dvh !important;
+        overscroll-behavior: none !important;
+        -webkit-overflow-scrolling: auto;
+        touch-action: none !important;
+    }
+    html.nav-open:has(body.dark-mode) {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+    }
+    html.nav-open:has(body:not(.dark-mode)) {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+    }
+    /* Copre safe-area / rubber-band Safari in basso (niente gradiente blu del body) */
+    html.nav-open::after {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: max(120px, env(safe-area-inset-bottom, 0px));
+        z-index: 238;
+        pointer-events: none;
+    }
+    html.nav-open:has(body.dark-mode)::after {
+        background: #0f0f23;
+    }
+    html.nav-open:has(body:not(.dark-mode))::after {
+        background: #ffffff;
     }
 
     html.nav-open body {
@@ -993,7 +1027,22 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         left: 0 !important;
         right: 0 !important;
         top: var(--nav-scroll-lock-y, 0px) !important;
+        /* Con top negativo (pagina scrollata) copri comunque tutta la viewport */
+        min-height: calc(100vh - var(--nav-scroll-lock-y, 0px)) !important;
+        min-height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
+        height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
+        max-height: calc(100dvh - var(--nav-scroll-lock-y, 0px)) !important;
         overscroll-behavior: none !important;
+        touch-action: none !important;
+        background-image: none !important;
+    }
+    html.nav-open:has(body.dark-mode) body {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+    }
+    html.nav-open:has(body:not(.dark-mode)) body {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
     }
 
     html.nav-open body .site-header,
@@ -1014,6 +1063,8 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
+        overscroll-behavior: none;
+        touch-action: none;
     }
     body.nav-open:not(.nav-closing)::before {
         opacity: 1 !important;
