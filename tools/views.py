@@ -13,7 +13,10 @@ from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
+from functools import partial
+from django.contrib.admin.views.decorators import staff_member_required as _django_staff_member_required
+
+staff_member_required = partial(_django_staff_member_required, login_url=settings.LOGIN_URL)
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
