@@ -147,7 +147,7 @@
         width: 100%;
         height: env(safe-area-inset-top, 0px);
         min-height: env(safe-area-inset-top, 0px);
-        z-index: 230;
+        z-index: 260;
         pointer-events: none;
         border: 0;
         margin: 0;
@@ -157,7 +157,7 @@
         #gadly-viewport-chrome {
             display: block;
             /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
-            min-height: 1px;
+            min-height: max(1px, env(safe-area-inset-top, 0px));
         }
         body.nav-open #cookie-banner {
             display: none !important;
