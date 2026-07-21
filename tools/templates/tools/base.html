@@ -24,7 +24,16 @@
                         backForward = !!(performance.navigation && performance.navigation.type === 2);
                     } catch (eNavLegacy) {}
                 }
-                if (!backForward && !location.hash) {
+                var isReloadEarly = false;
+                try {
+                    var navReload = performance.getEntriesByType('navigation')[0];
+                    isReloadEarly = !!(navReload && navReload.type === 'reload');
+                } catch (eRelEarly) {
+                    try {
+                        isReloadEarly = !!(performance.navigation && performance.navigation.type === 1);
+                    } catch (eRelLegacy) {}
+                }
+                if (!backForward && isReloadEarly && !location.hash) {
                     window.__gadlyMobileReloadTop = true;
                     window.scrollTo(0, 0);
                     if (document.documentElement) document.documentElement.scrollTop = 0;
@@ -492,19 +501,19 @@
             if (!p) p = "/";
             sessionStorage.removeItem(KEY_PREFIX + p);
             sessionStorage.removeItem(KEY_PREFIX + p + "/");
-            /* Mobile: ogni caricamento (incluso PTR) → in cima; indietro browser escluso. */
+            /* Mobile: solo reload/PTR → in cima. */
             try {
                 var mobileTop = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-                var backForwardTop = false;
+                var isReloadTop = false;
                 try {
                     var navTop = performance.getEntriesByType("navigation")[0];
-                    backForwardTop = !!(navTop && navTop.type === "back_forward");
+                    isReloadTop = !!(navTop && navTop.type === "reload");
                 } catch (eNavTop) {
                     try {
-                        backForwardTop = !!(performance.navigation && performance.navigation.type === 2);
+                        isReloadTop = !!(performance.navigation && performance.navigation.type === 1);
                     } catch (eNavLegacy) {}
                 }
-                if (mobileTop && !backForwardTop && !location.hash) {
+                if (mobileTop && isReloadTop && !location.hash) {
                     window.__gadlyMobileReloadTop = true;
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
@@ -738,9 +747,8 @@
     {% endif %}
     <script>
     /*
-     * Mobile Safari: dopo load/PTR/refresh forza sempre la cima.
-     * Importante: NON interpretare lo scroll ripristinato dal browser come gesto utente.
-     * Si spegne solo al tocco/wheel reale, o dopo un timeout.
+     * Mobile: dopo reload/PTR porta in cima una sola volta, poi basta.
+     * Niente listener scroll che riporta in alto mentre l'utente scorre.
      */
     (function () {
         try {
@@ -763,6 +771,14 @@
             }
             if (navType === "back_forward") return;
 
+            var isReload = navType === "reload";
+            if (!isReload) {
+                try {
+                    isReload = !!(performance.navigation && performance.navigation.type === 1);
+                } catch (eRel) {}
+            }
+            if (!isReload) return;
+
             window.__gadlyMobileReloadTop = true;
 
             var p = location.pathname || "/";
@@ -774,134 +790,24 @@
                 sessionStorage.removeItem("gadly-tool-scroll-y-v1:" + p + "/");
             } catch (eClr) {}
 
-            function clearBodyScrollPin() {
-                try {
-                    var root = document.documentElement;
-                    var body = document.body;
-                    root.classList.remove("gadly-scroll-restore-pending");
-                    root.classList.remove("gadly-cl-scroll-pending");
-                    root.style.removeProperty("--gadly-restore-y");
-                    root.style.removeProperty("--gadly-cl-restore-y");
-                    root.style.removeProperty("min-height");
-                    if (body) {
-                        body.style.removeProperty("position");
-                        body.style.removeProperty("top");
-                        body.style.removeProperty("left");
-                        body.style.removeProperty("right");
-                        body.style.removeProperty("width");
-                    }
-                } catch (ePin) {}
-            }
-
             function toTop() {
                 try {
-                    clearBodyScrollPin();
                     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
                     window.scrollTo(0, 0);
                     document.documentElement.scrollTop = 0;
                     if (document.body) document.body.scrollTop = 0;
-                    if ((window.scrollY || document.documentElement.scrollTop || 0) !== 0) {
-                        window.scrollTo(0, 1);
-                        window.scrollTo(0, 0);
-                    }
-                    var vv = window.visualViewport;
-                    if (vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5)) {
-                        window.scrollTo(0, 0);
-                    }
                 } catch (eTop) {}
             }
 
             toTop();
-
-            var armed = true;
-            var until = Date.now() + 3500;
-            var touchStartY = 0;
-
-            function disarm() {
-                if (!armed) return;
-                armed = false;
-                window.removeEventListener("touchstart", onTouchStartTrack, true);
-                window.removeEventListener("touchmove", onTouchMoveDisarm, true);
-                window.removeEventListener("wheel", onUserGesture, true);
-                window.removeEventListener("scroll", onBrowserScrollRestore, true);
-                if (window.visualViewport) {
-                    window.visualViewport.removeEventListener("resize", onViewportChange);
-                    window.visualViewport.removeEventListener("scroll", onViewportChange);
-                }
-            }
-
-            function onUserGesture() {
-                disarm();
-            }
-
-            function onTouchStartTrack(e) {
-                if (!armed) return;
-                if (e.touches && e.touches.length) {
-                    touchStartY = e.touches[0].clientY;
-                }
-            }
-
-            function onTouchMoveDisarm(e) {
-                if (!armed) return;
-                if (!e.touches || !e.touches.length) return;
-                var ty = e.touches[0].clientY;
-                if (!touchStartY) touchStartY = ty;
-                /* Solo gesto utente reale: spegne il force-top. */
-                if (Math.abs(ty - touchStartY) > 12) disarm();
-            }
-
-            function onBrowserScrollRestore() {
-                if (!armed) return;
-                /* Safari ripristina lo scroll dopo il load: riporta in cima finché armed. */
-                if ((window.scrollY || document.documentElement.scrollTop || 0) > 1) {
-                    toTop();
-                }
-            }
-
-            function onViewportChange() {
-                if (!armed) return;
-                if (Date.now() > until) {
-                    disarm();
-                    return;
-                }
-                toTop();
-            }
-
-            window.addEventListener("touchstart", onTouchStartTrack, { capture: true, passive: true });
-            window.addEventListener("touchmove", onTouchMoveDisarm, { capture: true, passive: true });
-            window.addEventListener("wheel", onUserGesture, { capture: true, passive: true });
-            window.addEventListener("scroll", onBrowserScrollRestore, { capture: true, passive: true });
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener("resize", onViewportChange);
-                window.visualViewport.addEventListener("scroll", onViewportChange);
-            }
-
             requestAnimationFrame(function () {
                 toTop();
                 setTimeout(toTop, 0);
-                setTimeout(toTop, 50);
-                setTimeout(toTop, 150);
+                setTimeout(toTop, 100);
                 setTimeout(toTop, 300);
-                setTimeout(toTop, 600);
-                setTimeout(toTop, 1000);
-                setTimeout(toTop, 1600);
-                setTimeout(toTop, 2400);
-                setTimeout(toTop, 3200);
             });
-            window.addEventListener("load", function () {
-                if (armed) toTop();
-            }, { once: true });
-            document.addEventListener("DOMContentLoaded", function () {
-                if (armed) toTop();
-            }, { once: true });
-            window.addEventListener("pageshow", function (ev) {
-                if (ev.persisted) {
-                    disarm();
-                    return;
-                }
-                if (armed) toTop();
-            });
-            setTimeout(disarm, 3500);
+            window.addEventListener("load", toTop, { once: true });
+            document.addEventListener("DOMContentLoaded", toTop, { once: true });
         } catch (eTopEarly) {}
     })();
     </script>
@@ -989,7 +895,6 @@
 
         function isReloadNavigation() {
             if (window.__gadlyMobileReloadTop) return true;
-            if (isMobileViewport() && !location.hash && !isBackForwardNavigation()) return true;
             try {
                 var nav = performance.getEntriesByType("navigation")[0];
                 if (nav && nav.type === "reload") return true;
@@ -1002,8 +907,8 @@
         }
 
         function shouldForceMobileTop() {
-            /* Mobile: ogni caricamento/PTR in cima; indietro browser escluso. */
-            return isMobileViewport() && !location.hash && !isBackForwardNavigation();
+            /* Solo reload/PTR: niente force-top continuo mentre l'utente scorre. */
+            return isMobileViewport() && isReloadNavigation() && !location.hash;
         }
 
         function forceScrollTop() {
@@ -1070,24 +975,7 @@
                 setTimeout(forceScrollTop, 0);
                 setTimeout(forceScrollTop, 100);
                 setTimeout(forceScrollTop, 300);
-                setTimeout(forceScrollTop, 700);
-                setTimeout(forceScrollTop, 1400);
-                setTimeout(forceScrollTop, 2500);
             });
-            var mobileTopUntil = Date.now() + 3500;
-            function onMobileBrowserScrollRestore() {
-                if (Date.now() > mobileTopUntil) {
-                    window.removeEventListener("scroll", onMobileBrowserScrollRestore, true);
-                    return;
-                }
-                if ((window.scrollY || root.scrollTop || 0) > 1) {
-                    forceScrollTop();
-                }
-            }
-            window.addEventListener("scroll", onMobileBrowserScrollRestore, { capture: true, passive: true });
-            setTimeout(function () {
-                window.removeEventListener("scroll", onMobileBrowserScrollRestore, true);
-            }, 3500);
         }
 
         function persistScroll(y) {
@@ -1403,16 +1291,10 @@
 
         window.addEventListener("pageshow", function(ev) {
             if (isMobileViewport()) {
-                /* Solo subito dopo caricamento/PTR: non resettare scroll al ritorno da altro tab. */
-                if (!ev.persisted && !isBackForwardNavigation() && !location.hash && performance.now() < 4000) {
+                if (!ev.persisted && isReloadNavigation() && !location.hash) {
                     clearPathScrollStorage(path);
                     releaseScrollRestorePending();
                     forceScrollTop();
-                    requestAnimationFrame(forceScrollTop);
-                    setTimeout(forceScrollTop, 0);
-                    setTimeout(forceScrollTop, 80);
-                    setTimeout(forceScrollTop, 200);
-                    setTimeout(forceScrollTop, 500);
                 }
                 return;
             }
@@ -1557,8 +1439,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=192">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=112">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=193">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=113">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2417,11 +2299,10 @@
                     closeMenu();
                 });
             });
-            document.addEventListener('click', function(e) {
-                if (!nav.classList.contains('is-open')) return;
-                if (nav.contains(e.target) || menuBtn.contains(e.target)) return;
-                /* Include tap sull'overlay html::before (target = html/documentElement). */
-                closeMenu();
+            document.body.addEventListener('click', function(e) {
+                if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) {
+                    closeMenu();
+                }
             });
         }
     })();
