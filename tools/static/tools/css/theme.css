@@ -399,16 +399,18 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Scrim: si ferma PRIMA della zona Safari → niente contrasto bianco/blu dietro la toolbar */
+    /* Scrim a tutto schermo quando il menu è aperto */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+        bottom: 0;
         width: 100%;
-        height: auto;
+        height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
         margin: 0;
         padding: 0;
         border: 0;
