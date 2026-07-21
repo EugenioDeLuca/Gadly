@@ -731,21 +731,13 @@ body.homepage .tool-section[hidden] {
     display: none;
 }
 
-/* Freccia ripristino: icona SVG (su iOS ↩ è emoji e ignora color: red) */
-.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn::before {
-    content: "";
-    display: inline-block;
+/* Freccia ripristino: SVG inline (niente emoji iOS; currentColor = rosso) */
+.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
+    display: block;
     width: 1.15rem;
     height: 1.15rem;
-    background-color: currentColor;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12.5 8c-2.65 0-5.05 1.04-6.86 2.74L4 8.5 2.5 10l3.21 3.21A9.89 9.89 0 0 0 12.5 20c5.52 0 10-4.48 10-10h-2c0 4.41-3.59 8-8 8z'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12.5 8c-2.65 0-5.05 1.04-6.86 2.74L4 8.5 2.5 10l3.21 3.21A9.89 9.89 0 0 0 12.5 20c5.52 0 10-4.48 10-10h-2c0 4.41-3.59 8-8 8z'/%3E%3C/svg%3E");
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
+    flex-shrink: 0;
+    pointer-events: none;
 }
 
 /* Mobile: pagina tool rimossi (layout come home, senza toccare desktop ≥769px) */
@@ -954,7 +946,7 @@ body.homepage .tool-section[hidden] {
         touch-action: manipulation;
     }
 
-    body.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn::before {
+    body.hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
         width: 1.35rem;
         height: 1.35rem;
     }
@@ -1235,7 +1227,7 @@ body.homepage .tool-section[hidden] {
         transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
     }
 
-    .hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn::before {
+    .hidden-tools-page .hidden-tools-list .tool-fav.hidden-tools-restore-btn .hidden-tools-restore-icon {
         width: 1.1rem;
         height: 1.1rem;
     }

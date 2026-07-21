@@ -212,30 +212,32 @@
     body.homepage .desktop-trash-bin__btn:active .desktop-trash-bin__icon,
     body.homepage .desktop-trash-bin__btn.tap-active .desktop-trash-bin__icon,
     body.homepage .desktop-trash-bin__btn.desktop-trash-bin__btn--pulse .desktop-trash-bin__icon {
-        transform: translateY(-1px) scale(0.96);
+        transform: none;
     }
 
     body.homepage .desktop-trash-bin__icon {
         display: block;
         width: 56px;
         height: 65px;
-        transition: transform 0.05s ease-out, filter 0.15s ease;
+        /* Niente transform all'apparizione: evita lo "scatto" verso l'alto in drag */
+        transition: filter 0.15s ease;
+        transform: none !important;
     }
 
     body.homepage .desktop-trash-bin__lid {
         transform-origin: 36px 22px;
-        transition: transform 0.2s ease;
+        transition: none;
+        transform: none !important;
     }
 
-    html.gadly-trash-drag-active body.homepage .desktop-trash-bin .desktop-trash-bin__lid {
-        transform: rotate(-28deg) translateY(-3px);
-    }
-
+    /* Solo sopra il target: coperchio aperto (senza alzare tutto il cestino) */
     body.homepage .desktop-trash-bin--drop-target .desktop-trash-bin__lid {
-        transform: rotate(-32deg) translateY(-4px);
+        transition: transform 0.2s ease;
+        transform: rotate(-32deg) !important;
     }
 
     body.homepage .desktop-trash-bin--drop-target .desktop-trash-bin__icon {
+        transform: none !important;
         filter: drop-shadow(0 0 12px rgba(220, 53, 69, 0.65));
     }
 
@@ -309,6 +311,13 @@
 
     body.homepage .desktop-trash-bin--hint .desktop-trash-bin__btn {
         animation: gadly-trash-hint 1.6s ease-in-out infinite;
+    }
+
+    /* Durante drag: niente bounce (evita lo scatto verso l'alto all'apparizione) */
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin--hint .desktop-trash-bin__btn,
+    html.gadly-trash-drag-active body.homepage .desktop-trash-bin__btn {
+        animation: none !important;
+        transform: none !important;
     }
 
     @keyframes gadly-trash-hint {

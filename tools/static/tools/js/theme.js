@@ -55,6 +55,11 @@
                 document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
             }
         });
+        /* Riesegui sync dopo il paint: Safari a volte ignora theme-color nel frame del toggle. */
+        requestAnimationFrame(function() {
+            syncViewportChrome(isDark);
+            setTimeout(function() { syncViewportChrome(isDark); }, 80);
+        });
     }
 
     function applyWarmTone(isWarm) {

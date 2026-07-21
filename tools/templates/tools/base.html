@@ -22,17 +22,38 @@
             } else {
                 root.style.removeProperty('color-scheme');
             }
-            var prev = document.getElementById('gadly-theme-color');
-            if (prev) prev.remove();
-            var meta = document.createElement('meta');
-            meta.name = 'theme-color';
-            meta.id = 'gadly-theme-color';
-            meta.setAttribute('content', color);
-            var head = document.head || document.getElementsByTagName('head')[0];
-            if (head && head.firstChild) {
-                head.insertBefore(meta, head.firstChild);
-            } else if (head) {
-                head.appendChild(meta);
+            function writeThemeColor(c) {
+                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                    el.parentNode && el.parentNode.removeChild(el);
+                });
+                var meta = document.createElement('meta');
+                meta.setAttribute('name', 'theme-color');
+                meta.id = 'gadly-theme-color';
+                meta.setAttribute('content', c);
+                var head = document.head || document.getElementsByTagName('head')[0];
+                if (head) {
+                    head.insertBefore(meta, head.firstChild);
+                }
+                var apple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+                if (!apple) {
+                    apple = document.createElement('meta');
+                    apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+                    if (head) head.appendChild(apple);
+                }
+                apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
+            }
+            /* Safari/iOS: un solo setAttribute spesso non aggiorna la barra; forza un cambio di colore. */
+            if (mobile) {
+                writeThemeColor(isDark ? '#ffffff' : '#0f0f23');
+                void root.offsetHeight;
+                writeThemeColor(color);
+                requestAnimationFrame(function () {
+                    writeThemeColor(color);
+                    setTimeout(function () { writeThemeColor(color); }, 40);
+                    setTimeout(function () { writeThemeColor(color); }, 120);
+                });
+            } else {
+                writeThemeColor(color);
             }
         };
         try {
@@ -1720,7 +1741,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=17"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=18"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
