@@ -95,40 +95,37 @@
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
-                if (!head) return;
-                /* Safari applica theme-color in ritardo se si aggiorna solo content:
-                   rimuovi e ricrea i meta nello stesso turn, tutti allo stesso colore. */
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                    el.parentNode && el.parentNode.removeChild(el);
+                    if (el.id !== 'gadly-theme-color') {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    }
                 });
-                function addThemeMeta(content, media) {
-                    var meta = document.createElement('meta');
+                var meta = document.getElementById('gadly-theme-color');
+                if (!meta && head) {
+                    meta = document.createElement('meta');
+                    meta.id = 'gadly-theme-color';
                     meta.setAttribute('name', 'theme-color');
-                    meta.setAttribute('content', content);
-                    if (media) meta.setAttribute('media', media);
-                    if (!media) meta.id = 'gadly-theme-color';
                     head.insertBefore(meta, head.firstChild);
-                    return meta;
                 }
-                addThemeMeta(c, null);
-                addThemeMeta(c, '(prefers-color-scheme: light)');
-                addThemeMeta(c, '(prefers-color-scheme: dark)');
-
+                if (meta) {
+                    meta.setAttribute('content', c);
+                }
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-                if (!apple) {
+                if (!apple && head) {
                     apple = document.createElement('meta');
                     apple.id = 'gadly-apple-status-bar';
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                /* black-translucent: la pagina (e la maschera) arrivano sotto la status bar. */
-                apple.setAttribute('content', 'black-translucent');
+                if (apple) {
+                    apple.setAttribute('content', 'black-translucent');
+                }
             }
 
-            writeThemeColor(color);
+            /* Stesso frame: prima il colore pagina/header, poi theme-color (Safari). */
             paint(color);
-            /* Reflow forzato: Safari campiona la status bar sullo stesso frame. */
+            writeThemeColor(color);
             void root.offsetHeight;
         };
         try {
@@ -161,30 +158,10 @@
             /* Se safe-area è 0 (tab Safari/Chrome), resta una fascia sottile sotto la chrome di sistema */
             min-height: max(1px, env(safe-area-inset-top, 0px));
         }
-        body.nav-open #cookie-banner,
-        html.nav-veil #cookie-banner {
+        body.nav-open #cookie-banner {
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
-        }
-        /* Solo in chiusura (menu già chiuso): copre il gap iOS senza scurire il pannello */
-        #gadly-nav-gap-cover {
-            display: none;
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 240px;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            background: #000000;
-            z-index: 2147483645;
-            pointer-events: none;
-        }
-        html.nav-veil #gadly-nav-gap-cover {
-            display: block;
         }
         .site-header {
             height: calc(82px + env(safe-area-inset-top, 0px)) !important;
@@ -1447,8 +1424,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=199">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=119">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=200">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=120">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2117,7 +2094,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=24"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=25"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2198,46 +2175,9 @@
         if (menuBtn && nav) {
             var navScrollY = 0;
             var navOverscrollBlock = null;
-            var navThemeColorSaved = null;
-
-            function syncNavThemeColor(locked) {
-                var meta = document.getElementById('gadly-theme-color');
-                if (!meta) return;
-                if (locked) {
-                    if (navThemeColorSaved === null) {
-                        navThemeColorSaved = meta.getAttribute('content') || '';
-                    }
-                    /* Nero = stesso del gap html: niente striscia chiara sotto lo scrim */
-                    meta.setAttribute('content', '#000000');
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.setAttribute('content', '#000000');
-                    });
-                } else if (navThemeColorSaved !== null) {
-                    var restore = navThemeColorSaved;
-                    navThemeColorSaved = null;
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.setAttribute('content', restore);
-                    });
-                    if (typeof window.gadlySyncViewportChrome === 'function') {
-                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                    }
-                }
-            }
-
-            function ensureGapCover() {
-                var cover = document.getElementById('gadly-nav-gap-cover');
-                if (!cover) {
-                    cover = document.createElement('div');
-                    cover.id = 'gadly-nav-gap-cover';
-                    cover.setAttribute('aria-hidden', 'true');
-                    document.documentElement.appendChild(cover);
-                }
-                return cover;
-            }
 
             function blockNavOverscroll(e) {
                 if (!document.body.classList.contains('nav-open')) return;
-                /* Evita rubber-band Safari → striscia blu / barra gadly.it in basso */
                 var navEl = document.getElementById('header-nav');
                 if (navEl && navEl.contains(e.target) && navEl.scrollHeight > navEl.clientHeight + 2) {
                     return;
@@ -2251,7 +2191,6 @@
                     scrim = document.createElement('div');
                     scrim.id = 'gadly-nav-scrim';
                     scrim.setAttribute('aria-hidden', 'true');
-                    /* Dentro body, sotto header/menu (z-index): menu resta chiaro. */
                     document.body.appendChild(scrim);
                     scrim.addEventListener('click', function () {
                         closeMenu();
@@ -2259,22 +2198,13 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
-                /*
-                 * Con body top negativo iOS ancora lo scrim al body:
-                 * altezza = viewport + |scroll| così copre comunque lo schermo reale.
-                 */
-                var y = Math.abs(navScrollY || window.scrollY || 0);
-                var h = Math.max(
-                    window.innerHeight || 0,
-                    (window.visualViewport && window.visualViewport.height) || 0,
-                    document.documentElement.clientHeight || 0
-                ) + y + 240;
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
+                scrim.style.bottom = '0';
                 scrim.style.width = '100%';
-                scrim.style.height = h + 'px';
-                scrim.style.bottom = 'auto';
+                scrim.style.height = '100%';
+                scrim.style.minHeight = '100dvh';
                 scrim.style.opacity = '1';
                 scrim.classList.add('is-active');
                 return scrim;
@@ -2285,33 +2215,20 @@
                 if (!scrim) return;
                 scrim.classList.remove('is-active');
                 scrim.style.removeProperty('height');
+                scrim.style.removeProperty('min-height');
                 scrim.style.removeProperty('top');
                 scrim.style.removeProperty('left');
                 scrim.style.removeProperty('right');
-                scrim.style.removeProperty('width');
                 scrim.style.removeProperty('bottom');
+                scrim.style.removeProperty('width');
                 scrim.style.removeProperty('opacity');
-            }
-
-            function paintNavBlack() {
-                document.documentElement.style.setProperty('background-color', '#000000', 'important');
-                document.documentElement.style.setProperty('background', '#000000', 'important');
-            }
-
-            function clearNavBlack() {
-                document.documentElement.style.removeProperty('background-color');
-                document.documentElement.style.removeProperty('background');
             }
 
             function lockNavScroll() {
                 navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                document.documentElement.classList.remove('nav-veil');
-                paintNavBlack();
-                document.body.style.setProperty('--nav-scroll-lock-y', '-' + navScrollY + 'px');
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
-                syncNavThemeColor(true);
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2319,33 +2236,15 @@
             }
 
             function unlockNavScroll() {
-                /* Menu già chiuso: solo velo basso + html nero (niente scrim a tutto schermo). */
-                ensureGapCover();
-                document.documentElement.classList.add('nav-veil');
-                paintNavBlack();
-                hideNavScrim();
-
                 document.documentElement.classList.remove('nav-open');
                 document.body.classList.remove('nav-open', 'nav-closing');
                 document.body.style.removeProperty('--nav-scroll-lock-y');
-                document.body.style.removeProperty('width');
+                hideNavScrim();
                 window.scrollTo(0, navScrollY);
-
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
                     navOverscrollBlock = null;
                 }
-
-                requestAnimationFrame(function () {
-                    window.scrollTo(0, navScrollY);
-                    requestAnimationFrame(function () {
-                        setTimeout(function () {
-                            document.documentElement.classList.remove('nav-veil');
-                            clearNavBlack();
-                            syncNavThemeColor(false);
-                        }, 200);
-                    });
-                });
             }
 
             function clearMenuFocus() {
@@ -2373,19 +2272,14 @@
                 if (!nav.classList.contains('is-open') && !document.body.classList.contains('nav-open')) {
                     return;
                 }
-                /* Prima chiudi il pannello, poi unlock col velo (niente flash) */
+                /* Un solo passo: pannello + scrim + unlock insieme */
                 nav.classList.remove('is-open', 'is-closing');
                 nav.style.maxHeight = '';
                 nav.style.paddingTop = '';
                 nav.style.paddingBottom = '';
                 menuBtn.setAttribute('aria-expanded', 'false');
                 clearMenuFocus();
-                ensureGapCover();
-                document.documentElement.classList.add('nav-veil');
-                paintNavBlack();
-                requestAnimationFrame(function () {
-                    unlockNavScroll();
-                });
+                unlockNavScroll();
             }
 
             menuBtn.addEventListener('click', function() {

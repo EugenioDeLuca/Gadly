@@ -1041,38 +1041,24 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
     }
 
-    /* Menu aperto: body fixed (niente salto) + html nero (gap = nero come lo scrim) */
+    /*
+     * Menu aperto: NIENTE position:fixed sul body (crea gap nero/striscia iOS).
+     * Solo overflow + touch lock: pagina ferma, nessun velo nero, chiusura in un passo.
+     */
     html.nav-open {
         overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
-        touch-action: none !important;
-        background: #000000 !important;
-        background-color: #000000 !important;
+        height: 100% !important;
+        height: 100dvh !important;
     }
 
     html.nav-open body {
         overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        top: var(--nav-scroll-lock-y, 0px) !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
-        height: auto !important;
-        max-height: none !important;
-        min-height: 0 !important;
-    }
-    html.nav-open body:not(.dark-mode) {
-        background-image: none !important;
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-    }
-    html.nav-open:has(body.dark-mode) body {
-        background-image: none !important;
-        background: #0f0f23 !important;
-        background-color: #0f0f23 !important;
+        width: 100% !important;
+        /* niente position:fixed / top negativo → niente gap nero iOS */
     }
 
     html.nav-open body .site-header,
@@ -1110,6 +1096,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         padding-top: 11px;
         isolation: isolate;
         transform: translateZ(0);
+        touch-action: pan-y !important;
     }
     html.nav-open body .drose-sky-layer {
         visibility: hidden !important;

@@ -3,7 +3,6 @@
     var warmKey = 'gadly-warm-tone';
     var darkClass = 'dark-mode';
     var warmClass = 'warm-tone';
-    var statusMaskTimer = null;
 
     function syncViewportChrome(isDark) {
         if (typeof window.gadlySyncViewportChrome === 'function') {
@@ -11,82 +10,22 @@
         }
     }
 
-    function ensureStatusMask(color) {
-        var mask = document.getElementById('gadly-theme-status-mask');
-        if (!mask) {
-            mask = document.createElement('div');
-            mask.id = 'gadly-theme-status-mask';
-            mask.setAttribute('aria-hidden', 'true');
-            document.documentElement.appendChild(mask);
-        }
-        /* Copre safe-area + fascia status: resta fino a quando Safari aggiorna theme-color. */
-        mask.style.cssText = [
-            'position:fixed',
-            'top:0',
-            'left:0',
-            'right:0',
-            'width:100%',
-            'height:calc(env(safe-area-inset-top, 0px) + 52px)',
-            'min-height:52px',
-            'z-index:2147483646',
-            'pointer-events:none',
-            'border:0',
-            'margin:0',
-            'padding:0',
-            'display:block',
-            'background:' + color,
-            'background-color:' + color,
-            'transform:translateZ(0)',
-            '-webkit-backface-visibility:hidden'
-        ].join(';');
-        return mask;
-    }
-
-    function hideStatusMask() {
-        var mask = document.getElementById('gadly-theme-status-mask');
-        if (mask) mask.style.display = 'none';
-    }
-
     function applyTheme(isDark) {
         var root = document.documentElement;
-        var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-        var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
 
         root.classList.add('theme-switching');
-        if (statusMaskTimer) {
-            clearTimeout(statusMaskTimer);
-            statusMaskTimer = null;
-        }
-
-        /* 1) Colore nuovo subito su meta + fascia (prima del toggle classe). */
-        if (mobile) ensureStatusMask(color);
+        /* Stesso frame: chrome + classe. Niente maschera sopra l'header. */
         syncViewportChrome(isDark);
-        void root.offsetHeight;
-
-        /* 2) Toggle tema pagina nello stesso frame. */
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
         if (btn) btn.textContent = isDark ? '☀️' : '🌙';
         if (document.body.classList.contains('cv-generator')) {
+            var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
-
         syncViewportChrome(isDark);
         void root.offsetHeight;
-
-        /* 3) Maschera resta ~0.5s: Safari aggiorna la status bar in ritardo. */
-        requestAnimationFrame(function() {
-            syncViewportChrome(isDark);
-            root.classList.remove('theme-switching');
-            if (mobile) {
-                statusMaskTimer = setTimeout(function() {
-                    hideStatusMask();
-                    statusMaskTimer = null;
-                }, 520);
-            } else {
-                hideStatusMask();
-            }
-        });
+        root.classList.remove('theme-switching');
     }
 
     function applyWarmTone(isWarm) {
