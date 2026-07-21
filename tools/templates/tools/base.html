@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="default">
     <script>
     (function () {
         try {
@@ -62,7 +62,6 @@
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (mobile) {
-                        /* Un solo piano colore sotto la status bar (niente striscia separata) */
                         header.style.setProperty('background', c, 'important');
                         header.style.setProperty('background-color', c, 'important');
                         header.style.setProperty('backdrop-filter', 'none', 'important');
@@ -74,24 +73,43 @@
                         header.style.removeProperty('-webkit-backdrop-filter');
                     }
                 }
-                /* Niente #gadly-viewport-chrome: era una seconda fascia che andava fuori sync */
                 var bar = document.getElementById('gadly-viewport-chrome');
-                if (bar) bar.style.display = 'none';
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'gadly-viewport-chrome';
+                    bar.setAttribute('aria-hidden', 'true');
+                    if (root.firstChild) root.insertBefore(bar, root.firstChild);
+                    else root.appendChild(bar);
+                } else if (bar.parentNode !== root) {
+                    root.insertBefore(bar, root.firstChild);
+                }
+                if (mobile) {
+                    bar.style.display = 'block';
+                    bar.style.setProperty('background', c, 'important');
+                    bar.style.setProperty('background-color', c, 'important');
+                } else {
+                    bar.style.display = 'none';
+                }
             }
 
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
 
-                /* Un solo meta: i media duplicati su iOS creano colori “fantasma” in status bar */
+                /* Solo aggiorna content: ricreare il meta provoca il grigio intermedio su iOS */
                 document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                    el.parentNode && el.parentNode.removeChild(el);
+                    if (el.id !== 'gadly-theme-color') {
+                        el.parentNode && el.parentNode.removeChild(el);
+                    }
                 });
-                var meta = document.createElement('meta');
-                meta.id = 'gadly-theme-color';
-                meta.setAttribute('name', 'theme-color');
+                var meta = document.getElementById('gadly-theme-color');
+                if (!meta) {
+                    meta = document.createElement('meta');
+                    meta.id = 'gadly-theme-color';
+                    meta.setAttribute('name', 'theme-color');
+                    head.insertBefore(meta, head.firstChild);
+                }
                 meta.setAttribute('content', c);
-                head.insertBefore(meta, head.firstChild);
 
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
@@ -101,15 +119,12 @@
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                /*
-                 * black-translucent: la status bar mostra l’header sotto (stesso colore).
-                 * theme-color resta allineato per la chrome Safari (anche in basso).
-                 */
-                apple.setAttribute('content', 'black-translucent');
+                /* default = colore solido da theme-color, niente blend grigio da translucent */
+                apple.setAttribute('content', mobile ? 'default' : (isDark ? 'black-translucent' : 'default'));
             }
 
-            paint(color);
             writeThemeColor(color);
+            paint(color);
             void root.offsetHeight;
         };
         try {
@@ -2079,7 +2094,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=29"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=30"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
