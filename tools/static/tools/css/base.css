@@ -1389,6 +1389,26 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     body.dark-mode.text-tool .site-main .container .tool-help a:hover {
         color: #a8d4ff !important;
     }
+    /* Link guida help: una sola riga su mobile (niente a capo) */
+    .site-main .container .tool-help {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .site-main .container .tool-help::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .site-main .container .tool-help a {
+        white-space: nowrap !important;
+        display: inline-block !important;
+        font-size: clamp(0.78rem, 3.4vw, 1rem) !important;
+        line-height: 1.35 !important;
+        max-width: none !important;
+    }
     body.text-tool .site-main .container .form-group label,
     body.text-tool .site-main .container .diff-column label {
         display: block !important;

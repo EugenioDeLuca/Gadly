@@ -1108,7 +1108,8 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
 
     body.data-viz .site-main .data-viz > .container > .tool-help a,
     body.data-viz .site-main .data-viz > .container > .tool-help a:visited {
-        display: inline !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
         background: none !important;

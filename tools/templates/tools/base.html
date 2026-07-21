@@ -713,7 +713,7 @@
     <script>
     /*
      * Mobile Safari pull-to-refresh: dopo reload torna in cima.
-     * Il touchstart del rilascio PTR non deve disarmare il guard (solo scroll reale).
+     * Non resettare lo scroll mentre l'utente scorre (niente listener scroll aggressivo).
      */
     (function () {
         try {
@@ -790,13 +790,12 @@
             toTop();
 
             var armed = true;
-            var until = Date.now() + 4500;
+            var until = Date.now() + 2200;
             var touchStartY = 0;
 
             function disarm() {
                 if (!armed) return;
                 armed = false;
-                window.removeEventListener("scroll", onScroll, true);
                 window.removeEventListener("touchstart", onTouchStartTrack, true);
                 window.removeEventListener("touchmove", onTouchMoveDisarm, true);
                 window.removeEventListener("wheel", disarm, true);
@@ -806,21 +805,17 @@
                 }
             }
 
-            function needsTop() {
-                var y = window.scrollY || document.documentElement.scrollTop || 0;
-                if (y > 1) return true;
-                var vv = window.visualViewport;
-                if (vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5)) return true;
-                return false;
+            function userScrolledDown() {
+                return (window.scrollY || document.documentElement.scrollTop || 0) > 48;
             }
 
-            function onScroll() {
-                if (!armed) return;
-                if (Date.now() > until) {
-                    disarm();
-                    return;
-                }
-                if (needsTop()) toTop();
+            /* Solo rubber-band PTR bloccato in cima: non resettare scroll utente. */
+            function needsPtrTopFix() {
+                if (userScrolledDown()) return false;
+                var y = window.scrollY || document.documentElement.scrollTop || 0;
+                if (y > 20) return false;
+                var vv = window.visualViewport;
+                return !!(vv && (vv.offsetTop < -0.5 || vv.pageTop > 0.5));
             }
 
             function onTouchStartTrack(e) {
@@ -828,6 +823,7 @@
                 if (e.touches && e.touches.length) {
                     touchStartY = e.touches[0].clientY;
                 }
+                if (userScrolledDown()) disarm();
             }
 
             function onTouchMoveDisarm(e) {
@@ -835,19 +831,18 @@
                 if (!e.touches || !e.touches.length) return;
                 var ty = e.touches[0].clientY;
                 if (!touchStartY) touchStartY = ty;
-                if (Math.abs(ty - touchStartY) > 10) disarm();
+                if (Math.abs(ty - touchStartY) > 8) disarm();
             }
 
             function onViewportChange() {
                 if (!armed) return;
-                if (Date.now() > until) {
+                if (Date.now() > until || userScrolledDown()) {
                     disarm();
                     return;
                 }
-                if (needsTop()) toTop();
+                if (needsPtrTopFix()) toTop();
             }
 
-            window.addEventListener("scroll", onScroll, { capture: true, passive: true });
             window.addEventListener("touchstart", onTouchStartTrack, { capture: true, passive: true });
             window.addEventListener("touchmove", onTouchMoveDisarm, { capture: true, passive: true });
             window.addEventListener("wheel", disarm, { capture: true, passive: true });
@@ -859,28 +854,26 @@
             requestAnimationFrame(function () {
                 toTop();
                 setTimeout(toTop, 0);
-                setTimeout(toTop, 50);
-                setTimeout(toTop, 120);
-                setTimeout(toTop, 300);
-                setTimeout(toTop, 600);
-                setTimeout(toTop, 1100);
+                setTimeout(toTop, 80);
+                setTimeout(toTop, 200);
+                setTimeout(toTop, 500);
+                setTimeout(toTop, 1000);
                 setTimeout(toTop, 1800);
-                setTimeout(toTop, 2800);
-                setTimeout(toTop, 4000);
             });
             window.addEventListener("load", function () {
-                if (armed) toTop();
+                if (armed && !userScrolledDown()) toTop();
             }, { once: true });
             document.addEventListener("DOMContentLoaded", function () {
-                if (armed) toTop();
+                if (armed && !userScrolledDown()) toTop();
             }, { once: true });
             window.addEventListener("pageshow", function (ev) {
                 if (ev.persisted) {
                     disarm();
                     return;
                 }
-                if (armed) toTop();
+                if (armed && !userScrolledDown()) toTop();
             });
+            setTimeout(disarm, 2200);
         } catch (eTopEarly) {}
     })();
     </script>
@@ -1333,7 +1326,7 @@
 
         window.addEventListener("pageshow", function(ev) {
             if (isMobileViewport()) {
-                if (!ev.persisted && !location.hash) {
+                if (!ev.persisted && isReloadNavigation() && !location.hash) {
                     clearPathScrollStorage(path);
                     releaseScrollRestorePending();
                     forceScrollTop();
@@ -1481,7 +1474,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=179">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=180">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=108">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
