@@ -399,7 +399,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Scrim a tutto schermo quando il menu è aperto */
+    /* Base scuro; il gradient finale lo imposta JS sul colore del tema */
     #gadly-nav-scrim {
         display: none;
         position: fixed;

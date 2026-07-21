@@ -1409,8 +1409,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=210">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=130">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=211">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=131">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2160,27 +2160,6 @@
         if (menuBtn && nav) {
             var navScrollY = 0;
             var navOverscrollBlock = null;
-            var navThemeColorSaved = null;
-
-            function syncNavThemeColor(locked) {
-                var head = document.head || document.getElementsByTagName('head')[0];
-                if (!head) return;
-                if (locked) {
-                    var cur = document.getElementById('gadly-theme-color');
-                    if (navThemeColorSaved === null) {
-                        navThemeColorSaved = cur ? (cur.getAttribute('content') || '') : '';
-                    }
-                    /* Rimuovi theme-color: è quello che colora di bianco/blu la fascia sotto Safari */
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    });
-                } else if (navThemeColorSaved !== null) {
-                    navThemeColorSaved = null;
-                    if (typeof window.gadlySyncViewportChrome === 'function') {
-                        window.gadlySyncViewportChrome(document.body.classList.contains('dark-mode'));
-                    }
-                }
-            }
 
             function blockNavOverscroll(e) {
                 if (!document.body.classList.contains('nav-open')) return;
@@ -2204,6 +2183,9 @@
                 } else if (scrim.parentNode !== document.body) {
                     document.body.appendChild(scrim);
                 }
+                var isDark = document.body.classList.contains('dark-mode');
+                var fade = isDark ? '#0f0f23' : '#ffffff';
+                var dim = isDark ? 'rgba(0,0,0,0.92)' : 'rgba(0,0,0,0.88)';
                 scrim.style.top = '0';
                 scrim.style.left = '0';
                 scrim.style.right = '0';
@@ -2212,6 +2194,8 @@
                 scrim.style.height = '100%';
                 scrim.style.opacity = '1';
                 scrim.style.removeProperty('box-shadow');
+                /* Sfumatura sul colore tema in basso: niente taglio bianco/blu sotto Safari */
+                scrim.style.background = 'linear-gradient(to bottom,' + dim + ' 0%,' + dim + ' calc(100% - 130px),' + fade + ' 100%)';
                 scrim.classList.add('is-active');
                 return scrim;
             }
@@ -2227,6 +2211,7 @@
                 scrim.style.removeProperty('bottom');
                 scrim.style.removeProperty('width');
                 scrim.style.removeProperty('opacity');
+                scrim.style.removeProperty('background');
                 scrim.style.removeProperty('box-shadow');
             }
 
@@ -2235,7 +2220,6 @@
                 document.documentElement.classList.add('nav-open');
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
-                syncNavThemeColor(true);
                 if (!navOverscrollBlock) {
                     navOverscrollBlock = blockNavOverscroll;
                     document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
@@ -2248,7 +2232,6 @@
                 document.body.style.removeProperty('--nav-scroll-lock-y');
                 document.body.style.removeProperty('width');
                 hideNavScrim();
-                syncNavThemeColor(false);
                 window.scrollTo(0, navScrollY);
                 if (navOverscrollBlock) {
                     document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
