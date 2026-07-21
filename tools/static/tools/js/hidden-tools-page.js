@@ -84,7 +84,7 @@
                     escapeHtml(item.name) + "</span>";
                 html += '<button type="button" class="tool-fav hidden-tools-restore-btn" data-url="' +
                     escapeHtml(item.url) + '" title="' + escapeHtml(restoreLabel) + '" aria-label="' +
-                    escapeHtml(restoreLabel) + '">↩</button>';
+                    escapeHtml(restoreLabel) + '"></button>';
                 html += "</div>";
             });
             html += "</div></section>";

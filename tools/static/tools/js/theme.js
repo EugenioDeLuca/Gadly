@@ -11,12 +11,25 @@
         }
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
         var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
-        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
-        document.documentElement.style.backgroundColor = color;
-        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-        var meta = document.getElementById('gadly-theme-color');
-        if (meta) {
-            meta.setAttribute('content', color);
+        var root = document.documentElement;
+        root.dataset.theme = isDark ? 'dark' : 'light';
+        root.style.backgroundColor = color;
+        if (mobile) {
+            root.style.colorScheme = isDark ? 'dark' : 'light';
+        } else {
+            root.style.removeProperty('color-scheme');
+        }
+        var prev = document.getElementById('gadly-theme-color');
+        if (prev) prev.remove();
+        var meta = document.createElement('meta');
+        meta.name = 'theme-color';
+        meta.id = 'gadly-theme-color';
+        meta.setAttribute('content', color);
+        var head = document.head || document.getElementsByTagName('head')[0];
+        if (head && head.firstChild) {
+            head.insertBefore(meta, head.firstChild);
+        } else if (head) {
+            head.appendChild(meta);
         }
     }
 

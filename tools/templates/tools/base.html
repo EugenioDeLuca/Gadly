@@ -17,10 +17,22 @@
             var root = document.documentElement;
             root.dataset.theme = isDark ? 'dark' : 'light';
             root.style.backgroundColor = color;
-            root.style.colorScheme = isDark ? 'dark' : 'light';
-            var meta = document.getElementById('gadly-theme-color');
-            if (meta) {
-                meta.setAttribute('content', color);
+            if (mobile) {
+                root.style.colorScheme = isDark ? 'dark' : 'light';
+            } else {
+                root.style.removeProperty('color-scheme');
+            }
+            var prev = document.getElementById('gadly-theme-color');
+            if (prev) prev.remove();
+            var meta = document.createElement('meta');
+            meta.name = 'theme-color';
+            meta.id = 'gadly-theme-color';
+            meta.setAttribute('content', color);
+            var head = document.head || document.getElementsByTagName('head')[0];
+            if (head && head.firstChild) {
+                head.insertBefore(meta, head.firstChild);
+            } else if (head) {
+                head.appendChild(meta);
             }
         };
         try {
@@ -1052,7 +1064,7 @@
 
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=176">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=106">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=107">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1708,7 +1720,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=15"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=17"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
