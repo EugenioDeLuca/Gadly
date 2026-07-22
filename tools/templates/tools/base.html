@@ -31,10 +31,8 @@
         }
     }
     </style>
-    <meta name="theme-color" id="gadly-theme-color-light" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" id="gadly-theme-color-dark" content="#0f0f23" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="default">
     <script>
     (function () {
         try {
@@ -193,20 +191,14 @@
             function writeThemeColor(c) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
-                var lightChrome = isWarm ? '#fff8ec' : '#ffffff';
-                var darkChrome = isWarm ? '#26201c' : '#0f0f23';
-                var explicitTheme = null;
-                try {
-                    explicitTheme = localStorage.getItem('gadly-theme');
-                } catch (eThemeStore) {}
+                /*
+                 * Sempre il colore del TEMA SITO su tutti i meta, senza media OS.
+                 * Altrimenti con warm light + telefono/scrim “dark”, Safari prende
+                 * theme-color dark (#26201c) → barra nera, mentre light normale resta bianca.
+                 */
                 ensureThemeColorMeta('gadly-theme-color', c, null);
-                if (explicitTheme) {
-                    ensureThemeColorMeta('gadly-theme-color-light', c, null);
-                    ensureThemeColorMeta('gadly-theme-color-dark', c, null);
-                } else {
-                    ensureThemeColorMeta('gadly-theme-color-light', lightChrome, '(prefers-color-scheme: light)');
-                    ensureThemeColorMeta('gadly-theme-color-dark', darkChrome, '(prefers-color-scheme: dark)');
-                }
+                ensureThemeColorMeta('gadly-theme-color-light', c, null);
+                ensureThemeColorMeta('gadly-theme-color-dark', c, null);
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
                 if (!apple) {
@@ -215,7 +207,8 @@
                     apple.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
                     head.appendChild(apple);
                 }
-                apple.setAttribute('content', 'black-translucent');
+                /* Light/crema: default. Dark: black-translucent. */
+                apple.setAttribute('content', isDark ? 'black-translucent' : 'default');
             }
 
             function remountSafariTint(c) {
