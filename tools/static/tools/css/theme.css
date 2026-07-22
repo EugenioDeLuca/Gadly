@@ -1083,14 +1083,24 @@ body.dark-mode .warm-tone-toggle.is-active {
         cursor: pointer !important;
         touch-action: manipulation;
     }
-    /* Mobile: pill lingua stabile al tap (come default light) */
+    /* Mobile: pill lingua stabile al tap in light mode (niente flash hover) */
     .header-lang-form .header-lang-btn:not(.is-active),
     .header-lang-form .header-lang-btn:not(.is-active):hover,
     .header-lang-form .header-lang-btn:not(.is-active):active,
     .header-lang-form .header-lang-btn:not(.is-active):focus,
     .header-lang-form .header-lang-btn:not(.is-active):focus-visible,
-    body.warm-tone .header-lang-form .header-lang-btn:not(.is-active),
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active),
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
+        background: rgba(0, 123, 255, 0.15) !important;
+        border-color: rgba(0, 123, 255, 0.5) !important;
+        color: #007BFF !important;
+        -webkit-text-fill-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active),
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):hover,
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):active,
@@ -1101,12 +1111,20 @@ body.dark-mode .warm-tone-toggle.is-active {
     body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):active,
     body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus,
     body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
-        background: rgba(0, 123, 255, 0.15) !important;
-        border-color: rgba(0, 123, 255, 0.5) !important;
-        color: #007BFF !important;
-        -webkit-text-fill-color: #007BFF !important;
+        background: transparent !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-secondary, #b0c4de) !important;
+        -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active),
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
+        color: var(--warm-nav-link-color, #b0c4de) !important;
+        -webkit-text-fill-color: var(--warm-nav-link-color, #b0c4de) !important;
     }
     .site-header .theme-toggle:not(.warm-tone-toggle):hover,
     .site-header .theme-toggle:not(.warm-tone-toggle):active,

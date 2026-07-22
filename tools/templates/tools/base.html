@@ -424,6 +424,9 @@
         try {
             if (!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches)) return;
             var root = document.documentElement;
+            if (/Android/i.test(navigator.userAgent || "")) {
+                root.classList.add("gadly-android-scroll");
+            }
             var body = document.body;
             root.classList.remove(
                 "nav-open",
@@ -1697,8 +1700,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=230">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=151">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=231">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=152">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {

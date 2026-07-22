@@ -1061,9 +1061,30 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
 
     html {
-        overflow-y: scroll !important;
+        overflow-y: auto !important;
         height: auto !important;
         max-height: none !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Android Chrome: scroll su body (su html spesso non risponde al touch). iOS resta su html. */
+    html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
+        overflow: hidden !important;
+        height: 100% !important;
+        max-height: none !important;
+        touch-action: auto !important;
+    }
+    html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        position: static !important;
+        height: auto !important;
+        min-height: 100% !important;
+        width: auto !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        touch-action: pan-y !important;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -1383,6 +1404,14 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         background: rgba(0, 123, 255, 0.15);
         border-color: rgba(0, 123, 255, 0.5);
         color: #007BFF;
+    }
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active) {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--text-secondary, #b0c4de);
+    }
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active) {
+        color: var(--warm-nav-link-color, #b0c4de);
     }
 
     /* Mobile nav: allow scrolling if it overflows */
