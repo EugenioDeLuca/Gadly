@@ -2546,6 +2546,8 @@
                     if (body) body.classList.remove('nav-open', 'nav-closing');
                     var scrim = document.getElementById('gadly-nav-scrim');
                     if (scrim) scrim.classList.remove('is-active');
+                    var padStuck = document.getElementById('gadly-safari-bottom-pad');
+                    if (padStuck && padStuck.parentNode) padStuck.parentNode.removeChild(padStuck);
                 }
                 if (root) {
                     root.classList.remove(
@@ -2653,7 +2655,7 @@
             }
 
             function setNavOpenChrome() {
-                /* Scrim rgba scurisce il contenuto sotto header/menu */
+                /* Scrim scurisce il contenuto; chrome Safari segue il colore header del tema sito. */
                 var isDark = document.body.classList.contains('dark-mode');
                 var isWarm = document.body.classList.contains('warm-tone');
                 var headerColor = '#ffffff';
@@ -2662,12 +2664,34 @@
                 } else if (isWarm) {
                     headerColor = '#fff8ec';
                 }
-                var meta = document.getElementById('gadly-theme-color');
-                if (meta) meta.setAttribute('content', headerColor);
-                var metaLight = document.getElementById('gadly-theme-color-light');
-                if (metaLight) metaLight.setAttribute('content', headerColor);
-                var metaDark = document.getElementById('gadly-theme-color-dark');
-                if (metaDark) metaDark.setAttribute('content', headerColor);
+                var root = document.documentElement;
+                /* Safari usa prefers-color-scheme del telefono: forza light/dark del SITO. */
+                root.style.setProperty('color-scheme', isDark ? 'dark' : 'light');
+                root.dataset.theme = isDark ? 'dark' : 'light';
+
+                var head = document.head || document.getElementsByTagName('head')[0];
+                if (head) {
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
+                        if (el.parentNode) el.parentNode.removeChild(el);
+                    });
+                    var meta = document.createElement('meta');
+                    meta.id = 'gadly-theme-color';
+                    meta.setAttribute('name', 'theme-color');
+                    meta.setAttribute('content', headerColor);
+                    head.insertBefore(meta, head.firstChild);
+                    /* Duplicati senza media: iOS non deve prendere il meta dark di sistema. */
+                    var metaL = document.createElement('meta');
+                    metaL.id = 'gadly-theme-color-light';
+                    metaL.setAttribute('name', 'theme-color');
+                    metaL.setAttribute('content', headerColor);
+                    head.insertBefore(metaL, meta.nextSibling);
+                    var metaD = document.createElement('meta');
+                    metaD.id = 'gadly-theme-color-dark';
+                    metaD.setAttribute('name', 'theme-color');
+                    metaD.setAttribute('content', headerColor);
+                    head.insertBefore(metaD, metaL.nextSibling);
+                }
+
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (isWarm) {
@@ -2692,9 +2716,45 @@
                         navEl.style.setProperty('background-color', headerColor, 'important');
                     }
                 }
+
+                /* Pad sotto lo scrim scuro: Safari non campiona nero e usa il colore del tema (light/dark). */
+                var oldPad = document.getElementById('gadly-safari-bottom-pad');
+                if (oldPad && oldPad.parentNode) oldPad.parentNode.removeChild(oldPad);
+                var pad = document.createElement('div');
+                pad.id = 'gadly-safari-bottom-pad';
+                pad.setAttribute('aria-hidden', 'true');
+                pad.style.cssText = [
+                    'display:block',
+                    'position:fixed',
+                    'left:0',
+                    'right:0',
+                    'bottom:0',
+                    'width:100%',
+                    'height:calc(72px + env(safe-area-inset-bottom, 0px))',
+                    'margin:0',
+                    'padding:0',
+                    'border:0',
+                    'pointer-events:none',
+                    'z-index:241',
+                    'background-color:' + headerColor
+                ].join(';');
+                document.body.appendChild(pad);
+                var scrimEl = document.getElementById('gadly-nav-scrim');
+                if (scrimEl) {
+                    scrimEl.style.bottom = 'calc(72px + env(safe-area-inset-bottom, 0px))';
+                    scrimEl.style.height = 'auto';
+                    scrimEl.style.minHeight = '0';
+                }
             }
 
             function restoreThemeChrome() {
+                var pad = document.getElementById('gadly-safari-bottom-pad');
+                if (pad && pad.parentNode) pad.parentNode.removeChild(pad);
+                var scrimEl = document.getElementById('gadly-nav-scrim');
+                if (scrimEl) {
+                    scrimEl.style.removeProperty('bottom');
+                    scrimEl.style.removeProperty('min-height');
+                }
                 var root = document.documentElement;
                 root.style.removeProperty('color-scheme');
                 var isDark = document.body.classList.contains('dark-mode');
