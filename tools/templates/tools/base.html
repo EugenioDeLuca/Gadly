@@ -1734,8 +1734,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=234">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=154">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=235">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=155">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2663,7 +2663,11 @@
                     headerColor = '#fff8ec';
                 }
                 var meta = document.getElementById('gadly-theme-color');
-                if (meta) meta.setAttribute('content', '#000000');
+                if (meta) meta.setAttribute('content', headerColor);
+                var metaLight = document.getElementById('gadly-theme-color-light');
+                if (metaLight) metaLight.setAttribute('content', headerColor);
+                var metaDark = document.getElementById('gadly-theme-color-dark');
+                if (metaDark) metaDark.setAttribute('content', headerColor);
                 var header = document.querySelector('.site-header');
                 if (header) {
                     if (isWarm) {

@@ -883,6 +883,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         border: none;
         border-radius: 0 0 12px 12px;
         z-index: 99;
+        transition: none;
     }
     .header-nav.is-open {
         /* fallback se JS non setta scrollHeight; JS usa l’altezza reale */

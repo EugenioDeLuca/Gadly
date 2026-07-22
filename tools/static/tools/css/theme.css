@@ -121,7 +121,7 @@ body {
     }
     body.warm-tone .header-nav,
     body.dark-mode.warm-tone .header-nav {
-        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: none;
         pointer-events: none;
     }
     body.warm-tone .header-nav.is-open,
