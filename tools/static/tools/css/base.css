@@ -1096,15 +1096,15 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         pointer-events: auto !important;
     }
 
-    /* Viewport stretta (anche da PC): scroll documento con menu chiuso. */
-    html:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
-        overflow-y: scroll !important;
+    /* Viewport stretta (iOS / desktop stretto): scroll su html. Android usa .gadly-android-scroll. */
+    html:not(.gadly-android-scroll):not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
+        overflow-y: auto !important;
         height: auto !important;
         max-height: none !important;
         touch-action: pan-x pan-y !important;
         -webkit-overflow-scrolling: touch;
     }
-    html:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
+    html:not(.gadly-android-scroll):not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
         overflow-y: visible !important;
         position: static !important;
         height: auto !important;

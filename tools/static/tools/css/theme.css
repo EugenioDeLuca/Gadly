@@ -106,6 +106,9 @@ body {
     body.nav-open.warm-tone #gadly-nav-scrim.is-active {
         background: rgba(0, 0, 0, 0.85);
         display: block;
+        bottom: 0;
+        min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     body.nav-open.warm-tone #gadly-nav-scrim::before {
         content: "";
