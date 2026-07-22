@@ -13,7 +13,7 @@
         );
     }
 
-    function shouldUseAndroidScroll() {
+    function isAndroidMobile() {
         return isCoarseMobile() && !isIOSMobile();
     }
 
@@ -21,25 +21,31 @@
         return document.documentElement;
     }
 
-    function scrollLocked() {
-        var root = rootEl();
+    function menuIsOpen() {
         var nav = document.getElementById("header-nav");
+        return !!(nav && nav.classList.contains("is-open"));
+    }
+
+    function scrollLocked() {
+        if (menuIsOpen()) return true;
+        var root = rootEl();
         if (!root) return true;
-        if (nav && nav.classList.contains("is-open")) return true;
         if (root.classList.contains("nav-open")) return true;
         if (root.classList.contains("gadly-trash-scroll-lock")) return true;
+        if (root.classList.contains("gadly-trash-mobile-press")) return true;
+        if (root.classList.contains("gadly-trash-drag-active")) return true;
         if (root.classList.contains("gadly-scroll-restore-pending")) return true;
         if (root.classList.contains("gadly-cl-scroll-pending")) return true;
         return false;
     }
 
     function readScrollY() {
-        var body = document.body;
         return Math.max(
             0,
-            window.scrollY ||
+            window.pageYOffset ||
+                window.scrollY ||
                 rootEl().scrollTop ||
-                (body ? body.scrollTop : 0) ||
+                (document.body && document.body.scrollTop) ||
                 0
         );
     }
@@ -51,14 +57,17 @@
             root.scrollHeight || 0,
             root.offsetHeight || 0,
             body ? body.scrollHeight : 0,
-            body ? body.offsetHeight : 0
+            body ? body.offsetHeight : 0,
+            body ? body.clientHeight : 0
         );
-        return Math.max(0, height - window.innerHeight);
+        return Math.max(0, height - (window.innerHeight || root.clientHeight || 0));
     }
 
     function writeScrollY(y) {
         var top = Math.max(0, Math.min(maxScrollY(), y));
-        window.scrollTo(0, top);
+        try {
+            window.scrollTo(0, top);
+        } catch (eScroll) { /* ignore */ }
         rootEl().scrollTop = top;
         if (document.body) document.body.scrollTop = top;
         return top;
@@ -68,8 +77,15 @@
         var root = rootEl();
         var body = document.body;
         if (!root) return;
+
+        if (!menuIsOpen()) {
+            root.classList.remove("nav-open");
+            if (body) body.classList.remove("nav-open", "nav-closing");
+            var scrim = document.getElementById("gadly-nav-scrim");
+            if (scrim) scrim.classList.remove("is-active");
+        }
+
         root.classList.remove(
-            "nav-open",
             "gadly-trash-scroll-lock",
             "gadly-trash-mobile-press",
             "gadly-trash-drag-active",
@@ -79,73 +95,88 @@
         root.style.removeProperty("height");
         root.style.removeProperty("min-height");
         root.style.removeProperty("overflow");
+        root.style.removeProperty("overflow-x");
+        root.style.removeProperty("overflow-y");
         root.style.removeProperty("touch-action");
+        root.style.removeProperty("position");
+
         if (!body) return;
-        body.classList.remove("nav-open", "nav-closing");
         body.style.removeProperty("overflow");
+        body.style.removeProperty("overflow-x");
+        body.style.removeProperty("overflow-y");
         body.style.removeProperty("touch-action");
         body.style.removeProperty("position");
         body.style.removeProperty("top");
         body.style.removeProperty("left");
         body.style.removeProperty("right");
         body.style.removeProperty("width");
+        body.style.removeProperty("height");
     }
 
-    function isNestedScroller(target) {
+    function isInteractiveIgnore(target) {
         if (!target || !target.closest) return false;
-        if (target.closest(
-            ".header-nav.is-open, textarea, select, [contenteditable='true'], " +
-            ".mobile-home-fab, .gadly-trash-drag-shield, .gadly-trash-draggable, " +
-            ".tool-quick-nav-panel, .cookie-banner"
-        )) {
-            return true;
-        }
-        var node = target;
-        while (node && node !== document.body && node !== document.documentElement) {
-            try {
-                var style = window.getComputedStyle(node);
-                var oy = style.overflowY;
-                if ((oy === "auto" || oy === "scroll" || oy === "overlay") &&
-                    node.scrollHeight > node.clientHeight + 2) {
-                    return true;
-                }
-            } catch (eStyle) { /* ignore */ }
-            node = node.parentElement;
-        }
-        return false;
+        return !!target.closest(
+            "textarea, select, input, [contenteditable='true'], " +
+            ".header-nav.is-open, .mobile-home-fab, .mobile-home-fab-link, " +
+            ".gadly-trash-drag-shield, .tool-quick-nav-panel, " +
+            "#gadly-nav-scrim.is-active"
+        );
     }
 
     function bootAndroidScroll() {
-        if (!shouldUseAndroidScroll()) return;
+        if (!isAndroidMobile()) return;
         rootEl().classList.add("gadly-android-scroll");
         unlockScrollChrome();
     }
 
     function setupTouchScrollShim() {
-        if (!shouldUseAndroidScroll()) return;
+        if (!isAndroidMobile()) return;
 
         var active = false;
         var startY = 0;
         var startScroll = 0;
+        var moved = false;
 
         document.addEventListener("touchstart", function (event) {
-            if (scrollLocked() || !event.touches || event.touches.length !== 1) return;
-            if (isNestedScroller(event.target)) return;
+            unlockScrollChrome();
+            if (scrollLocked() || !event.touches || event.touches.length !== 1) {
+                active = false;
+                return;
+            }
+            if (isInteractiveIgnore(event.target)) {
+                active = false;
+                return;
+            }
             active = true;
+            moved = false;
             startY = event.touches[0].clientY;
             startScroll = readScrollY();
         }, { passive: true, capture: true });
 
         document.addEventListener("touchmove", function (event) {
             if (!active || scrollLocked() || !event.touches || event.touches.length !== 1) return;
-            if (maxScrollY() < 1) return;
-            var dy = startY - event.touches[0].clientY;
-            if (Math.abs(dy) < 2) return;
+            var maxY = maxScrollY();
+            if (maxY < 1) return;
+
+            var y = event.touches[0].clientY;
+            var dy = startY - y;
+            if (Math.abs(dy) < 1) return;
+
+            moved = true;
             writeScrollY(startScroll + dy);
-        }, { passive: true, capture: true });
+
+            /*
+             * Su alcuni Android Chrome lo scroll nativo resta morto.
+             * Prendiamo il gesto e scorriamo noi (passive:false).
+             */
+            if (event.cancelable) {
+                event.preventDefault();
+            }
+        }, { passive: false, capture: true });
 
         function endTouch() {
             active = false;
+            moved = false;
         }
         document.addEventListener("touchend", endTouch, { passive: true, capture: true });
         document.addEventListener("touchcancel", endTouch, { passive: true, capture: true });
@@ -161,6 +192,8 @@
         bootAndroidScroll();
         setupTouchScrollShim();
     }
-    window.addEventListener("pageshow", bootAndroidScroll);
+    window.addEventListener("pageshow", function () {
+        bootAndroidScroll();
+    });
     window.__gadlyBootAndroidScroll = bootAndroidScroll;
 })();

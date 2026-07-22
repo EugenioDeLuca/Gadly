@@ -434,16 +434,17 @@
         }
         @media (max-width: 768px) {
             html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
-                overflow: hidden !important;
-                height: 100% !important;
-                touch-action: auto !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                height: auto !important;
+                touch-action: pan-y !important;
             }
             html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
                 overflow-x: hidden !important;
-                overflow-y: auto !important;
+                overflow-y: visible !important;
                 -webkit-overflow-scrolling: touch;
                 touch-action: pan-y !important;
-                min-height: 100% !important;
+                min-height: 0 !important;
                 height: auto !important;
                 position: static !important;
             }
@@ -1733,7 +1734,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=233">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=234">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=154">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
@@ -2479,7 +2480,7 @@
     <script src="{% static 'tools/js/drose-orbit-ping.js' %}?v=42"></script>
     {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
-    <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=1"></script>
+    <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=2"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
     <script>
     /*

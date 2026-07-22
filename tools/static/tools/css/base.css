@@ -1067,25 +1067,26 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Android Chrome: scroll su body (su html spesso non risponde al touch). iOS resta su html. */
+    /* Android: stesso scroll documento di iOS (NON overflow:hidden su html — bloccava tutto). */
     html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
-        overflow: hidden !important;
-        height: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        height: auto !important;
         max-height: none !important;
-        touch-action: auto !important;
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch;
     }
     html.gadly-android-scroll:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
         overflow-x: hidden !important;
-        overflow-y: auto !important;
+        overflow-y: visible !important;
         position: static !important;
         height: auto !important;
-        min-height: 100% !important;
+        min-height: 0 !important;
         width: auto !important;
         top: auto !important;
         left: auto !important;
         right: auto !important;
         touch-action: pan-y !important;
-        -webkit-overflow-scrolling: touch;
     }
 
     /* Menu chiuso: il nav fixed a max-height:0 non deve intercettare rotella/touch sulla pagina */
