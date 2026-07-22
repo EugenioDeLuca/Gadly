@@ -2716,47 +2716,17 @@
                         navEl.style.setProperty('background-color', headerColor, 'important');
                     }
                 }
-
-                /* Pad sotto lo scrim scuro: Safari non campiona nero e usa il colore del tema (light/dark). */
-                var oldPad = document.getElementById('gadly-safari-bottom-pad');
-                if (oldPad && oldPad.parentNode) oldPad.parentNode.removeChild(oldPad);
-                var pad = document.createElement('div');
-                pad.id = 'gadly-safari-bottom-pad';
-                pad.setAttribute('aria-hidden', 'true');
-                pad.style.cssText = [
-                    'display:block',
-                    'position:fixed',
-                    'left:0',
-                    'right:0',
-                    'bottom:0',
-                    'width:100%',
-                    'height:calc(72px + env(safe-area-inset-bottom, 0px))',
-                    'margin:0',
-                    'padding:0',
-                    'border:0',
-                    'pointer-events:none',
-                    'z-index:241',
-                    'background-color:' + headerColor
-                ].join(';');
-                document.body.appendChild(pad);
-                var scrimEl = document.getElementById('gadly-nav-scrim');
-                if (scrimEl) {
-                    scrimEl.style.bottom = 'calc(72px + env(safe-area-inset-bottom, 0px))';
-                    scrimEl.style.height = 'auto';
-                    scrimEl.style.minHeight = '0';
+                /* Niente strisce: solo theme-color + sfondo pagina (Safari legge questi). */
+                root.style.setProperty('background-color', headerColor, 'important');
+                if (document.body) {
+                    document.body.style.setProperty('background-color', headerColor, 'important');
                 }
             }
 
             function restoreThemeChrome() {
                 var pad = document.getElementById('gadly-safari-bottom-pad');
                 if (pad && pad.parentNode) pad.parentNode.removeChild(pad);
-                var scrimEl = document.getElementById('gadly-nav-scrim');
-                if (scrimEl) {
-                    scrimEl.style.removeProperty('bottom');
-                    scrimEl.style.removeProperty('min-height');
-                }
                 var root = document.documentElement;
-                root.style.removeProperty('color-scheme');
                 var isDark = document.body.classList.contains('dark-mode');
                 if (typeof window.gadlySyncViewportChrome === 'function') {
                     window.gadlySyncViewportChrome(isDark, { forceResample: true });
