@@ -13,8 +13,11 @@
     function applyTheme(isDark) {
         var root = document.documentElement;
         var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        var isWarm = document.body.classList.contains(warmClass);
 
         root.classList.add('theme-switching');
+        root.classList.toggle('gadly-warm-dark', !!(mobile && isDark && isWarm));
+        root.classList.toggle('gadly-warm-light', !!(mobile && !isDark && isWarm));
 
         if (mobile) {
             /* Status bar prima (sync), poi classe tema — stesso giro, niente ritardo */
@@ -39,11 +42,16 @@
         var root = document.documentElement;
         root.classList.add('theme-switching');
         document.body.classList.toggle(warmClass, isWarm);
+        var isDark = document.body.classList.contains(darkClass);
+        var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        root.classList.toggle('gadly-warm-dark', !!(mobile && isDark && isWarm));
+        root.classList.toggle('gadly-warm-light', !!(mobile && !isDark && isWarm));
         var btn = document.getElementById('warm-tone-toggle');
         if (btn) {
             btn.classList.toggle('is-active', isWarm);
             btn.setAttribute('aria-pressed', isWarm ? 'true' : 'false');
         }
+        syncViewportChrome(isDark, false);
         requestAnimationFrame(function() {
             root.classList.remove('theme-switching');
         });
@@ -62,6 +70,10 @@
 
         var warmSaved = localStorage.getItem(warmKey);
         var isWarm = warmSaved === '1';
+        var root = document.documentElement;
+        var mobileInit = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        root.classList.toggle('gadly-warm-dark', !!(mobileInit && isDark && isWarm));
+        root.classList.toggle('gadly-warm-light', !!(mobileInit && !isDark && isWarm));
         if (document.body.classList.contains(warmClass) !== isWarm) {
             applyWarmTone(isWarm);
         } else {
@@ -70,6 +82,7 @@
                 warmBtn0.classList.toggle('is-active', isWarm);
                 warmBtn0.setAttribute('aria-pressed', isWarm ? 'true' : 'false');
             }
+            syncViewportChrome(isDark, false);
         }
 
         var btn = document.getElementById('theme-toggle');
@@ -99,6 +112,36 @@
                 }
             });
         }
+
+        function followsSystemTheme() {
+            try {
+                return localStorage.getItem(key) === null;
+            } catch (eKey) {
+                return true;
+            }
+        }
+
+        function onSystemThemeChange() {
+            if (!followsSystemTheme()) return;
+            var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (document.body.classList.contains(darkClass) !== systemDark) {
+                applyTheme(systemDark);
+            } else {
+                syncViewportChrome(systemDark, true);
+            }
+        }
+
+        if (window.matchMedia) {
+            var schemeMq = window.matchMedia('(prefers-color-scheme: dark)');
+            if (typeof schemeMq.addEventListener === 'function') {
+                schemeMq.addEventListener('change', onSystemThemeChange);
+            } else if (typeof schemeMq.addListener === 'function') {
+                schemeMq.addListener(onSystemThemeChange);
+            }
+        }
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') onSystemThemeChange();
+        });
     }
 
     if (document.readyState === 'loading') {

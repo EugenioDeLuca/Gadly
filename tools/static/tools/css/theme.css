@@ -45,6 +45,12 @@ body {
     body {
         background: var(--bg-card) !important;
     }
+    body.warm-tone:not(.dark-mode) {
+        background: #fff8ec !important;
+    }
+    body.dark-mode.warm-tone {
+        background: #26201c !important;
+    }
 
     /* Mobile palette: slightly softer, app-like surfaces */
     :root {
@@ -177,8 +183,11 @@ body {
         box-shadow: none !important;
     }
     /* Dark: header e menu hamburger stesso colore opaco */
-    body.dark-mode {
+    body.dark-mode:not(.warm-tone) {
         background: #0f0f23 !important;
+    }
+    body.dark-mode.warm-tone {
+        background: #26201c !important;
     }
     body.dark-mode:not(.warm-tone) .site-header,
     body.dark-mode:not(.warm-tone) .header-nav {
@@ -197,6 +206,21 @@ body {
         -webkit-backdrop-filter: none !important;
         border: none !important;
         box-shadow: none !important;
+        border-radius: 0 0 14px 14px !important;
+        overflow: hidden !important;
+    }
+    body.dark-mode.warm-tone .site-header,
+    body.dark-mode.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav.is-open {
+        background: #26201c !important;
+        background-color: #26201c !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    body.dark-mode.warm-tone .header-nav.is-open {
         border-radius: 0 0 14px 14px !important;
         overflow: hidden !important;
     }
@@ -399,7 +423,7 @@ body {
         content: none !important;
         display: none !important;
     }
-    /* Come quando funzionava: scrim scuro + extra in basso sopra la fascia Safari */
+    /* Overlay menu: scurimento pagina sotto header/menu */
     #gadly-nav-scrim {
         display: none;
         position: fixed;
@@ -412,8 +436,7 @@ body {
         min-height: 100vh;
         min-height: 100dvh;
         min-height: -webkit-fill-available;
-        padding-bottom: 120px;
-        box-sizing: content-box;
+        box-sizing: border-box;
         margin: 0;
         border: 0;
         background: rgba(0, 0, 0, 0.88);
@@ -423,31 +446,15 @@ body {
         -webkit-tap-highlight-color: transparent;
         opacity: 1;
     }
-    /* Tint solo per Safari in basso (sotto lo scrim, non copre la pagina) */
-    #gadly-safari-bottom-tint {
-        display: none;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 64px;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        background-color: #000000;
-        z-index: 239;
-        pointer-events: none;
-    }
-    body.nav-open #gadly-safari-bottom-tint {
+    body.nav-open #gadly-nav-scrim.is-active {
         display: block;
     }
-    #gadly-nav-scrim.is-active,
-    body.nav-open #gadly-nav-scrim {
-        display: block;
+    /* Mai overlay fantasma: senza menu aperto niente scrim che ruba touch/scroll */
+    body:not(.nav-open) #gadly-nav-scrim {
+        display: none !important;
+        pointer-events: none !important;
     }
-    body.dark-mode #gadly-nav-scrim.is-active,
-    body.dark-mode.nav-open #gadly-nav-scrim {
+    body.dark-mode.nav-open #gadly-nav-scrim.is-active {
         background: rgba(0, 0, 0, 0.92);
     }
     body.nav-open.nav-closing #gadly-nav-scrim {
@@ -493,14 +500,61 @@ body.dark-mode .header-logo:hover .header-logo-text {
     background: var(--bg-header) !important;
 }
 
+/* Desktop warm tone: container principale (sopra overlay ::before z-index 50) */
+@media (min-width: 769px) {
+    body.warm-tone:not(.dark-mode) .site-main > .container,
+    body.warm-tone:not(.dark-mode) .site-main .container,
+    body.warm-tone:not(.dark-mode) .text-tool .container,
+    body.warm-tone:not(.dark-mode) .homepage .container,
+    body.warm-tone:not(.dark-mode) .web-seo .container,
+    body.warm-tone:not(.dark-mode) .faq-page .faq-container,
+    body.warm-tone:not(.dark-mode) .static-container,
+    body.warm-tone:not(.dark-mode) .password-gen .container,
+    body.warm-tone:not(.dark-mode) .translator .container,
+    body.warm-tone:not(.dark-mode) .word-counter .container,
+    body.warm-tone:not(.dark-mode) .calculators .container,
+    body.warm-tone:not(.dark-mode) .data-viz .container,
+    body.warm-tone:not(.dark-mode) .qr-generator .container,
+    body.warm-tone:not(.dark-mode) .file-analyzer .container,
+    body.warm-tone:not(.dark-mode) .pdf-merger .container,
+    body.warm-tone:not(.dark-mode) .pdf-split .container,
+    body.warm-tone:not(.dark-mode) .image-editor .container {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+    }
+    body.dark-mode.warm-tone .site-main > .container,
+    body.dark-mode.warm-tone .site-main .container,
+    body.dark-mode.warm-tone .text-tool .container,
+    body.dark-mode.warm-tone .homepage .container,
+    body.dark-mode.warm-tone .web-seo .container,
+    body.dark-mode.warm-tone .faq-page .faq-container,
+    body.dark-mode.warm-tone .static-container,
+    body.dark-mode.warm-tone .password-gen .container,
+    body.dark-mode.warm-tone .translator .container,
+    body.dark-mode.warm-tone .word-counter .container,
+    body.dark-mode.warm-tone .calculators .container,
+    body.dark-mode.warm-tone .data-viz .container,
+    body.dark-mode.warm-tone .qr-generator .container,
+    body.dark-mode.warm-tone .file-analyzer .container,
+    body.dark-mode.warm-tone .pdf-merger .container,
+    body.dark-mode.warm-tone .pdf-split .container,
+    body.dark-mode.warm-tone .image-editor .container {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.22) !important;
+    }
+}
+
 body.warm-tone:not(.dark-mode) {
     --bg-header: #fff8ec;
+    --bg-card: #fff8ec;
     --warm-nav-link-color: #003f7f;
     --warm-nav-link-hover-color: #007BFF;
 }
 
 body.dark-mode.warm-tone {
-    --bg-header: rgba(38, 32, 28, 0.9);
+    --bg-header: #26201c;
+    --bg-card: #26201c;
     --warm-nav-link-color: var(--text-secondary);
     --warm-nav-link-hover-color: var(--accent);
 }
@@ -522,6 +576,24 @@ body.dark-mode.warm-tone {
     }
 }
 
+/* Mobile/tablet: warm tone su header e menu hamburger */
+@media (max-width: 768px) {
+    body.warm-tone:not(.dark-mode) .site-header,
+    body.warm-tone:not(.dark-mode) .header-nav,
+    body.warm-tone:not(.dark-mode) .header-nav.is-open {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        background-image: none !important;
+    }
+    body.dark-mode.warm-tone .site-header,
+    body.dark-mode.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav.is-open {
+        background: #26201c !important;
+        background-color: #26201c !important;
+        background-image: none !important;
+    }
+}
+
 @media (min-width: 481px) {
     body.dark-mode.warm-tone .header-nav {
         background: transparent !important;
@@ -530,7 +602,7 @@ body.dark-mode.warm-tone {
 
 @media (min-width: 481px) {
     body.dark-mode.warm-tone .header-nav.is-open {
-        background: rgb(38, 32, 28) !important;
+        background: #26201c !important;
     }
 }
 
@@ -553,6 +625,21 @@ body.dark-mode.warm-tone {
         -webkit-backdrop-filter: none !important;
         border: none !important;
         box-shadow: none !important;
+        border-radius: 0 0 14px 14px !important;
+        overflow: hidden !important;
+    }
+    body.dark-mode.warm-tone .site-header,
+    body.dark-mode.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav.is-open {
+        background: #26201c !important;
+        background-color: #26201c !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    body.dark-mode.warm-tone .header-nav.is-open {
         border-radius: 0 0 14px 14px !important;
         overflow: hidden !important;
     }
@@ -607,12 +694,27 @@ body.dark-mode.warm-tone .header-nav .header-link:focus-visible {
 /* Language EN/IT: stessi colori testo dei link Home, FAQ, About */
 body.warm-tone .header-lang-btn {
     color: var(--warm-nav-link-color) !important;
+}
+
+body.warm-tone .header-lang-btn.is-active {
+    background: rgba(0, 123, 255, 0.15) !important;
+    border-color: rgba(0, 123, 255, 0.5) !important;
+    color: #007BFF !important;
+}
+
+body.warm-tone .header-lang-btn:not(.is-active) {
     background: transparent !important;
 }
 
 body.warm-tone .header-lang-btn:hover {
     background: #e8f4fd !important;
     color: #007BFF !important;
+}
+
+body.dark-mode.warm-tone .header-lang-btn.is-active {
+    background: rgba(100, 180, 255, 0.2) !important;
+    border-color: rgba(100, 180, 255, 0.45) !important;
+    color: #4a8ec2 !important;
 }
 
 body.dark-mode.warm-tone .header-lang-btn:hover {
@@ -652,6 +754,10 @@ body.dark-mode .word-counter .container {
     body.dark-mode .homepage .container {
         background: #fff !important;
         box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25) !important;
+    }
+    body.dark-mode.warm-tone .homepage .container {
+        background: #fff8ec !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.22) !important;
     }
     body.dark-mode .homepage .intro {
         color: #555 !important;
@@ -971,6 +1077,37 @@ body.dark-mode .warm-tone-toggle.is-active {
     .site-header .header-menu-btn {
         -webkit-tap-highlight-color: transparent;
     }
+    .site-header .header-lang-btn,
+    .header-lang-form .header-lang-btn {
+        transition: none !important;
+        cursor: pointer !important;
+        touch-action: manipulation;
+    }
+    /* Mobile: pill lingua stabile al tap (come default light) */
+    .header-lang-form .header-lang-btn:not(.is-active),
+    .header-lang-form .header-lang-btn:not(.is-active):hover,
+    .header-lang-form .header-lang-btn:not(.is-active):active,
+    .header-lang-form .header-lang-btn:not(.is-active):focus,
+    .header-lang-form .header-lang-btn:not(.is-active):focus-visible,
+    body.warm-tone .header-lang-form .header-lang-btn:not(.is-active),
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active),
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active),
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):focus-visible,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active),
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body.dark-mode.warm-tone .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
+        background: rgba(0, 123, 255, 0.15) !important;
+        border-color: rgba(0, 123, 255, 0.5) !important;
+        color: #007BFF !important;
+        -webkit-text-fill-color: #007BFF !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
     .site-header .theme-toggle:not(.warm-tone-toggle):hover,
     .site-header .theme-toggle:not(.warm-tone-toggle):active,
     .site-header .theme-toggle:not(.warm-tone-toggle):focus:not(:focus-visible),
@@ -1066,20 +1203,6 @@ body.dark-mode .warm-tone-toggle.is-active {
     body.dark-mode.warm-tone .site-header .header-lang-btn:focus:not(:focus-visible) {
         box-shadow: none !important;
         outline: none !important;
-    }
-    .header-lang-form .header-lang-btn:not(.is-active):hover,
-    .header-lang-form .header-lang-btn:not(.is-active):active,
-    .header-lang-form .header-lang-btn:not(.is-active):focus:not(:focus-visible) {
-        background: rgba(0, 123, 255, 0.15) !important;
-        border-color: rgba(0, 123, 255, 0.5) !important;
-        color: #007BFF !important;
-    }
-    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):hover,
-    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):active,
-    body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):focus:not(:focus-visible) {
-        background: transparent !important;
-        border-color: rgba(255, 255, 255, 0.2) !important;
-        color: var(--text-secondary, #b0c4de) !important;
     }
     .site-header .header-menu-btn:hover,
     .site-header .header-menu-btn:active,
@@ -1300,5 +1423,129 @@ body.dark-mode:not(.homepage):not(.image-editor):not(.color-converter) .site-mai
         border-top: none !important;
         border-bottom: none !important;
         box-shadow: none !important;
+    }
+}
+
+/* Warm tone mobile: header/menu = stesso colore del body (menu aperto/chiuso) */
+@media (max-width: 768px) {
+html:has(body.warm-tone:not(.dark-mode)) {
+    background-color: #fff8ec !important;
+    background-image: none !important;
+}
+html:has(body.dark-mode.warm-tone) {
+    background-color: #26201c !important;
+    background-image: none !important;
+}
+html.gadly-warm-dark,
+html.gadly-warm-dark body {
+    background-color: #26201c !important;
+    background-image: none !important;
+}
+html.gadly-warm-light,
+html.gadly-warm-light body {
+    background-color: #fff8ec !important;
+    background-image: none !important;
+}
+body.warm-tone:not(.dark-mode),
+body.dark-mode.warm-tone {
+    background-image: none !important;
+}
+body.warm-tone:not(.dark-mode) {
+    background: #fff8ec !important;
+}
+body.dark-mode.warm-tone {
+    background: #26201c !important;
+}
+html.gadly-warm-dark .site-header,
+html.gadly-warm-dark .header-nav,
+html.gadly-warm-dark .header-nav.is-open,
+body.warm-tone:not(.dark-mode) .site-header,
+body.warm-tone:not(.dark-mode) .header-nav,
+body.warm-tone:not(.dark-mode) .header-nav.is-open,
+body.nav-open.warm-tone:not(.dark-mode) .site-header,
+body.nav-open.warm-tone:not(.dark-mode) .header-nav,
+body.nav-open.warm-tone:not(.dark-mode) .header-nav.is-open,
+html.nav-open:has(body.warm-tone:not(.dark-mode)) body .site-header,
+html.nav-open:has(body.warm-tone:not(.dark-mode)) body .header-nav,
+html.nav-open:has(body.warm-tone:not(.dark-mode)) body .header-nav.is-open {
+    background: #fff8ec !important;
+    background-color: #fff8ec !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+body.dark-mode.warm-tone .site-header,
+body.dark-mode.warm-tone .header-nav,
+body.dark-mode.warm-tone .header-nav.is-open,
+body.nav-open.dark-mode.warm-tone .site-header,
+body.nav-open.dark-mode.warm-tone .header-nav,
+body.nav-open.dark-mode.warm-tone .header-nav.is-open,
+html.nav-open:has(body.dark-mode.warm-tone) body .site-header,
+html.nav-open:has(body.dark-mode.warm-tone) body .header-nav,
+html.nav-open:has(body.dark-mode.warm-tone) body .header-nav.is-open {
+    background: #26201c !important;
+    background-color: #26201c !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+body.dark-mode.warm-tone .header-menu-btn,
+body.nav-open.dark-mode.warm-tone .header-menu-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+body.warm-tone:not(.dark-mode) .header-menu-btn,
+body.nav-open.warm-tone:not(.dark-mode) .header-menu-btn {
+    background: rgba(0, 63, 127, 0.08) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+}
+
+/* Desktop warm tone: vince su CSS tool (es. text-tools background:white) */
+@media (min-width: 769px) {
+    body.warm-tone:not(.dark-mode) .site-main > .container,
+    body.warm-tone:not(.dark-mode) .site-main .container,
+    body.warm-tone:not(.dark-mode) .text-tool .container,
+    body.warm-tone:not(.dark-mode) .homepage .container,
+    body.warm-tone:not(.dark-mode) .web-seo .container,
+    body.warm-tone:not(.dark-mode) .faq-page .faq-container,
+    body.warm-tone:not(.dark-mode) .static-container,
+    body.warm-tone:not(.dark-mode) .password-gen .container,
+    body.warm-tone:not(.dark-mode) .translator .container,
+    body.warm-tone:not(.dark-mode) .word-counter .container,
+    body.warm-tone:not(.dark-mode) .calculators .container,
+    body.warm-tone:not(.dark-mode) .data-viz .container,
+    body.warm-tone:not(.dark-mode) .qr-generator .container,
+    body.warm-tone:not(.dark-mode) .file-analyzer .container,
+    body.warm-tone:not(.dark-mode) .pdf-merger .container,
+    body.warm-tone:not(.dark-mode) .pdf-split .container,
+    body.warm-tone:not(.dark-mode) .image-editor .container {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+    }
+    body.dark-mode.warm-tone .site-main > .container,
+    body.dark-mode.warm-tone .site-main .container,
+    body.dark-mode.warm-tone .text-tool .container,
+    body.dark-mode.warm-tone .homepage .container,
+    body.dark-mode.warm-tone .web-seo .container,
+    body.dark-mode.warm-tone .faq-page .faq-container,
+    body.dark-mode.warm-tone .static-container,
+    body.dark-mode.warm-tone .password-gen .container,
+    body.dark-mode.warm-tone .translator .container,
+    body.dark-mode.warm-tone .word-counter .container,
+    body.dark-mode.warm-tone .calculators .container,
+    body.dark-mode.warm-tone .data-viz .container,
+    body.dark-mode.warm-tone .qr-generator .container,
+    body.dark-mode.warm-tone .file-analyzer .container,
+    body.dark-mode.warm-tone .pdf-merger .container,
+    body.dark-mode.warm-tone .pdf-split .container,
+    body.dark-mode.warm-tone .image-editor .container {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        box-shadow: 0 20px 50px rgba(0, 63, 127, 0.22) !important;
     }
 }

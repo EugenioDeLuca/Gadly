@@ -42,11 +42,14 @@
     function updateBar() {
         if (!isDesktop()) {
             bar.classList.add("is-hidden");
+            bar.style.display = "none";
             /* Evita che height inline del thumb resti nel flusso su mobile. */
             thumb.style.height = "";
             thumb.style.transform = "";
             return;
         }
+
+        bar.style.removeProperty("display");
 
         var metrics = scrollMetrics();
         if (metrics.maxScroll < 1 && !isHomePage()) {

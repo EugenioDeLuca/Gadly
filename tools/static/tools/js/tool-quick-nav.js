@@ -501,6 +501,7 @@
     function bootQuickNav() {
         window.__gadlyQnPlacedW = window.innerWidth;
         quickNavBootUntil = Date.now() + 450;
+        window.__gadlyQuickNavBootUntil = quickNavBootUntil;
         initSideControls();
         initQuickNavToggles();
         bindQuickNavScrollSync();

@@ -67,6 +67,16 @@ h1, h2 {
     justify-content: center;
 }
 
+@media (max-width: 768px) {
+    body.warm-tone .site-header,
+    body.dark-mode.warm-tone .site-header,
+    body.warm-tone .header-nav,
+    body.dark-mode.warm-tone .header-nav {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
 .header-inner {
     max-width: 1000px;
     width: 100%;
@@ -825,6 +835,8 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     .site-header {
         box-shadow: none !important;
         border-bottom: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
     .header-inner {
         padding: 0 28px;
@@ -1037,6 +1049,51 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
             -webkit-backdrop-filter: none !important;
         }
     }
+    /* Mobile: scroll sul documento (body flex + site-main flex:1 = trap iOS con menu chiuso) */
+    body {
+        display: block;
+        min-height: 100vh;
+    }
+    body > .site-main {
+        flex: none;
+        display: block;
+        min-height: 0;
+    }
+
+    html {
+        overflow-y: scroll !important;
+        height: auto !important;
+        max-height: none !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Menu chiuso: il nav fixed a max-height:0 non deve intercettare rotella/touch sulla pagina */
+    .header-nav:not(.is-open) {
+        pointer-events: none !important;
+    }
+    .header-nav.is-open {
+        pointer-events: auto !important;
+    }
+
+    /* Viewport stretta (anche da PC): scroll documento con menu chiuso. */
+    html:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) {
+        overflow-y: scroll !important;
+        height: auto !important;
+        max-height: none !important;
+        touch-action: pan-x pan-y !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    html:not(.nav-open):not(.gadly-trash-scroll-lock):not(.gadly-scroll-restore-pending):not(.gadly-cl-scroll-pending) body {
+        overflow-y: visible !important;
+        position: static !important;
+        height: auto !important;
+        width: auto !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        touch-action: pan-x pan-y !important;
+    }
+
     body.nav-open {
         overflow: hidden !important;
     }
@@ -1045,22 +1102,33 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         overflow: hidden !important;
         overscroll-behavior: none !important;
         -webkit-overflow-scrolling: auto;
-        touch-action: none !important;
         height: 100% !important;
     }
-    html.nav-open:has(body.dark-mode) {
+    @media (hover: none) and (pointer: coarse) {
+        html.nav-open {
+            touch-action: none !important;
+        }
+    }
+    html.nav-open:has(body.dark-mode:not(.warm-tone)) {
         background: #0f0f23 !important;
         background-color: #0f0f23 !important;
     }
-    html.nav-open:has(body:not(.dark-mode)) {
+    html.nav-open:has(body.dark-mode.warm-tone) {
+        background: #26201c !important;
+        background-color: #26201c !important;
+    }
+    html.nav-open:has(body:not(.dark-mode):not(.warm-tone)) {
         background: #ffffff !important;
         background-color: #ffffff !important;
+    }
+    html.nav-open:has(body.warm-tone:not(.dark-mode)) {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
     }
 
     html.nav-open body {
         overflow: hidden !important;
         overscroll-behavior: none !important;
-        touch-action: none !important;
         position: relative !important;
         top: auto !important;
         height: auto !important;
@@ -1070,15 +1138,30 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         left: auto !important;
         right: auto !important;
     }
-    html.nav-open body:not(.dark-mode) {
+    @media (hover: none) and (pointer: coarse) {
+        html.nav-open body {
+            touch-action: none !important;
+        }
+    }
+    html.nav-open body:not(.dark-mode):not(.warm-tone) {
         background-image: none !important;
         background: #ffffff !important;
         background-color: #ffffff !important;
     }
-    html.nav-open:has(body.dark-mode) body {
+    html.nav-open body.warm-tone:not(.dark-mode) {
+        background-image: none !important;
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+    }
+    html.nav-open:has(body.dark-mode:not(.warm-tone)) body {
         background-image: none !important;
         background: #0f0f23 !important;
         background-color: #0f0f23 !important;
+    }
+    html.nav-open:has(body.dark-mode.warm-tone) body {
+        background-image: none !important;
+        background: #26201c !important;
+        background-color: #26201c !important;
     }
 
     html.nav-open body .site-header,
@@ -1090,18 +1173,32 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         -webkit-backdrop-filter: none !important;
         position: fixed !important;
     }
-    html.nav-open:has(body:not(.dark-mode)) body .site-header,
-    html.nav-open:has(body:not(.dark-mode)) body .header-nav,
-    html.nav-open:has(body:not(.dark-mode)) body .header-nav.is-open {
+    html.nav-open:has(body:not(.dark-mode):not(.warm-tone)) body .site-header,
+    html.nav-open:has(body:not(.dark-mode):not(.warm-tone)) body .header-nav,
+    html.nav-open:has(body:not(.dark-mode):not(.warm-tone)) body .header-nav.is-open {
         background: #ffffff !important;
         background-color: #ffffff !important;
         background-image: none !important;
     }
-    html.nav-open:has(body.dark-mode) body .site-header,
-    html.nav-open:has(body.dark-mode) body .header-nav,
-    html.nav-open:has(body.dark-mode) body .header-nav.is-open {
+    html.nav-open:has(body.warm-tone:not(.dark-mode)) body .site-header,
+    html.nav-open:has(body.warm-tone:not(.dark-mode)) body .header-nav,
+    html.nav-open:has(body.warm-tone:not(.dark-mode)) body .header-nav.is-open {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        background-image: none !important;
+    }
+    html.nav-open:has(body.dark-mode:not(.warm-tone)) body .site-header,
+    html.nav-open:has(body.dark-mode:not(.warm-tone)) body .header-nav,
+    html.nav-open:has(body.dark-mode:not(.warm-tone)) body .header-nav.is-open {
         background: #0f0f23 !important;
         background-color: #0f0f23 !important;
+        background-image: none !important;
+    }
+    html.nav-open:has(body.dark-mode.warm-tone) body .site-header,
+    html.nav-open:has(body.dark-mode.warm-tone) body .header-nav,
+    html.nav-open:has(body.dark-mode.warm-tone) body .header-nav.is-open {
+        background: #26201c !important;
+        background-color: #26201c !important;
         background-image: none !important;
     }
     html.nav-open body .site-header {
@@ -1131,9 +1228,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         padding-top: calc(20px + var(--site-header-height));
         padding-bottom: 36px;
     }
-    /* Homepage: container si espande in altezza, stessa distanza top/bottom (tablet) */
-    body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
-    body.homepage .site-main .container { flex: 1; margin: 16px !important; margin-bottom: 16px !important; min-height: 0; max-width: 100%; box-sizing: border-box; }
+    /* Homepage: container si espande in altezza con il contenuto (no flex trap su iOS). */
+    body.homepage .site-main { display: block; padding-bottom: 0 !important; }
+    body.homepage .site-main .container { margin: 16px !important; margin-bottom: 16px !important; min-height: auto; max-width: 100%; box-sizing: border-box; }
     /* Image editor: stesso layout mobile/tablet */
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 16px auto 36px !important; min-height: 0; }
@@ -1268,6 +1365,14 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     /* Mobile header: mostra solo la lingua alternativa (nasconde quella attiva). */
     .header-lang-form {
         gap: 0;
+        cursor: pointer;
+    }
+    .header-lang-form .header-lang-btn,
+    .header-lang-form .header-lang-btn:hover,
+    .header-lang-form .header-lang-btn:active,
+    .header-lang-form .header-lang-btn:focus,
+    .header-lang-form .header-lang-btn:focus-visible {
+        cursor: pointer !important;
     }
     .header-lang-form .header-lang-btn.is-active {
         display: none !important;
@@ -1639,9 +1744,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         box-shadow: none;
     }
 
-    body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
+    body.homepage .site-main { display: block; padding-bottom: 0 !important; }
     /* Stessi margini orizzontali di Word Counter (6px) così la fascia utile e --mobile-btn-width coincidono. */
-    body.homepage .site-main .container { flex: 1; margin: 8px 6px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
+    body.homepage .site-main .container { margin: 8px 6px !important; margin-bottom: 8px !important; min-height: auto; box-sizing: border-box; }
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 16px auto 28px !important; min-height: 0; }
 
@@ -1739,8 +1844,8 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         padding-top: calc(12px + var(--site-header-height));
         padding-bottom: 28px;
     }
-    body.homepage .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
-    body.homepage .site-main .container { flex: 1; margin: 8px 6px !important; margin-bottom: 8px !important; min-height: 0; box-sizing: border-box; }
+    body.homepage .site-main { display: block; padding-bottom: 0 !important; }
+    body.homepage .site-main .container { margin: 8px 6px !important; margin-bottom: 8px !important; min-height: auto; box-sizing: border-box; }
     body.image-editor .site-main { display: flex; flex-direction: column; padding-bottom: 0 !important; }
     body.image-editor .site-main .container { margin: 12px auto 28px !important; min-height: 0; }
 }

@@ -753,6 +753,7 @@
         var pressY = 0;
         var pointerOffsetX = 0;
         var pointerOffsetY = 0;
+        var docTouchBound = false;
         var DRAG_DIST_TOUCH_PX = 8;
         var DRAG_DIST_MOUSE_PX = 3;
         /** Dopo un touch, ignora mousedown sintetico del browser. */
@@ -787,9 +788,26 @@
             activePointerId = null;
             activeTouchId = null;
             fab.classList.remove("is-dragging");
+            detachDocTouchListeners();
             try {
                 document.body.style.userSelect = "";
             } catch (err) { /* ignore */ }
+        }
+
+        function attachDocTouchListeners() {
+            if (docTouchBound) return;
+            docTouchBound = true;
+            document.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
+            document.addEventListener("touchend", onTouchEnd, { capture: true });
+            document.addEventListener("touchcancel", onTouchCancel, { capture: true });
+        }
+
+        function detachDocTouchListeners() {
+            if (!docTouchBound) return;
+            docTouchBound = false;
+            document.removeEventListener("touchmove", onTouchMove, { capture: true });
+            document.removeEventListener("touchend", onTouchEnd, { capture: true });
+            document.removeEventListener("touchcancel", onTouchCancel, { capture: true });
         }
 
         function beginGesture(clientX, clientY, type) {
@@ -844,6 +862,7 @@
             activeTouchId = null;
             fab.classList.remove("is-dragging");
             gestureWasDrag = false;
+            detachDocTouchListeners();
             try {
                 document.body.style.userSelect = "";
             } catch (err) { /* ignore */ }
@@ -903,6 +922,7 @@
             var t = e.touches[0];
             activeTouchId = t.identifier;
             touchDragging = true;
+            attachDocTouchListeners();
             beginGesture(t.clientX, t.clientY, "touch");
         }
 
@@ -950,9 +970,6 @@
         window.addEventListener("mouseup", onMouseUp);
 
         fab.addEventListener("touchstart", onTouchStart, { passive: true });
-        document.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
-        document.addEventListener("touchend", onTouchEnd, { capture: true });
-        document.addEventListener("touchcancel", onTouchCancel, { capture: true });
 
         window.addEventListener("blur", function() {
             if (mouseDragging) onMouseUp();

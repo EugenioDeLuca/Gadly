@@ -44,19 +44,23 @@
         transition: none !important;
     }
 
-    .drose-float-entry.is-layout-hidden {
-        visibility: hidden;
-        pointer-events: none;
-    }
-
+    .drose-float-entry,
+    .drose-float-entry.is-layout-hidden,
+    html:not(.drose-layout-ready) .drose-float-entry,
     html.drose-layout-pending .drose-float-entry {
-        visibility: hidden;
-        pointer-events: none;
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: none !important;
     }
 
     html.drose-layout-ready .drose-float-entry:not(.is-layout-hidden) {
-        visibility: visible;
-        opacity: 1;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: none;
+        transition: none !important;
     }
 
     body.homepage .site-main .container {

@@ -8,6 +8,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <style id="gadly-drose-entry-critical">
+    @media (min-width: 769px) {
+        html:not(.drose-layout-ready) .drose-float-entry,
+        .drose-float-entry.is-layout-hidden {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+    }
+    </style>
+    <meta name="theme-color" id="gadly-theme-color-light" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" id="gadly-theme-color-dark" content="#0f0f23" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" id="gadly-theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-status-bar-style" id="gadly-apple-status-bar" content="black-translucent">
     <script>
@@ -44,59 +57,144 @@
             opts = opts || {};
             var forceResample = !!opts.forceResample;
             var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-            var color = isDark ? '#0f0f23' : (mobile ? '#ffffff' : '#f4f6fa');
-            var root = document.documentElement;
             var body = document.body;
+            var isWarm = !!(body && body.classList.contains('warm-tone'));
+            if (!isWarm) {
+                try {
+                    isWarm = localStorage.getItem('gadly-warm-tone') === '1';
+                } catch (eWarm) {}
+            }
+            var color;
+            if (isDark) {
+                color = isWarm ? '#26201c' : '#0f0f23';
+            } else if (mobile) {
+                color = isWarm ? '#fff8ec' : '#ffffff';
+            } else {
+                color = '#f4f6fa';
+            }
+            var root = document.documentElement;
 
             root.dataset.theme = isDark ? 'dark' : 'light';
-            root.style.removeProperty('color-scheme');
+            root.classList.toggle('gadly-warm-dark', !!(mobile && isDark && isWarm));
+            root.classList.toggle('gadly-warm-light', !!(!isDark && mobile && isWarm));
+            if (mobile) {
+                root.style.setProperty('color-scheme', isDark ? 'dark' : 'light');
+            } else {
+                root.style.removeProperty('color-scheme');
+            }
+
+            function clearHeaderChromeInline(header) {
+                if (!header) return;
+                header.style.removeProperty('background');
+                header.style.removeProperty('background-color');
+                header.style.removeProperty('background-image');
+                header.style.removeProperty('backdrop-filter');
+                header.style.removeProperty('-webkit-backdrop-filter');
+            }
+
+            function clearNavChromeInline(navEl) {
+                if (!navEl) return;
+                navEl.style.removeProperty('background');
+                navEl.style.removeProperty('background-color');
+                navEl.style.removeProperty('background-image');
+                navEl.style.removeProperty('backdrop-filter');
+                navEl.style.removeProperty('-webkit-backdrop-filter');
+            }
+
+            function clearViewportChromeInline() {
+                root.style.removeProperty('background-color');
+                root.style.removeProperty('background-image');
+                if (!body) return;
+                body.style.removeProperty('--bg-header');
+                body.style.removeProperty('--bg-card');
+                body.style.removeProperty('--bg-body');
+                body.style.removeProperty('background-color');
+                body.style.removeProperty('background-image');
+                body.style.removeProperty('background');
+            }
 
             function paint(c) {
+                if (!mobile) {
+                    clearViewportChromeInline();
+                    clearHeaderChromeInline(document.querySelector('.site-header'));
+                    clearNavChromeInline(document.getElementById('header-nav'));
+                    var barDesktop = document.getElementById('gadly-viewport-chrome');
+                    if (barDesktop) barDesktop.style.display = 'none';
+                    return;
+                }
+
                 root.style.setProperty('background-color', c, 'important');
-                if (body && mobile) {
+                root.style.setProperty('background-image', 'none', 'important');
+                if (body) {
+                    body.style.setProperty('--bg-header', c);
+                    body.style.setProperty('--bg-card', c);
+                    body.style.setProperty('--bg-body', c);
                     body.style.setProperty('background-color', c, 'important');
                     body.style.setProperty('background-image', 'none', 'important');
-                } else if (body) {
-                    body.style.removeProperty('background-color');
-                    body.style.removeProperty('background-image');
-                    body.style.removeProperty('background');
                 }
                 var header = document.querySelector('.site-header');
                 if (header) {
-                    if (mobile) {
+                    if (isWarm) {
+                        clearHeaderChromeInline(header);
+                    } else {
                         header.style.setProperty('background', c, 'important');
                         header.style.setProperty('background-color', c, 'important');
                         header.style.setProperty('background-image', 'none', 'important');
                         header.style.setProperty('backdrop-filter', 'none', 'important');
                         header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                    }
+                }
+                var navEl = document.getElementById('header-nav');
+                if (navEl) {
+                    if (isWarm) {
+                        clearNavChromeInline(navEl);
                     } else {
-                        header.style.removeProperty('background');
-                        header.style.removeProperty('background-color');
-                        header.style.removeProperty('background-image');
-                        header.style.removeProperty('backdrop-filter');
-                        header.style.removeProperty('-webkit-backdrop-filter');
+                        navEl.style.setProperty('background', c, 'important');
+                        navEl.style.setProperty('background-color', c, 'important');
+                        navEl.style.setProperty('background-image', 'none', 'important');
+                        navEl.style.setProperty('backdrop-filter', 'none', 'important');
+                        navEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                     }
                 }
                 var bar = document.getElementById('gadly-viewport-chrome');
                 if (bar) bar.style.display = 'none';
             }
 
-            function writeThemeColor(c) {
+            function ensureThemeColorMeta(id, content, media) {
                 var head = document.head || document.getElementsByTagName('head')[0];
                 if (!head) return;
-                document.querySelectorAll('meta[name="theme-color"]').forEach(function (el) {
-                    if (el.id !== 'gadly-theme-color') {
-                        el.parentNode && el.parentNode.removeChild(el);
-                    }
-                });
-                var meta = document.getElementById('gadly-theme-color');
+                var meta = document.getElementById(id);
                 if (!meta) {
                     meta = document.createElement('meta');
-                    meta.id = 'gadly-theme-color';
+                    meta.id = id;
                     meta.setAttribute('name', 'theme-color');
                     head.insertBefore(meta, head.firstChild);
                 }
-                meta.setAttribute('content', c);
+                meta.setAttribute('content', content);
+                if (media) {
+                    meta.setAttribute('media', media);
+                } else {
+                    meta.removeAttribute('media');
+                }
+            }
+
+            function writeThemeColor(c) {
+                var head = document.head || document.getElementsByTagName('head')[0];
+                if (!head) return;
+                var lightChrome = isWarm ? '#fff8ec' : '#ffffff';
+                var darkChrome = isWarm ? '#26201c' : '#0f0f23';
+                var explicitTheme = null;
+                try {
+                    explicitTheme = localStorage.getItem('gadly-theme');
+                } catch (eThemeStore) {}
+                ensureThemeColorMeta('gadly-theme-color', c, null);
+                if (explicitTheme) {
+                    ensureThemeColorMeta('gadly-theme-color-light', c, null);
+                    ensureThemeColorMeta('gadly-theme-color-dark', c, null);
+                } else {
+                    ensureThemeColorMeta('gadly-theme-color-light', lightChrome, '(prefers-color-scheme: light)');
+                    ensureThemeColorMeta('gadly-theme-color-dark', darkChrome, '(prefers-color-scheme: dark)');
+                }
                 var apple = document.getElementById('gadly-apple-status-bar') ||
                     document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
                 if (!apple) {
@@ -155,8 +253,12 @@
                 void body.offsetHeight;
                 if (header) {
                     header.style.setProperty('position', 'fixed', 'important');
-                    header.style.setProperty('background', color, 'important');
-                    header.style.setProperty('background-color', color, 'important');
+                    if (!isWarm) {
+                        header.style.setProperty('background', color, 'important');
+                        header.style.setProperty('background-color', color, 'important');
+                    } else {
+                        clearHeaderChromeInline(header);
+                    }
                 }
                 remountSafariTint(color);
                 void root.offsetHeight;
@@ -174,6 +276,42 @@
             var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
             window.gadlySyncViewportChrome(dark);
         } catch (e) {}
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                var s2 = localStorage.getItem('gadly-theme');
+                var dark2 = s2 === 'dark' || (!s2 && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                window.gadlySyncViewportChrome(dark2, { forceResample: true });
+            } catch (eDom) {}
+        });
+        window.gadlyFollowSystemTheme = function () {
+            try {
+                if (localStorage.getItem('gadly-theme') !== null) return;
+            } catch (eFollow) { return; }
+            var darkSys = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (document.body) {
+                document.body.classList.toggle('dark-mode', !!darkSys);
+            }
+            window.gadlySyncViewportChrome(!!darkSys, { forceResample: true });
+            var themeBtnEarly = document.getElementById('theme-toggle');
+            if (themeBtnEarly) themeBtnEarly.textContent = darkSys ? '☀️' : '🌙';
+        };
+        (function bindSystemThemeChrome() {
+            if (!window.matchMedia) return;
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            var onSchemeChange = function () {
+                if (typeof window.gadlyFollowSystemTheme === 'function') {
+                    window.gadlyFollowSystemTheme();
+                }
+            };
+            if (typeof mq.addEventListener === 'function') {
+                mq.addEventListener('change', onSchemeChange);
+            } else if (typeof mq.addListener === 'function') {
+                mq.addListener(onSchemeChange);
+            }
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'visible') onSchemeChange();
+            });
+        })();
     })();
     </script>
     <style id="gadly-viewport-chrome-style">
@@ -195,14 +333,73 @@
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
         }
-        body:not(.dark-mode) .site-header {
+        body:not(.dark-mode):not(.warm-tone) .site-header {
             background: #ffffff !important;
             background-color: #ffffff !important;
             background-image: none !important;
         }
-        body.dark-mode .site-header {
+        body.warm-tone:not(.dark-mode) .site-header {
+            background: #fff8ec !important;
+            background-color: #fff8ec !important;
+            background-image: none !important;
+        }
+        body.dark-mode:not(.warm-tone) .site-header {
             background: #0f0f23 !important;
             background-color: #0f0f23 !important;
+            background-image: none !important;
+        }
+        body.dark-mode.warm-tone .site-header {
+            background: #26201c !important;
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        html.gadly-warm-dark {
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        html.gadly-warm-light {
+            background-color: #fff8ec !important;
+            background-image: none !important;
+        }
+        html[data-theme="dark"] {
+            color-scheme: dark;
+        }
+        html[data-theme="light"] {
+            color-scheme: light;
+        }
+        html.gadly-warm-dark body,
+        body.dark-mode.warm-tone {
+            background: #26201c !important;
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        html.gadly-warm-dark .site-header,
+        body.dark-mode.warm-tone .site-header {
+            background: #26201c !important;
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        html:has(body.dark-mode.warm-tone) {
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        body.dark-mode.warm-tone {
+            background: #26201c !important;
+            background-color: #26201c !important;
+            background-image: none !important;
+        }
+        body.warm-tone:not(.dark-mode) .header-nav,
+        body.warm-tone:not(.dark-mode) .header-nav.is-open {
+            background: #fff8ec !important;
+            background-color: #fff8ec !important;
+            background-image: none !important;
+        }
+        html.gadly-warm-dark .header-nav,
+        html.gadly-warm-dark .header-nav.is-open,
+        body.dark-mode.warm-tone .header-nav,
+        body.dark-mode.warm-tone .header-nav.is-open {
+            background: #26201c !important;
+            background-color: #26201c !important;
             background-image: none !important;
         }
         .site-header::before {
@@ -221,6 +418,38 @@
         }
     }
     </style>
+    <script>
+    /* Mobile viewport: togli subito classi/stili che bloccano lo scroll (menu chiuso). */
+    (function () {
+        try {
+            if (!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches)) return;
+            var root = document.documentElement;
+            var body = document.body;
+            root.classList.remove(
+                "nav-open",
+                "gadly-trash-scroll-lock",
+                "gadly-trash-mobile-press",
+                "gadly-trash-drag-active",
+                "gadly-scroll-restore-pending",
+                "gadly-cl-scroll-pending"
+            );
+            root.style.removeProperty("height");
+            root.style.removeProperty("min-height");
+            root.style.removeProperty("overflow");
+            root.style.removeProperty("touch-action");
+            if (body) {
+                body.classList.remove("nav-open", "nav-closing");
+                body.style.removeProperty("overflow");
+                body.style.removeProperty("touch-action");
+                body.style.removeProperty("position");
+                body.style.removeProperty("top");
+                body.style.removeProperty("left");
+                body.style.removeProperty("right");
+                body.style.removeProperty("width");
+            }
+        } catch (eMobileScrollBoot) { /* ignore */ }
+    })();
+    </script>
     <style id="gadly-first-paint-critical">
     html {
         overflow-x: hidden;
@@ -234,6 +463,12 @@
     }
     .gadly-page-scrollbar {
         display: none !important;
+        position: fixed !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
     }
     @media (min-width: 769px) {
         .gadly-page-scrollbar {
@@ -278,7 +513,7 @@
             position: relative;
             box-sizing: border-box;
             border-radius: 16px;
-            background: #fff;
+            background: var(--bg-card, #fff);
             box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25);
             text-align: center;
         }
@@ -300,6 +535,13 @@
         body.dark-mode.homepage .site-main > .container {
             background: #fff !important;
             box-shadow: 0 20px 50px rgba(0, 63, 127, 0.25) !important;
+        }
+        body.dark-mode.warm-tone.homepage .site-main > .container {
+            background: #fff8ec !important;
+            box-shadow: 0 20px 50px rgba(0, 63, 127, 0.22) !important;
+        }
+        body.warm-tone:not(.dark-mode).homepage .site-main > .container {
+            background: #fff8ec !important;
         }
         body.homepage .tool-grid {
             display: flex;
@@ -501,7 +743,7 @@
     }
     {% endif %}
     </style>
-    <link rel="stylesheet" href="{% static 'tools/css/gadly-page-scrollbar.css' %}?v=7">
+    <link rel="stylesheet" href="{% static 'tools/css/gadly-page-scrollbar.css' %}?v=8">
     {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
     <script>
     (function () {
@@ -1455,8 +1697,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=215">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=137">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=230">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=151">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1500,8 +1742,19 @@
     <link rel="stylesheet" href="{% static 'tools/css/tool-quick-nav.css' %}?v=31">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/tool-favorites.css' %}?v=3">
-<link rel="stylesheet" href="{% static 'tools/css/drose-entry.css' %}?v=59">
-<script src="{% static 'tools/js/drose-entry-boot.js' %}?v=5"></script>
+<link rel="stylesheet" href="{% static 'tools/css/drose-entry.css' %}?v=65">
+<script src="{% static 'tools/js/drose-entry-boot.js' %}?v=9"></script>
+<style id="gadly-drose-entry-shield">
+@media (min-width: 769px) {
+    html:not(.drose-layout-ready) .drose-float-entry,
+    .drose-float-entry.is-layout-hidden {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
+</style>
 
     <style id="gadly-boot-ui-shield">
     /* Primo caricamento: quick-nav/footer nascosti finché layout e scroll non sono stabili. */
@@ -1587,11 +1840,16 @@
             if (isDark) {
                 document.body.classList.add('dark-mode');
             }
-            if (typeof window.gadlySyncViewportChrome === 'function') {
-                window.gadlySyncViewportChrome(isDark);
-            }
             if (localStorage.getItem(warmKey) === '1') {
                 document.body.classList.add('warm-tone');
+            }
+            var root = document.documentElement;
+            var warmOn = document.body.classList.contains('warm-tone');
+            var mobileBoot = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            root.classList.toggle('gadly-warm-dark', !!(mobileBoot && isDark && warmOn));
+            root.classList.toggle('gadly-warm-light', !!(!isDark && mobileBoot && warmOn));
+            if (typeof window.gadlySyncViewportChrome === 'function') {
+                window.gadlySyncViewportChrome(isDark);
             }
         } catch (e) {}
         try {
@@ -1988,9 +2246,39 @@
                 <form action="{% url 'set_language' %}" method="post" class="header-lang-form" aria-label="Language">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                    <button type="submit" name="language" value="en" class="header-lang-btn{% if LANGUAGE_CODE|slice:':2' == 'en' %} is-active{% endif %}" lang="en">EN</button>
-                    <button type="submit" name="language" value="it" class="header-lang-btn{% if LANGUAGE_CODE|slice:':2' == 'it' %} is-active{% endif %}" lang="it">IT</button>
+                    <button type="button" name="language" value="en" class="header-lang-btn{% if LANGUAGE_CODE|slice:':2' == 'en' %} is-active{% endif %}" lang="en">EN</button>
+                    <button type="button" name="language" value="it" class="header-lang-btn{% if LANGUAGE_CODE|slice:':2' == 'it' %} is-active{% endif %}" lang="it">IT</button>
                 </form>
+                <script>
+                (function () {
+                    document.querySelectorAll('.header-lang-form').forEach(function (form) {
+                        if (form.dataset.langClickBound === '1') return;
+                        form.dataset.langClickBound = '1';
+                        form.addEventListener('click', function (event) {
+                            var btn = event.target && event.target.closest
+                                ? event.target.closest('.header-lang-btn')
+                                : null;
+                            if (!btn || !form.contains(btn)) return;
+                            event.preventDefault();
+                            var lang = btn.getAttribute('value');
+                            if (!lang) return;
+                            form.querySelectorAll('input[type="hidden"][name="language"]').forEach(function (node) {
+                                node.remove();
+                            });
+                            var hidden = document.createElement('input');
+                            hidden.type = 'hidden';
+                            hidden.name = 'language';
+                            hidden.value = lang;
+                            form.appendChild(hidden);
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.submit();
+                            }
+                        });
+                    });
+                })();
+                </script>
                 <button type="button" id="warm-tone-toggle" class="theme-toggle warm-tone-toggle" title="Warm tone" aria-label="Warm tone" aria-pressed="false">🟠</button>
                 <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
                 <script>
@@ -2086,8 +2374,18 @@
             </div>
         </div>
     </header>
+    <script>
+    (function () {
+        try {
+            if (typeof window.gadlySyncViewportChrome !== 'function') return;
+            var s = localStorage.getItem('gadly-theme');
+            var dark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            window.gadlySyncViewportChrome(dark);
+        } catch (eHdr) {}
+    })();
+    </script>
     {% if request.resolver_match and request.resolver_match.url_name == 'home' %}
-    <a href="{% url 'drose' %}" class="drose-float-entry{% if is_drose_site %} is-active{% endif %}" aria-label="{% trans 'Drose Drone Services' %}" title="{% trans 'Drose Drone Services' %}">
+    <a href="{% url 'drose' %}" class="drose-float-entry is-layout-hidden{% if is_drose_site %} is-active{% endif %}" style="display:none!important" aria-label="{% trans 'Drose Drone Services' %}" title="{% trans 'Drose Drone Services' %}">
         <span class="drose-float-entry__lift">
         {% include "tools/includes/drose_drone_icon.svg" %}
         </span>
@@ -2122,10 +2420,10 @@
             </div>
         </footer>
     <script src="{% static 'tools/js/cookie-banner.js' %}?v=14"></script>
-    <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=6"></script>
+    <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=7"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=35"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=40"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
@@ -2136,16 +2434,16 @@
     {% block after_quick_nav %}{% endblock %}
     <script src="{% static 'tools/js/home-hidden-tools.js' %}?v=36"></script>
     {% if not is_drose_site %}
-    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=106"></script>
+    <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=107"></script>
     {% endif %}
-    <script src="{% static 'tools/js/drose-entry.js' %}?v=62"></script>
+    <script src="{% static 'tools/js/drose-entry.js' %}?v=68"></script>
     <script src="{% static 'tools/js/nav-link-hover-lock.js' %}?v=2"></script>
     {% if is_drose_site %}
     <script src="{% static 'tools/js/drose-hover-lock.js' %}?v=8"></script>
     <script src="{% static 'tools/js/drose-orbit-ping.js' %}?v=42"></script>
     {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
-    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=148"></script>
+    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
@@ -2155,6 +2453,51 @@
      */
     (function () {
         try {
+            function clearMobileScrollbarFromFlow() {
+                if (!window.matchMedia || !window.matchMedia('(max-width: 768px)').matches) return;
+                var bar = document.getElementById('gadly-page-scrollbar');
+                if (!bar) return;
+                bar.classList.add('is-hidden');
+                bar.style.display = 'none';
+                var thumb = bar.querySelector('.gadly-page-scrollbar__thumb');
+                if (thumb) {
+                    thumb.style.height = '';
+                    thumb.style.transform = '';
+                }
+            }
+
+            function isMobileViewport() {
+                return !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+            }
+
+            function isMenuScrollLocked() {
+                var nav = document.getElementById('header-nav');
+                var root = document.documentElement;
+                if (nav && nav.classList.contains('is-open')) return true;
+                if (root && root.classList.contains('nav-open')) return true;
+                if (root && root.classList.contains('gadly-trash-scroll-lock')) return true;
+                if (root && root.classList.contains('gadly-scroll-restore-pending')) return true;
+                if (root && root.classList.contains('gadly-cl-scroll-pending')) return true;
+                return false;
+            }
+
+            function ensureMobileWheelScroll(event) {
+                if (!isMobileViewport() || isMenuScrollLocked()) return;
+                var maxY = Math.max(
+                    0,
+                    (document.documentElement.scrollHeight || 0) - window.innerHeight
+                );
+                if (maxY < 1 || !event || !event.deltaY) return;
+                var before = window.scrollY || document.documentElement.scrollTop || 0;
+                requestAnimationFrame(function () {
+                    var after = window.scrollY || document.documentElement.scrollTop || 0;
+                    if (Math.abs(after - before) < 0.5) {
+                        clearStuckScrollLocks();
+                        window.scrollBy(0, event.deltaY);
+                    }
+                });
+            }
+
             function clearStuckScrollLocks() {
                 var body = document.body;
                 var root = document.documentElement;
@@ -2165,17 +2508,41 @@
                     if (body) body.classList.remove('nav-open', 'nav-closing');
                     var scrim = document.getElementById('gadly-nav-scrim');
                     if (scrim) scrim.classList.remove('is-active');
-                    var bottomTint = document.getElementById('gadly-safari-bottom-tint');
-                    if (bottomTint && bottomTint.parentNode) bottomTint.parentNode.removeChild(bottomTint);
                 }
-                if (root) root.classList.remove('gadly-trash-scroll-lock', 'gadly-trash-mobile-press');
+                if (root) {
+                    root.classList.remove(
+                        'gadly-trash-scroll-lock',
+                        'gadly-trash-mobile-press',
+                        'gadly-trash-drag-active',
+                        'gadly-trash-ghost-preview',
+                        'gadly-mobile-trash-visible'
+                    );
+                    root.classList.remove('gadly-scroll-restore-pending', 'gadly-cl-scroll-pending');
+                    root.style.removeProperty('--gadly-restore-y');
+                    root.style.removeProperty('--gadly-cl-restore-y');
+                    root.style.removeProperty('min-height');
+                    root.style.removeProperty('height');
+                    root.style.removeProperty('touch-action');
+                    root.style.removeProperty('overflow');
+                }
                 if (body) {
                     body.style.removeProperty('touch-action');
                     body.style.removeProperty('overflow');
+                    body.style.removeProperty('position');
+                    body.style.removeProperty('top');
+                    body.style.removeProperty('left');
+                    body.style.removeProperty('right');
+                    body.style.removeProperty('width');
                 }
-                if (root) {
-                    root.style.removeProperty('touch-action');
-                    root.style.removeProperty('overflow');
+                clearMobileScrollbarFromFlow();
+            }
+
+            function clearDesktopTrashLayoutAfterViewportChange() {
+                if (!window.matchMedia || !window.matchMedia('(min-width: 769px)').matches) return;
+                if (typeof window.__gadlyResetDesktopTrashAfterViewportChange === 'function') {
+                    window.__gadlyResetDesktopTrashAfterViewportChange();
+                } else if (typeof window.__gadlyClearTrashInlineLayout === 'function') {
+                    window.__gadlyClearTrashInlineLayout(document.getElementById('desktop-trash-bin'));
                 }
             }
             if (document.readyState === 'loading') {
@@ -2184,6 +2551,31 @@
                 clearStuckScrollLocks();
             }
             window.addEventListener('pageshow', clearStuckScrollLocks);
+            window.__gadlyClearStuckScrollLocks = clearStuckScrollLocks;
+            function maybeClearStuckScrollLocks() {
+                var nav = document.getElementById('header-nav');
+                if (nav && nav.classList.contains('is-open')) return;
+                clearStuckScrollLocks();
+            }
+            function onViewportModeChange() {
+                maybeClearStuckScrollLocks();
+                clearDesktopTrashLayoutAfterViewportChange();
+            }
+            document.addEventListener('touchstart', maybeClearStuckScrollLocks, { passive: true, capture: true });
+            document.addEventListener('pointerdown', maybeClearStuckScrollLocks, { passive: true, capture: true });
+            window.addEventListener('wheel', function (event) {
+                maybeClearStuckScrollLocks();
+                ensureMobileWheelScroll(event);
+            }, { passive: true, capture: true });
+            window.addEventListener('resize', onViewportModeChange, { passive: true });
+            if (window.matchMedia) {
+                var mobileMq = window.matchMedia('(max-width: 768px)');
+                if (typeof mobileMq.addEventListener === 'function') {
+                    mobileMq.addEventListener('change', onViewportModeChange);
+                } else if (typeof mobileMq.addListener === 'function') {
+                    mobileMq.addListener(onViewportModeChange);
+                }
+            }
         } catch (eScrollSafety) {}
     })();
     </script>
@@ -2193,16 +2585,6 @@
         var nav = document.getElementById('header-nav');
         if (menuBtn && nav) {
             var navScrollY = 0;
-            var navOverscrollBlock = null;
-
-            function blockNavOverscroll(e) {
-                if (!document.body.classList.contains('nav-open')) return;
-                var navEl = document.getElementById('header-nav');
-                if (navEl && navEl.contains(e.target) && navEl.scrollHeight > navEl.clientHeight + 2) {
-                    return;
-                }
-                e.preventDefault();
-            }
 
             function ensureNavScrim() {
                 var scrim = document.getElementById('gadly-nav-scrim');
@@ -2231,72 +2613,50 @@
                 scrim.style.opacity = '1';
                 scrim.style.removeProperty('background');
                 scrim.style.removeProperty('box-shadow');
+                scrim.style.removeProperty('display');
                 scrim.classList.add('is-active');
                 return scrim;
             }
 
-            function ensureSafariBottomTint() {
-                var old = document.getElementById('gadly-safari-bottom-tint');
-                if (old && old.parentNode) old.parentNode.removeChild(old);
-                var tint = document.createElement('div');
-                tint.id = 'gadly-safari-bottom-tint';
-                tint.setAttribute('aria-hidden', 'true');
-                tint.style.cssText = [
-                    'display:block',
-                    'position:fixed',
-                    'left:0',
-                    'right:0',
-                    'bottom:0',
-                    'width:100%',
-                    'height:64px',
-                    'margin:0',
-                    'padding:0',
-                    'border:0',
-                    'pointer-events:none',
-                    'z-index:239',
-                    'background-color:#000000'
-                ].join(';');
-                document.body.appendChild(tint);
-                void tint.offsetHeight;
-                return tint;
-            }
-
-            function hideSafariBottomTint() {
-                var tint = document.getElementById('gadly-safari-bottom-tint');
-                if (!tint) return;
-                if (tint.parentNode) tint.parentNode.removeChild(tint);
-            }
-
             function setNavOpenChrome() {
-                /*
-                 * Non annerire tutta la pagina: lo scrim rgba scurisce il contenuto.
-                 * Solo tint in basso + theme-color per la chrome Safari.
-                 */
+                /* Scrim rgba scurisce il contenuto sotto header/menu */
                 var isDark = document.body.classList.contains('dark-mode');
-                var headerColor = isDark ? '#0f0f23' : '#ffffff';
-                if (document.body.classList.contains('warm-tone') && !isDark) {
+                var isWarm = document.body.classList.contains('warm-tone');
+                var headerColor = '#ffffff';
+                if (isDark) {
+                    headerColor = isWarm ? '#26201c' : '#0f0f23';
+                } else if (isWarm) {
                     headerColor = '#fff8ec';
                 }
                 var meta = document.getElementById('gadly-theme-color');
                 if (meta) meta.setAttribute('content', '#000000');
                 var header = document.querySelector('.site-header');
                 if (header) {
-                    header.style.setProperty('background', headerColor, 'important');
-                    header.style.setProperty('background-color', headerColor, 'important');
-                    header.style.setProperty('background-image', 'none', 'important');
+                    if (isWarm) {
+                        header.style.removeProperty('background');
+                        header.style.removeProperty('background-color');
+                        header.style.removeProperty('background-image');
+                    } else {
+                        header.style.setProperty('background', headerColor, 'important');
+                        header.style.setProperty('background-color', headerColor, 'important');
+                        header.style.setProperty('background-image', 'none', 'important');
+                    }
                 }
                 var topTint = document.getElementById('gadly-safari-tint');
                 if (topTint) topTint.style.display = 'none';
                 var navEl = document.getElementById('header-nav');
                 if (navEl) {
-                    navEl.style.setProperty('background', headerColor, 'important');
-                    navEl.style.setProperty('background-color', headerColor, 'important');
+                    if (isWarm) {
+                        navEl.style.removeProperty('background');
+                        navEl.style.removeProperty('background-color');
+                    } else {
+                        navEl.style.setProperty('background', headerColor, 'important');
+                        navEl.style.setProperty('background-color', headerColor, 'important');
+                    }
                 }
-                ensureSafariBottomTint();
             }
 
             function restoreThemeChrome() {
-                hideSafariBottomTint();
                 var root = document.documentElement;
                 root.style.removeProperty('color-scheme');
                 var isDark = document.body.classList.contains('dark-mode');
@@ -2326,10 +2686,6 @@
                 document.body.classList.add('nav-open');
                 ensureNavScrim();
                 setNavOpenChrome();
-                if (!navOverscrollBlock) {
-                    navOverscrollBlock = blockNavOverscroll;
-                    document.addEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
-                }
             }
 
             function unlockNavScroll() {
@@ -2340,9 +2696,8 @@
                 hideNavScrim();
                 restoreThemeChrome();
                 window.scrollTo(0, navScrollY);
-                if (navOverscrollBlock) {
-                    document.removeEventListener('touchmove', navOverscrollBlock, { capture: true, passive: false });
-                    navOverscrollBlock = null;
+                if (typeof window.__gadlyClearStuckScrollLocks === 'function') {
+                    window.__gadlyClearStuckScrollLocks();
                 }
             }
 
@@ -2422,8 +2777,6 @@
                     document.body.style.removeProperty('--nav-scroll-lock-y');
                     var scrim = document.getElementById('gadly-nav-scrim');
                     if (scrim) scrim.classList.remove('is-active');
-                    var bottomTint = document.getElementById('gadly-safari-bottom-tint');
-                    if (bottomTint) bottomTint.style.display = 'none';
                     var isDark = document.body.classList.contains('dark-mode');
                     if (typeof window.gadlySyncViewportChrome === 'function') {
                         window.gadlySyncViewportChrome(isDark, { forceResample: true });

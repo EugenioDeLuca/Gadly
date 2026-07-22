@@ -758,8 +758,13 @@
 
     function unpinMobileTrashPosition() {
         if (isMobileTrashHome()) return;
+        if (typeof window.__gadlyClearTrashInlineLayout === "function") {
+            window.__gadlyClearTrashInlineLayout(document.getElementById("desktop-trash-bin"));
+            return;
+        }
         var bin = document.getElementById("desktop-trash-bin");
         if (!bin) return;
+        bin.style.removeProperty("position");
         bin.style.removeProperty("top");
         bin.style.removeProperty("bottom");
         bin.style.removeProperty("left");
@@ -767,6 +772,18 @@
         bin.style.removeProperty("transform");
         bin.style.removeProperty("transition");
         bin.style.removeProperty("animation");
+        resetMobileTrashLayoutCache();
+    }
+
+    function resetDesktopTrashAfterViewportChange() {
+        unlockMobilePageScroll();
+        document.documentElement.classList.remove("gadly-mobile-trash-visible");
+        document.documentElement.classList.remove("gadly-trash-drag-active");
+        document.documentElement.classList.remove("gadly-trash-ghost-preview");
+        resetMobileTrashLayoutCache();
+        if (!isMobileTrashHome()) {
+            unpinMobileTrashPosition();
+        }
     }
 
     function setMobileTrashVisible(visible) {
@@ -1600,9 +1617,6 @@
         setupDesktopClickSuppress();
         document.addEventListener("gadly-trash-onboarding-mounted", setupOnboarding, { once: true });
         setupOnboarding();
-        if (isMobileTrashHome()) {
-            pinMobileTrashPosition();
-        }
         if (!bootTrashDrag()) {
             window.setTimeout(function () {
                 bootTrashDrag();
@@ -1633,8 +1647,10 @@
             resetMobileTrashLayoutCache();
             pinMobileTrashPosition();
         } else {
-            document.documentElement.classList.remove("gadly-mobile-trash-visible");
+            resetDesktopTrashAfterViewportChange();
         }
         setupDragSources();
     });
+
+    window.__gadlyResetDesktopTrashAfterViewportChange = resetDesktopTrashAfterViewportChange;
 })();

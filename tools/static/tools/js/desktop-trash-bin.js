@@ -38,6 +38,38 @@
 
 
 
+    function clearTrashInlineLayout(trash) {
+
+        if (!trash) return;
+
+        trash.style.removeProperty("position");
+
+        trash.style.removeProperty("top");
+
+        trash.style.removeProperty("bottom");
+
+        trash.style.removeProperty("left");
+
+        trash.style.removeProperty("right");
+
+        trash.style.removeProperty("transform");
+
+        trash.style.removeProperty("transition");
+
+        trash.style.removeProperty("animation");
+
+        try {
+
+            document.documentElement.style.removeProperty("--gadly-mobile-trash-top");
+
+            document.documentElement.style.removeProperty("--gadly-mobile-trash-left");
+
+        } catch (eClearLayout) {}
+
+    }
+
+
+
     function attachTrash() {
 
         var trash = document.getElementById("desktop-trash-bin");
@@ -45,6 +77,8 @@
         if (!trash) return;
 
         if (isDesktop()) {
+
+            clearTrashInlineLayout(trash);
 
             var anchor = getMainAnchor();
 
@@ -215,6 +249,10 @@
         window.addEventListener("resize", attachTrash);
 
     }
+
+
+
+    window.__gadlyClearTrashInlineLayout = clearTrashInlineLayout;
 
 
 

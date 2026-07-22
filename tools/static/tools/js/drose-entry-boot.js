@@ -78,15 +78,21 @@
 
 
 
-    if (isDesktop() && isReloadOrBack()) {
-
-        root.classList.add('drose-layout-ready');
-
-    } else {
-
-        root.classList.add('drose-layout-pending');
-
+    /* Desktop: mai visibile finché il layout non è misurato (niente flash al refresh). */
+    if (isDesktop()) {
+        var shield = document.createElement('style');
+        shield.id = 'drose-entry-boot-shield';
+        shield.textContent =
+            '@media (min-width:769px){' +
+            'html:not(.drose-layout-ready) .drose-float-entry,' +
+            '.drose-float-entry.is-layout-hidden{' +
+            'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important' +
+            '}}';
+        document.head.appendChild(shield);
     }
+
+    /* Sempre pending: il JS misura lo spazio prima di mostrare il drone (niente flash al refresh). */
+    root.classList.add('drose-layout-pending');
 
 
 
