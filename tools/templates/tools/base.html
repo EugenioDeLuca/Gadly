@@ -144,27 +144,19 @@
                 }
                 var header = document.querySelector('.site-header');
                 if (header) {
-                    if (isWarm) {
-                        clearHeaderChromeInline(header);
-                    } else {
-                        header.style.setProperty('background', c, 'important');
-                        header.style.setProperty('background-color', c, 'important');
-                        header.style.setProperty('background-image', 'none', 'important');
-                        header.style.setProperty('backdrop-filter', 'none', 'important');
-                        header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-                    }
+                    header.style.setProperty('background', c, 'important');
+                    header.style.setProperty('background-color', c, 'important');
+                    header.style.setProperty('background-image', 'none', 'important');
+                    header.style.setProperty('backdrop-filter', 'none', 'important');
+                    header.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                 }
                 var navEl = document.getElementById('header-nav');
                 if (navEl) {
-                    if (isWarm) {
-                        clearNavChromeInline(navEl);
-                    } else {
-                        navEl.style.setProperty('background', c, 'important');
-                        navEl.style.setProperty('background-color', c, 'important');
-                        navEl.style.setProperty('background-image', 'none', 'important');
-                        navEl.style.setProperty('backdrop-filter', 'none', 'important');
-                        navEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-                    }
+                    navEl.style.setProperty('background', c, 'important');
+                    navEl.style.setProperty('background-color', c, 'important');
+                    navEl.style.setProperty('background-image', 'none', 'important');
+                    navEl.style.setProperty('backdrop-filter', 'none', 'important');
+                    navEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                 }
                 var bar = document.getElementById('gadly-viewport-chrome');
                 if (bar) bar.style.display = 'none';
@@ -258,12 +250,8 @@
                 void body.offsetHeight;
                 if (header) {
                     header.style.setProperty('position', 'fixed', 'important');
-                    if (!isWarm) {
-                        header.style.setProperty('background', color, 'important');
-                        header.style.setProperty('background-color', color, 'important');
-                    } else {
-                        clearHeaderChromeInline(header);
-                    }
+                    header.style.setProperty('background', color, 'important');
+                    header.style.setProperty('background-color', color, 'important');
                 }
                 remountSafariTint(color);
                 void root.offsetHeight;
@@ -1728,7 +1716,7 @@
 
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=235">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=156">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=157">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2688,29 +2676,18 @@
 
                 var header = document.querySelector('.site-header');
                 if (header) {
-                    if (isWarm) {
-                        header.style.removeProperty('background');
-                        header.style.removeProperty('background-color');
-                        header.style.removeProperty('background-image');
-                    } else {
-                        header.style.setProperty('background', headerColor, 'important');
-                        header.style.setProperty('background-color', headerColor, 'important');
-                        header.style.setProperty('background-image', 'none', 'important');
-                    }
+                    header.style.setProperty('background', headerColor, 'important');
+                    header.style.setProperty('background-color', headerColor, 'important');
+                    header.style.setProperty('background-image', 'none', 'important');
                 }
                 var topTint = document.getElementById('gadly-safari-tint');
                 if (topTint) topTint.style.display = 'none';
                 var navEl = document.getElementById('header-nav');
                 if (navEl) {
-                    if (isWarm) {
-                        navEl.style.removeProperty('background');
-                        navEl.style.removeProperty('background-color');
-                    } else {
-                        navEl.style.setProperty('background', headerColor, 'important');
-                        navEl.style.setProperty('background-color', headerColor, 'important');
-                    }
+                    navEl.style.setProperty('background', headerColor, 'important');
+                    navEl.style.setProperty('background-color', headerColor, 'important');
                 }
-                /* Niente strisce: solo theme-color + sfondo pagina (Safari legge questi). */
+                /* Come light normale: chrome solido + theme-color (niente strisce). */
                 root.style.setProperty('background-color', headerColor, 'important');
                 if (document.body) {
                     document.body.style.setProperty('background-color', headerColor, 'important');
