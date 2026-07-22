@@ -652,6 +652,15 @@
         pointerDrag = null;
     }
 
+    window.__gadlyCancelMobileTrashTouch = function () {
+        if (!pointerDrag || !pointerDrag.touchGesture) return;
+        if (pointerDrag.active || pointerDrag.longPressArmed) return;
+        cancelMobileTouchDrag(
+            typeof pointerDrag.lastX === "number" ? pointerDrag.lastX : pointerDrag.startX,
+            typeof pointerDrag.lastY === "number" ? pointerDrag.lastY : pointerDrag.startY
+        );
+    };
+
     function setTrashHoldingVisual(el, active) {
         if (!el || !el.classList) return;
         if (active) {

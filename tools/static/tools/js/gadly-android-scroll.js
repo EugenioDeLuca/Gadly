@@ -1,6 +1,8 @@
 (function () {
     "use strict";
 
+    var SCROLL_START_PX = 8;
+
     function isCoarseMobile() {
         return !!(window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
     }
@@ -26,13 +28,13 @@
         return !!(nav && nav.classList.contains("is-open"));
     }
 
+    /* Solo lock “duri”: menu aperto o drag cestino attivo — NON il solo press su un bottone. */
     function scrollLocked() {
         if (menuIsOpen()) return true;
         var root = rootEl();
         if (!root) return true;
         if (root.classList.contains("nav-open")) return true;
         if (root.classList.contains("gadly-trash-scroll-lock")) return true;
-        if (root.classList.contains("gadly-trash-mobile-press")) return true;
         if (root.classList.contains("gadly-trash-drag-active")) return true;
         if (root.classList.contains("gadly-scroll-restore-pending")) return true;
         if (root.classList.contains("gadly-cl-scroll-pending")) return true;
@@ -73,25 +75,17 @@
         return top;
     }
 
-    function unlockScrollChrome() {
+    function clearInlineScrollBlocks() {
         var root = rootEl();
         var body = document.body;
         if (!root) return;
-
         if (!menuIsOpen()) {
             root.classList.remove("nav-open");
             if (body) body.classList.remove("nav-open", "nav-closing");
             var scrim = document.getElementById("gadly-nav-scrim");
             if (scrim) scrim.classList.remove("is-active");
         }
-
-        root.classList.remove(
-            "gadly-trash-scroll-lock",
-            "gadly-trash-mobile-press",
-            "gadly-trash-drag-active",
-            "gadly-scroll-restore-pending",
-            "gadly-cl-scroll-pending"
-        );
+        root.classList.remove("gadly-scroll-restore-pending", "gadly-cl-scroll-pending");
         root.style.removeProperty("height");
         root.style.removeProperty("min-height");
         root.style.removeProperty("overflow");
@@ -99,7 +93,6 @@
         root.style.removeProperty("overflow-y");
         root.style.removeProperty("touch-action");
         root.style.removeProperty("position");
-
         if (!body) return;
         body.style.removeProperty("overflow");
         body.style.removeProperty("overflow-x");
@@ -113,10 +106,36 @@
         body.style.removeProperty("height");
     }
 
+    function bootUnlock() {
+        var root = rootEl();
+        if (!root) return;
+        clearInlineScrollBlocks();
+        if (!menuIsOpen() && !root.classList.contains("gadly-trash-drag-active")) {
+            root.classList.remove(
+                "gadly-trash-scroll-lock",
+                "gadly-trash-mobile-press",
+                "gadly-trash-drag-active"
+            );
+        }
+    }
+
+    function cancelSoftButtonPress() {
+        var root = rootEl();
+        if (typeof window.__gadlyCancelMobileTrashTouch === "function") {
+            try {
+                window.__gadlyCancelMobileTrashTouch();
+            } catch (eCancel) { /* ignore */ }
+        }
+        if (root) {
+            root.classList.remove("gadly-trash-mobile-press");
+        }
+    }
+
     function isInteractiveIgnore(target) {
         if (!target || !target.closest) return false;
         return !!target.closest(
-            "textarea, select, input, [contenteditable='true'], " +
+            "textarea, select, input:not([type='button']):not([type='submit']), " +
+            "[contenteditable='true'], " +
             ".header-nav.is-open, .mobile-home-fab, .mobile-home-fab-link, " +
             ".gadly-trash-drag-shield, .tool-quick-nav-panel, " +
             "#gadly-nav-scrim.is-active"
@@ -126,7 +145,7 @@
     function bootAndroidScroll() {
         if (!isAndroidMobile()) return;
         rootEl().classList.add("gadly-android-scroll");
-        unlockScrollChrome();
+        bootUnlock();
     }
 
     function setupTouchScrollShim() {
@@ -135,20 +154,22 @@
         var active = false;
         var startY = 0;
         var startScroll = 0;
-        var moved = false;
+        var scrolling = false;
 
         document.addEventListener("touchstart", function (event) {
-            unlockScrollChrome();
+            clearInlineScrollBlocks();
             if (scrollLocked() || !event.touches || event.touches.length !== 1) {
                 active = false;
+                scrolling = false;
                 return;
             }
             if (isInteractiveIgnore(event.target)) {
                 active = false;
+                scrolling = false;
                 return;
             }
             active = true;
-            moved = false;
+            scrolling = false;
             startY = event.touches[0].clientY;
             startScroll = readScrollY();
         }, { passive: true, capture: true });
@@ -160,15 +181,15 @@
 
             var y = event.touches[0].clientY;
             var dy = startY - y;
-            if (Math.abs(dy) < 1) return;
+            if (Math.abs(dy) < SCROLL_START_PX && !scrolling) return;
 
-            moved = true;
+            if (!scrolling) {
+                scrolling = true;
+                cancelSoftButtonPress();
+            }
+
             writeScrollY(startScroll + dy);
 
-            /*
-             * Su alcuni Android Chrome lo scroll nativo resta morto.
-             * Prendiamo il gesto e scorriamo noi (passive:false).
-             */
             if (event.cancelable) {
                 event.preventDefault();
             }
@@ -176,7 +197,7 @@
 
         function endTouch() {
             active = false;
-            moved = false;
+            scrolling = false;
         }
         document.addEventListener("touchend", endTouch, { passive: true, capture: true });
         document.addEventListener("touchcancel", endTouch, { passive: true, capture: true });

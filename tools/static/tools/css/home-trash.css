@@ -247,9 +247,10 @@ body.homepage .tool-section[hidden] {
             -webkit-user-select: none;
         }
 
-        html.gadly-trash-mobile-press body.homepage a.tool-btn.gadly-trash-draggable,
-        html.gadly-trash-mobile-press body.homepage .tool-btn-wrap.gadly-trash-draggable,
-        html.gadly-trash-mobile-press body.homepage .category-btn.gadly-trash-draggable,
+        /* touch-action:none solo durante drag vero — non al solo press (altrimenti Android non scrolla sui bottoni) */
+        html.gadly-trash-scroll-lock body.homepage a.tool-btn.gadly-trash-draggable,
+        html.gadly-trash-scroll-lock body.homepage .tool-btn-wrap.gadly-trash-draggable,
+        html.gadly-trash-scroll-lock body.homepage .category-btn.gadly-trash-draggable,
         html.gadly-trash-drag-active body.homepage a.tool-btn.gadly-trash-draggable,
         html.gadly-trash-drag-active body.homepage .tool-btn-wrap.gadly-trash-draggable,
         html.gadly-trash-drag-active body.homepage .category-btn.gadly-trash-draggable {
