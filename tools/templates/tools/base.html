@@ -1455,8 +1455,8 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=214">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=135">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=215">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=137">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2253,7 +2253,7 @@
                     'padding:0',
                     'border:0',
                     'pointer-events:none',
-                    'z-index:245',
+                    'z-index:239',
                     'background-color:#000000'
                 ].join(';');
                 document.body.appendChild(tint);
@@ -2269,8 +2269,8 @@
 
             function setNavOpenChrome() {
                 /*
-                 * Chrome IN BASSO → nero (striscia bianca dietro frecce/URL Safari).
-                 * Header resta sul colore tema.
+                 * Non annerire tutta la pagina: lo scrim rgba scurisce il contenuto.
+                 * Solo tint in basso + theme-color per la chrome Safari.
                  */
                 var isDark = document.body.classList.contains('dark-mode');
                 var headerColor = isDark ? '#0f0f23' : '#ffffff';
@@ -2279,15 +2279,6 @@
                 }
                 var meta = document.getElementById('gadly-theme-color');
                 if (meta) meta.setAttribute('content', '#000000');
-                var root = document.documentElement;
-                var body = document.body;
-                root.style.setProperty('background-color', '#000000', 'important');
-                /* Aiuta Safari a usare chrome scura in basso mentre il menu è aperto */
-                root.style.setProperty('color-scheme', 'dark');
-                if (body) {
-                    body.style.setProperty('background-color', '#000000', 'important');
-                    body.style.setProperty('background-image', 'none', 'important');
-                }
                 var header = document.querySelector('.site-header');
                 if (header) {
                     header.style.setProperty('background', headerColor, 'important');
@@ -2302,12 +2293,6 @@
                     navEl.style.setProperty('background-color', headerColor, 'important');
                 }
                 ensureSafariBottomTint();
-                void body.offsetHeight;
-                try {
-                    var y = window.scrollY || window.pageYOffset || 0;
-                    window.scrollTo(0, y + 1);
-                    window.scrollTo(0, y);
-                } catch (eNudge) {}
             }
 
             function restoreThemeChrome() {

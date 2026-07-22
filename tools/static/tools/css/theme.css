@@ -416,18 +416,14 @@ body {
         box-sizing: content-box;
         margin: 0;
         border: 0;
-        /* Solido: rgba veniva campionato male → striscia chiara dietro Safari */
-        background: #000000;
+        background: rgba(0, 0, 0, 0.88);
         z-index: 240;
         pointer-events: auto;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
         opacity: 1;
     }
-    /*
-     * Tint fixed in basso (regole Safari 26): ≥3px, ≥80% larghezza, entro ~3px dal bottom.
-     * z-index sopra lo scrim così Safari campiona nero solido, non il frosted bianco.
-     */
+    /* Tint solo per Safari in basso (sotto lo scrim, non copre la pagina) */
     #gadly-safari-bottom-tint {
         display: none;
         position: fixed;
@@ -440,7 +436,7 @@ body {
         padding: 0;
         border: 0;
         background-color: #000000;
-        z-index: 245;
+        z-index: 239;
         pointer-events: none;
     }
     body.nav-open #gadly-safari-bottom-tint {
@@ -452,7 +448,7 @@ body {
     }
     body.dark-mode #gadly-nav-scrim.is-active,
     body.dark-mode.nav-open #gadly-nav-scrim {
-        background: #000000;
+        background: rgba(0, 0, 0, 0.92);
     }
     body.nav-open.nav-closing #gadly-nav-scrim {
         opacity: 1;
