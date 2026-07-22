@@ -1401,9 +1401,12 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     .header-lang-form .header-lang-btn:not(.is-active) {
         width: 2.25rem;
         min-width: 2.25rem;
-        background: rgba(0, 123, 255, 0.15);
-        border-color: rgba(0, 123, 255, 0.5);
-        color: #007BFF;
+        background: transparent;
+        border-color: rgba(0, 63, 127, 0.2);
+        color: #003f7f;
+    }
+    body:not(.dark-mode).warm-tone .header-lang-form .header-lang-btn:not(.is-active) {
+        color: var(--warm-nav-link-color, #003f7f);
     }
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active) {
         background: transparent;

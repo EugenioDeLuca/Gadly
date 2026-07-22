@@ -1083,23 +1083,36 @@ body.dark-mode .warm-tone-toggle.is-active {
         cursor: pointer !important;
         touch-action: manipulation;
     }
-    /* Mobile: pill lingua stabile al tap in light mode (niente flash hover) */
+    /* Mobile: niente evidenziamento pill sulla lingua (light e dark, anche al tap) */
     .header-lang-form .header-lang-btn:not(.is-active),
     .header-lang-form .header-lang-btn:not(.is-active):hover,
     .header-lang-form .header-lang-btn:not(.is-active):active,
     .header-lang-form .header-lang-btn:not(.is-active):focus,
     .header-lang-form .header-lang-btn:not(.is-active):focus-visible,
+    body:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active),
+    body:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):active,
+    body:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus-visible,
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active),
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):hover,
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):active,
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus,
     body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
-        background: rgba(0, 123, 255, 0.15) !important;
-        border-color: rgba(0, 123, 255, 0.5) !important;
-        color: #007BFF !important;
-        -webkit-text-fill-color: #007BFF !important;
+        background: transparent !important;
+        border-color: rgba(0, 63, 127, 0.2) !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active),
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):hover,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):active,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus,
+    body.warm-tone:not(.dark-mode) .header-lang-form .header-lang-btn:not(.is-active):focus-visible {
+        color: var(--warm-nav-link-color, #003f7f) !important;
+        -webkit-text-fill-color: var(--warm-nav-link-color, #003f7f) !important;
     }
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active),
     body.dark-mode .header-lang-form .header-lang-btn:not(.is-active):hover,
