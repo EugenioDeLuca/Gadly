@@ -106,9 +106,11 @@ body {
     body.nav-open.warm-tone #gadly-nav-scrim.is-active {
         background: rgba(0, 0, 0, 0.85);
         display: block;
+        /* Come lo scrim normale: NON entrare nella safe area / chrome Safari */
         bottom: 0;
-        min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
-        padding-bottom: env(safe-area-inset-bottom, 0px);
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        padding-bottom: 0;
     }
     body.nav-open.warm-tone #gadly-nav-scrim::before {
         content: "";
