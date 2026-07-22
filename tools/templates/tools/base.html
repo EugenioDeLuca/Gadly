@@ -2148,55 +2148,43 @@
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=148"></script>
     <script>
     /*
-     * Mobile: in cima alla pagina blocca solo l'overscroll verso l'alto (rubber-band).
-     * Scroll verso il basso resta libero; scroll verso l'alto ok se non sei già a y=0.
+     * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
+     * il rubber-band in cima. Su alcuni WebView/Android window.scrollY resta 0 anche
+     * a pagina scrollata → preventDefault a sproposito → scroll morto.
+     * Basta CSS overscroll-behavior-y: none (già su html/body mobile).
      */
     (function () {
         try {
-            if (!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches)) return;
-            var lastY = 0;
-
-            function isScrollableEl(el) {
-                if (!el || el === document.body || el === document.documentElement) return false;
-                var style = window.getComputedStyle(el);
-                var oy = style.overflowY;
-                if (oy !== 'auto' && oy !== 'scroll' && oy !== 'overlay') return false;
-                return el.scrollHeight > el.clientHeight + 1;
-            }
-
-            function findScrollableParent(el) {
-                var node = el;
-                while (node && node !== document.body && node !== document.documentElement) {
-                    if (isScrollableEl(node)) return node;
-                    node = node.parentElement;
+            function clearStuckScrollLocks() {
+                var body = document.body;
+                var root = document.documentElement;
+                var nav = document.getElementById('header-nav');
+                var menuOpen = !!(nav && nav.classList.contains('is-open'));
+                if (!menuOpen) {
+                    if (root) root.classList.remove('nav-open');
+                    if (body) body.classList.remove('nav-open', 'nav-closing');
+                    var scrim = document.getElementById('gadly-nav-scrim');
+                    if (scrim) scrim.classList.remove('is-active');
+                    var bottomTint = document.getElementById('gadly-safari-bottom-tint');
+                    if (bottomTint && bottomTint.parentNode) bottomTint.parentNode.removeChild(bottomTint);
                 }
-                return null;
-            }
-
-            document.addEventListener('touchstart', function (e) {
-                if (!e.touches || !e.touches.length) return;
-                lastY = e.touches[0].clientY;
-            }, { capture: true, passive: true });
-
-            document.addEventListener('touchmove', function (e) {
-                if (!e.touches || !e.touches.length) return;
-                if (document.body && document.body.classList.contains('nav-open')) return;
-                var y = e.touches[0].clientY;
-                var dy = y - lastY;
-                lastY = y;
-                /* Dito verso il basso (dy > 0) in cima = rubber-band / pull-up contenuto */
-                if (dy <= 0) return;
-                var scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                if (scrollY > 1) return;
-                var nested = findScrollableParent(e.target);
-                if (nested && nested.scrollTop > 0) return;
-                if (nested && nested.scrollTop <= 0 && dy > 0) {
-                    e.preventDefault();
-                    return;
+                if (root) root.classList.remove('gadly-trash-scroll-lock', 'gadly-trash-mobile-press');
+                if (body) {
+                    body.style.removeProperty('touch-action');
+                    body.style.removeProperty('overflow');
                 }
-                e.preventDefault();
-            }, { capture: true, passive: false });
-        } catch (eTopLock) {}
+                if (root) {
+                    root.style.removeProperty('touch-action');
+                    root.style.removeProperty('overflow');
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', clearStuckScrollLocks, { once: true });
+            } else {
+                clearStuckScrollLocks();
+            }
+            window.addEventListener('pageshow', clearStuckScrollLocks);
+        } catch (eScrollSafety) {}
     })();
     </script>
     <script>
