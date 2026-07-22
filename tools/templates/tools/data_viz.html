@@ -6,11 +6,28 @@
 {% block body_class %}data-viz{% endblock %}
 {% block extrahead %}
 <meta name="description" content="{% trans 'Turn CSV rows into charts and download PNG images with Gadly’s free data visualizer.' %}">
+{# Layout CSS ASAP (before base.css) — avoids options panel stacking tall then collapsing on refresh #}
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260531b">
+<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=134">
 <script>
 (function () {
   try {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   } catch (e) { /* ignore */ }
+})();
+</script>
+<script>
+/* Data Viz: never restore from localStorage (causes container grow→shrink on refresh).
+   Share links via ?s= still work. Clear any leftover state before other scripts run. */
+(function () {
+  try {
+    var p = location.pathname || "/";
+    if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+    if (p !== "/data-viz" && !p.endsWith("/data-viz")) return;
+    try { localStorage.removeItem("gadly-data-viz-state"); } catch (eLs) { /* ignore */ }
+    try { sessionStorage.removeItem("gadly-viz-chart-png-v1"); } catch (eSs) { /* ignore */ }
+    window.__vizSkipLocalRestore = true;
+  } catch (e0) { /* ignore */ }
 })();
 </script>
 <script>
@@ -20,7 +37,7 @@
     if (!nav || nav.type !== "reload") return;
     var p = location.pathname || "/";
     if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
-    if (p !== "/data-viz") return;
+    if (p !== "/data-viz" && !p.endsWith("/data-viz")) return;
     var key = "gadly-page-scroll-y-v1:" + p;
     var legacy = "gadly-tool-scroll-y-v1:" + p;
     sessionStorage.removeItem(key);
@@ -39,19 +56,13 @@
 </script>
 <script>
 (function () {
-    var KEY = "gadly-data-viz-state";
-    function readVizRestoreState() {
+    /* Only reserve chart space for shared links (?s=), never for localStorage */
+    function readShareState() {
         var sParam = new URLSearchParams(window.location.search).get("s");
-        if (sParam) {
-            try {
-                return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
-            } catch (e0) { /* ignore */ }
-        }
+        if (!sParam) return null;
         try {
-            var raw = localStorage.getItem(KEY);
-            if (raw) return JSON.parse(raw);
-        } catch (e1) { /* ignore */ }
-        return null;
+            return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
+        } catch (e0) { return null; }
     }
     function shouldRestoreChart(state) {
         if (!state || !state.data || !String(state.data).trim()) return false;
@@ -59,7 +70,7 @@
         return state.autoGenerate !== false;
     }
     try {
-        var state = readVizRestoreState();
+        var state = readShareState();
         if (shouldRestoreChart(state)) {
             document.documentElement.classList.add("viz-chart-restore");
             window.__vizRestoreChartImmediate = true;
@@ -69,11 +80,111 @@
 document.documentElement.classList.add("viz-options-pending");
 </script>
 <style id="data-viz-layout-shield">
-html.viz-chart-restore .chart-container.hidden {
+/* First paint lock: prevent container grow→shrink on desktop refresh */
+.data-viz .text-tool-select > select,
+body.data-viz .text-tool-select > select {
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  border: 0 !important;
+}
+.data-viz .viz-data-preview.hidden,
+.data-viz .viz-stats.hidden,
+.data-viz .result-area.hidden,
+.data-viz .chart-container.hidden,
+body.data-viz .viz-data-preview.hidden,
+body.data-viz .viz-stats.hidden,
+body.data-viz .result-area.hidden,
+body.data-viz .chart-container.hidden,
+.data-viz .chart-container[hidden],
+body.data-viz .chart-container[hidden] {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+.data-viz .home-link-wrap,
+body.data-viz .home-link-wrap,
+.site-main .data-viz .home-link-wrap {
+  display: none !important;
+}
+@media (min-width: 769px) {
+  body.data-viz .site-main {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 24px !important;
+  }
+  body.data-viz .site-main .data-viz {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+  body.data-viz .site-main .data-viz > .container {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+    box-sizing: border-box !important;
+    padding-bottom: 24px !important;
+    min-height: calc(100vh - var(--site-header-height, 82px) - 82px - 96px) !important;
+  }
+  /* Desktop options grid from first paint — no tall stack then collapse */
+  .viz-options-grid,
+  body.data-viz .viz-options-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    max-width: 720px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+    justify-items: stretch !important;
+  }
+  .viz-options-grid .viz-opt-field:nth-child(1) { grid-column: 1 / 3 !important; }
+  .viz-options-grid .viz-opt-field:nth-child(2) { grid-column: 3 / 5 !important; }
+  .viz-options-grid .viz-opt-field:nth-child(3) { grid-column: 5 / 7 !important; }
+  .viz-options-grid .viz-opt-field:nth-child(4) { grid-column: 2 / 4 !important; }
+  .viz-options-grid .viz-opt-field:nth-child(5) { grid-column: 4 / 6 !important; }
+  #data-input:not(.viz-data-input-has-content),
+  body.data-viz #data-input:not(.viz-data-input-has-content) {
+    box-sizing: border-box !important;
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
+  }
+  #data-input.viz-data-input-has-content,
+  body.data-viz #data-input.viz-data-input-has-content {
+    box-sizing: border-box !important;
+    min-height: 160px !important;
+    max-height: 750px !important;
+  }
+}
+/* Do NOT force .chart-container.hidden visible — that elongates the card then collapses. */
+html.viz-chart-restore .chart-container:not(.hidden) {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
+}
+@media (min-width: 769px) {
+  body.data-viz .site-main .data-viz > .container > .chart-container.hidden {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    border: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
 }
 html.viz-options-pending .viz-options-panel .text-tool-select-trigger {
   visibility: hidden;
@@ -89,6 +200,12 @@ body.data-viz #data-input {
   line-height: 1.5;
   overflow-y: hidden;
   resize: vertical;
+}
+@media (min-width: 769px) {
+  body.data-viz #data-input {
+    min-height: 160px;
+    height: 160px;
+  }
 }
 @media (max-width: 768px) {
   body.data-viz #data-input {
@@ -371,10 +488,7 @@ body.data-viz #data-input {
 }
 </style>
 {% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260531b">
-<link rel="stylesheet" href="{% static 'tools/css/data-viz.css' %}?v=121">
-{% endblock %}
+{% block extra_css %}{% endblock %}
 {% block content %}
 <div class="data-viz">
     <div class="container">
@@ -415,9 +529,9 @@ body.data-viz #data-input {
                 <div class="viz-data-toolbar">
                     <button type="button" id="btn-copy-data" class="viz-mini-btn">{% trans "Copy data" %}</button>
                     <button type="button" id="btn-clear-data" class="viz-mini-btn viz-reset-btn">{% trans "Reset" %}</button>
-                    <label class="viz-inline-check"><input type="checkbox" id="viz-auto-generate" checked> {% trans "Auto-generate chart" %}</label>
+                    <label class="viz-inline-check"><input type="checkbox" id="viz-auto-generate" checked autocomplete="off"> {% trans "Auto-generate chart" %}</label>
                 </div>
-                <textarea id="data-input" rows="5" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es.&#10;Gennaio,120&#10;Febbraio,190&#10;Marzo,80&#10;Aprile,20{% else %}e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,20{% endif %}"></textarea>
+                <textarea id="data-input" rows="5" autocomplete="off" placeholder="{% if LANGUAGE_CODE|slice:':2' == 'it' %}es.&#10;Gennaio,120&#10;Febbraio,190&#10;Marzo,80&#10;Aprile,20{% else %}e.g.&#10;January,120&#10;February,190&#10;March,80&#10;April,20{% endif %}"></textarea>
             </div>
         </div>
 
@@ -444,7 +558,7 @@ body.data-viz #data-input {
             moreRows: "{% filter escapejs %}{% trans '… and %(count)s more rows' %}{% endfilter %}"
         };
         </script>
-        <script src="{% static 'tools/js/data-viz-boot.js' %}?v=4"></script>
+        <script src="{% static 'tools/js/data-viz-boot.js' %}?v=5"></script>
 
         <div class="viz-options-panel">
             <p class="viz-options-title">{% trans "Chart options" %}</p>
@@ -511,10 +625,6 @@ body.data-viz #data-input {
                         return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
                     } catch (e0) { /* ignore */ }
                 }
-                try {
-                    var raw = localStorage.getItem(KEY);
-                    if (raw) return JSON.parse(raw);
-                } catch (e1) { /* ignore */ }
                 return null;
             }
             function syncTrigger(selectEl) {
@@ -569,10 +679,6 @@ body.data-viz #data-input {
                         return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
                     } catch (e0) { /* ignore */ }
                 }
-                try {
-                    var raw = localStorage.getItem(KEY);
-                    if (raw) return JSON.parse(raw);
-                } catch (e1) { /* ignore */ }
                 return null;
             }
 
@@ -643,7 +749,7 @@ body.data-viz #data-input {
         })();
         </script>
 
-        <div class="chart-container hidden">
+        <div class="chart-container hidden" hidden>
             <div class="chart-preview">
                 <canvas id="chart-canvas"></canvas>
             </div>
@@ -664,10 +770,6 @@ body.data-viz #data-input {
                         return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
                     } catch (e0) { /* ignore */ }
                 }
-                try {
-                    var raw = localStorage.getItem(KEY);
-                    if (raw) return JSON.parse(raw);
-                } catch (e1) { /* ignore */ }
                 return null;
             }
             try {
@@ -675,7 +777,10 @@ body.data-viz #data-input {
                 if (!state || !state.data || !String(state.data).trim()) return;
                 if (!state.chartVisible && state.autoGenerate === false) return;
                 var chartBox = document.querySelector(".chart-container");
-                if (chartBox) chartBox.classList.remove("hidden");
+                if (chartBox) {
+                    chartBox.classList.remove("hidden");
+                    chartBox.removeAttribute("hidden");
+                }
                 document.documentElement.classList.add("viz-chart-restore");
                 var pngUrl = sessionStorage.getItem("gadly-viz-chart-png-v1");
                 if (pngUrl) {
@@ -694,12 +799,6 @@ body.data-viz #data-input {
             } catch (e2) { /* ignore */ }
         })();
         </script>
-
-        <div class="home-link-wrap">
-            <a href="{% url 'home' %}" class="home-link" title="{% trans 'Back to Home' %}" aria-label="{% trans 'Back to Home' %}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#007BFF"><path d="M12 3L4 10.5L4 18.5Q4 21 6.5 21L9.5 21L9.5 15L14.5 15L14.5 21L17.5 21Q20 21 20 18.5L20 10.5L12 3z"/></svg>
-            </a>
-        </div>
     </div>
 </div>
 <script src="{% static 'tools/js/vendor/chart.umd.min.js' %}"></script>
@@ -707,5 +806,5 @@ body.data-viz #data-input {
 <script src="{% static 'tools/js/vendor/jspdf.umd.min.js' %}"></script>
 {% endblock %}
 {% block page_scripts %}
-<script src="{% static 'tools/js/data-viz.js' %}?v=20260617x"></script>
+<script src="{% static 'tools/js/data-viz.js' %}?v=20260722i"></script>
 {% endblock %}

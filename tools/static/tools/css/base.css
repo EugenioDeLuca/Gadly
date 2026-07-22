@@ -1499,12 +1499,12 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         outline: none !important;
         box-shadow: none !important;
     }
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container button:not(.interview-settings-toggle):not(.analysis-opts-trigger):not(.split-preset-btn):hover,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container .button-group button:not(.split-preset-btn):hover,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .faq-container button:hover,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container input[type="submit"]:hover,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container input[type="button"]:hover,
-    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators) .site-main .container .btn:hover {
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .container button:not(.interview-settings-toggle):not(.analysis-opts-trigger):not(.split-preset-btn):hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .container .button-group button:not(.split-preset-btn):hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .faq-container button:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .container input[type="submit"]:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .container input[type="button"]:hover,
+    body:not(.dark-mode):not(.homepage):not(.robots-txt-gen):not(.image-editor):not(.cv-generator):not(.qr-generator):not(.word-counter):not(.translator):not(.remove-spaces):not(.username-gen):not(.diff-checker):not(.json-formatter):not(.case-converter):not(.uuid-generator):not(.bio-gen):not(.hashtag-gen):not(.caption-gen):not(.markdown-preview):not(.data-viz):not(.calculators):not(.base64-encoder) .site-main .container .btn:hover {
         background: linear-gradient(145deg, #d0e8f9 0%, #b8d4f0 100%) !important;
         border-color: #002d5c !important;
         color: #003f7f !important;
@@ -1655,14 +1655,15 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         border-radius: 12px !important;
     }
 
-    /* Mobile globale: tutti i bottoni Copy con stesso layout/colori di Remove Spaces */
+    /* Mobile globale: tutti i bottoni Copy con stesso layout/colori di Remove Spaces.
+       Solo transform al tap — niente fade su background/color (in light il Copied! arrivava in ritardo). */
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy,
     body:not(.homepage):not(.image-editor) .site-main .container .btn-copy {
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
         -webkit-appearance: none;
         appearance: none;
-        transition: transform 0.05s ease-out, background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+        transition: transform 0.05s ease-out !important;
     }
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy:focus,
     body:not(.homepage):not(.image-editor) .site-main .container .btn-copy:focus {
@@ -1672,19 +1673,31 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied,
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:hover,
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:focus,
+    body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied.tap-active,
     body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied,
-    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover {
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:focus,
+    body:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied.tap-active {
         border: 2px solid #fcc !important;
         background: #fff5f5 !important;
+        background-image: none !important;
         color: #c00 !important;
+        transition: none !important;
     }
     body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied,
     body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:hover,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:focus,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied.tap-active,
     body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied,
-    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover {
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:hover,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied:focus,
+    body.dark-mode:not(.homepage):not(.image-editor) .site-main .container .btn-copy.copied.tap-active {
         border-color: #fcc !important;
         background: rgba(220, 80, 80, 0.15) !important;
+        background-image: none !important;
         color: #e88 !important;
+        transition: none !important;
     }
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy:active,
     body:not(.homepage):not(.image-editor) .site-main .container #btn-copy.copied:active,

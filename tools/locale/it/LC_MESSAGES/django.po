@@ -1886,6 +1886,9 @@ msgstr ""
 msgid "Encode text to Base64 or decode Base64 to text."
 msgstr "Codifica testo in Base64 o decodifica Base64 in testo."
 
+msgid "Encode or decode Base64 text."
+msgstr "Codifica o decodifica testo Base64."
+
 #: .\tools\templates\tools\base64_encoder.html:36
 #: .\tools\templates\tools\hash_generator.html:59
 msgid "Input"
@@ -5816,12 +5819,12 @@ msgid "OK"
 msgstr "OK"
 
 #: .\tools\templates\tools\image_editor.html:39
-msgid "This tool is only available on desktop."
-msgstr "Questo strumento è disponibile solo su desktop."
+msgid "This tool is only available on desktop"
+msgstr "Questo strumento è disponibile solo su desktop"
 
 #: .\tools\templates\tools\image_editor.html:40
-msgid "Please use a computer to edit images."
-msgstr "Per modificare le immagini usa un computer."
+msgid "Please use a computer to edit images"
+msgstr "Per modificare le immagini usa un computer"
 
 #: .\tools\templates\tools\image_editor.html:56
 msgid "Drop image here or click to choose"

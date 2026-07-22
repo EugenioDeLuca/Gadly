@@ -11,10 +11,6 @@
                 return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(sParam)))));
             } catch (e0) { /* ignore */ }
         }
-        try {
-            var raw = localStorage.getItem(KEY);
-            if (raw) return JSON.parse(raw);
-        } catch (e1) { /* ignore */ }
         return null;
     }
 

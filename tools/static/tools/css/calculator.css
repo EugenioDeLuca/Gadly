@@ -120,7 +120,7 @@ body.single-calc .calc-panel h2 {
 .calc-group input:focus,
 .calc-group select:focus {
     outline: none;
-    border-color: var(--btn-primary, #003f7f);
+    border-color: #007BFF;
 }
 
 .calc-custom-select {
@@ -145,8 +145,14 @@ body.single-calc .calc-panel h2 {
 }
 
 .calc-select-trigger:hover {
-    border-color: var(--btn-primary, #003f7f);
+    border-color: #007BFF;
     background: #f8fcff;
+}
+
+.calc-select-trigger:focus,
+.calc-select-trigger:focus-visible {
+    outline: none;
+    border-color: #007BFF;
 }
 
 .calc-select-trigger::after {
@@ -330,6 +336,16 @@ body.single-calc .calc-panel h2 {
     body.calculators:not(.dark-mode) .site-main .calculators .container .calc-panel .calc-subdesc {
         color: #555 !important;
         -webkit-text-fill-color: #555 !important;
+    }
+    /* Desktop focus: stesso #007BFF degli altri tool (non #003f7f) */
+    body.calculators .site-main .calculators .container .calc-panel .calc-group input:focus,
+    body.calculators .site-main .calculators .container .calc-panel .calc-group input:focus-visible,
+    body.calculators .site-main .calculators .container .calc-panel .calc-group select:focus,
+    body.calculators .site-main .calculators .container .calc-panel .calc-group select:focus-visible,
+    body.calculators .site-main .calculators .container .calc-panel .calc-select-trigger:focus,
+    body.calculators .site-main .calculators .container .calc-panel .calc-select-trigger:focus-visible {
+        border-color: #007BFF !important;
+        outline: none !important;
     }
     /* Desktop: stesse modifiche degli input come in mobile (altezza 44px, allineamento al bottone) */
     .calc-group input,

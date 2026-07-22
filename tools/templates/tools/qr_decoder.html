@@ -7,7 +7,7 @@
 <meta name="description" content="{% trans 'Decode QR codes from images: upload a PNG or JPG and read the text or link with Gadly’s QR decoder.' %}">
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/qr-generator.css' %}?v=107">
 <style>
 .qr-decoder .container { max-width: 900px; width: 90%; margin: 40px auto; padding: 40px; box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2); border-radius: 16px; background: white; }
 .qr-decoder h1 { font-size: 2em; color: #003f7f; margin: 0 0 8px 0; text-align: center; }
@@ -26,7 +26,7 @@
 .qr-decoder .result-wrap textarea { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 16px; font-size: 1.05rem; font-weight: 600; font-family: Arial, sans-serif; color: #003f7f; background: #fff; border: 2px solid #d0e8f9; border-radius: 12px; resize: vertical; line-height: 1.55; }
 .qr-decoder .result-wrap textarea:focus { outline: none; border-color: #d0e8f9; }
 .qr-decoder .result-wrap .btn-copy-wrap { text-align: center; margin-top: 10px; margin-bottom: 8px; }
-.qr-decoder .btn-copy { padding: 12px 32px; min-width: 140px; font-size: 1rem; font-weight: 600; background: #003f7f; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+.qr-decoder .btn-copy { padding: 12px 32px; min-width: 140px; font-size: 1rem; font-weight: 600; background: #003f7f; color: white; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s; }
 .qr-decoder .btn-copy:hover { background: #0056b3; transform: scale(1.05); }
 .qr-decoder .btn-copy.copied { background: #dc3545; }
 .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
@@ -45,15 +45,401 @@
 }
 .qr-decoder .home-link-wrap { margin-top: 0; text-align: center; }
 
+/* Desktop: card bianca (mobile dark può essere trasparente — non deve leakare) */
+@media (min-width: 769px) {
+  body.qr-generator .site-main .qr-decoder > .container,
+  body.dark-mode.qr-generator .site-main .qr-decoder > .container,
+  .qr-decoder .container {
+    background: white !important;
+    background-color: white !important;
+  }
+}
+
 @media (max-width: 768px) {
-  .qr-decoder .container { margin: 20px 16px; padding: 28px 24px; width: auto; }
+  .qr-decoder {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+
+  body.qr-generator .site-main .qr-decoder > .container,
+  body.dark-mode.qr-generator .site-main .qr-decoder > .container,
+  .qr-decoder .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 8px auto 24px !important;
+    padding: 16px 0 24px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  /* Dark mobile: niente card bianca (theme.css forza white su .qr-generator .container) */
+  body.dark-mode.qr-generator .qr-decoder .container,
+  body.dark-mode.qr-generator .site-main .qr-decoder .container,
+  body.dark-mode.warm-tone.qr-generator .qr-decoder .container,
+  body.dark-mode.warm-tone.qr-generator .site-main .qr-decoder .container {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+
+  .qr-decoder .upload-area {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center !important;
+    padding: 40px 16px !important;
+    /* Mobile: niente riempimento azzurro (light + dark) */
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    /* Tratteggio: resta #b8d4f0 come prima (non #b0c4de) */
+    border: 2px dashed #b8d4f0 !important;
+    border-color: #b8d4f0 !important;
+  }
+
+  .qr-decoder .upload-area:hover {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-color: #b8d4f0 !important;
+  }
+
+  body.dark-mode .qr-decoder .upload-area,
+  body.dark-mode .qr-decoder .upload-area:hover {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: 2px dashed #b8d4f0 !important;
+    border-color: #b8d4f0 !important;
+  }
+
+  /* Mobile light + dark: Scegli file un po’ più largo + altezza 47.5px */
+  .qr-decoder .choose-file-btn,
+  body.qr-generator .site-main .qr-decoder .choose-file-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 100% !important;
+    height: 47.5px !important;
+    min-height: 47.5px !important;
+    max-height: 47.5px !important;
+    padding: 0 24px !important;
+    box-sizing: border-box !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Dark mobile: descrizioni leggibili su sfondo scuro (niente card bianca) */
+  body.dark-mode.qr-generator .qr-decoder .tool-desc,
+  body.dark-mode.qr-generator .site-main .qr-decoder .tool-desc,
+  body.dark-mode.qr-generator .qr-decoder .upload-hint,
+  body.dark-mode.qr-generator .site-main .qr-decoder .upload-hint {
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn:hover,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn:hover,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn:focus,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn:focus,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn:focus-visible,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn:focus-visible,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn:active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn:active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn.tap-active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn.tap-active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-weight: 400 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    border-radius: 12px !important;
+    transition: transform 0.05s ease-out !important;
+  }
+
+  /* Light mobile: Copia — stesso stile, testo in grassetto */
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied),
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied),
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied):hover,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied):hover,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied):focus,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied):focus,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied):focus-visible,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied):focus-visible,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied):active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied):active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(.copied).tap-active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(.copied).tap-active {
+    background: #d0e8f9 !important;
+    background-color: #d0e8f9 !important;
+    background-image: none !important;
+    border: 2px solid #003f7f !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    border-radius: 12px !important;
+    /* Solo transform: niente fade colori al toggle light/dark */
+    transition: transform 0.05s ease-out !important;
+  }
+
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn .file-name-display,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn .file-name-display {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+  }
+
+  /* Light mobile: scale su :active e .tap-active (tap veloci — mobile-tap.js) */
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn:active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn:active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .choose-file-btn.tap-active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .choose-file-btn.tap-active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy.tap-active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy.tap-active,
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:active.tap-active,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:active.tap-active {
+    transform: scale(0.96) !important;
+  }
+
+  body.qr-generator:not(.dark-mode) .qr-decoder .btn-copy:not(:active):not(.tap-active),
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .btn-copy:not(:active):not(.tap-active) {
+    transform: scale(1) !important;
+  }
+
+  /* Dark mobile: Scegli file outline */
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn:hover,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn:hover,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn:focus,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn:focus,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn:focus-visible,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn:focus-visible,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn:active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn:active,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn.tap-active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn.tap-active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    border-radius: 12px !important;
+    font-weight: 400 !important;
+    transition: transform 0.05s ease-out !important;
+  }
+
+  /* Dark mobile: Copia outline + grassetto */
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied),
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied),
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied):hover,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied):hover,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied):focus,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied):focus,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied):focus-visible,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied):focus-visible,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied):active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied):active,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(.copied).tap-active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(.copied).tap-active {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    /* Solo transform: niente fade colori al toggle light/dark */
+    transition: transform 0.05s ease-out !important;
+  }
+
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn .file-name-display,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn .file-name-display {
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+
+  /* Dark mobile: scale su :active e .tap-active (tap veloci — mobile-tap.js) */
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn:active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn:active,
+  body.dark-mode.qr-generator .qr-decoder .choose-file-btn.tap-active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .choose-file-btn.tap-active,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:active,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy.tap-active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy.tap-active,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:active.tap-active,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:active.tap-active {
+    transform: scale(0.96) !important;
+  }
+
+  body.dark-mode.qr-generator .qr-decoder .btn-copy:not(:active):not(.tap-active),
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy:not(:active):not(.tap-active) {
+    transform: scale(1) !important;
+  }
+
+  /* Mobile: Copied! come Remove Spaces / base.css (niente rosso pieno desktop) */
+  body.qr-generator .qr-decoder .btn-copy.copied,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied,
+  body.qr-generator .qr-decoder .btn-copy.copied:hover,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied:hover,
+  body.qr-generator .qr-decoder .btn-copy.copied:focus,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied:focus {
+    border: 2px solid #fcc !important;
+    background: #fff5f5 !important;
+    background-color: #fff5f5 !important;
+    background-image: none !important;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+  }
+
+  /* Copied! + tap: tieni lo scale finché c’è tap-active */
+  body.qr-generator .qr-decoder .btn-copy.copied:not(:active):not(.tap-active),
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied:not(:active):not(.tap-active) {
+    transform: scale(1) !important;
+  }
+
+  body.qr-generator .qr-decoder .btn-copy.copied:active,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied:active,
+  body.qr-generator .qr-decoder .btn-copy.copied.tap-active,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied.tap-active,
+  body.qr-generator .qr-decoder .btn-copy.copied:active.tap-active,
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied:active.tap-active {
+    transform: scale(0.96) !important;
+  }
+
+  body.dark-mode.qr-generator .qr-decoder .btn-copy.copied,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy.copied,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy.copied:hover,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy.copied:hover,
+  body.dark-mode.qr-generator .qr-decoder .btn-copy.copied:focus,
+  body.dark-mode.qr-generator .site-main .qr-decoder .btn-copy.copied:focus {
+    border: 2px solid #fcc !important;
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Mobile: risultato centrato (display gestito da JS: none/flex) */
+  .qr-decoder .result-wrap {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .qr-decoder .result-wrap label,
+  .qr-decoder .result-wrap textarea,
+  .qr-decoder .result-wrap .btn-copy-wrap {
+    text-align: center !important;
+  }
+
+  .qr-decoder .result-wrap label {
+    width: 100% !important;
+  }
+
+  .qr-decoder .result-wrap textarea {
+    width: 100% !important;
+    max-width: 338px !important;
+    box-sizing: border-box !important;
+  }
+
+  .qr-decoder .btn-copy,
+  body.qr-generator .site-main .qr-decoder .btn-copy,
+  body.qr-generator .site-main .qr-decoder .btn-copy:not(.copied),
+  body.qr-generator .site-main .qr-decoder .btn-copy.copied {
+    font-weight: 700 !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    /* Blocca fade colori (base.css / stile base del bottone) al cambio tema */
+    transition: transform 0.05s ease-out !important;
+  }
+
+  .qr-decoder .result-wrap .btn-copy-wrap {
+    width: 100% !important;
+    max-width: 338px !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  /* Mobile: successo = verde LED/neon come bottoni CV / QR Generator */
+  body.qr-generator:not(.dark-mode) .qr-decoder .msg.success,
+  body.qr-generator:not(.dark-mode) .site-main .qr-decoder .msg.success {
+    color: #28a745 !important;
+    -webkit-text-fill-color: #28a745 !important;
+  }
+
+  body.dark-mode.qr-generator .qr-decoder .msg.success,
+  body.dark-mode.qr-generator .site-main .qr-decoder .msg.success {
+    color: #7ee2a0 !important;
+    -webkit-text-fill-color: #7ee2a0 !important;
+  }
+
+  .qr-decoder h1,
+  .qr-decoder .tool-desc,
+  .qr-decoder .msg,
+  .qr-decoder .result-wrap,
+  .qr-decoder .home-link-wrap {
+    width: 100% !important;
+    max-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center !important;
+    box-sizing: border-box !important;
+  }
 }
 @media (max-width: 600px) {
-  .qr-decoder .container { margin: 12px 10px; padding: 24px 18px; width: auto; }
   .qr-decoder h1 { font-size: 1.5em; }
-}
-@media (max-width: 480px) {
-  .qr-decoder .container { margin: 8px 8px; padding: 20px 14px; width: auto; }
 }
 /* Container: come theme (bianco in dark, come Image Editor / altri tool file) — non forzare bg-card */
 body.dark-mode .qr-decoder h1 { color: #003f7f !important; }
@@ -69,8 +455,11 @@ body.dark-mode .qr-decoder .upload-area:hover {
     border-color: #7eb8f0;
     box-shadow: inset 0 2px 12px rgba(0, 123, 255, 0.06);
 }
-body.dark-mode .qr-decoder .choose-file-btn { background: #003f7f; color: white; }
-body.dark-mode .qr-decoder .choose-file-btn:hover { background: #dc3545; }
+/* Desktop only: Scegli file blu pieno in dark (mobile usa outline, evita flash al toggle) */
+@media (min-width: 769px) {
+  body.dark-mode .qr-decoder .choose-file-btn { background: #003f7f; color: white; }
+  body.dark-mode .qr-decoder .choose-file-btn:hover { background: #dc3545; }
+}
 body.dark-mode .qr-decoder .upload-hint { color: #666; }
 body.dark-mode .qr-decoder .preview-wrap img { border-color: #ddd; }
 /* Testo decodificato: contrasto forte su container bianco (evitare --text-secondary chiarissimo) */
@@ -85,10 +474,13 @@ body.dark-mode .qr-decoder .result-wrap textarea:focus {
     outline: none;
     border-color: #d0e8f9;
 }
-body.dark-mode .qr-decoder .btn-copy { background: #003f7f; }
-body.dark-mode .qr-decoder .btn-copy:hover { background: #0056b3; }
-body.dark-mode .qr-decoder .btn-copy.copied { background: #dc3545; }
-body.dark-mode .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
+/* Desktop only: blu pieno — in mobile non devono flashare sopra lo stile outline */
+@media (min-width: 769px) {
+  body.dark-mode .qr-decoder .btn-copy { background: #003f7f; }
+  body.dark-mode .qr-decoder .btn-copy:hover { background: #0056b3; }
+  body.dark-mode .qr-decoder .btn-copy.copied { background: #dc3545; }
+  body.dark-mode .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
+}
 body.dark-mode .qr-decoder .msg.success {
     color: #1e7e34;
     text-align: center;
@@ -140,5 +532,5 @@ body.dark-mode .qr-decoder .msg.error {
 </div>
 <canvas id="qr-canvas" style="display: none;"></canvas>
 <script src="{% static 'tools/js/jsQR.min.js' %}"></script>
-<script src="{% static 'tools/js/qr-decoder.js' %}?v=20260514a"></script>
+<script src="{% static 'tools/js/qr-decoder.js' %}?v=20260722a"></script>
 {% endblock %}

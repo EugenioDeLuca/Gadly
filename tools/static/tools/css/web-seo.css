@@ -11,6 +11,16 @@
     box-shadow: 0 20px 50px rgba(0, 63, 127, 0.2);
 }
 
+/* Desktop dark: card bianca (theme non deve lasciare --bg-card navy) */
+@media (min-width: 769px) {
+    body.dark-mode.web-seo .container,
+    body.dark-mode.web-seo .site-main .container,
+    body.dark-mode .web-seo .container {
+        background: #fff !important;
+        background-color: #fff !important;
+    }
+}
+
 .web-seo h1 {
     text-align: center;
     color: #003f7f;
@@ -1864,6 +1874,107 @@ body.web-seo.site-speed-check:not(.dark-mode) .tool-desc {
 /* Regex Tester: 12px tra test string e risultato */
 body.regex-tester .result-area {
     margin-top: 12px !important;
+}
+
+/* Regex Tester — desktop: card bianca (no trasparente / no navy bg-card) */
+@media (min-width: 769px) {
+    body.web-seo.regex-tester .site-main .container,
+    body.dark-mode.web-seo.regex-tester .site-main .container {
+        background: white !important;
+        background-color: white !important;
+    }
+}
+
+/* Regex Tester — solo mobile */
+@media (max-width: 768px) {
+    body.web-seo.regex-tester .site-main .container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        margin: 8px auto 24px !important;
+        padding: 16px 0 24px !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    body.dark-mode.web-seo.regex-tester .site-main .container .tool-desc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container .form-group {
+        width: 338px !important;
+        max-width: 338px !important;
+        box-sizing: border-box !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container .form-group label {
+        width: 100% !important;
+        text-align: center !important;
+        display: block !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container #regex-pattern,
+    body.web-seo.regex-tester .site-main .container #regex-text {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container #regex-pattern {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        padding: 0 14px !important;
+        line-height: 1.5 !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container #result-area,
+    body.web-seo.regex-tester .site-main .container #result-area.error {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container .button-group {
+        width: 338px !important;
+        max-width: 338px !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transform-origin: center center !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+
+    /* Scale come Lorem / CV: riposo/hover = 1, solo tap/active = 0.96 */
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test:hover,
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test:focus,
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test:focus-visible {
+        transform: scale(1) !important;
+    }
+
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test:active,
+    body.web-seo.regex-tester .site-main .container .button-group #btn-test.tap-active {
+        transform: scale(0.96) !important;
+    }
 }
 
 /* Cron Explainer: 12px tra input e risultato */
@@ -3878,6 +3989,15 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
     }
 }
 
+/* Lorem Ipsum Generator — desktop: card bianca (no trasparente / no navy bg-card) */
+@media (min-width: 769px) {
+    body.web-seo.lorem-ipsum .site-main .container,
+    body.dark-mode.web-seo.lorem-ipsum .site-main .container {
+        background: white !important;
+        background-color: white !important;
+    }
+}
+
 /* Lorem Ipsum Generator — solo mobile (light + dark) */
 @media (max-width: 768px) {
     body.web-seo.lorem-ipsum .site-main .container {
@@ -4031,7 +4151,7 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
         box-sizing: border-box !important;
         border-radius: 12px !important;
         font-family: Arial, sans-serif !important;
-        font-size: 17px !important;
+        font-size: 16.8px !important;
         font-weight: 400 !important;
         line-height: 1.5 !important;
         display: flex !important;
@@ -4098,7 +4218,7 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
     body.web-seo.lorem-ipsum:not(.dark-mode) #lorem-type-wrap .text-tool-select-menu li {
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
-        font-size: 17px !important;
+        font-size: 15.2px !important;
     }
 
     body.web-seo.lorem-ipsum:not(.dark-mode) #lorem-type-wrap .text-tool-select-menu li:hover,
@@ -4115,7 +4235,7 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
     body.dark-mode.web-seo.lorem-ipsum #lorem-type-wrap .text-tool-select-menu li {
         color: #b0c4de !important;
         -webkit-text-fill-color: #b0c4de !important;
-        font-size: 17px !important;
+        font-size: 15.2px !important;
     }
 
     body.dark-mode.web-seo.lorem-ipsum #lorem-type-wrap .text-tool-select-menu li:hover,

@@ -87,6 +87,16 @@ if not DEBUG:
         _add_csrf_origin(_prod_host)
 
 
+# Django admin path (secret in production via env). Default "admin/" for local dev.
+# Set GADLY_ADMIN_URL (or DJANGO_ADMIN_URL) on Render, e.g. gadly-ops-8f3a — no leading slash.
+_admin_url = (
+    os.environ.get("GADLY_ADMIN_URL")
+    or os.environ.get("DJANGO_ADMIN_URL")
+    or "admin"
+).strip().strip("/")
+ADMIN_URL = f"{_admin_url}/" if _admin_url else "admin/"
+
+
 # Application definition
 
 INSTALLED_APPS = [

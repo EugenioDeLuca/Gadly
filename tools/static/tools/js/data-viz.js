@@ -69,8 +69,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (s) {
                 return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(s)))));
             }
-            var raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) return JSON.parse(raw);
         } catch (e) { /* ignore */ }
         return null;
     }
@@ -111,8 +109,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function showChartContainer() {
         if (!chartContainer) return;
-        if (chartContainer.classList.contains("hidden")) {
+        if (chartContainer.classList.contains("hidden") || chartContainer.hasAttribute("hidden")) {
             chartContainer.classList.remove("hidden");
+            chartContainer.removeAttribute("hidden");
             saveState();
         }
     }
@@ -278,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (dataInput) {
         var MOBILE_DATA_INPUT_MAX = 280;
         var DESKTOP_DATA_INPUT_MAX = 750;
+        var DESKTOP_DATA_INPUT_DEFAULT = 160;
 
         function getDataInputMaxHeight() {
             return isMobileView() ? MOBILE_DATA_INPUT_MAX : DESKTOP_DATA_INPUT_MAX;
@@ -286,6 +286,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var placeholderFloorPx = 0;
 
         function capturePlaceholderFloor() {
+            if (!isMobileView() && !String(dataInput.value || "").trim()) {
+                placeholderFloorPx = DESKTOP_DATA_INPUT_DEFAULT;
+                return;
+            }
             var clone = dataInput.cloneNode(false);
             clone.removeAttribute("id");
             var ph = dataInput.getAttribute("placeholder") || "";
@@ -297,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var measured = clone.scrollHeight;
             document.body.removeChild(clone);
             var cssMin = parseFloat(window.getComputedStyle(dataInput).minHeight);
-            if (!(cssMin > 0)) cssMin = isMobileView() ? 130 : 120;
+            if (!(cssMin > 0)) cssMin = isMobileView() ? 130 : DESKTOP_DATA_INPUT_DEFAULT;
             placeholderFloorPx = Math.max(measured, cssMin);
         }
 
@@ -308,7 +312,24 @@ document.addEventListener("DOMContentLoaded", function() {
             dataInput.classList.toggle("viz-data-input-scroll", h >= maxH);
         }
 
+        function syncDataInputContentClass() {
+            var has = !!String(dataInput.value || "").trim();
+            dataInput.classList.toggle("viz-data-input-has-content", has);
+            if (!has && !isMobileView()) {
+                dataInput.style.height = "";
+                dataInput.classList.remove("viz-data-input-scroll");
+            }
+        }
+
         function autoResize() {
+            syncDataInputContentClass();
+            /* Desktop empty: never touch height — CSS owns 160px */
+            if (!isMobileView() && !String(dataInput.value || "").trim()) {
+                return;
+            }
+            if (!isMobileView()) {
+                placeholderFloorPx = DESKTOP_DATA_INPUT_DEFAULT;
+            }
             var prevHeight = dataInput.style.height;
             dataInput.style.height = "auto";
             var sh = dataInput.scrollHeight;
@@ -316,8 +337,11 @@ document.addEventListener("DOMContentLoaded", function() {
             applyHeight(Math.max(sh, placeholderFloorPx));
         }
 
-        capturePlaceholderFloor();
         resizeDataInput = function() {
+            if (!isMobileView() && !String(dataInput.value || "").trim()) {
+                syncDataInputContentClass();
+                return;
+            }
             capturePlaceholderFloor();
             autoResize();
         };
@@ -338,12 +362,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 scheduleAutoGenerate();
             }
         });
-        autoResize();
-        window.addEventListener("resize", function() {
-            if (!isMobileView()) return;
+        /* Desktop: skip init resize — was jumping the main container on refresh */
+        if (isMobileView()) {
             capturePlaceholderFloor();
             autoResize();
-        });
+            window.addEventListener("resize", function() {
+                if (!isMobileView()) return;
+                capturePlaceholderFloor();
+                autoResize();
+            });
+        } else {
+            placeholderFloorPx = DESKTOP_DATA_INPUT_DEFAULT;
+            syncDataInputContentClass();
+        }
     }
 
     var autoGenerateTimer = null;
@@ -1679,7 +1710,7 @@ document.addEventListener("DOMContentLoaded", function() {
         saveState();
         persistBootChartPng();
         window.__vizRestoreChartImmediate = false;
-        document.documentElement.classList.add("viz-chart-restore");
+        document.documentElement.classList.remove("viz-chart-restore");
     }
 
     function dataUrlToBlob(dataUrl) {
@@ -1991,19 +2022,36 @@ document.addEventListener("DOMContentLoaded", function() {
         activeExampleKey = "";
         syncExampleButtonSelection("");
         dataInput.value = "";
+        dataInput.classList.remove("viz-data-input-has-content");
         dataInput.dispatchEvent(new Event("input", { bubbles: true }));
+        if (!isMobileView()) {
+            dataInput.style.height = "";
+            dataInput.classList.remove("viz-data-input-scroll");
+        } else if (resizeDataInput) {
+            resizeDataInput();
+        }
         if (dataFileName) dataFileName.textContent = "";
         if (dataFileInput) dataFileInput.value = "";
         if (chart) { chart.destroy(); chart = null; }
-        if (chartContainer) chartContainer.classList.add("hidden");
+        if (chartContainer) {
+            chartContainer.classList.add("hidden");
+            chartContainer.setAttribute("hidden", "");
+        }
+        try { document.documentElement.classList.remove("viz-chart-restore"); } catch (eRestore) { /* ignore */ }
+        window.__vizRestoreChartImmediate = false;
         resetChartViewport();
         hideBootChartPlaceholder();
         try { sessionStorage.removeItem(BOOT_PNG_KEY); } catch (e) { /* ignore */ }
         if (previewWrap) previewWrap.classList.add("hidden");
         if (statsEl) statsEl.classList.add("hidden");
         clearDataMessage();
-        saveState();
+        clearPersistedVizState();
         flashResetBtn();
+    }
+
+    function clearPersistedVizState() {
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+        try { sessionStorage.removeItem(BOOT_PNG_KEY); } catch (e) { /* ignore */ }
     }
 
     var resetFlashTimer = null;
@@ -2090,27 +2138,17 @@ document.addEventListener("DOMContentLoaded", function() {
     function restorePersistedState() {
         var bootOpts = { skipPreviewStats: !!window.__gadlyVizBootDone, immediateChart: true };
         if (loadStateFromUrl(bootOpts)) return true;
-        try {
-            var raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) {
-                applyState(JSON.parse(raw), bootOpts);
-                return true;
-            }
-        } catch (e) { /* ignore */ }
         return false;
     }
 
     function saveState() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
-        } catch (e) { /* ignore */ }
+        /* Intentionally no localStorage — persistence caused container grow/shrink on refresh.
+           Share links still use collectState() via ?s= URL. */
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
     }
 
     function loadState() {
-        try {
-            var raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) applyState(JSON.parse(raw));
-        } catch (e) { /* ignore */ }
+        loadStateFromUrl();
     }
 
     function loadStateFromUrl(options) {
@@ -2126,24 +2164,35 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    restorePersistedState();
-    scheduleChartRestoreRetries();
-
-    window.addEventListener("load", function () {
-        if (!chart) scheduleChartRestoreRetries();
-    }, { once: true });
+    var shareParam = new URLSearchParams(window.location.search).get("s");
+    if (shareParam) {
+        restorePersistedState();
+        scheduleChartRestoreRetries();
+        window.addEventListener("load", function () {
+            if (!chart) scheduleChartRestoreRetries();
+        }, { once: true });
+    } else {
+        try { document.documentElement.classList.remove("viz-chart-restore"); } catch (eNoChart) { /* ignore */ }
+        window.__vizRestoreChartImmediate = false;
+        if (chartContainer) {
+            chartContainer.classList.add("hidden");
+            chartContainer.setAttribute("hidden", "");
+        }
+        hideBootChartPlaceholder();
+        try { localStorage.removeItem(STORAGE_KEY); } catch (eClr) { /* ignore */ }
+        try { sessionStorage.removeItem(BOOT_PNG_KEY); } catch (ePng) { /* ignore */ }
+    }
 
     window.addEventListener("pagehide", function () {
-        persistBootChartPng();
-        try {
-            var raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return;
-            var state = JSON.parse(raw);
-            if (chartContainer && !chartContainer.classList.contains("hidden")) {
-                state.chartVisible = true;
-            }
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) { /* ignore */ }
+        /* Leaving the tool: drop saved chart/example so next visit starts clean */
+        clearPersistedVizState();
+    });
+
+    window.addEventListener("pageshow", function (e) {
+        if (e.persisted) {
+            clearPersistedVizState();
+            clearData();
+        }
     });
 
     function buildShareUrl() {

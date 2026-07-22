@@ -42,7 +42,7 @@
 
     function showResult(text) {
         decodedText.value = text || '';
-        resultWrap.style.display = text ? 'block' : 'none';
+        resultWrap.style.display = text ? 'flex' : 'none';
     }
 
     input.addEventListener('change', function () {
@@ -79,7 +79,7 @@
                     var code = jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
                     if (code && code.data) {
                         showResult(code.data);
-                        resultWrap.style.display = 'block';
+                        resultWrap.style.display = 'flex';
                         showMessage(gettext('QR code read successfully.'), false, true);
                     } else {
                         showMessage(gettext('No QR code found in this image.'), true);
@@ -124,16 +124,28 @@
     });
 
     if (btnCopy) {
+        var copyResetTimer = null;
         btnCopy.addEventListener('click', function () {
             var text = decodedText.value;
             if (!text) return;
+            if (copyResetTimer) {
+                clearTimeout(copyResetTimer);
+                copyResetTimer = null;
+            }
             btnCopy.classList.remove('copied');
             function onCopyDone() {
                 btnCopy.classList.add('copied');
                 btnCopy.textContent = gettext('Copied!');
-                setTimeout(function () {
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    requestAnimationFrame(function () {
+                        btnCopy.blur();
+                        setTimeout(function () { btnCopy.blur(); }, 0);
+                    });
+                }
+                copyResetTimer = setTimeout(function () {
                     btnCopy.classList.remove('copied');
                     btnCopy.textContent = gettext('Copy');
+                    copyResetTimer = null;
                 }, 2000);
             }
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -152,6 +164,12 @@
             document.execCommand('copy');
             btnCopy.classList.add('copied');
             btnCopy.textContent = gettext('Copied!');
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                requestAnimationFrame(function () {
+                    btnCopy.blur();
+                    setTimeout(function () { btnCopy.blur(); }, 0);
+                });
+            }
             setTimeout(function () {
                 btnCopy.classList.remove('copied');
                 btnCopy.textContent = gettext('Copy');
@@ -160,5 +178,6 @@
             showMessage(gettext('Copy not supported'), true);
         }
         decodedText.setSelectionRange(0, 0);
+        if (typeof decodedText.blur === 'function') decodedText.blur();
     }
 })();

@@ -157,13 +157,13 @@
 }
 .image-editor-mobile-message-text {
     font-size: 1.1em;
-    color: #2c3e50;
+    color: #dc3545;
     margin: 0 0 8px;
     font-weight: 600;
 }
 .image-editor-mobile-message-hint {
     font-size: 1rem;
-    color: #7f8c8d;
+    color: #4a5558;
     margin: 0 0 0;
 }
 .image-editor-mobile-message .home-link-wrap {
@@ -183,6 +183,38 @@
     }
     .image-editor .container {
         padding-bottom: 40px;
+    }
+    /* Light + dark: desktop-only line in red */
+    .image-editor-mobile-message-text,
+    body:not(.dark-mode) .site-main .container .image-editor-mobile-message-text {
+        color: #dc3545 !important;
+        -webkit-text-fill-color: #dc3545 !important;
+    }
+    body:not(.dark-mode) .image-editor-mobile-message-hint,
+    body:not(.dark-mode) .site-main .container .image-editor-mobile-message-hint {
+        color: #4a5558 !important;
+        -webkit-text-fill-color: #4a5558 !important;
+    }
+    body.dark-mode.image-editor .image-editor-mobile-message-text,
+    body.dark-mode .site-main .container .image-editor-mobile-message-text {
+        color: #dc3545 !important;
+        -webkit-text-fill-color: #dc3545 !important;
+    }
+}
+
+/* Phone only: no white card behind desktop-only message (not ≤1024 — that hit desktop windows) */
+@media (max-width: 768px) {
+    body.dark-mode.image-editor .container,
+    body.dark-mode.image-editor .site-main .container,
+    body.dark-mode.warm-tone.image-editor .container,
+    body.dark-mode.warm-tone.image-editor .site-main .container {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+    body.dark-mode.image-editor .image-editor-mobile-message,
+    body.dark-mode.image-editor .image-editor-mobile-message p {
+        background: transparent !important;
     }
 }
 

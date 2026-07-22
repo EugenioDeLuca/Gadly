@@ -482,11 +482,15 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
         width: 100%;
     }
 
+    /* Equal header/footer gap via min-height (stable, no flex-grow jump). */
     body.data-viz .site-main .data-viz > .container {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         margin-top: 24px !important;
         margin-bottom: 24px !important;
-        min-height: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding-bottom: 24px;
+        min-height: calc(100vh - var(--site-header-height, 82px) - 82px - 96px);
     }
 
     .data-viz .chart-options #btn-generate {
@@ -661,10 +665,6 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     }
 }
 
-.chart-container.hidden {
-    display: none;
-}
-
 .chart-container {
     width: 100%;
     max-width: 100%;
@@ -680,6 +680,18 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     justify-content: center;
     align-items: center;
     gap: 16px;
+}
+
+/* After display:flex — must win over .chart-container and UA [hidden] overrides */
+.chart-container.hidden,
+.chart-container[hidden] {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
 }
 
 .chart-container .chart-preview {
@@ -2188,6 +2200,14 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     box-sizing: border-box;
 }
 
+@media (min-width: 769px) {
+    /* Più spazio tra textarea e Opzioni grafico → il blocco sotto scende verso il fondo card */
+    body.data-viz .site-main .data-viz > .container > .viz-options-panel {
+        margin-top: 36px;
+        margin-bottom: 16px;
+    }
+}
+
 .viz-options-title {
     margin: 0 0 12px;
     font-size: 16px;
@@ -2538,7 +2558,8 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.dark-mode.data-viz .data-viz .container,
     body.dark-mode.data-viz .site-main .data-viz > .container {
         background: white !important;
-        box-shadow: 0 20px 40px rgba(0, 123, 255, 0.25) !important;
+        /* Neutral shadow — blue glow read as a cyan strip under the card on dark bg */
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45) !important;
     }
 
     body.dark-mode.data-viz .site-main .container #data-input,
@@ -2560,7 +2581,6 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     }
 
     body.dark-mode.data-viz .text-tool-select-trigger,
-    body.dark-mode.data-viz .text-tool-select-trigger:hover,
     body.dark-mode.data-viz .text-tool-select-trigger:focus,
     body.dark-mode.data-viz .text-tool-select-trigger:focus-visible,
     body.dark-mode.data-viz .text-tool-select-trigger:active,
@@ -2624,6 +2644,30 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.dark-mode.data-viz .site-main .container #btn-generate:hover {
         background: #0056b3 !important;
         border-color: #0056b3 !important;
+        transform: scale(1.03) !important;
+    }
+
+    /* Desktop dark: hover animations on chart options inputs + chart type (same as light) */
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"],
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field .text-tool-select-trigger,
+    body.dark-mode.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger {
+        transition: background 0.2s, transform 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:hover,
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:hover {
+        border-color: #007BFF !important;
+        background: #f8fcff !important;
+        background-color: #f8fcff !important;
+        transform: scale(1.03) !important;
+    }
+
+    body.dark-mode.data-viz .site-main .container .viz-options-panel .viz-opt-field .text-tool-select-trigger:hover,
+    body.dark-mode.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:hover {
+        border-color: #007BFF !important;
+        background: #f8fcff !important;
+        background-color: #f8fcff !important;
         transform: scale(1.03) !important;
     }
 
@@ -2846,5 +2890,28 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied,
     body.data-viz .site-main .data-viz > .container .viz-export-buttons #btn-share-link.copied:hover {
         transform: scale(1.03) !important;
+    }
+
+    /* Desktop light+dark: chart options fields + chart type hover scale */
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"],
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"],
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field .text-tool-select-trigger,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger {
+        transition: background 0.2s, transform 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s !important;
+    }
+
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:hover,
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:hover,
+    body.data-viz .site-main .container .viz-options-panel .viz-opt-field .text-tool-select-trigger:hover,
+    body.data-viz .site-main .container #chart-type-wrap .text-tool-select-trigger:hover {
+        transform: scale(1.03) !important;
+        border-color: #007BFF !important;
+    }
+
+    body.data-viz:not(.dark-mode) .site-main .container .viz-options-panel .viz-opt-field input[type="text"]:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-options-panel .viz-opt-field input[type="number"]:hover,
+    body.data-viz:not(.dark-mode) .site-main .container .viz-options-panel .viz-opt-field .text-tool-select-trigger:hover,
+    body.data-viz:not(.dark-mode) .site-main .container #chart-type-wrap .text-tool-select-trigger:hover {
+        background: #f8fcff !important;
     }
 }

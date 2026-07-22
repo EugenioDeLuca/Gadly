@@ -7,7 +7,7 @@
 <meta name="description" content="{% trans 'Encode text to Base64 or decode Base64 to text with Gadly’s free Base64 tool.' %}">
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260722b">
 <style>
 .base64-encoder .form-group { margin-bottom: 0; }
 .base64-encoder .form-group textarea { width: 100%; max-width: 100%; box-sizing: border-box; min-height: 200px; padding: 14px 18px; font-size: 0.95rem; line-height: 1.5; border: 2px solid #ddd; border-radius: 12px; resize: vertical; font-family: inherit; }
@@ -18,19 +18,320 @@
 .base64-encoder .result-area { width: 100%; box-sizing: border-box; margin-top: 12px; margin-bottom: 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; background: #fff; border: 2px solid #d0e8f9; white-space: pre-wrap; word-break: break-word; font-size: 1rem; line-height: 1.5; font-weight: 600; color: #003f7f; }
 .base64-encoder .result-area.hidden { display: none; }
 .base64-encoder .result-area.error { margin-top: 12px; margin-bottom: 0; padding: 10px 16px; min-height: 44px; border-radius: 12px; border: 2px solid #fcc; background: #fff5f5; font-family: Arial, sans-serif; font-size: 1rem; font-weight: 600; color: #c00; text-align: center; white-space: normal; word-break: normal; }
-@media (max-width: 768px) {
-    .base64-encoder .button-group { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .base64-encoder .button-group button { min-width: 100px; padding: 12px 16px; font-size: 1rem; flex: 1 1 0; }
-    .base64-encoder .button-group #btn-copy { margin-left: 0; }
-}
 body.dark-mode .base64-encoder .result-area { background: #fff; border-color: #d0e8f9; color: #003f7f; }
 body.dark-mode .base64-encoder .result-area.error { background: rgba(220,80,80,0.15); color: #e88; }
+
+/* Desktop: card bianca (theme dark usa --bg-card navy; non deve restare blu) */
+@media (min-width: 769px) {
+  body.base64-encoder.text-tool .site-main .container,
+  body.dark-mode.base64-encoder.text-tool .site-main .container {
+    background: white !important;
+    background-color: white !important;
+  }
+}
+
+/* Base64 — solo mobile: 338px + bottoni come UUID / Hashtag */
+@media (max-width: 768px) {
+  body.base64-encoder.text-tool .site-main .container {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    margin: 8px auto 24px !important;
+    padding: 16px 0 24px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container h1,
+  body.base64-encoder.text-tool .site-main .container .tool-desc,
+  body.base64-encoder.text-tool .site-main .container .form-group,
+  body.base64-encoder.text-tool .site-main .container .result-area,
+  body.base64-encoder.text-tool .site-main .container .button-group,
+  body.base64-encoder.text-tool .site-main .container .home-link-wrap {
+    width: 100% !important;
+    max-width: 338px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .tool-desc {
+    text-wrap: balance;
+    text-wrap: pretty;
+    line-height: 1.55 !important;
+    font-size: 15.2px !important;
+    padding: 0 4px !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .form-group label {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .form-group textarea,
+  body.base64-encoder.text-tool .site-main .container #base64-input {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    /* Mobile: bianco (su desktop theme.css forza #fff solo ≥769px → senza questo resta grigio nativo) */
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+    color-scheme: light;
+    border: 2px solid #ddd !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .form-group textarea:focus,
+  body.base64-encoder.text-tool .site-main .container #base64-input:focus {
+    border-color: #007BFF !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .form-group textarea,
+  body.dark-mode.base64-encoder.text-tool .site-main .container #base64-input,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .form-group textarea:focus,
+  body.dark-mode.base64-encoder.text-tool .site-main .container #base64-input:focus {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+    border: 2px solid #ddd !important;
+    color-scheme: light;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .form-group textarea:focus,
+  body.dark-mode.base64-encoder.text-tool .site-main .container #base64-input:focus {
+    border-color: #007BFF !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .result-area,
+  body.base64-encoder.text-tool .site-main .container .result-area.error,
+  body.base64-encoder.text-tool .site-main .container #base64-result {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Mobile: risultato come UUID / Remove Spaces (non card blu piena) */
+  body.base64-encoder.text-tool .site-main .container .result-area:not(.error),
+  body.base64-encoder.text-tool .site-main .container #base64-result:not(.error) {
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+    padding: 16px !important;
+    min-height: 100px !important;
+    border-radius: 12px !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    background: #f8f9fa !important;
+    background-color: #f8f9fa !important;
+    border: 1px solid #ddd !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .result-area:not(.error),
+  body.dark-mode.base64-encoder.text-tool .site-main .container #base64-result:not(.error) {
+    background: rgba(240, 242, 245, 0.95) !important;
+    background-color: rgba(240, 242, 245, 0.95) !important;
+    border: 1px solid rgba(220, 224, 230, 0.9) !important;
+    color: #1a1a2e !important;
+    -webkit-text-fill-color: #1a1a2e !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .result-area.error,
+  body.base64-encoder.text-tool .site-main .container #base64-result.error {
+    padding: 10px 16px !important;
+    min-height: 44px !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    background: #fff5f5 !important;
+    border: 2px solid #fcc !important;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .result-area.error,
+  body.dark-mode.base64-encoder.text-tool .site-main .container #base64-result.error {
+    background: rgba(220, 80, 80, 0.15) !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    row-gap: 12px !important;
+    column-gap: 12px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 338px !important;
+    max-width: 338px !important;
+    overflow: visible !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .button-group button,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-encode,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-decode,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy {
+    width: 338px !important;
+    max-width: 338px !important;
+    min-width: 338px !important;
+    flex: none !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    padding: 12px 20px !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    -webkit-appearance: none;
+    appearance: none;
+    transform: scale(1) !important;
+    transform-origin: center center !important;
+    /* Solo scale al tap — niente fade colori (base.css #btn-copy aveva transition background) */
+    transition: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Light mobile */
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-encode:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-decode:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-copy:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):hover,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):focus,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:not(.copied):focus-visible,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-copy:not(.copied):hover,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-copy:not(.copied):focus,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-copy:not(.copied):focus-visible {
+    border: 2px solid #003f7f !important;
+    background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    background-color: #d0e8f9 !important;
+    background-image: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+    transform: scale(1) !important;
+    transition: none !important;
+  }
+
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:active:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button:active.tap-active:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group button.tap-active:focus:not(.copied),
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-encode.tap-active,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-decode.tap-active,
+  body.base64-encoder.text-tool:not(.dark-mode) .site-main .container .button-group #btn-copy.tap-active:not(.copied) {
+    transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
+  }
+
+  /* Dark mobile */
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-encode:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-decode:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:not(.copied):hover,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:not(.copied):focus,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:not(.copied):focus-visible {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    background-color: transparent !important;
+    border: 2px solid #b0c4de !important;
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+    transform: scale(1) !important;
+    transition: none !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:active:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button.tap-active:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button:active.tap-active:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group button.tap-active:focus:not(.copied),
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-encode.tap-active,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-decode.tap-active,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.tap-active:not(.copied) {
+    transform: scale(0.96) !important;
+    transition: transform 0.05s ease-out !important;
+  }
+
+  /* Copied! — subito, anche durante tap-active/focus (niente attesa fine gesture) */
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:hover,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:focus,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:focus-visible,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied.tap-active,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:active {
+    background: #fff5f5 !important;
+    background-color: #fff5f5 !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #c00 !important;
+    -webkit-text-fill-color: #c00 !important;
+    transform: scale(1) !important;
+    transition: none !important;
+  }
+
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied.tap-active,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:active,
+  body.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:active.tap-active {
+    transform: scale(0.96) !important;
+    transition: none !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:hover,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:focus,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:focus-visible,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied.tap-active,
+  body.dark-mode.base64-encoder.text-tool .site-main .container .button-group #btn-copy.copied:active {
+    background: rgba(220, 80, 80, 0.15) !important;
+    background-color: rgba(220, 80, 80, 0.15) !important;
+    background-image: none !important;
+    border: 2px solid #fcc !important;
+    color: #e88 !important;
+    -webkit-text-fill-color: #e88 !important;
+    transition: none !important;
+  }
+
+  body.dark-mode.base64-encoder.text-tool .site-main .container .tool-desc {
+    color: #b0c4de !important;
+    -webkit-text-fill-color: #b0c4de !important;
+  }
+}
 </style>
 {% endblock %}
 {% block content %}
 <div class="container">
     <h1>{% trans "Base64 Encoder / Decoder" %}</h1>
-    <p class="tool-desc">{% trans "Encode text to Base64 or decode Base64 to text." %}</p>
+    <p class="tool-desc">{% trans "Encode or decode Base64 text." %}</p>
 
     <div class="form-group">
         <label for="base64-input">{% trans "Input" %}</label>
@@ -51,5 +352,5 @@ body.dark-mode .base64-encoder .result-area.error { background: rgba(220,80,80,0
         </a>
     </div>
 </div>
-<script src="{% static 'tools/js/base64_encoder.js' %}?v=20260422"></script>
+<script src="{% static 'tools/js/base64_encoder.js' %}?v=20260722a"></script>
 {% endblock %}

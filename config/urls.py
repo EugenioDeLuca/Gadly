@@ -31,6 +31,11 @@ from django.contrib.auth import urls as auth_urls
 
 _auth_urlpatterns = [p for p in auth_urls.urlpatterns if p.name != "logout"]
 
+_admin_urlpatterns = [path(settings.ADMIN_URL, admin.site.urls)]
+# When admin lives on a secret path, /admin/ must not expose Django login.
+if settings.ADMIN_URL != "admin/":
+    _admin_urlpatterns.append(path("admin/", RedirectView.as_view(url="/", permanent=False)))
+
 urlpatterns = [
     path(
         'favicon.ico',
@@ -46,7 +51,7 @@ urlpatterns = [
     path('robots.txt', tools_views.robots_txt, name='robots_txt'),
     path('sw.js', pwa_sw_cleanup, name='pwa_sw_cleanup'),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('admin/', admin.site.urls),
+    *_admin_urlpatterns,
     path('accounts/', tools_views.accounts_home, name='accounts_home'),
     path('accounts/register/', tools_views.register, name='register'),
     path('accounts/verify-email-sent/', tools_views.verify_email_sent, name='verify_email_sent'),

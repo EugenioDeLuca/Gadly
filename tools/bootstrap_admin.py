@@ -117,7 +117,13 @@ def bootstrap_admin_from_env(*, force: bool = False) -> bool:
             ok = check_password(password, user.password)
             _log(f"[GADLY] Password hash check: {'OK' if ok else 'FAILED'}")
             _log("[GADLY] === LOGIN WITH THIS USERNAME ===")
-            _log(f"[GADLY] https://www.gadly.it/admin/  username={user.username}")
+            try:
+                from django.conf import settings as dj_settings
+
+                admin_path = getattr(dj_settings, "ADMIN_URL", "admin/")
+            except Exception:
+                admin_path = "admin/"
+            _log(f"[GADLY] https://www.gadly.it/{admin_path}  username={user.username}")
             _done = True
             return ok
         except Exception as exc:

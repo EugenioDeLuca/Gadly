@@ -6,6 +6,19 @@
     var btnEncode = document.getElementById('btn-encode');
     var btnDecode = document.getElementById('btn-decode');
     var btnCopy = document.getElementById('btn-copy');
+    var copyResetTimer = null;
+
+    function isMobileView() {
+        return window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function blurCopyBtn() {
+        if (!btnCopy || !isMobileView()) return;
+        requestAnimationFrame(function () {
+            btnCopy.blur();
+            setTimeout(function () { btnCopy.blur(); }, 0);
+        });
+    }
 
     function showResult(text, isError) {
         resultEl.classList.remove('hidden', 'error');
@@ -63,6 +76,21 @@
         showResult(out, false);
     }
 
+    function onCopyDone() {
+        if (copyResetTimer) {
+            clearTimeout(copyResetTimer);
+            copyResetTimer = null;
+        }
+        btnCopy.textContent = gettext("Copied!");
+        btnCopy.classList.add('copied');
+        blurCopyBtn();
+        copyResetTimer = setTimeout(function () {
+            btnCopy.textContent = gettext("Copy");
+            btnCopy.classList.remove('copied');
+            copyResetTimer = null;
+        }, 2000);
+    }
+
     btnEncode.addEventListener('click', doEncode);
     btnDecode.addEventListener('click', doDecode);
 
@@ -70,11 +98,7 @@
         var text = resultEl.textContent;
         if (!text || resultEl.classList.contains('hidden') || resultEl.classList.contains('error')) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(function () {
-                btnCopy.textContent = gettext("Copied!");
-                btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext("Copy"); btnCopy.classList.remove('copied'); }, 2000);
-            }).catch(function () {});
+            navigator.clipboard.writeText(text).then(onCopyDone).catch(function () {});
         } else {
             var ta = document.createElement('textarea');
             ta.value = text;
@@ -82,9 +106,7 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                btnCopy.textContent = gettext("Copied!");
-                btnCopy.classList.add('copied');
-                setTimeout(function () { btnCopy.textContent = gettext("Copy"); btnCopy.classList.remove('copied'); }, 2000);
+                onCopyDone();
             } catch (e) {}
             document.body.removeChild(ta);
         }
