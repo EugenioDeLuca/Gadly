@@ -14,9 +14,10 @@
     var settleTimers = [];
     var revealTimer = null;
     var booted = false;
-    var UNLOCK_MS = 220;
-    var REVEAL_AFTER_LOCK_MS = 480;
-    var ROTATE_COVER_MS = 400;
+    var UNLOCK_MS = 180;
+    /* Più corti: la card non deve arrivare “dopo” che hai già finito di ruotare */
+    var REVEAL_AFTER_LOCK_MS = 200;
+    var ROTATE_COVER_MS = 160;
 
     function isDesktop() {
         return desktopPointer.matches;
@@ -38,15 +39,21 @@
         return !!(document.body && document.body.classList.contains('dark-mode'));
     }
 
-    function isDrose() {
+    function isWarm() {
         var b = document.body;
-        return !!(b && (b.classList.contains('is-drose-brand') || b.classList.contains('drose-page')));
+        if (b && b.classList.contains('warm-tone')) return true;
+        try {
+            return localStorage.getItem('gadly-warm-tone') === '1';
+        } catch (e) {
+            return false;
+        }
     }
 
+    /* Stesso colore di gadlySyncViewportChrome: evita lo “spacco” di due blu/grigi in rotazione */
     function overlayChromeColor() {
-        if (isDark()) return '#0f172a';
-        if (isDrose()) return '#f8fafc';
-        return '#f4f6fa';
+        if (isDark()) return isWarm() ? '#26201c' : '#0f0f23';
+        if (isWarm()) return '#fff8ec';
+        return '#ffffff';
     }
 
     function setThemeColor(c) {
@@ -224,42 +231,51 @@
         if (isDesktop()) return;
         var root = document.documentElement;
 
-        veilCardOnly();
-
+        /*
+         * Sempre copri SUBITO (anche portrait→landscape).
+         * A orientationchange phoneLandscape.matches è spesso ancora false:
+         * prima si faceva return e restava visibile la pagina sotto che ruotava.
+         */
+        unlocking = false;
         if (unlockTimer) {
             clearTimeout(unlockTimer);
             unlockTimer = null;
         }
-
         clearSettleTimers();
 
-        /*
-         * Verso portrait: se eravamo in lock, tieni velo colore overlay (no flash bianco),
-         * poi togli. Verso landscape: attiva lock con card ancora nascosta.
-         */
-        if (!phoneLandscape.matches) {
-            if (!isActiveLock()) {
-                /* Rotazione da portrait senza overlay: non inventare uno schermo rotate */
-                return;
-            }
-            unlocking = true;
-            root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
-            paintLockedChrome();
-            locked = true;
-            settleTimers.push(setTimeout(function () {
-                beginUnlock();
-            }, ROTATE_COVER_MS));
-            return;
-        }
-
-        unlocking = false;
+        veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
+
         settleTimers.push(setTimeout(function () {
-            if (wantsLock()) beginLock(120);
-            else beginUnlock();
+            if (wantsLock()) {
+                beginLock(80);
+            } else {
+                beginUnlock();
+            }
         }, ROTATE_COVER_MS));
+    }
+
+    function onResize() {
+        if (isDesktop()) {
+            if (isActiveLock()) beginUnlock();
+            return;
+        }
+        /*
+         * Durante la rotazione il resize arriva a metà: se l'altezza è già “corta”
+         * o stiamo settling, tieni il velo invece di mostrare il contenuto.
+         */
+        if (document.documentElement.classList.contains('gadly-orient-settling')) {
+            veilCardOnly();
+            paintLockedChrome();
+            return;
+        }
+        if (wantsLock()) {
+            beginLock(REVEAL_AFTER_LOCK_MS);
+        } else if (isActiveLock()) {
+            beginUnlock();
+        }
     }
 
     function bind(m) {
@@ -287,7 +303,7 @@
 
     bind(phoneLandscape);
     bind(desktopPointer);
-    window.addEventListener('resize', sync, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
     window.addEventListener('orientationchange', coverDuringRotate);
 
     if (window.screen && screen.orientation && typeof screen.orientation.addEventListener === 'function') {

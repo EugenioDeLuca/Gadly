@@ -16,8 +16,8 @@
     background:
         radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.18), transparent 45%),
         radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.16), transparent 40%),
-        #f4f6fa;
-    background-color: #f4f6fa;
+        #ffffff;
+    background-color: #ffffff;
     color: #0f172a;
     text-align: center;
     -webkit-tap-highlight-color: transparent;
@@ -97,8 +97,8 @@
     background:
         radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.14), transparent 45%),
         radial-gradient(circle at 15% 0%, rgba(251, 113, 133, 0.12), transparent 40%),
-        #f8fafc;
-    background-color: #f8fafc;
+        #ffffff;
+    background-color: #ffffff;
 }
 
 .gadly-orient-lock__icon {
@@ -155,8 +155,8 @@ body.dark-mode .gadly-orient-lock {
     background:
         radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
         radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
-        #0f172a;
-    background-color: #0f172a;
+        #0f0f23;
+    background-color: #0f0f23;
     color: #fff;
 }
 
@@ -177,8 +177,8 @@ body.dark-mode .gadly-orient-lock--drose {
     background:
         radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
         radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
-        #0f172a;
-    background-color: #0f172a;
+        #0f0f23;
+    background-color: #0f0f23;
 }
 
 body.dark-mode .gadly-orient-lock__icon,
@@ -214,9 +214,29 @@ html.gadly-orient-settling .gadly-orient-lock {
              12px max(16px, env(safe-area-inset-left));
 }
 
-/* Durante la rotazione OS: solo colore pieno (niente card/pagina visibile) */
+/* Durante la rotazione OS: un solo colore pieno (= chrome sito, niente spacco) */
 .gadly-orient-lock.gadly-orient-lock--layouting {
     opacity: 1 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+body.dark-mode .gadly-orient-lock.gadly-orient-lock--layouting {
+    background: #0f0f23 !important;
+    background-color: #0f0f23 !important;
+    background-image: none !important;
+}
+
+body.warm-tone:not(.dark-mode) .gadly-orient-lock.gadly-orient-lock--layouting {
+    background: #fff8ec !important;
+    background-color: #fff8ec !important;
+    background-image: none !important;
+}
+
+body.dark-mode.warm-tone .gadly-orient-lock.gadly-orient-lock--layouting {
+    background: #26201c !important;
+    background-color: #26201c !important;
     background-image: none !important;
 }
 
@@ -314,7 +334,7 @@ html.gadly-orient-settling body {
     overflow: hidden !important;
     touch-action: none !important;
     overscroll-behavior: none;
-    background-color: #f4f6fa !important;
+    background-color: #ffffff !important;
     background-image: none !important;
 }
 
@@ -324,15 +344,18 @@ html.gadly-orient-locked:has(body.dark-mode) body,
 html.gadly-orient-settling body.dark-mode,
 html.gadly-orient-settling:has(body.dark-mode),
 html.gadly-orient-settling:has(body.dark-mode) body {
-    background-color: #0f172a !important;
+    background-color: #0f0f23 !important;
     background-image: none !important;
 }
 
-html.gadly-orient-locked body.is-drose-brand:not(.dark-mode),
-html.gadly-orient-locked body.drose-page:not(.dark-mode),
-html.gadly-orient-settling body.is-drose-brand:not(.dark-mode),
-html.gadly-orient-settling body.drose-page:not(.dark-mode) {
-    background-color: #f8fafc !important;
+html.gadly-orient-locked body.warm-tone:not(.dark-mode),
+html.gadly-orient-settling body.warm-tone:not(.dark-mode) {
+    background-color: #fff8ec !important;
+}
+
+html.gadly-orient-locked body.dark-mode.warm-tone,
+html.gadly-orient-settling body.dark-mode.warm-tone {
+    background-color: #26201c !important;
 }
 
 @media (orientation: landscape) and (max-height: 600px) {

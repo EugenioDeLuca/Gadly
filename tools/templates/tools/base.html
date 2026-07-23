@@ -89,11 +89,11 @@
             var color;
             if (orientLocked) {
                 if (isDark) {
-                    color = '#0f172a';
-                } else if (body && (body.classList.contains('is-drose-brand') || body.classList.contains('drose-page'))) {
-                    color = '#f8fafc';
+                    color = isWarm ? '#26201c' : '#0f0f23';
+                } else if (isWarm) {
+                    color = '#fff8ec';
                 } else {
-                    color = '#f4f6fa';
+                    color = '#ffffff';
                 }
             } else if (isDark) {
                 color = isWarm ? '#26201c' : '#0f0f23';
@@ -1736,7 +1736,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=14">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=15">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2483,7 +2483,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=10"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=12"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
