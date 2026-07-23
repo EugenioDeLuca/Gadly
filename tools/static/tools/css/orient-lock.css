@@ -1,4 +1,6 @@
-/* Mobile only: overlay quando il telefono è in landscape. Desktop: mai. */
+/* Mobile only: overlay in landscape. Desktop: mai.
+   Nota: in landscape la *width* del telefono spesso supera 768px,
+   quindi usiamo max-height (lato corto) invece di max-width. */
 .gadly-orient-lock {
     position: fixed;
     inset: 0;
@@ -146,7 +148,8 @@
     font-family: Arial, sans-serif;
 }
 
-@media (max-width: 768px) and (orientation: landscape) {
+/* Telefono in landscape: altezza = lato corto (~300–500px). */
+@media (orientation: landscape) and (max-height: 600px) {
     .gadly-orient-lock {
         display: flex !important;
     }
@@ -159,7 +162,8 @@
     }
 }
 
-@media (min-width: 769px) {
+/* Desktop (mouse): mai, anche se la finestra è bassa */
+@media (hover: hover) and (pointer: fine) {
     .gadly-orient-lock {
         display: none !important;
         pointer-events: none !important;
