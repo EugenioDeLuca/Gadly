@@ -98,18 +98,18 @@
         if (el) el.classList.remove('gadly-orient-lock--layouting');
     }
 
-    function holdOverlayLayout() {
+    function holdOverlayLayout(ms) {
         var el = lockEl();
         if (!el) return;
         el.classList.add('gadly-orient-lock--layouting');
         if (revealTimer) clearTimeout(revealTimer);
-        /* Aspetta che width/height post-rotate si stabilizzino, poi mostra già centrato */
+        /* Solo colore pieno finché finisce la rotazione OS, poi compare la card */
         revealTimer = setTimeout(function () {
             revealTimer = null;
             requestAnimationFrame(function () {
                 requestAnimationFrame(revealOverlay);
             });
-        }, 50);
+        }, typeof ms === 'number' ? ms : 360);
     }
 
     function finishUnlock() {
@@ -146,22 +146,26 @@
 
         if (on) {
             var wasLocked = locked || root.classList.contains('gadly-orient-locked');
+            var el = lockEl();
+            var holding = !!(el && el.classList.contains('gadly-orient-lock--layouting'));
             if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
             root.classList.add('gadly-orient-locked');
             root.classList.remove('gadly-orient-settling');
             paintLockedChrome();
             locked = true;
-            if (!wasLocked) holdOverlayLayout();
-            else revealOverlay();
+            if (!wasLocked) holdOverlayLayout(360);
+            else if (!holding) revealOverlay();
             return;
         }
 
         if (!locked && !root.classList.contains('gadly-orient-locked')) return;
         if (unlockTimer) return;
 
+        /* In uscita: nascondi subito la card, tieni solo il colore pieno */
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
+        holdOverlayLayout(160);
         unlockTimer = setTimeout(finishUnlock, SETTLE_MS);
     }
 
@@ -180,10 +184,11 @@
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
-        holdOverlayLayout();
+        holdOverlayLayout(360);
         clearSettleTimers();
-        settleTimers.push(setTimeout(sync, 60));
-        settleTimers.push(setTimeout(sync, 200));
+        settleTimers.push(setTimeout(sync, 80));
+        settleTimers.push(setTimeout(sync, 280));
+        settleTimers.push(setTimeout(sync, 420));
     }
 
     function bind(m) {

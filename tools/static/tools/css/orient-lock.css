@@ -214,9 +214,16 @@ html.gadly-orient-settling .gadly-orient-lock {
              12px max(16px, env(safe-area-inset-left));
 }
 
-/* Durante il settle del viewport: niente flash a dimensione sbagliata */
+/* Durante la rotazione OS: solo colore pieno (niente card/pagina visibile) */
 .gadly-orient-lock.gadly-orient-lock--layouting {
+    opacity: 1 !important;
+    background-image: none !important;
+}
+
+.gadly-orient-lock.gadly-orient-lock--layouting .gadly-orient-lock__card {
     opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 html.gadly-orient-locked .gadly-orient-lock__card,
@@ -286,6 +293,18 @@ html.gadly-orient-settling body > *:not(.gadly-orient-lock) {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+}
+
+/* Forza via anche i layer compositi (riduce “pagina che ruota” nel frame OS) */
+html.gadly-orient-locked .site-header,
+html.gadly-orient-locked .site-main,
+html.gadly-orient-locked .site-footer,
+html.gadly-orient-locked .mobile-home-fab,
+html.gadly-orient-settling .site-header,
+html.gadly-orient-settling .site-main,
+html.gadly-orient-settling .site-footer,
+html.gadly-orient-settling .mobile-home-fab {
+    display: none !important;
 }
 
 html.gadly-orient-locked,
