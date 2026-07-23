@@ -25,7 +25,8 @@
     (function () {
         try {
             if (!window.matchMedia) return;
-            var landscape = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+            var landscape = window.matchMedia("(orientation: landscape) and (max-height: 1100px)").matches ||
+                (window.innerWidth > window.innerHeight && window.innerHeight <= 1100);
             var desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
             if (!landscape || desktop) return;
             var root = document.documentElement;
@@ -76,15 +77,15 @@
         opacity: 0 !important;
         pointer-events: none !important;
     }
-    html.gadly-orient-locked .site-header,
+    /* Evita flash del container bianco homepage in light mode al refresh */
+    html.gadly-orient-locked .container,
     html.gadly-orient-locked .site-main,
-    html.gadly-orient-locked .site-footer,
-    html.gadly-orient-locked .mobile-home-fab,
-    html.gadly-orient-settling .site-header,
+    html.gadly-orient-locked .site-header,
+    html.gadly-orient-settling .container,
     html.gadly-orient-settling .site-main,
-    html.gadly-orient-settling .site-footer,
-    html.gadly-orient-settling .mobile-home-fab {
+    html.gadly-orient-settling .site-header {
         display: none !important;
+        background: transparent !important;
     }
     html.gadly-orient-locked .gadly-orient-lock,
     html.gadly-orient-settling .gadly-orient-lock {
@@ -147,7 +148,7 @@
             var orientLocked = root.classList.contains('gadly-orient-locked');
             if (!orientLocked && window.matchMedia) {
                 try {
-                    orientLocked = window.matchMedia('(orientation: landscape) and (max-height: 600px)').matches &&
+                    orientLocked = window.matchMedia('(orientation: landscape) and (max-height: 1100px)').matches &&
                         !(window.matchMedia('(hover: hover) and (pointer: fine)').matches);
                 } catch (eOrient) {
                     orientLocked = false;
@@ -1810,7 +1811,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=17">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=18">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2557,7 +2558,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=14"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=15"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
@@ -3022,9 +3023,9 @@
         <h2 class="gadly-orient-lock__title" id="gadly-orient-title">{% trans "Rotate your phone" %}</h2>
         <p class="gadly-orient-lock__text" id="gadly-orient-desc">
             {% if is_drose_site %}
-            {% trans "Drose is designed for portrait mode. Rotate your device to continue." %}
+            {% trans "Drose is designed for portrait mode. Rotate your device to continue" %}
             {% else %}
-            {% trans "Gadly is designed for portrait mode. Rotate your device to continue." %}
+            {% trans "Gadly is designed for portrait mode. Rotate your device to continue" %}
             {% endif %}
         </p>
         <p class="gadly-orient-lock__hint">{% trans "Landscape mode is not supported" %}</p>

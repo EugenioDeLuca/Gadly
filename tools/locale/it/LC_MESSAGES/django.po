@@ -8440,12 +8440,12 @@ msgid "Rotate your phone"
 msgstr "Gira il telefono"
 
 #: .\tools\templates\tools\base.html
-msgid "Gadly is designed for portrait mode. Rotate your device to continue."
-msgstr "Gadly è pensato in verticale. Ruota il dispositivo per continuare."
+msgid "Gadly is designed for portrait mode. Rotate your device to continue"
+msgstr "Gadly è pensato in verticale. Ruota il dispositivo per continuare"
 
 #: .\tools\templates\tools\base.html
-msgid "Drose is designed for portrait mode. Rotate your device to continue."
-msgstr "Drose è pensato in verticale. Ruota il dispositivo per continuare."
+msgid "Drose is designed for portrait mode. Rotate your device to continue"
+msgstr "Drose è pensato in verticale. Ruota il dispositivo per continuare"
 
 #: .\tools\templates\tools\base.html
 msgid "Landscape mode is not supported"

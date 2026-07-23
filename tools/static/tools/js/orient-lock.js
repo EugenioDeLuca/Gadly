@@ -1,12 +1,14 @@
 /**
  * Mobile landscape: overlay "gira il telefono".
  * - Card nascosta mentre l'OS ruota (solo colore pieno).
+ * - Early lock da <head> + soglia altezza alta (evita unlock al refresh).
  * - Nessun unlock/velo se non eravamo in lock (evita flash al refresh in portrait).
  */
 (function () {
     if (!window.matchMedia) return;
 
-    var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
+    /* 1100: in landscape molti telefoni superano 600px e sbloccavano l'overlay al refresh */
+    var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 1100px)');
     var desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
     var locked = false;
     var unlocking = false;
@@ -14,8 +16,8 @@
     var settleTimers = [];
     var revealTimer = null;
     var booted = false;
+    var bootGraceUntil = 0;
     var UNLOCK_MS = 160;
-    /* Card il prima possibile dopo il velo anti-flash */
     var REVEAL_AFTER_LOCK_MS = 70;
     var ROTATE_COVER_MS = 50;
 
@@ -24,7 +26,14 @@
     }
 
     function wantsLock() {
-        return phoneLandscape.matches && !isDesktop();
+        if (isDesktop()) return false;
+        if (phoneLandscape.matches) return true;
+        /* Fallback: width>height e altezza ancora “telefono” */
+        try {
+            return window.innerWidth > window.innerHeight && window.innerHeight <= 1100;
+        } catch (e) {
+            return false;
+        }
     }
 
     function isActiveLock() {
@@ -49,7 +58,6 @@
         }
     }
 
-    /* Stesso colore di gadlySyncViewportChrome: evita lo “spacco” di due blu/grigi in rotazione */
     function overlayChromeColor() {
         if (isDark()) return isWarm() ? '#26201c' : '#0f0f23';
         if (isWarm()) return '#fff8ec';
@@ -156,7 +164,7 @@
         unlockTimer = null;
         if (wantsLock()) {
             unlocking = false;
-            beginLock(80);
+            beginLock(0);
             return;
         }
         root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
@@ -170,9 +178,18 @@
     function beginUnlock() {
         var root = document.documentElement;
 
-        /* Critico: al refresh in portrait non eravamo in lock → non fare nulla */
         if (!isActiveLock()) {
             unlocking = false;
+            return;
+        }
+
+        /* Dopo refresh early-lock: non sbloccare per jitter di altezza */
+        if (Date.now() < bootGraceUntil && wantsLock()) {
+            beginLock(0);
+            return;
+        }
+        if (Date.now() < bootGraceUntil && window.__gadlyOrientEarlyLock) {
+            beginLock(0);
             return;
         }
 
@@ -197,7 +214,6 @@
         unlocking = true;
         veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
-        /* Stesso colore overlay: niente salto bianco/nero che “lampeggia” */
         paintLockedChrome();
         locked = true;
         unlockTimer = setTimeout(finishUnlock, UNLOCK_MS);
@@ -231,11 +247,6 @@
         if (isDesktop()) return;
         var root = document.documentElement;
 
-        /*
-         * Sempre copri SUBITO (anche portrait→landscape).
-         * A orientationchange phoneLandscape.matches è spesso ancora false:
-         * prima si faceva return e restava visibile la pagina sotto che ruotava.
-         */
         unlocking = false;
         if (unlockTimer) {
             clearTimeout(unlockTimer);
@@ -262,14 +273,16 @@
             if (isActiveLock()) beginUnlock();
             return;
         }
-        /*
-         * Durante la rotazione il resize arriva a metà: se l'altezza è già “corta”
-         * o stiamo settling, tieni il velo invece di mostrare il contenuto.
-         */
         if (document.documentElement.classList.contains('gadly-orient-settling')) {
             veilCardOnly();
             paintLockedChrome();
             return;
+        }
+        if (Date.now() < bootGraceUntil) {
+            if (wantsLock() || window.__gadlyOrientEarlyLock) {
+                beginLock(0);
+                return;
+            }
         }
         if (wantsLock()) {
             beginLock(REVEAL_AFTER_LOCK_MS);
@@ -289,14 +302,13 @@
     function boot() {
         if (booted) return;
         booted = true;
-        /* Early lock da <head>: card subito. Altrimenti solo se già landscape. */
         if (wantsLock() || window.__gadlyOrientEarlyLock ||
             document.documentElement.classList.contains('gadly-orient-locked')) {
+            bootGraceUntil = Date.now() + 1200;
             beginLock(0);
         }
     }
 
-    /* Overlay è nel DOM dopo questo script: aspetta DOMContentLoaded */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', boot);
     } else {

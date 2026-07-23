@@ -7879,11 +7879,11 @@ msgid "Rotate your phone"
 msgstr ""
 
 #: .\tools\templates\tools\base.html
-msgid "Gadly is designed for portrait mode. Rotate your device to continue."
+msgid "Gadly is designed for portrait mode. Rotate your device to continue"
 msgstr ""
 
 #: .\tools\templates\tools\base.html
-msgid "Drose is designed for portrait mode. Rotate your device to continue."
+msgid "Drose is designed for portrait mode. Rotate your device to continue"
 msgstr ""
 
 #: .\tools\templates\tools\base.html

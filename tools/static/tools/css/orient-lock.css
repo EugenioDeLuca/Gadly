@@ -358,7 +358,7 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     background-color: #26201c !important;
 }
 
-@media (orientation: landscape) and (max-height: 600px) {
+@media (orientation: landscape) and (max-height: 1100px) {
     .gadly-orient-lock {
         display: flex !important;
     }
