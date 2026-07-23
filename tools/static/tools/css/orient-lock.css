@@ -205,7 +205,48 @@ body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__hint {
     color: rgba(239, 68, 68, 0.9);
 }
 
-/* Telefono in landscape */
+/* Telefono in landscape OPPURE lock JS (anche durante l'animazione di rotazione) */
+html.gadly-orient-locked .gadly-orient-lock,
+html.gadly-orient-settling .gadly-orient-lock {
+    display: flex !important;
+}
+
+/* Nasconde la pagina sotto: niente flash dei bottoni durante la rotazione */
+html.gadly-orient-locked body > *:not(.gadly-orient-lock),
+html.gadly-orient-settling body > *:not(.gadly-orient-lock) {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+html.gadly-orient-locked,
+html.gadly-orient-locked body,
+html.gadly-orient-settling,
+html.gadly-orient-settling body {
+    overflow: hidden !important;
+    touch-action: none !important;
+    overscroll-behavior: none;
+    background-color: #f4f6fa !important;
+    background-image: none !important;
+}
+
+html.gadly-orient-locked body.dark-mode,
+html.gadly-orient-locked:has(body.dark-mode),
+html.gadly-orient-locked:has(body.dark-mode) body,
+html.gadly-orient-settling body.dark-mode,
+html.gadly-orient-settling:has(body.dark-mode),
+html.gadly-orient-settling:has(body.dark-mode) body {
+    background-color: #0f172a !important;
+    background-image: none !important;
+}
+
+html.gadly-orient-locked body.is-drose-brand:not(.dark-mode),
+html.gadly-orient-locked body.drose-page:not(.dark-mode),
+html.gadly-orient-settling body.is-drose-brand:not(.dark-mode),
+html.gadly-orient-settling body.drose-page:not(.dark-mode) {
+    background-color: #f8fafc !important;
+}
+
 @media (orientation: landscape) and (max-height: 600px) {
     .gadly-orient-lock {
         display: flex !important;
@@ -263,28 +304,6 @@ body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__hint {
     .gadly-orient-lock__hint {
         margin: 12px 0 0;
         font-size: 0.8rem;
-    }
-
-    html.gadly-orient-locked,
-    html.gadly-orient-locked body {
-        overflow: hidden !important;
-        touch-action: none !important;
-        overscroll-behavior: none;
-        /* Solo fix striscia: stesso colore dell'overlay sotto theme-color / overscroll */
-        background-color: #f4f6fa !important;
-        background-image: none !important;
-    }
-
-    html.gadly-orient-locked body.dark-mode,
-    html.gadly-orient-locked:has(body.dark-mode),
-    html.gadly-orient-locked:has(body.dark-mode) body {
-        background-color: #0f172a !important;
-        background-image: none !important;
-    }
-
-    html.gadly-orient-locked body.is-drose-brand:not(.dark-mode),
-    html.gadly-orient-locked body.drose-page:not(.dark-mode) {
-        background-color: #f8fafc !important;
     }
 }
 

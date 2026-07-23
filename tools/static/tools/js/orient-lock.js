@@ -2,7 +2,7 @@
  * Mobile landscape: blocca scroll sotto l'overlay "gira il telefono".
  * Desktop: non fa nulla.
  * Usa max-height (non max-width): in landscape i telefoni superano spesso 768px di width.
- * Allinea anche theme-color / html background all'overlay (evita striscia bianca/nera).
+ * Durante orientationchange tiene l'overlay acceso un attimo (niente flash del contenuto sotto).
  */
 (function () {
     if (!window.matchMedia) return;
@@ -10,6 +10,17 @@
     var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
     var desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
     var locked = false;
+    var unlockTimer = null;
+    var settleTimers = [];
+    var SETTLE_MS = 650;
+
+    function isDesktop() {
+        return desktopPointer.matches;
+    }
+
+    function wantsLock() {
+        return phoneLandscape.matches && !isDesktop();
+    }
 
     function isDark() {
         return !!(document.body && document.body.classList.contains('dark-mode'));
@@ -72,16 +83,70 @@
         }
     }
 
-    function sync() {
-        var on = phoneLandscape.matches && !desktopPointer.matches;
-        document.documentElement.classList.toggle('gadly-orient-locked', on);
+    function clearSettleTimers() {
+        settleTimers.forEach(function (id) { clearTimeout(id); });
+        settleTimers = [];
+    }
+
+    function setLocked(on, opts) {
+        opts = opts || {};
+        var root = document.documentElement;
+        if (isDesktop()) {
+            if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
+            clearSettleTimers();
+            root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
+            if (locked) {
+                locked = false;
+                restoreChrome();
+            }
+            return;
+        }
+
         if (on) {
+            if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
+            root.classList.add('gadly-orient-locked');
+            if (!opts.keepSettling) root.classList.remove('gadly-orient-settling');
             paintLockedChrome();
             locked = true;
-        } else if (locked) {
+            return;
+        }
+
+        if (!locked && !root.classList.contains('gadly-orient-locked')) return;
+
+        /* Uscita: tieni overlay + nascondi contenuto finché finisce l'animazione OS */
+        root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
+        paintLockedChrome();
+        locked = true;
+        if (unlockTimer) clearTimeout(unlockTimer);
+        unlockTimer = setTimeout(function () {
+            unlockTimer = null;
+            if (wantsLock()) {
+                root.classList.remove('gadly-orient-settling');
+                paintLockedChrome();
+                locked = true;
+                return;
+            }
+            root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
             locked = false;
             restoreChrome();
-        }
+        }, SETTLE_MS);
+    }
+
+    function sync() {
+        if (wantsLock()) setLocked(true);
+        else setLocked(false);
+    }
+
+    function coverDuringRotate() {
+        if (isDesktop()) return;
+        var root = document.documentElement;
+        root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
+        paintLockedChrome();
+        locked = true;
+        clearSettleTimers();
+        settleTimers.push(setTimeout(sync, 80));
+        settleTimers.push(setTimeout(sync, 320));
+        settleTimers.push(setTimeout(sync, 700));
     }
 
     function bind(m) {
@@ -96,12 +161,8 @@
     bind(phoneLandscape);
     bind(desktopPointer);
     window.addEventListener('resize', sync, { passive: true });
-    window.addEventListener('orientationchange', function () {
-        setTimeout(sync, 50);
-        setTimeout(sync, 300);
-    });
+    window.addEventListener('orientationchange', coverDuringRotate);
 
-    /* Se l'utente cambia tema mentre è in landscape lock, aggiorna la chrome */
     try {
         var mo = new MutationObserver(function () {
             if (document.documentElement.classList.contains('gadly-orient-locked')) {
