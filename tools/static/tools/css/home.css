@@ -302,15 +302,15 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
     text-decoration: none;
     text-align: left;
     border-radius: 14px;
-    /* Light: cielo chiaro per contrasto col font ambra (invariato) */
+    /* Light: cielo caldo ambra (non blu Gadly) + testo ambra */
     border: 2px solid #b45309;
-    background-color: #9ec0e0;
+    background-color: #f0c58a;
     background-image: linear-gradient(
         165deg,
-        #c5daf0 0%,
-        #b0cce8 35%,
-        #9abbdc 70%,
-        #8aadd0 100%
+        #fff1d6 0%,
+        #f8d9a4 35%,
+        #efc07a 70%,
+        #e4ad5e 100%
     );
     color: #92400e;
     box-shadow: none;
@@ -1164,13 +1164,13 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     body.homepage .site-main .home-drose-entry__link.tap-active {
         transform: none !important;
         filter: none !important;
-        background-color: #9ec0e0 !important;
+        background-color: #f0c58a !important;
         background-image: linear-gradient(
             165deg,
-            #c5daf0 0%,
-            #b0cce8 35%,
-            #9abbdc 70%,
-            #8aadd0 100%
+            #fff1d6 0%,
+            #f8d9a4 35%,
+            #efc07a 70%,
+            #e4ad5e 100%
         ) !important;
         border-color: #b45309 !important;
         color: #92400e !important;
