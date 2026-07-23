@@ -20,6 +20,80 @@
         } catch (eAndroidEarly) { /* ignore */ }
     })();
     </script>
+    <script>
+    /* Landscape phone: blocca FOUC al refresh PRIMA del first paint */
+    (function () {
+        try {
+            if (!window.matchMedia) return;
+            var landscape = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+            var desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+            if (!landscape || desktop) return;
+            var root = document.documentElement;
+            var dark = false;
+            var warm = false;
+            try {
+                var theme = localStorage.getItem("gadly-theme");
+                dark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                warm = localStorage.getItem("gadly-warm-tone") === "1";
+            } catch (eLs) {}
+            var color = dark ? (warm ? "#26201c" : "#0f0f23") : (warm ? "#fff8ec" : "#ffffff");
+            root.classList.add("gadly-orient-locked", "gadly-orient-settling");
+            root.dataset.theme = dark ? "dark" : "light";
+            if (warm) root.classList.add(dark ? "gadly-warm-dark" : "gadly-warm-light");
+            root.style.setProperty("background-color", color, "important");
+            root.style.setProperty("background-image", "none", "important");
+            window.__gadlyOrientEarlyLock = true;
+        } catch (eOrientEarly) { /* ignore */ }
+    })();
+    </script>
+    <style id="gadly-orient-lock-critical">
+    html.gadly-orient-locked,
+    html.gadly-orient-settling {
+        background-color: #ffffff !important;
+        background-image: none !important;
+    }
+    html.gadly-orient-locked[data-theme="dark"],
+    html.gadly-orient-settling[data-theme="dark"] {
+        background-color: #0f0f23 !important;
+    }
+    html.gadly-orient-locked.gadly-warm-light,
+    html.gadly-orient-settling.gadly-warm-light {
+        background-color: #fff8ec !important;
+    }
+    html.gadly-orient-locked.gadly-warm-dark,
+    html.gadly-orient-settling.gadly-warm-dark {
+        background-color: #26201c !important;
+    }
+    html.gadly-orient-locked body,
+    html.gadly-orient-settling body {
+        background-color: inherit !important;
+        background-image: none !important;
+        overflow: hidden !important;
+    }
+    html.gadly-orient-locked body > *:not(.gadly-orient-lock),
+    html.gadly-orient-settling body > *:not(.gadly-orient-lock) {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    html.gadly-orient-locked .site-header,
+    html.gadly-orient-locked .site-main,
+    html.gadly-orient-locked .site-footer,
+    html.gadly-orient-locked .mobile-home-fab,
+    html.gadly-orient-settling .site-header,
+    html.gadly-orient-settling .site-main,
+    html.gadly-orient-settling .site-footer,
+    html.gadly-orient-settling .mobile-home-fab {
+        display: none !important;
+    }
+    html.gadly-orient-locked .gadly-orient-lock,
+    html.gadly-orient-settling .gadly-orient-lock {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+    </style>
     <style id="gadly-drose-entry-critical">
     @media (min-width: 769px) {
         html:not(.drose-layout-ready) .drose-float-entry,
@@ -1736,7 +1810,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=15">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=16">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {

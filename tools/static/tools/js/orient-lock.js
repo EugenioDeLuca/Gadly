@@ -289,12 +289,14 @@
     function boot() {
         if (booted) return;
         booted = true;
-        /* Solo se siamo già in landscape: altrimenti zero side-effect (niente flash refresh) */
-        if (wantsLock()) {
-            beginLock(REVEAL_AFTER_LOCK_MS);
+        /* Early lock da <head>: card subito. Altrimenti solo se già landscape. */
+        if (wantsLock() || window.__gadlyOrientEarlyLock ||
+            document.documentElement.classList.contains('gadly-orient-locked')) {
+            beginLock(0);
         }
     }
 
+    /* Overlay è nel DOM dopo questo script: aspetta DOMContentLoaded */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', boot);
     } else {
