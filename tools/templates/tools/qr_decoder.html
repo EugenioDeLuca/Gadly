@@ -26,7 +26,7 @@
 .qr-decoder .result-wrap textarea { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 16px; font-size: 1.05rem; font-weight: 600; font-family: Arial, sans-serif; color: #003f7f; background: #fff; border: 2px solid #d0e8f9; border-radius: 12px; resize: vertical; line-height: 1.55; }
 .qr-decoder .result-wrap textarea:focus { outline: none; border-color: #d0e8f9; }
 .qr-decoder .result-wrap .btn-copy-wrap { text-align: center; margin-top: 10px; margin-bottom: 8px; }
-.qr-decoder .btn-copy { padding: 12px 32px; min-width: 140px; font-size: 1rem; font-weight: 600; background: #003f7f; color: white; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s; }
+.qr-decoder .btn-copy { padding: 12px 32px; min-width: 140px; font-size: 1rem; font-weight: 600; background: #003f7f; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s, transform 0.2s; }
 .qr-decoder .btn-copy:hover { background: #0056b3; transform: scale(1.05); }
 .qr-decoder .btn-copy.copied { background: #dc3545; }
 .qr-decoder .btn-copy.copied:hover { background: #e74c3c; }
@@ -532,5 +532,5 @@ body.dark-mode .qr-decoder .msg.error {
 </div>
 <canvas id="qr-canvas" style="display: none;"></canvas>
 <script src="{% static 'tools/js/jsQR.min.js' %}"></script>
-<script src="{% static 'tools/js/qr-decoder.js' %}?v=20260722a"></script>
+<script src="{% static 'tools/js/qr-decoder.js' %}?v=20260722c"></script>
 {% endblock %}

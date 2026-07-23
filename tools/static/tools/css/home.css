@@ -282,7 +282,7 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
     margin-bottom: 24px;
 }
 
-/* Gadly home → Drose: pill ambra separata dai tool (mobile; desktop ha già il float). */
+/* Gadly home → Drose: pill (mobile; desktop ha già il float). */
 .homepage .home-drose-entry {
     display: block;
     margin: 0 0 24px;
@@ -290,6 +290,9 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
 }
 
 .homepage .home-drose-entry__link {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 14px;
@@ -299,21 +302,68 @@ html.gadly-has-shortcuts body.homepage .container .shortcuts-section .shortcuts-
     text-decoration: none;
     text-align: left;
     border-radius: 14px;
+    /* Light: cielo chiaro per contrasto col font ambra (invariato) */
     border: 2px solid #b45309;
-    background: linear-gradient(135deg, #fff8eb 0%, #ffefd1 100%);
+    background-color: #9ec0e0;
+    background-image: linear-gradient(
+        165deg,
+        #c5daf0 0%,
+        #b0cce8 35%,
+        #9abbdc 70%,
+        #8aadd0 100%
+    );
     color: #92400e;
-    box-shadow: 0 8px 22px rgba(180, 83, 9, 0.12);
+    box-shadow: none;
     transition: transform 0.2s ease;
     box-sizing: border-box;
-    /* Mobile: evita callout/selezione testo su long-press che lascia la UI “morta”. */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     user-select: none;
     -webkit-user-select: none;
 }
 
+/* Stelle bianche, dimensioni miste (light + dark) */
+.homepage .home-drose-entry__link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 1;
+    background-image:
+        radial-gradient(0.7px 0.7px at 6% 16%, #fff 0%, transparent 100%),
+        radial-gradient(1.8px 1.8px at 14% 58%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 22% 28%, rgba(255, 255, 255, 0.95) 0%, transparent 100%),
+        radial-gradient(2.4px 2.4px at 31% 74%, #fff 0%, transparent 100%),
+        radial-gradient(0.8px 0.8px at 38% 12%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 47% 46%, #fff 0%, transparent 100%),
+        radial-gradient(0.9px 0.9px at 55% 82%, rgba(255, 255, 255, 0.85) 0%, transparent 100%),
+        radial-gradient(2.1px 2.1px at 63% 22%, #fff 0%, transparent 100%),
+        radial-gradient(1.1px 1.1px at 71% 64%, rgba(255, 255, 255, 0.95) 0%, transparent 100%),
+        radial-gradient(0.75px 0.75px at 78% 38%, #fff 0%, transparent 100%),
+        radial-gradient(2.6px 2.6px at 86% 78%, #fff 0%, transparent 100%),
+        radial-gradient(1.3px 1.3px at 92% 18%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+        radial-gradient(0.85px 0.85px at 11% 88%, #fff 0%, transparent 100%),
+        radial-gradient(1.7px 1.7px at 42% 36%, rgba(255, 255, 255, 0.95) 0%, transparent 100%),
+        radial-gradient(1px 1px at 58% 8%, #fff 0%, transparent 100%),
+        radial-gradient(2px 2px at 68% 92%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+        radial-gradient(0.7px 0.7px at 84% 52%, #fff 0%, transparent 100%),
+        radial-gradient(1.4px 1.4px at 26% 48%, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
+}
+
+/* Light: stelle con alone leggero per restare visibili sul cielo chiaro */
+body.homepage:not(.dark-mode) .home-drose-entry__link::before {
+    filter: drop-shadow(0 0 0.6px rgba(255, 255, 255, 0.9));
+    opacity: 0.95;
+}
+
+.homepage .home-drose-entry__link > * {
+    position: relative;
+    z-index: 1;
+}
+
 .homepage .home-drose-entry__link:is(:hover, :focus-visible) {
-    /* Solo focus outline se serve; niente cambio colore (pill è mobile-only). */
     outline: none;
 }
 
@@ -364,6 +414,7 @@ body.dark-mode.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
     line-height: 1.35;
     color: #78350f;
     -webkit-text-fill-color: #78350f;
+    opacity: 1;
 }
 
 .homepage .home-drose-entry__chevron {
@@ -375,9 +426,14 @@ body.dark-mode.homepage .home-drose-entry__link:is(:hover, :focus-visible) {
 }
 
 body.dark-mode.homepage .home-drose-entry__link {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%);
     border-color: #fbbf24;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    background-color: transparent;
+    background-image: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%);
+    box-shadow: none;
+}
+
+body.dark-mode.homepage .home-drose-entry__link::before {
+    opacity: 1;
 }
 
 body.dark-mode.homepage .home-drose-entry__title {
@@ -1108,15 +1164,23 @@ body.dark-mode.homepage .home-drose-entry__chevron {
     body.homepage .site-main .home-drose-entry__link.tap-active {
         transform: none !important;
         filter: none !important;
-        background: linear-gradient(135deg, #fff8eb 0%, #ffefd1 100%) !important;
+        background-color: #9ec0e0 !important;
+        background-image: linear-gradient(
+            165deg,
+            #c5daf0 0%,
+            #b0cce8 35%,
+            #9abbdc 70%,
+            #8aadd0 100%
+        ) !important;
         border-color: #b45309 !important;
         color: #92400e !important;
-        box-shadow: 0 8px 22px rgba(180, 83, 9, 0.12) !important;
+        box-shadow: none !important;
     }
     body.dark-mode.homepage .site-main .home-drose-entry__link.tap-active {
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%) !important;
+        background-color: transparent !important;
+        background-image: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(251, 191, 36, 0.06) 100%) !important;
         border-color: #fbbf24 !important;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28) !important;
+        box-shadow: none !important;
     }
     body.homepage .site-main .home-drose-entry__link.tap-active .home-drose-entry__icon,
     body.homepage .site-main .home-drose-entry__link.tap-active .home-drose-entry__text,

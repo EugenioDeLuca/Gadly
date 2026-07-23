@@ -115,6 +115,14 @@
         transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s;
     }
 
+    /* Click → Drose: label piena fino al page swap (niente freeze a metà fade). */
+    .drose-float-entry.is-drone-navigating .drose-float-entry__label {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(-50%) translateY(0) !important;
+        transition: none !important;
+    }
+
     .drose-float-entry__label-brand,
     .drose-float-entry__label-tagline {
         color: var(--drose-label-color, #b45309);

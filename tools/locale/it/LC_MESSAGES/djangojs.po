@@ -768,8 +768,8 @@ msgid "Decoding library not loaded. Refresh the page and try again."
 msgstr "Libreria di decodifica non caricata. Aggiorna la pagina e riprova."
 
 #: .\tools\static\tools\js\qr-decoder.js:83
-msgid "QR code read successfully."
-msgstr "QR code letto con successo."
+msgid "QR code read successfully"
+msgstr "QR code letto con successo"
 
 #: .\tools\static\tools\js\qr-decoder.js:85
 msgid "No QR code found in this image."

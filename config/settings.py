@@ -88,13 +88,30 @@ if not DEBUG:
 
 
 # Django admin path (secret in production via env). Default "admin/" for local dev.
-# Set GADLY_ADMIN_URL (or DJANGO_ADMIN_URL) on Render, e.g. gadly-ops-8f3a — no leading slash.
-_admin_url = (
+# Set GADLY_ADMIN_URL (or DJANGO_ADMIN_URL) on Render to ONLY the path segment,
+# e.g. gadly-ops-8f3a — NOT https://www.gadly.it/... and no leading slash.
+def _normalize_admin_url(raw: str) -> str:
+    value = (raw or "").strip().strip("'\"")
+    if not value:
+        return "admin"
+    # Accetta per errore un URL intero incollato dalla dashboard.
+    if "://" in value:
+        value = value.split("://", 1)[1]
+    if "/" in value:
+        # host/path/... → ultimo segmento utile, o path dopo il dominio
+        parts = [p for p in value.split("/") if p]
+        if parts and "." in parts[0]:
+            parts = parts[1:]
+        value = parts[0] if parts else "admin"
+    return value.strip().strip("/") or "admin"
+
+
+_admin_url = _normalize_admin_url(
     os.environ.get("GADLY_ADMIN_URL")
     or os.environ.get("DJANGO_ADMIN_URL")
     or "admin"
-).strip().strip("/")
-ADMIN_URL = f"{_admin_url}/" if _admin_url else "admin/"
+)
+ADMIN_URL = f"{_admin_url}/"
 
 
 # Application definition

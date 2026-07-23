@@ -288,15 +288,38 @@
         });
 
         entry.addEventListener('click', function () {
+            /* Navigazione verso Drose: non avviare il fade della label (resterebbe
+               mezza trasparente nel frame congelato del page swap). */
+            cancelLabelHold();
+            setDroneLabelVisible(true);
+            entry.classList.add('is-drone-navigating');
             if (phase !== 'idle') {
-                abortSpinInstant();
+                stopLoop();
+                cancelCruiseTimer();
+                phase = 'idle';
+                speed = 0;
+                lastTs = 0;
+                cruiseEndAt = 0;
+                startedThisHover = false;
+                blockSpinUntilLeave = true;
+                angle = ((angle % 360) + 360) % 360;
+                applyTransform();
+                saveSpinState();
             }
         });
 
         window.addEventListener('pagehide', function () {
             saveLayoutLeft();
             if (phase !== 'idle') {
-                abortSpinInstant();
+                stopLoop();
+                cancelCruiseTimer();
+                phase = 'idle';
+                speed = 0;
+                lastTs = 0;
+                cruiseEndAt = 0;
+                angle = ((angle % 360) + 360) % 360;
+                applyTransform();
+                saveSpinState();
                 return;
             }
             saveSpinState();

@@ -760,7 +760,7 @@ msgid "Decoding library not loaded. Refresh the page and try again."
 msgstr ""
 
 #: .\tools\static\tools\js\qr-decoder.js:83
-msgid "QR code read successfully."
+msgid "QR code read successfully"
 msgstr ""
 
 #: .\tools\static\tools\js\qr-decoder.js:85

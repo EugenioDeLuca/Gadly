@@ -40,9 +40,19 @@
         }
     }
 
+    function isMobileQrDecoder() {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    /** Desktop: block (layout originale). Mobile: flex (colonna centrata). */
+    function resultWrapDisplay(on) {
+        if (!on) return 'none';
+        return isMobileQrDecoder() ? 'flex' : 'block';
+    }
+
     function showResult(text) {
         decodedText.value = text || '';
-        resultWrap.style.display = text ? 'flex' : 'none';
+        resultWrap.style.display = resultWrapDisplay(!!text);
     }
 
     input.addEventListener('change', function () {
@@ -79,8 +89,7 @@
                     var code = jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
                     if (code && code.data) {
                         showResult(code.data);
-                        resultWrap.style.display = 'flex';
-                        showMessage(gettext('QR code read successfully.'), false, true);
+                        showMessage(gettext('QR code read successfully'), false, true);
                     } else {
                         showMessage(gettext('No QR code found in this image.'), true);
                     }
@@ -136,7 +145,7 @@
             function onCopyDone() {
                 btnCopy.classList.add('copied');
                 btnCopy.textContent = gettext('Copied!');
-                if (window.matchMedia('(max-width: 768px)').matches) {
+                if (isMobileQrDecoder()) {
                     requestAnimationFrame(function () {
                         btnCopy.blur();
                         setTimeout(function () { btnCopy.blur(); }, 0);
@@ -164,7 +173,7 @@
             document.execCommand('copy');
             btnCopy.classList.add('copied');
             btnCopy.textContent = gettext('Copied!');
-            if (window.matchMedia('(max-width: 768px)').matches) {
+            if (isMobileQrDecoder()) {
                 requestAnimationFrame(function () {
                     btnCopy.blur();
                     setTimeout(function () { btnCopy.blur(); }, 0);
