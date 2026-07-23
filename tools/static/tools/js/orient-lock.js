@@ -2,7 +2,7 @@
  * Mobile landscape: blocca scroll sotto l'overlay "gira il telefono".
  * Desktop: non fa nulla.
  * Usa max-height (non max-width): in landscape i telefoni superano spesso 768px di width.
- * Durante orientationchange tiene l'overlay acceso un attimo (niente flash del contenuto sotto).
+ * Durante orientationchange copre il flash; in uscita sblocca presto (senza restare appiccicato).
  */
 (function () {
     if (!window.matchMedia) return;
@@ -12,7 +12,8 @@
     var locked = false;
     var unlockTimer = null;
     var settleTimers = [];
-    var SETTLE_MS = 650;
+    /* Breve: abbastanza per l'animazione OS, non resta dopo il ritorno in portrait */
+    var SETTLE_MS = 180;
 
     function isDesktop() {
         return desktopPointer.matches;
@@ -88,8 +89,22 @@
         settleTimers = [];
     }
 
-    function setLocked(on, opts) {
-        opts = opts || {};
+    function finishUnlock() {
+        var root = document.documentElement;
+        unlockTimer = null;
+        if (wantsLock()) {
+            root.classList.add('gadly-orient-locked');
+            root.classList.remove('gadly-orient-settling');
+            paintLockedChrome();
+            locked = true;
+            return;
+        }
+        root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
+        locked = false;
+        restoreChrome();
+    }
+
+    function setLocked(on) {
         var root = document.documentElement;
         if (isDesktop()) {
             if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
@@ -105,7 +120,7 @@
         if (on) {
             if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
             root.classList.add('gadly-orient-locked');
-            if (!opts.keepSettling) root.classList.remove('gadly-orient-settling');
+            root.classList.remove('gadly-orient-settling');
             paintLockedChrome();
             locked = true;
             return;
@@ -113,23 +128,13 @@
 
         if (!locked && !root.classList.contains('gadly-orient-locked')) return;
 
-        /* Uscita: tieni overlay + nascondi contenuto finché finisce l'animazione OS */
+        /* Già in unlock: non riavviare il timer (altrimenti resta troppo a lungo) */
+        if (unlockTimer) return;
+
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
-        if (unlockTimer) clearTimeout(unlockTimer);
-        unlockTimer = setTimeout(function () {
-            unlockTimer = null;
-            if (wantsLock()) {
-                root.classList.remove('gadly-orient-settling');
-                paintLockedChrome();
-                locked = true;
-                return;
-            }
-            root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
-            locked = false;
-            restoreChrome();
-        }, SETTLE_MS);
+        unlockTimer = setTimeout(finishUnlock, SETTLE_MS);
     }
 
     function sync() {
@@ -140,13 +145,17 @@
     function coverDuringRotate() {
         if (isDesktop()) return;
         var root = document.documentElement;
+        /* Copri subito il flash OS; poi sync decide lock/unlock senza allungare all'infinito */
+        if (unlockTimer) {
+            clearTimeout(unlockTimer);
+            unlockTimer = null;
+        }
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
         clearSettleTimers();
-        settleTimers.push(setTimeout(sync, 80));
-        settleTimers.push(setTimeout(sync, 320));
-        settleTimers.push(setTimeout(sync, 700));
+        settleTimers.push(setTimeout(sync, 60));
+        settleTimers.push(setTimeout(sync, 200));
     }
 
     function bind(m) {
