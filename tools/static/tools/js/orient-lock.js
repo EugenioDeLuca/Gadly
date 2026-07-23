@@ -1,8 +1,7 @@
 /**
- * Mobile landscape: blocca scroll sotto l'overlay "gira il telefono".
- * Desktop: non fa nulla.
- * Usa max-height (non max-width): in landscape i telefoni superano spesso 768px di width.
- * Layout hold breve: evita lo “scatto” quando il viewport finisce di ruotare.
+ * Mobile landscape: overlay "gira il telefono".
+ * Durante la rotazione OS: solo colore pieno (niente card) — evita la card inclinata.
+ * Animazione tilt del telefono: solo quando la card è già stabile in landscape.
  */
 (function () {
     if (!window.matchMedia) return;
@@ -10,10 +9,12 @@
     var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
     var desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
     var locked = false;
+    var unlocking = false;
     var unlockTimer = null;
     var settleTimers = [];
     var revealTimer = null;
-    var SETTLE_MS = 180;
+    var UNLOCK_MS = 320;
+    var ROTATE_COVER_MS = 380;
 
     function isDesktop() {
         return desktopPointer.matches;
@@ -42,6 +43,12 @@
         return '#f4f6fa';
     }
 
+    /* In uscita: colore vicino alla pagina, meno “flash” verso portrait */
+    function unlockVeilColor() {
+        if (isDark()) return '#0f0f23';
+        return '#ffffff';
+    }
+
     function setThemeColor(c) {
         var head = document.head;
         if (!head) return;
@@ -58,8 +65,7 @@
         });
     }
 
-    function paintLockedChrome() {
-        var c = overlayChromeColor();
+    function paintColor(c) {
         var root = document.documentElement;
         var body = document.body;
         root.style.setProperty('background-color', c, 'important');
@@ -69,9 +75,30 @@
             body.style.setProperty('background-image', 'none', 'important');
         }
         setThemeColor(c);
+        var el = lockEl();
+        if (el) {
+            el.style.setProperty('background-color', c, 'important');
+            el.style.setProperty('background-image', 'none', 'important');
+        }
+    }
+
+    function paintLockedChrome() {
+        paintColor(overlayChromeColor());
+    }
+
+    function paintUnlockVeil() {
+        paintColor(unlockVeilColor());
+    }
+
+    function clearInlineOverlayBg() {
+        var el = lockEl();
+        if (!el) return;
+        el.style.removeProperty('background-color');
+        el.style.removeProperty('background-image');
     }
 
     function restoreChrome() {
+        clearInlineOverlayBg();
         try {
             if (typeof window.gadlySyncViewportChrome === 'function') {
                 window.gadlySyncViewportChrome(isDark(), { forceResample: true });
@@ -93,21 +120,35 @@
         settleTimers = [];
     }
 
-    function revealOverlay() {
+    function revealCard() {
         var el = lockEl();
         if (el) el.classList.remove('gadly-orient-lock--layouting');
+        clearInlineOverlayBg();
+        paintLockedChrome();
     }
 
-    function holdOverlayLayout(ms) {
+    /* Nasconde la card e NON programma il reveal (per l’uscita) */
+    function veilCardOnly() {
+        var el = lockEl();
+        if (el) el.classList.add('gadly-orient-lock--layouting');
+        if (revealTimer) {
+            clearTimeout(revealTimer);
+            revealTimer = null;
+        }
+    }
+
+    /* Nasconde la card, poi la mostra solo se siamo ancora in landscape lock */
+    function veilThenReveal(ms) {
         var el = lockEl();
         if (!el) return;
         el.classList.add('gadly-orient-lock--layouting');
         if (revealTimer) clearTimeout(revealTimer);
-        /* Solo colore pieno finché finisce la rotazione OS, poi compare la card */
         revealTimer = setTimeout(function () {
             revealTimer = null;
+            if (unlocking || !wantsLock()) return;
+            if (!document.documentElement.classList.contains('gadly-orient-locked')) return;
             requestAnimationFrame(function () {
-                requestAnimationFrame(revealOverlay);
+                requestAnimationFrame(revealCard);
             });
         }, typeof ms === 'number' ? ms : 360);
     }
@@ -116,27 +157,32 @@
         var root = document.documentElement;
         unlockTimer = null;
         if (wantsLock()) {
+            unlocking = false;
             root.classList.add('gadly-orient-locked');
             root.classList.remove('gadly-orient-settling');
-            paintLockedChrome();
             locked = true;
-            revealOverlay();
+            paintLockedChrome();
+            veilThenReveal(60);
             return;
         }
         root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
-        revealOverlay();
+        var el = lockEl();
+        if (el) el.classList.remove('gadly-orient-lock--layouting');
         locked = false;
+        unlocking = false;
         restoreChrome();
     }
 
-    function setLocked(on) {
+    function beginUnlock() {
         var root = document.documentElement;
         if (isDesktop()) {
+            unlocking = false;
             if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
-            if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
             clearSettleTimers();
+            if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
             root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
-            revealOverlay();
+            var el = lockEl();
+            if (el) el.classList.remove('gadly-orient-lock--layouting');
             if (locked) {
                 locked = false;
                 restoreChrome();
@@ -144,51 +190,72 @@
             return;
         }
 
-        if (on) {
-            var wasLocked = locked || root.classList.contains('gadly-orient-locked');
-            var el = lockEl();
-            var holding = !!(el && el.classList.contains('gadly-orient-lock--layouting'));
-            if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
-            root.classList.add('gadly-orient-locked');
-            root.classList.remove('gadly-orient-settling');
-            paintLockedChrome();
-            locked = true;
-            if (!wasLocked) holdOverlayLayout(360);
-            else if (!holding) revealOverlay();
-            return;
-        }
-
-        if (!locked && !root.classList.contains('gadly-orient-locked')) return;
         if (unlockTimer) return;
 
-        /* In uscita: nascondi subito la card, tieni solo il colore pieno */
+        unlocking = true;
+        /* Subito: via la card, solo colore (niente overlay inclinato al ritorno) */
+        veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
+        paintUnlockVeil();
+        locked = true;
+        unlockTimer = setTimeout(finishUnlock, UNLOCK_MS);
+    }
+
+    function beginLock() {
+        var root = document.documentElement;
+        unlocking = false;
+        if (unlockTimer) {
+            clearTimeout(unlockTimer);
+            unlockTimer = null;
+        }
+        root.classList.add('gadly-orient-locked');
+        root.classList.remove('gadly-orient-settling');
         paintLockedChrome();
         locked = true;
-        holdOverlayLayout(160);
-        unlockTimer = setTimeout(finishUnlock, SETTLE_MS);
     }
 
     function sync() {
-        if (wantsLock()) setLocked(true);
-        else setLocked(false);
+        if (isDesktop()) {
+            beginUnlock();
+            return;
+        }
+        if (wantsLock()) beginLock();
+        else beginUnlock();
     }
 
     function coverDuringRotate() {
         if (isDesktop()) return;
         var root = document.documentElement;
+
+        /* Qualsiasi rotazione: nascondi subito la card */
+        veilCardOnly();
+        root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
+        locked = true;
+
         if (unlockTimer) {
             clearTimeout(unlockTimer);
             unlockTimer = null;
         }
-        root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
-        paintLockedChrome();
-        locked = true;
-        holdOverlayLayout(360);
+
+        /* Se stiamo uscendo → velo colore pagina; se entriamo → colore overlay */
+        if (!phoneLandscape.matches) {
+            unlocking = true;
+            paintUnlockVeil();
+        } else {
+            unlocking = false;
+            paintLockedChrome();
+        }
+
         clearSettleTimers();
-        settleTimers.push(setTimeout(sync, 80));
-        settleTimers.push(setTimeout(sync, 280));
-        settleTimers.push(setTimeout(sync, 420));
+        settleTimers.push(setTimeout(function () {
+            if (wantsLock()) {
+                unlocking = false;
+                beginLock();
+                veilThenReveal(40);
+            } else {
+                beginUnlock();
+            }
+        }, ROTATE_COVER_MS));
     }
 
     function bind(m) {
@@ -207,9 +274,9 @@
 
     try {
         var mo = new MutationObserver(function () {
-            if (document.documentElement.classList.contains('gadly-orient-locked')) {
-                paintLockedChrome();
-            }
+            if (!document.documentElement.classList.contains('gadly-orient-locked')) return;
+            if (unlocking) paintUnlockVeil();
+            else paintLockedChrome();
         });
         if (document.body) {
             mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
