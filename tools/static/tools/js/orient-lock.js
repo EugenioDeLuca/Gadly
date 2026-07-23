@@ -14,10 +14,10 @@
     var settleTimers = [];
     var revealTimer = null;
     var booted = false;
-    var UNLOCK_MS = 180;
-    /* Più corti: la card non deve arrivare “dopo” che hai già finito di ruotare */
-    var REVEAL_AFTER_LOCK_MS = 200;
-    var ROTATE_COVER_MS = 160;
+    var UNLOCK_MS = 160;
+    /* Card il prima possibile dopo il velo anti-flash */
+    var REVEAL_AFTER_LOCK_MS = 70;
+    var ROTATE_COVER_MS = 50;
 
     function isDesktop() {
         return desktopPointer.matches;
@@ -250,7 +250,7 @@
 
         settleTimers.push(setTimeout(function () {
             if (wantsLock()) {
-                beginLock(80);
+                beginLock(0);
             } else {
                 beginUnlock();
             }
