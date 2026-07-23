@@ -209,6 +209,60 @@ body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__hint {
 @media (orientation: landscape) and (max-height: 600px) {
     .gadly-orient-lock {
         display: flex !important;
+        padding: 12px max(16px, env(safe-area-inset-right))
+                 12px max(16px, env(safe-area-inset-left));
+    }
+
+    /* Chrome: leggermente più basso, non miniaturizzato */
+    .gadly-orient-lock__card {
+        padding: 18px 20px 16px;
+        max-height: calc(100svh - 24px);
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .gadly-orient-lock__brand {
+        gap: 12px;
+        font-size: 1.5rem;
+        margin: 0 0 14px;
+    }
+
+    .gadly-orient-lock__logo,
+    .gadly-orient-lock__logo svg,
+    .gadly-orient-lock__logo .drose-fab-logo {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .gadly-orient-lock__name {
+        font-size: 1.5rem;
+    }
+
+    .gadly-orient-lock__icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 12px;
+    }
+
+    .gadly-orient-lock__icon svg {
+        width: 34px;
+        height: 34px;
+    }
+
+    .gadly-orient-lock__title {
+        font-size: 1.2rem;
+        margin: 0 0 6px;
+    }
+
+    .gadly-orient-lock__text {
+        font-size: 0.95rem;
+        line-height: 1.35;
+    }
+
+    .gadly-orient-lock__hint {
+        margin: 12px 0 0;
+        font-size: 0.8rem;
     }
 
     html.gadly-orient-locked,
