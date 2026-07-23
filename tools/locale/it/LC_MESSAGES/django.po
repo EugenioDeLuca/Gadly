@@ -8435,6 +8435,22 @@ msgstr ""
 msgid "An error occurred while optimizing the CV."
 msgstr "Si è verificato un errore durante l'ottimizzazione del CV."
 
+#: .\tools\templates\tools\base.html
+msgid "Rotate your phone"
+msgstr "Gira il telefono"
+
+#: .\tools\templates\tools\base.html
+msgid "Gadly is designed for portrait mode. Rotate your device to continue."
+msgstr "Gadly è pensato in verticale. Ruota il dispositivo per continuare."
+
+#: .\tools\templates\tools\base.html
+msgid "Drose is designed for portrait mode. Rotate your device to continue."
+msgstr "Drose è pensato in verticale. Ruota il dispositivo per continuare."
+
+#: .\tools\templates\tools\base.html
+msgid "Landscape mode is not supported"
+msgstr "Modalità orizzontale non supportata"
+
 #~ msgid "Raw photos"
 #~ msgstr "Foto raw"
 

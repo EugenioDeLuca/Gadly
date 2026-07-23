@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it" class="force-orient-lock">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Anteprima — Drose IT</title>
+  <style>
+    :root { --accent: #b45309; --header-h: 82px; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%; font-family: Arial, sans-serif; color: var(--accent);
+      background: radial-gradient(circle at bottom right, #b45309, #1a2744 40%, #f4f4f4 75%); background-attachment: fixed;
+    }
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: #fff; display: flex; align-items: center; justify-content: center; z-index: 100;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .header-inner { width: min(900px, calc(100% - 32px)); }
+    .brand { font-weight: 800; font-size: 1.35rem; color: var(--accent); text-decoration: none; letter-spacing: -0.02em; }
+    .site-main { padding: calc(var(--header-h) + 24px) 16px 48px; }
+    .container {
+      max-width: 420px; margin: 0 auto; background: #fff; border-radius: 16px;
+      padding: 28px 22px; box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+    }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; text-align: center; color: var(--accent); }
+    .desc { text-align: center; color: #555; font-size: 0.95rem; margin: 0 0 20px; line-height: 1.45; }
+    .fake-btn {
+      display: block; width: 100%; margin: 0 0 12px; padding: 14px 16px; border-radius: 12px;
+      border: 2px solid #b45309; background: linear-gradient(145deg, #fff8eb 0%, #ffefd1 100%); color: var(--accent);
+      font-weight: 700; font-size: 1rem; text-align: center;
+    }
+    .preview-note {
+      max-width: 420px; margin: 16px auto 0; padding: 12px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.9); border: 1px dashed #999; font-size: 0.88rem; color: #333; line-height: 1.4;
+    }
+    .preview-note strong { color: var(--accent); }
+    .preview-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .preview-actions button {
+      flex: 1 1 140px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--accent);
+      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    }
+    .preview-actions button.secondary { background: #fff; color: var(--accent); }
+    .nav-back { display: inline-block; margin-bottom: 12px; color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+
+    .gadly-orient-lock {
+      position: fixed; inset: 0; z-index: 99999; display: none;
+      align-items: center; justify-content: center;
+      padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+               max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+      background:
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
+        #0f172a;
+      color: #fff; text-align: center;
+    }
+    .gadly-orient-lock--drose {
+      background:
+        radial-gradient(circle at 85% 100%, rgba(180, 83, 9, 0.45), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(251, 191, 36, 0.22), transparent 40%),
+        #0f172a;
+    }
+    html.force-orient-lock .gadly-orient-lock,
+    .gadly-orient-lock.is-forced { display: flex !important; }
+    .gadly-orient-lock__card {
+      width: min(420px, 100%); padding: 28px 24px 26px; border-radius: 18px;
+      background: transparent; border: 2px solid rgba(126, 184, 240, 0.45);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    .gadly-orient-lock__brand {
+      display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+      font-weight: 800; font-size: 1.75rem; letter-spacing: -0.02em; margin: 0 0 22px; color: #7eb8ff;
+    }
+    .gadly-orient-lock--drose .gadly-orient-lock__brand { color: #fbbf24; }
+    .gadly-orient-lock--drose .gadly-orient-lock__card { border-color: rgba(251, 191, 36, 0.45); }
+    .gadly-orient-lock__logo { width: 56px; height: 56px; display: block; object-fit: contain; }
+    .gadly-orient-lock__name { color: #7eb8ff; font-size: 1.75rem; line-height: 1; }
+    .gadly-orient-lock--drose .gadly-orient-lock__name { color: #fbbf24; }
+    .gadly-orient-lock__icon {
+      width: 72px; height: 72px; margin: 0 auto 16px; display: grid; place-items: center;
+      border-radius: 18px; background: linear-gradient(145deg, rgba(232,244,253,0.2), rgba(0,123,255,0.18));
+      border: 2px solid rgba(126, 184, 240, 0.55);
+      animation: gadly-phone-tilt 1.6s ease-in-out infinite;
+    }
+    .gadly-orient-lock--drose .gadly-orient-lock__icon {
+      border-color: rgba(251, 191, 36, 0.55);
+      background: linear-gradient(145deg, rgba(251,191,36,0.22), rgba(180,83,9,0.18));
+    }
+    .gadly-orient-lock__icon svg { width: 40px; height: 40px; fill: #7eb8ff; }
+    .gadly-orient-lock--drose .gadly-orient-lock__icon svg { fill: #fbbf24; }
+    @keyframes gadly-phone-tilt {
+      0%, 100% { transform: rotate(-18deg); }
+      50% { transform: rotate(12deg); }
+    }
+    .gadly-orient-lock__title { margin: 0 0 8px; font-size: 1.35rem; font-weight: 800; color: #fff; line-height: 1.25; }
+    .gadly-orient-lock__text { margin: 0; font-size: 1rem; line-height: 1.45; color: rgba(255,255,255,0.82); font-weight: 600; }
+    .gadly-orient-lock__hint { margin: 18px 0 0; font-size: 0.85rem; color: rgba(126,184,255,0.9); font-weight: 600; }
+    .gadly-orient-lock--drose .gadly-orient-lock__hint { color: rgba(251,191,36,0.9); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner"><a class="brand" href="index.html">Drose</a></div>
+  </header>
+  <main class="site-main">
+    <div class="container">
+      <a class="nav-back" href="index.html">← Index</a>
+      <h1>Drose (IT)</h1>
+      <p class="desc">Anteprima overlay landscape Drose in italiano. L'overlay è già aperto.</p>
+      <div class="fake-btn">Tool A</div>
+      <div class="fake-btn">Tool B</div>
+    </div>
+    <div class="preview-note">
+      <strong>Come provarlo</strong><br>1) L'overlay parte già visibile.<br>2) Usa Nascondi / Mostra per confrontare.
+      <div class="preview-actions">
+        <button type="button" id="btn-show">Mostra overlay</button>
+        <button type="button" class="secondary" id="btn-hide">Nascondi overlay</button>
+      </div>
+    </div>
+  </main>
+  <div class="gadly-orient-lock gadly-orient-lock--drose is-forced" id="orient-lock" role="dialog" aria-modal="true">
+    <div class="gadly-orient-lock__card">
+      <div class="gadly-orient-lock__brand">
+        <img class="gadly-orient-lock__logo" src="../tools/static/tools/images/drose-logo.svg" alt="" width="56" height="56">
+        <span class="gadly-orient-lock__name">Drose</span>
+      </div>
+      <div class="gadly-orient-lock__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm4 14h2v1h-2v-1z"/>
+        </svg>
+      </div>
+      <h2 class="gadly-orient-lock__title">Gira il telefono</h2>
+      <p class="gadly-orient-lock__text">Drose è pensato in verticale. Ruota il dispositivo per continuare.</p>
+      <p class="gadly-orient-lock__hint">Modalità orizzontale non supportata</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var lock = document.getElementById('orient-lock');
+      function setForced(on) {
+        document.documentElement.classList.toggle('force-orient-lock', on);
+        lock.classList.toggle('is-forced', on);
+      }
+      document.getElementById('btn-show').addEventListener('click', function () { setForced(true); });
+      document.getElementById('btn-hide').addEventListener('click', function () { setForced(false); });
+    })();
+  </script>
+</body>
+</html>

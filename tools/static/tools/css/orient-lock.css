@@ -1,0 +1,167 @@
+/* Mobile only: overlay quando il telefono è in landscape. Desktop: mai. */
+.gadly-orient-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+             max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    background:
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
+        #0f172a;
+    color: #fff;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gadly-orient-lock__card {
+    width: min(420px, 100%);
+    padding: 28px 24px 26px;
+    border-radius: 18px;
+    background: transparent;
+    border: 2px solid rgba(126, 184, 240, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.gadly-orient-lock__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-weight: 800;
+    font-size: 1.75rem;
+    letter-spacing: -0.02em;
+    color: #7eb8ff;
+    margin: 0 0 22px;
+    font-family: Arial, sans-serif;
+}
+
+.gadly-orient-lock__logo {
+    width: 56px;
+    height: 56px;
+    flex: 0 0 auto;
+    display: block;
+    object-fit: contain;
+}
+
+.gadly-orient-lock__logo svg,
+.gadly-orient-lock__logo .drose-fab-logo {
+    width: 56px !important;
+    height: 56px !important;
+    display: block;
+}
+
+.gadly-orient-lock__name {
+    color: #7eb8ff;
+    -webkit-text-fill-color: #7eb8ff;
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__brand {
+    color: #fbbf24;
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__name {
+    color: #fbbf24;
+    -webkit-text-fill-color: #fbbf24;
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__card {
+    border-color: rgba(251, 191, 36, 0.45);
+    background: transparent;
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__icon {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(145deg, rgba(251, 191, 36, 0.22), rgba(180, 83, 9, 0.18));
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__icon svg {
+    fill: #fbbf24;
+}
+
+.gadly-orient-lock--drose .gadly-orient-lock__hint {
+    color: rgba(251, 191, 36, 0.9);
+}
+
+.gadly-orient-lock--drose {
+    background:
+        radial-gradient(circle at 85% 100%, rgba(180, 83, 9, 0.45), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(251, 191, 36, 0.22), transparent 40%),
+        #0f172a;
+}
+
+.gadly-orient-lock__icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(232, 244, 253, 0.2), rgba(0, 123, 255, 0.18));
+    border: 2px solid rgba(126, 184, 240, 0.55);
+    animation: gadly-phone-tilt 1.6s ease-in-out infinite;
+}
+
+.gadly-orient-lock__icon svg {
+    width: 40px;
+    height: 40px;
+    fill: #7eb8ff;
+}
+
+@keyframes gadly-phone-tilt {
+    0%, 100% { transform: rotate(-18deg); }
+    50% { transform: rotate(12deg); }
+}
+
+.gadly-orient-lock__title {
+    margin: 0 0 8px;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    font-family: Arial, sans-serif;
+}
+
+.gadly-orient-lock__text {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+}
+
+.gadly-orient-lock__hint {
+    margin: 18px 0 0;
+    font-size: 0.85rem;
+    color: rgba(126, 184, 255, 0.9);
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .gadly-orient-lock {
+        display: flex !important;
+    }
+
+    html.gadly-orient-locked,
+    html.gadly-orient-locked body {
+        overflow: hidden !important;
+        touch-action: none !important;
+        overscroll-behavior: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .gadly-orient-lock {
+        display: none !important;
+        pointer-events: none !important;
+    }
+}

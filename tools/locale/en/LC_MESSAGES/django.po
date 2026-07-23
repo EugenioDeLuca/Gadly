@@ -7874,6 +7874,22 @@ msgstr ""
 msgid "An error occurred while optimizing the CV."
 msgstr ""
 
+#: .\tools\templates\tools\base.html
+msgid "Rotate your phone"
+msgstr ""
+
+#: .\tools\templates\tools\base.html
+msgid "Gadly is designed for portrait mode. Rotate your device to continue."
+msgstr ""
+
+#: .\tools\templates\tools\base.html
+msgid "Drose is designed for portrait mode. Rotate your device to continue."
+msgstr ""
+
+#: .\tools\templates\tools\base.html
+msgid "Landscape mode is not supported"
+msgstr ""
+
 #, fuzzy
 #~| msgid "Inspections"
 #~ msgid "Inspection report"
