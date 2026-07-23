@@ -77,14 +77,13 @@
         opacity: 0 !important;
         pointer-events: none !important;
     }
-    /* Evita flash del container bianco homepage in light mode al refresh */
+    /* Resta in layout (niente display:none) così allo sblocco non c’è frame bianco/blu vuoto */
     html.gadly-orient-locked .container,
     html.gadly-orient-locked .site-main,
     html.gadly-orient-locked .site-header,
     html.gadly-orient-settling .container,
     html.gadly-orient-settling .site-main,
     html.gadly-orient-settling .site-header {
-        display: none !important;
         background: transparent !important;
     }
     html.gadly-orient-locked .gadly-orient-lock,
@@ -1811,7 +1810,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=18">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=20">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2558,7 +2557,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=15"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=16"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare

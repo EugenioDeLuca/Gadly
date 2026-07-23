@@ -28,7 +28,7 @@
     padding: 28px 24px 26px;
     border-radius: 18px;
     background: transparent;
-    border: 2px solid rgba(198, 40, 40, 0.45);
+    border: 2px solid rgba(192, 0, 0, 0.45);
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -42,7 +42,7 @@
     font-weight: 800;
     font-size: 1.75rem;
     letter-spacing: -0.02em;
-    color: #c62828;
+    color: #E00000;
     margin: 0 0 22px;
     font-family: Arial, sans-serif;
 }
@@ -63,40 +63,40 @@
 }
 
 .gadly-orient-lock__name {
-    color: #c62828;
-    -webkit-text-fill-color: #c62828;
+    color: #E00000;
+    -webkit-text-fill-color: #E00000;
     font-size: 1.75rem;
     line-height: 1;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__brand,
 .gadly-orient-lock--drose .gadly-orient-lock__name {
-    color: #c62828;
-    -webkit-text-fill-color: #c62828;
+    color: #E00000;
+    -webkit-text-fill-color: #E00000;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__card {
-    border-color: rgba(198, 40, 40, 0.45);
+    border-color: rgba(192, 0, 0, 0.45);
     background: transparent;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__icon {
-    border-color: rgba(198, 40, 40, 0.55);
-    background: linear-gradient(145deg, rgba(255, 236, 232, 0.95), rgba(255, 205, 196, 0.75));
+    border-color: rgba(192, 0, 0, 0.55);
+    background: linear-gradient(145deg, rgba(224, 0, 0, 0.08), rgba(192, 0, 0, 0.14));
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__icon svg {
-    fill: #c62828;
+    fill: #E00000;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__hint {
-    color: rgba(163, 23, 23, 0.95);
+    color: rgba(160, 0, 0, 0.95);
 }
 
 .gadly-orient-lock--drose {
     background:
-        radial-gradient(circle at 85% 100%, rgba(198, 40, 40, 0.12), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(211, 47, 47, 0.1), transparent 40%),
+        radial-gradient(circle at 85% 100%, rgba(192, 0, 0, 0.12), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(192, 0, 0, 0.1), transparent 40%),
         #ffffff;
     background-color: #ffffff;
 }
@@ -108,15 +108,15 @@
     display: grid;
     place-items: center;
     border-radius: 18px;
-    background: linear-gradient(145deg, rgba(255, 236, 232, 0.95), rgba(255, 205, 196, 0.75));
-    border: 2px solid rgba(198, 40, 40, 0.55);
+    background: linear-gradient(145deg, rgba(224, 0, 0, 0.08), rgba(192, 0, 0, 0.14));
+    border: 2px solid rgba(192, 0, 0, 0.55);
     animation: gadly-phone-tilt 1.6s ease-in-out infinite;
 }
 
 .gadly-orient-lock__icon svg {
     width: 40px;
     height: 40px;
-    fill: #c62828;
+    fill: #E00000;
 }
 
 @keyframes gadly-phone-tilt {
@@ -145,7 +145,7 @@
 .gadly-orient-lock__hint {
     margin: 18px 0 0;
     font-size: 0.85rem;
-    color: rgba(163, 23, 23, 0.95);
+    color: rgba(160, 0, 0, 0.95);
     font-weight: 600;
     font-family: Arial, sans-serif;
 }
@@ -307,24 +307,12 @@ html.gadly-orient-settling .gadly-orient-lock__hint {
     font-size: 0.8rem;
 }
 
-/* Nasconde la pagina sotto: niente flash dei bottoni durante la rotazione */
+/* Nasconde la pagina sotto (resta in layout: niente flash bianco/blu allo sblocco) */
 html.gadly-orient-locked body > *:not(.gadly-orient-lock),
 html.gadly-orient-settling body > *:not(.gadly-orient-lock) {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
-}
-
-/* Forza via anche i layer compositi (riduce “pagina che ruota” nel frame OS) */
-html.gadly-orient-locked .site-header,
-html.gadly-orient-locked .site-main,
-html.gadly-orient-locked .site-footer,
-html.gadly-orient-locked .mobile-home-fab,
-html.gadly-orient-settling .site-header,
-html.gadly-orient-settling .site-main,
-html.gadly-orient-settling .site-footer,
-html.gadly-orient-settling .mobile-home-fab {
-    display: none !important;
 }
 
 html.gadly-orient-locked,

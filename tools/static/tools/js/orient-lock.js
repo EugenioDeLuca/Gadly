@@ -1,6 +1,7 @@
 /**
  * Mobile landscape: overlay "gira il telefono".
- * - Card nascosta mentre l'OS ruota (solo colore pieno).
+ * - Card nascosta mentre l'OS ruota (solo colore pieno) in ingresso landscape.
+ * - In uscita (portrait): unlock immediato, senza schermo pieno bianco/blu.
  * - Early lock da <head> + soglia altezza alta (evita unlock al refresh).
  * - Nessun unlock/velo se non eravamo in lock (evita flash al refresh in portrait).
  */
@@ -17,7 +18,6 @@
     var revealTimer = null;
     var booted = false;
     var bootGraceUntil = 0;
-    var UNLOCK_MS = 160;
     var REVEAL_AFTER_LOCK_MS = 70;
     var ROTATE_COVER_MS = 50;
 
@@ -167,17 +167,25 @@
             beginLock(0);
             return;
         }
-        root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
         var el = lockEl();
+        clearInlineOverlayBg();
+        root.style.removeProperty('background-color');
+        root.style.removeProperty('background-image');
+        if (document.body) {
+            document.body.style.removeProperty('background-color');
+            document.body.style.removeProperty('background-image');
+        }
+        root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
         if (el) el.classList.remove('gadly-orient-lock--layouting');
         locked = false;
         unlocking = false;
-        restoreChrome();
+        /* Resample dopo lo sblocco: evita di campionare il velo bianco/blu */
+        requestAnimationFrame(function () {
+            restoreChrome();
+        });
     }
 
     function beginUnlock() {
-        var root = document.documentElement;
-
         if (!isActiveLock()) {
             unlocking = false;
             return;
@@ -193,30 +201,19 @@
             return;
         }
 
-        if (isDesktop()) {
-            unlocking = false;
-            if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
-            clearSettleTimers();
-            if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
-            root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
-            var el = lockEl();
-            if (el) el.classList.remove('gadly-orient-lock--layouting');
-            locked = false;
-            restoreChrome();
-            return;
-        }
-
         if (unlockTimer) {
-            veilCardOnly();
-            return;
+            clearTimeout(unlockTimer);
+            unlockTimer = null;
+        }
+        clearSettleTimers();
+        if (revealTimer) {
+            clearTimeout(revealTimer);
+            revealTimer = null;
         }
 
+        /* Unlock immediato: niente velo solido bianco/blu in uscita */
         unlocking = true;
-        veilCardOnly();
-        root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
-        paintLockedChrome();
-        locked = true;
-        unlockTimer = setTimeout(finishUnlock, UNLOCK_MS);
+        finishUnlock();
     }
 
     function beginLock(revealAfterMs) {
@@ -254,6 +251,15 @@
         }
         clearSettleTimers();
 
+        /* Ritorno in portrait: sblocca subito, senza schermo pieno bianco/blu */
+        if (!wantsLock()) {
+            if (isActiveLock()) {
+                unlocking = true;
+                finishUnlock();
+            }
+            return;
+        }
+
         veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
@@ -263,7 +269,8 @@
             if (wantsLock()) {
                 beginLock(0);
             } else {
-                beginUnlock();
+                unlocking = true;
+                finishUnlock();
             }
         }, ROTATE_COVER_MS));
     }

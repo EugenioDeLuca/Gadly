@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="42" height="42" aria-hidden="true">
   <defs>
     <linearGradient id="droseOrientHexFill" x1="256" y1="70" x2="256" y2="442" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#e53935"/>
-      <stop offset="100%" stop-color="#c62828"/>
+      <stop offset="0%" stop-color="#FF1A1A"/>
+      <stop offset="100%" stop-color="#C00000"/>
     </linearGradient>
     <radialGradient id="droseOrientLensGlass" cx="256" cy="256" r="56" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#0f172a"/>
