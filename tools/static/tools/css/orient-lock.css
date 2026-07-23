@@ -1,33 +1,54 @@
 /* Mobile only: overlay in landscape. Desktop: mai.
    Nota: in landscape la *width* del telefono spesso supera 768px,
-   quindi usiamo max-height (lato corto) invece di max-width. */
+   quindi usiamo max-height (lato corto) invece di max-width.
+   Light = default (body senza .dark-mode). Dark = body.dark-mode. */
+
+/* ——— Light mode (default) ——— */
 .gadly-orient-lock {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 99999;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
-             max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    box-sizing: border-box;
+    /* Copre anche le zone dietro status bar / overscroll */
+    width: 100%;
+    min-height: 100%;
+    min-height: 100dvh;
+    min-height: 100svh;
+    height: 100%;
+    height: 100dvh;
+    height: 100svh;
+    padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
     background:
-        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
-        #0f172a;
-    color: #fff;
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.18), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.16), transparent 40%),
+        #f4f6fa;
+    background-color: #f4f6fa;
+    color: #0f172a;
     text-align: center;
     -webkit-tap-highlight-color: transparent;
 }
 
 .gadly-orient-lock__card {
     width: min(420px, 100%);
+    max-height: calc(100svh - 16px);
+    max-height: calc(100dvh - 16px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 28px 24px 26px;
     border-radius: 18px;
     background: transparent;
-    border: 2px solid rgba(239, 68, 68, 0.45);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    border: 2px solid rgba(220, 38, 38, 0.4);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    box-sizing: border-box;
 }
 
 .gadly-orient-lock__brand {
@@ -38,7 +59,7 @@
     font-weight: 800;
     font-size: 1.75rem;
     letter-spacing: -0.02em;
-    color: #ef4444;
+    color: #dc2626;
     margin: 0 0 22px;
     font-family: Arial, sans-serif;
 }
@@ -59,44 +80,42 @@
 }
 
 .gadly-orient-lock__name {
-    color: #ef4444;
-    -webkit-text-fill-color: #ef4444;
+    color: #dc2626;
+    -webkit-text-fill-color: #dc2626;
     font-size: 1.75rem;
     line-height: 1;
 }
 
-.gadly-orient-lock--drose .gadly-orient-lock__brand {
-    color: #ef4444;
-}
-
+.gadly-orient-lock--drose .gadly-orient-lock__brand,
 .gadly-orient-lock--drose .gadly-orient-lock__name {
-    color: #ef4444;
-    -webkit-text-fill-color: #ef4444;
+    color: #dc2626;
+    -webkit-text-fill-color: #dc2626;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__card {
-    border-color: rgba(239, 68, 68, 0.45);
+    border-color: rgba(220, 38, 38, 0.4);
     background: transparent;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__icon {
-    border-color: rgba(239, 68, 68, 0.55);
-    background: linear-gradient(145deg, rgba(248, 113, 113, 0.22), rgba(220, 38, 38, 0.18));
+    border-color: rgba(220, 38, 38, 0.5);
+    background: linear-gradient(145deg, rgba(254, 226, 226, 0.95), rgba(254, 202, 202, 0.7));
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__icon svg {
-    fill: #ef4444;
+    fill: #dc2626;
 }
 
 .gadly-orient-lock--drose .gadly-orient-lock__hint {
-    color: rgba(239, 68, 68, 0.9);
+    color: rgba(185, 28, 28, 0.9);
 }
 
 .gadly-orient-lock--drose {
     background:
-        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
-        #0f172a;
+        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.14), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(251, 113, 133, 0.12), transparent 40%),
+        #f8fafc;
+    background-color: #f8fafc;
 }
 
 .gadly-orient-lock__icon {
@@ -106,15 +125,15 @@
     display: grid;
     place-items: center;
     border-radius: 18px;
-    background: linear-gradient(145deg, rgba(248, 113, 113, 0.2), rgba(220, 38, 38, 0.18));
-    border: 2px solid rgba(239, 68, 68, 0.55);
+    background: linear-gradient(145deg, rgba(254, 226, 226, 0.95), rgba(254, 202, 202, 0.7));
+    border: 2px solid rgba(220, 38, 38, 0.5);
     animation: gadly-phone-tilt 1.6s ease-in-out infinite;
 }
 
 .gadly-orient-lock__icon svg {
     width: 40px;
     height: 40px;
-    fill: #ef4444;
+    fill: #dc2626;
 }
 
 @keyframes gadly-phone-tilt {
@@ -126,7 +145,7 @@
     margin: 0 0 8px;
     font-size: 1.35rem;
     font-weight: 800;
-    color: #fff;
+    color: #0f172a;
     line-height: 1.25;
     font-family: Arial, sans-serif;
 }
@@ -135,7 +154,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.45;
-    color: rgba(255, 255, 255, 0.82);
+    color: rgba(51, 65, 85, 0.92);
     font-weight: 600;
     font-family: Arial, sans-serif;
 }
@@ -143,9 +162,64 @@
 .gadly-orient-lock__hint {
     margin: 18px 0 0;
     font-size: 0.85rem;
-    color: rgba(239, 68, 68, 0.9);
+    color: rgba(185, 28, 28, 0.9);
     font-weight: 600;
     font-family: Arial, sans-serif;
+}
+
+/* ——— Dark mode ——— */
+body.dark-mode .gadly-orient-lock {
+    background:
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
+        #0f172a;
+    background-color: #0f172a;
+    color: #fff;
+}
+
+body.dark-mode .gadly-orient-lock__card {
+    border-color: rgba(239, 68, 68, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .gadly-orient-lock__brand,
+body.dark-mode .gadly-orient-lock__name,
+body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__brand,
+body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__name {
+    color: #ef4444;
+    -webkit-text-fill-color: #ef4444;
+}
+
+body.dark-mode .gadly-orient-lock--drose {
+    background:
+        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
+        #0f172a;
+    background-color: #0f172a;
+}
+
+body.dark-mode .gadly-orient-lock__icon,
+body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__icon {
+    border-color: rgba(239, 68, 68, 0.55);
+    background: linear-gradient(145deg, rgba(248, 113, 113, 0.2), rgba(220, 38, 38, 0.18));
+}
+
+body.dark-mode .gadly-orient-lock__icon svg,
+body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__icon svg {
+    fill: #ef4444;
+}
+
+body.dark-mode .gadly-orient-lock__title {
+    color: #fff;
+}
+
+body.dark-mode .gadly-orient-lock__text {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+body.dark-mode .gadly-orient-lock__hint,
+body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__hint {
+    color: rgba(239, 68, 68, 0.9);
 }
 
 /* Telefono in landscape: altezza = lato corto (~300–500px). */
@@ -154,11 +228,78 @@
         display: flex !important;
     }
 
+    /* Card compatta: resta intera sotto la barra Chrome */
+    .gadly-orient-lock__card {
+        padding: 10px 14px 10px;
+        border-radius: 14px;
+        max-height: calc(100svh - 12px);
+        max-height: calc(100dvh - 12px);
+    }
+
+    .gadly-orient-lock__brand {
+        gap: 8px;
+        font-size: 1.2rem;
+        margin: 0 0 6px;
+    }
+
+    .gadly-orient-lock__logo,
+    .gadly-orient-lock__logo svg,
+    .gadly-orient-lock__logo .drose-fab-logo {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .gadly-orient-lock__name {
+        font-size: 1.2rem;
+    }
+
+    .gadly-orient-lock__icon {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 6px;
+        border-radius: 12px;
+    }
+
+    .gadly-orient-lock__icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .gadly-orient-lock__title {
+        font-size: 1.05rem;
+        margin: 0 0 4px;
+    }
+
+    .gadly-orient-lock__text {
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+
+    .gadly-orient-lock__hint {
+        margin: 6px 0 0;
+        font-size: 0.72rem;
+    }
+
     html.gadly-orient-locked,
     html.gadly-orient-locked body {
         overflow: hidden !important;
         touch-action: none !important;
         overscroll-behavior: none;
+        /* Stesso colore dell'overlay: evita striscia bianca/nera fuori dal fixed layer */
+        background-color: #f4f6fa !important;
+        background-image: none !important;
+    }
+
+    html.gadly-orient-locked body.dark-mode,
+    html.gadly-orient-locked:has(body.dark-mode),
+    html.gadly-orient-locked:has(body.dark-mode) body {
+        background-color: #0f172a !important;
+        background-image: none !important;
+    }
+
+    html.gadly-orient-locked body.is-drose-brand:not(.dark-mode),
+    html.gadly-orient-locked body.drose-page:not(.dark-mode) {
+        background-color: #f8fafc !important;
     }
 }
 

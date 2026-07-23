@@ -37,65 +37,86 @@
     .preview-note strong { color: var(--accent); }
     .preview-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
     .preview-actions button {
-      flex: 1 1 140px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--accent);
-      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+      flex: 1 1 120px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--accent);
+      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.9rem; cursor: pointer;
     }
     .preview-actions button.secondary { background: #fff; color: var(--accent); }
     .nav-back { display: inline-block; margin-bottom: 12px; color: var(--accent); font-weight: 700; font-size: 0.9rem; }
 
+    /* Light default */
     .gadly-orient-lock {
       position: fixed; inset: 0; z-index: 99999; display: none;
       align-items: center; justify-content: center;
       padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
                max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
       background:
-        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
-        #0f172a;
-      color: #fff; text-align: center;
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.18), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.16), transparent 40%),
+        #f4f6fa;
+      color: #0f172a; text-align: center;
     }
     .gadly-orient-lock--drose {
       background:
-        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
-        #0f172a;
+        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.14), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(251, 113, 133, 0.12), transparent 40%),
+        #f8fafc;
     }
     html.force-orient-lock .gadly-orient-lock,
     .gadly-orient-lock.is-forced { display: flex !important; }
     .gadly-orient-lock__card {
       width: min(420px, 100%); padding: 28px 24px 26px; border-radius: 18px;
-      background: transparent; border: 2px solid rgba(239, 68, 68, 0.45);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      background: transparent; border: 2px solid rgba(220, 38, 38, 0.4);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.12);
     }
     .gadly-orient-lock__brand {
       display: inline-flex; align-items: center; justify-content: center; gap: 14px;
-      font-weight: 800; font-size: 1.75rem; letter-spacing: -0.02em; margin: 0 0 22px; color: #ef4444;
+      font-weight: 800; font-size: 1.75rem; letter-spacing: -0.02em; margin: 0 0 22px; color: #dc2626;
     }
-    .gadly-orient-lock--drose .gadly-orient-lock__brand { color: #ef4444; }
-    .gadly-orient-lock--drose .gadly-orient-lock__card { border-color: rgba(239, 68, 68, 0.45); }
     .gadly-orient-lock__logo { width: 56px; height: 56px; display: block; object-fit: contain; }
-    .gadly-orient-lock__name { color: #ef4444; font-size: 1.75rem; line-height: 1; }
-    .gadly-orient-lock--drose .gadly-orient-lock__name { color: #ef4444; }
+    .gadly-orient-lock__name { color: #dc2626; font-size: 1.75rem; line-height: 1; }
     .gadly-orient-lock__icon {
       width: 72px; height: 72px; margin: 0 auto 16px; display: grid; place-items: center;
-      border-radius: 18px; background: linear-gradient(145deg, rgba(248,113,113,0.2), rgba(220,38,38,0.18));
-      border: 2px solid rgba(239, 68, 68, 0.55);
+      border-radius: 18px; background: linear-gradient(145deg, rgba(254,226,226,0.95), rgba(254,202,202,0.7));
+      border: 2px solid rgba(220, 38, 38, 0.5);
       animation: gadly-phone-tilt 1.6s ease-in-out infinite;
     }
-    .gadly-orient-lock--drose .gadly-orient-lock__icon {
-      border-color: rgba(239, 68, 68, 0.55);
-      background: linear-gradient(145deg, rgba(248,113,113,0.22), rgba(220,38,38,0.18));
-    }
-    .gadly-orient-lock__icon svg { width: 40px; height: 40px; fill: #ef4444; }
-    .gadly-orient-lock--drose .gadly-orient-lock__icon svg { fill: #ef4444; }
+    .gadly-orient-lock__icon svg { width: 40px; height: 40px; fill: #dc2626; }
     @keyframes gadly-phone-tilt {
       0%, 100% { transform: rotate(-18deg); }
       50% { transform: rotate(12deg); }
     }
-    .gadly-orient-lock__title { margin: 0 0 8px; font-size: 1.35rem; font-weight: 800; color: #fff; line-height: 1.25; }
-    .gadly-orient-lock__text { margin: 0; font-size: 1rem; line-height: 1.45; color: rgba(255,255,255,0.82); font-weight: 600; }
-    .gadly-orient-lock__hint { margin: 18px 0 0; font-size: 0.85rem; color: rgba(239,68,68,0.9); font-weight: 600; }
-    .gadly-orient-lock--drose .gadly-orient-lock__hint { color: rgba(239,68,68,0.9); }
+    .gadly-orient-lock__title { margin: 0 0 8px; font-size: 1.35rem; font-weight: 800; color: #0f172a; line-height: 1.25; }
+    .gadly-orient-lock__text { margin: 0; font-size: 1rem; line-height: 1.45; color: rgba(51,65,85,0.92); font-weight: 600; }
+    .gadly-orient-lock__hint { margin: 18px 0 0; font-size: 0.85rem; color: rgba(185,28,28,0.9); font-weight: 600; }
+
+    /* Dark mode (body.dark-mode) */
+    body.dark-mode .gadly-orient-lock {
+      background:
+        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
+        #0f172a;
+      color: #fff;
+    }
+    body.dark-mode .gadly-orient-lock--drose {
+      background:
+        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
+        radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
+        #0f172a;
+    }
+    body.dark-mode .gadly-orient-lock__card {
+      border-color: rgba(239, 68, 68, 0.45);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    body.dark-mode .gadly-orient-lock__brand,
+    body.dark-mode .gadly-orient-lock__name { color: #ef4444; }
+    body.dark-mode .gadly-orient-lock__icon {
+      border-color: rgba(239, 68, 68, 0.55);
+      background: linear-gradient(145deg, rgba(248,113,113,0.2), rgba(220,38,38,0.18));
+    }
+    body.dark-mode .gadly-orient-lock__icon svg { fill: #ef4444; }
+    body.dark-mode .gadly-orient-lock__title { color: #fff; }
+    body.dark-mode .gadly-orient-lock__text { color: rgba(255,255,255,0.82); }
+    body.dark-mode .gadly-orient-lock__hint { color: rgba(239,68,68,0.9); }
   </style>
 </head>
 <body>
@@ -106,15 +127,16 @@
     <div class="container">
       <a class="nav-back" href="index.html">← Index</a>
       <h1>Drose (IT)</h1>
-      <p class="desc">Anteprima overlay landscape Drose in italiano. L'overlay è già aperto.</p>
+      <p class="desc">Anteprima overlay Drose (light di default). Usa il toggle tema.</p>
       <div class="fake-btn">Tool A</div>
       <div class="fake-btn">Tool B</div>
     </div>
     <div class="preview-note">
-      <strong>Come provarlo</strong><br>1) L'overlay parte già visibile.<br>2) Usa Nascondi / Mostra per confrontare.
+      <strong>Come provarlo</strong><br>1) Overlay visibile in light.<br>2) Toggle Light/Dark + Nascondi/Mostra.
       <div class="preview-actions">
         <button type="button" id="btn-show">Mostra overlay</button>
         <button type="button" class="secondary" id="btn-hide">Nascondi overlay</button>
+        <button type="button" class="secondary" id="btn-theme">Light mode</button>
       </div>
     </div>
   </main>
@@ -137,12 +159,23 @@
   <script>
     (function () {
       var lock = document.getElementById('orient-lock');
+      var themeBtn = document.getElementById('btn-theme');
+      var labelLight = "Light mode";
+      var labelDark = "Dark mode";
       function setForced(on) {
         document.documentElement.classList.toggle('force-orient-lock', on);
         lock.classList.toggle('is-forced', on);
       }
+      function syncThemeLabel() {
+        themeBtn.textContent = document.body.classList.contains('dark-mode') ? labelLight : labelDark;
+      }
       document.getElementById('btn-show').addEventListener('click', function () { setForced(true); });
       document.getElementById('btn-hide').addEventListener('click', function () { setForced(false); });
+      themeBtn.addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+        syncThemeLabel();
+      });
+      syncThemeLabel();
     })();
   </script>
 </body>

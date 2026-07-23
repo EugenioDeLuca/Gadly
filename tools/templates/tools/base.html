@@ -66,8 +66,20 @@
         window.gadlySyncViewportChrome = function (isDark, opts) {
             opts = opts || {};
             var forceResample = !!opts.forceResample;
-            var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            var root = document.documentElement;
             var body = document.body;
+            var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            /* In landscape i telefoni superano 768px: senza questo si tratta come desktop e compare la striscia. */
+            var orientLocked = root.classList.contains('gadly-orient-locked');
+            if (!orientLocked && window.matchMedia) {
+                try {
+                    orientLocked = window.matchMedia('(orientation: landscape) and (max-height: 600px)').matches &&
+                        !(window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+                } catch (eOrient) {
+                    orientLocked = false;
+                }
+            }
+            if (orientLocked) mobile = true;
             var isWarm = !!(body && body.classList.contains('warm-tone'));
             if (!isWarm) {
                 try {
@@ -75,14 +87,21 @@
                 } catch (eWarm) {}
             }
             var color;
-            if (isDark) {
+            if (orientLocked) {
+                if (isDark) {
+                    color = '#0f172a';
+                } else if (body && (body.classList.contains('is-drose-brand') || body.classList.contains('drose-page'))) {
+                    color = '#f8fafc';
+                } else {
+                    color = '#f4f6fa';
+                }
+            } else if (isDark) {
                 color = isWarm ? '#26201c' : '#0f0f23';
             } else if (mobile) {
                 color = isWarm ? '#fff8ec' : '#ffffff';
             } else {
                 color = '#f4f6fa';
             }
-            var root = document.documentElement;
 
             root.dataset.theme = isDark ? 'dark' : 'light';
             root.classList.toggle('gadly-warm-dark', !!(mobile && isDark && isWarm));
@@ -1717,7 +1736,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=7">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=9">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -2464,7 +2483,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=2"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=3"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
