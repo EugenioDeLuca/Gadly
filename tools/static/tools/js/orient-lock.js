@@ -1,7 +1,7 @@
 /**
  * Mobile landscape: overlay "gira il telefono".
- * Durante la rotazione OS: solo colore pieno (niente card) — evita la card inclinata.
- * Animazione tilt del telefono: solo quando la card è già stabile in landscape.
+ * Regola: la CARD non deve mai essere visibile mentre l'OS sta ancora ruotando
+ * (né verso landscape né verso portrait) — solo colore pieno, poi reveal.
  */
 (function () {
     if (!window.matchMedia) return;
@@ -14,7 +14,9 @@
     var settleTimers = [];
     var revealTimer = null;
     var UNLOCK_MS = 320;
-    var ROTATE_COVER_MS = 380;
+    /* Tempo minimo a card nascosta dopo un lock / orientationchange */
+    var REVEAL_AFTER_LOCK_MS = 480;
+    var ROTATE_COVER_MS = 400;
 
     function isDesktop() {
         return desktopPointer.matches;
@@ -43,7 +45,6 @@
         return '#f4f6fa';
     }
 
-    /* In uscita: colore vicino alla pagina, meno “flash” verso portrait */
     function unlockVeilColor() {
         if (isDark()) return '#0f0f23';
         return '#ffffff';
@@ -121,13 +122,15 @@
     }
 
     function revealCard() {
+        if (unlocking || !wantsLock()) return;
+        if (!document.documentElement.classList.contains('gadly-orient-locked')) return;
         var el = lockEl();
         if (el) el.classList.remove('gadly-orient-lock--layouting');
         clearInlineOverlayBg();
         paintLockedChrome();
     }
 
-    /* Nasconde la card e NON programma il reveal (per l’uscita) */
+    /** Nasconde la card SUBITO e annulla eventuali reveal in coda. */
     function veilCardOnly() {
         var el = lockEl();
         if (el) el.classList.add('gadly-orient-lock--layouting');
@@ -137,20 +140,15 @@
         }
     }
 
-    /* Nasconde la card, poi la mostra solo se siamo ancora in landscape lock */
+    /** Card nascosta, poi reveal solo se ancora in landscape lock. */
     function veilThenReveal(ms) {
-        var el = lockEl();
-        if (!el) return;
-        el.classList.add('gadly-orient-lock--layouting');
-        if (revealTimer) clearTimeout(revealTimer);
+        veilCardOnly();
         revealTimer = setTimeout(function () {
             revealTimer = null;
-            if (unlocking || !wantsLock()) return;
-            if (!document.documentElement.classList.contains('gadly-orient-locked')) return;
             requestAnimationFrame(function () {
                 requestAnimationFrame(revealCard);
             });
-        }, typeof ms === 'number' ? ms : 360);
+        }, typeof ms === 'number' ? ms : REVEAL_AFTER_LOCK_MS);
     }
 
     function finishUnlock() {
@@ -158,11 +156,7 @@
         unlockTimer = null;
         if (wantsLock()) {
             unlocking = false;
-            root.classList.add('gadly-orient-locked');
-            root.classList.remove('gadly-orient-settling');
-            locked = true;
-            paintLockedChrome();
-            veilThenReveal(60);
+            beginLock(80);
             return;
         }
         root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
@@ -179,7 +173,7 @@
             unlocking = false;
             if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = null; }
             clearSettleTimers();
-            if (revealTimer) { clearTimeout(revealTimer); revealTimer = null; }
+            veilCardOnly();
             root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
             var el = lockEl();
             if (el) el.classList.remove('gadly-orient-lock--layouting');
@@ -190,10 +184,14 @@
             return;
         }
 
-        if (unlockTimer) return;
+        if (unlockTimer) {
+            /* Già in unlock: tieni comunque la card nascosta */
+            veilCardOnly();
+            paintUnlockVeil();
+            return;
+        }
 
         unlocking = true;
-        /* Subito: via la card, solo colore (niente overlay inclinato al ritorno) */
         veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintUnlockVeil();
@@ -201,17 +199,24 @@
         unlockTimer = setTimeout(finishUnlock, UNLOCK_MS);
     }
 
-    function beginLock() {
+    /**
+     * Entra in lock: overlay acceso ma CARD sempre nascosta all'inizio.
+     * revealAfterMs: quando mostrare la card (dopo che l'OS ha finito di ruotare).
+     */
+    function beginLock(revealAfterMs) {
         var root = document.documentElement;
         unlocking = false;
         if (unlockTimer) {
             clearTimeout(unlockTimer);
             unlockTimer = null;
         }
+        /* Prima di tutto: card nascosta (evita 1 frame inclinato) */
+        veilCardOnly();
         root.classList.add('gadly-orient-locked');
         root.classList.remove('gadly-orient-settling');
         paintLockedChrome();
         locked = true;
+        veilThenReveal(typeof revealAfterMs === 'number' ? revealAfterMs : REVEAL_AFTER_LOCK_MS);
     }
 
     function sync() {
@@ -219,15 +224,19 @@
             beginUnlock();
             return;
         }
-        if (wantsLock()) beginLock();
-        else beginUnlock();
+        if (wantsLock()) {
+            /* Non rivelare subito: resize/MQ scattano a metà rotazione OS */
+            beginLock(REVEAL_AFTER_LOCK_MS);
+        } else {
+            beginUnlock();
+        }
     }
 
     function coverDuringRotate() {
         if (isDesktop()) return;
         var root = document.documentElement;
 
-        /* Qualsiasi rotazione: nascondi subito la card */
+        /* Sempre: via la card al primo segnale di rotazione */
         veilCardOnly();
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         locked = true;
@@ -237,7 +246,6 @@
             unlockTimer = null;
         }
 
-        /* Se stiamo uscendo → velo colore pagina; se entriamo → colore overlay */
         if (!phoneLandscape.matches) {
             unlocking = true;
             paintUnlockVeil();
@@ -250,8 +258,8 @@
         settleTimers.push(setTimeout(function () {
             if (wantsLock()) {
                 unlocking = false;
-                beginLock();
-                veilThenReveal(40);
+                /* Già aspettato ROTATE_COVER_MS: piccolo buffer poi card */
+                beginLock(120);
             } else {
                 beginUnlock();
             }
@@ -266,11 +274,24 @@
         }
     }
 
-    sync();
+    /* Se già landscape al load */
+    if (wantsLock()) beginLock(0);
+    else sync();
+
     bind(phoneLandscape);
     bind(desktopPointer);
-    window.addEventListener('resize', sync, { passive: true });
+    window.addEventListener('resize', function () {
+        /* In resize a metà rotate: se lock, tieni card nascosta e riparte il timer reveal */
+        if (wantsLock()) beginLock(REVEAL_AFTER_LOCK_MS);
+        else beginUnlock();
+    }, { passive: true });
     window.addEventListener('orientationchange', coverDuringRotate);
+
+    if (window.screen && screen.orientation && typeof screen.orientation.addEventListener === 'function') {
+        try {
+            screen.orientation.addEventListener('change', coverDuringRotate);
+        } catch (eOr) {}
+    }
 
     try {
         var mo = new MutationObserver(function () {
