@@ -8,7 +8,7 @@
 <meta name="description" content="{% trans 'How to fill in Gadly’s CV generator and reach a 100/100 score before export.' %}">
 {% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429a">
+<link rel="stylesheet" href="{% static 'tools/css/text-tools.css' %}?v=20260429b">
 <style>
 @media (max-width: 480px) {
     body.cv-generator.help-page .site-main .container {
@@ -28,6 +28,11 @@
     body.cv-generator.help-page .site-main .container .help-section li,
     body.cv-generator.help-page .site-main .container .home-link-wrap {
         text-align: left !important;
+    }
+    body.dark-mode.cv-generator.help-page .site-main .container .tool-desc,
+    body.dark-mode.cv-generator.help-page .site-main .container p.tool-desc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
     }
 }
 </style>

@@ -1808,7 +1808,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=237">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=240">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
 <link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=20">
     {% if is_drose_site %}
@@ -2539,7 +2539,7 @@
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
-    <script src="{% static 'tools/js/mobile-tap.js' %}?v=48"></script>
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=51"></script>
     {% if not is_drose_site %}
     {% include "tools/includes/tool_quick_nav.html" %}
     {% endif %}
@@ -2878,6 +2878,17 @@
             });
             nav.querySelectorAll('a, .header-nav-logout-form button').forEach(function(el) {
                 el.addEventListener('click', function() {
+                    /* Navigazione / logout: non chiudere il menu prima —
+                       evita il flash della pagina corrente sotto il menu. */
+                    if (el.tagName === 'A') {
+                        var href = el.getAttribute('href') || '';
+                        if (href && href.charAt(0) !== '#' && href.indexOf('javascript:') !== 0) {
+                            return;
+                        }
+                    }
+                    if (el.closest && el.closest('.header-nav-logout-form')) {
+                        return;
+                    }
                     closeMenu();
                 });
             });

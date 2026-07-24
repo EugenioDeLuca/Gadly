@@ -1144,6 +1144,12 @@ body.text-tool.bio-gen .result-area .caption-pick {
     body.help-page:not(.dark-mode) .site-main .container .tool-desc {
         color: #666 !important;
     }
+    body.dark-mode.help-page .site-main .container .tool-desc,
+    body.dark-mode.cv-generator.help-page .site-main .container .tool-desc,
+    body.dark-mode.cv-generator.help-page .site-main .container p.tool-desc {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
     /* JSON Formatter mobile: container stessa larghezza textarea Word Counter */
     body.json-formatter .site-main .container {
         margin: 8px 6px 24px 6px !important;

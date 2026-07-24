@@ -27,7 +27,8 @@
         ".site-main .shortcuts-btn",
         ".site-main a.tool-btn",
         ".site-main .login-required-btn",
-        ".site-main .btn"
+        ".site-main .btn",
+        ".site-main .home-link-wrap .home-link"
     ].join(", ");
     var excludeSelector = [
         ".mobile-home-fab-link",
@@ -66,8 +67,21 @@
         } catch (e2) { /* ignore */ }
     }
 
+    function isHelpBackLink(el) {
+        return !!(
+            document.body &&
+            document.body.classList.contains("help-page") &&
+            el &&
+            el.classList &&
+            el.classList.contains("home-link") &&
+            el.closest &&
+            el.closest(".home-link-wrap")
+        );
+    }
+
     function setTapPressed(target, pressed) {
         if (!target || !target.classList) return;
+        var smoothHelp = isHelpBackLink(target);
         if (pressed) {
             if (tapReleaseTimer) {
                 clearTimeout(tapReleaseTimer);
@@ -78,6 +92,11 @@
             }
             tapPressTarget = target;
             tapPressStart = Date.now();
+            if (smoothHelp) {
+                /* Niente remove+reflow: lascia animare la transition CSS */
+                target.classList.add(tapClass);
+                return;
+            }
             target.classList.remove(tapClass);
             void target.offsetWidth;
             target.classList.add(tapClass);
@@ -85,7 +104,8 @@
             return;
         }
         var elapsed = Date.now() - tapPressStart;
-        var delay = Math.max(0, TAP_MIN_MS - elapsed);
+        var minMs = smoothHelp ? 0 : TAP_MIN_MS;
+        var delay = Math.max(0, minMs - elapsed);
         var releaseTarget = target;
         tapReleaseTimer = setTimeout(function () {
             requestAnimationFrame(function () {
@@ -186,6 +206,36 @@
             forceBlur(target);
         }, 0);
     });
+
+    /* Help: bottone "Torna al tool" — anima press+release fluidi, poi naviga */
+    var HELP_NAV_HOLD_MS = 220;
+    var HELP_NAV_RELEASE_MS = 220;
+    document.addEventListener("click", function (event) {
+        if (!document.body || !document.body.classList.contains("help-page")) return;
+        if (!event.target || !event.target.closest) return;
+        var link = event.target.closest(".site-main .home-link-wrap a.home-link");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (!href || href.charAt(0) === "#") return;
+        if (link.getAttribute("data-gadly-help-nav") === "1") return;
+
+        event.preventDefault();
+        if (typeof event.stopImmediatePropagation === "function") {
+            event.stopImmediatePropagation();
+        }
+
+        /* Tiene premuto (annulla release di pointerup) finché l’animazione è completa */
+        setTapPressed(link, true);
+        var elapsed = Date.now() - tapPressStart;
+        var waitHold = Math.max(80, HELP_NAV_HOLD_MS - elapsed);
+        setTimeout(function () {
+            setTapPressed(link, false);
+            setTimeout(function () {
+                link.setAttribute("data-gadly-help-nav", "1");
+                window.location.href = link.href;
+            }, HELP_NAV_RELEASE_MS);
+        }, waitHold);
+    }, true);
 
     setupNoFocusMobileControls();
     setInterval(setupNoFocusMobileControls, 1000);
