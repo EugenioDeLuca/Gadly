@@ -11,6 +11,7 @@
     /* 1100: in landscape molti telefoni superano 600px e sbloccavano l'overlay al refresh */
     var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 1100px)');
     var desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    var coarsePointer = window.matchMedia('(any-pointer: coarse)');
     var locked = false;
     var unlocking = false;
     var unlockTimer = null;
@@ -22,7 +23,13 @@
     var ROTATE_COVER_MS = 50;
 
     function isDesktop() {
-        return desktopPointer.matches;
+        /* Mouse desktop sì; DevTools “iPhone” / touch no (altrimenti overlay sparisce in emulation). */
+        if (!desktopPointer.matches) return false;
+        if (coarsePointer.matches) return false;
+        try {
+            if (navigator.maxTouchPoints > 0) return false;
+        } catch (eTp) {}
+        return true;
     }
 
     function wantsLock() {

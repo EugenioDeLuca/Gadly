@@ -22,9 +22,11 @@
 
 .cookie-banner p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 15.2px;
     flex: 1;
     min-width: 200px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 .cookie-banner a {

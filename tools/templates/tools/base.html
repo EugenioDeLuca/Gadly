@@ -41,7 +41,10 @@
             if (!window.matchMedia) return;
             var landscape = window.matchMedia("(orientation: landscape) and (max-height: 1100px)").matches ||
                 (window.innerWidth > window.innerHeight && window.innerHeight <= 1100);
-            var desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+            /* DevTools mobile: any-pointer coarse / touch → non è desktop reale */
+            var desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+                !window.matchMedia("(any-pointer: coarse)").matches &&
+                !(navigator.maxTouchPoints > 0);
             if (!landscape || desktop) return;
             var root = document.documentElement;
             var dark = false;
@@ -1826,7 +1829,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=240">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=23">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=24">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1842,7 +1845,7 @@
     </style>
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=34">
-    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=9">
+    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=10">
     <style id="gadly-cookie-banner-shield">
     /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body → niente frame “neutro” ai refresh rapidi. */
     #cookie-banner {
@@ -1851,7 +1854,7 @@
         opacity: 0 !important;
         pointer-events: none !important;
     }
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner {
+    html.gadly-cookie-prompt:not(.gadly-cookie-accepted):not(.gadly-orient-locked):not(.gadly-orient-settling) #cookie-banner {
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -1873,6 +1876,7 @@
         text-size-adjust: 100% !important;
     }
     @media (min-width: 769px) {
+        html.gadly-cookie-prompt:not(.gadly-cookie-accepted):not(.gadly-orient-locked):not(.gadly-orient-settling) #cookie-banner p,
         html.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner p {
             font-size: 15.2px !important;
         }
@@ -2601,7 +2605,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=18"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=19"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare

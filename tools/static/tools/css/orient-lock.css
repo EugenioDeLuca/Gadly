@@ -367,8 +367,8 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     }
 }
 
-/* Desktop (mouse): mai */
-@media (hover: hover) and (pointer: fine) {
+/* Desktop (mouse reale): mai. DevTools mobile ha often any-pointer:coarse → overlay ok */
+@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
     .gadly-orient-lock {
         display: none !important;
         pointer-events: none !important;
