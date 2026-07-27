@@ -11,6 +11,9 @@
         root.classList.remove("gadly-cookie-prompt");
         banner.setAttribute("hidden", "");
         banner.classList.add("hidden");
+        try {
+            window.dispatchEvent(new Event("gadly-cookie-state-change"));
+        } catch (eEv) { /* ignore */ }
     }
 
     function applyPromptState() {
@@ -61,6 +64,31 @@
 
     syncFromStorage();
     wireAccept();
+
+    function resetBannerTypography() {
+        banner.style.removeProperty("font-size");
+        banner.style.removeProperty("-webkit-text-size-adjust");
+        banner.style.removeProperty("text-size-adjust");
+        var p = banner.querySelector("p");
+        if (p) {
+            p.style.removeProperty("font-size");
+            p.style.removeProperty("-webkit-text-size-adjust");
+            p.style.removeProperty("text-size-adjust");
+        }
+        var acceptBtn = banner.querySelector(".cookie-banner-btn");
+        if (acceptBtn) {
+            acceptBtn.style.removeProperty("font-size");
+            acceptBtn.style.removeProperty("-webkit-text-size-adjust");
+            acceptBtn.style.removeProperty("text-size-adjust");
+        }
+    }
+
+    window.addEventListener("orientationchange", function () {
+        setTimeout(function () {
+            syncFromStorage();
+            resetBannerTypography();
+        }, 120);
+    });
 
     window.addEventListener("pageshow", function(ev) {
         if (!ev.persisted) return;

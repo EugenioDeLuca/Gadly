@@ -25,7 +25,14 @@
         return desktopPointer.matches;
     }
 
+    function cookiePromptActive() {
+        var root = document.documentElement;
+        return root.classList.contains('gadly-cookie-prompt') &&
+            !root.classList.contains('gadly-cookie-accepted');
+    }
+
     function wantsLock() {
+        if (cookiePromptActive()) return false;
         if (isDesktop()) return false;
         if (phoneLandscape.matches) return true;
         /* Fallback: width>height e altezza ancora “telefono” */
@@ -174,7 +181,11 @@
         if (document.body) {
             document.body.style.removeProperty('background-color');
             document.body.style.removeProperty('background-image');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('touch-action');
         }
+        root.style.removeProperty('overflow');
+        root.style.removeProperty('touch-action');
         root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
         if (el) el.classList.remove('gadly-orient-lock--layouting');
         locked = false;
@@ -232,6 +243,10 @@
     }
 
     function sync() {
+        if (cookiePromptActive()) {
+            if (isActiveLock()) beginUnlock();
+            return;
+        }
         if (isDesktop()) {
             if (isActiveLock()) beginUnlock();
             return;
@@ -309,6 +324,13 @@
     function boot() {
         if (booted) return;
         booted = true;
+        if (cookiePromptActive()) {
+            if (isActiveLock()) {
+                unlocking = true;
+                finishUnlock();
+            }
+            return;
+        }
         if (wantsLock() || window.__gadlyOrientEarlyLock ||
             document.documentElement.classList.contains('gadly-orient-locked')) {
             bootGraceUntil = Date.now() + 1200;
@@ -346,4 +368,8 @@
             });
         }
     } catch (eMo) {}
+
+    window.addEventListener('gadly-cookie-state-change', function () {
+        sync();
+    });
 })();

@@ -359,3 +359,24 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
         pointer-events: none !important;
     }
 }
+
+/* Banner cookie visibile: niente overlay rotazione né pagina nascosta */
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted) .gadly-orient-lock {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-locked body > *:not(.gadly-orient-lock),
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-settling body > *:not(.gadly-orient-lock) {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-locked,
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-settling,
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-locked body,
+html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-settling body {
+    overflow: auto !important;
+    touch-action: auto !important;
+}
