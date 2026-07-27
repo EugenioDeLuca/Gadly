@@ -25,14 +25,7 @@
         return desktopPointer.matches;
     }
 
-    function cookiePromptActive() {
-        var root = document.documentElement;
-        return root.classList.contains('gadly-cookie-prompt') &&
-            !root.classList.contains('gadly-cookie-accepted');
-    }
-
     function wantsLock() {
-        if (cookiePromptActive()) return false;
         if (isDesktop()) return false;
         if (phoneLandscape.matches) return true;
         /* Fallback: width>height e altezza ancora “telefono” */
@@ -193,6 +186,9 @@
         /* Resample dopo lo sblocco: evita di campionare il velo bianco/blu */
         requestAnimationFrame(function () {
             restoreChrome();
+            try {
+                window.dispatchEvent(new Event('gadly-orient-unlocked'));
+            } catch (eUnlockEv) { /* ignore */ }
         });
     }
 
@@ -243,10 +239,6 @@
     }
 
     function sync() {
-        if (cookiePromptActive()) {
-            if (isActiveLock()) beginUnlock();
-            return;
-        }
         if (isDesktop()) {
             if (isActiveLock()) beginUnlock();
             return;
@@ -324,13 +316,6 @@
     function boot() {
         if (booted) return;
         booted = true;
-        if (cookiePromptActive()) {
-            if (isActiveLock()) {
-                unlocking = true;
-                finishUnlock();
-            }
-            return;
-        }
         if (wantsLock() || window.__gadlyOrientEarlyLock ||
             document.documentElement.classList.contains('gadly-orient-locked')) {
             bootGraceUntil = Date.now() + 1200;
@@ -368,8 +353,4 @@
             });
         }
     } catch (eMo) {}
-
-    window.addEventListener('gadly-cookie-state-change', function () {
-        sync();
-    });
 })();

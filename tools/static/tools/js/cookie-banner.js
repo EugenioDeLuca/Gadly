@@ -11,9 +11,6 @@
         root.classList.remove("gadly-cookie-prompt");
         banner.setAttribute("hidden", "");
         banner.classList.add("hidden");
-        try {
-            window.dispatchEvent(new Event("gadly-cookie-state-change"));
-        } catch (eEv) { /* ignore */ }
     }
 
     function applyPromptState() {
@@ -65,33 +62,50 @@
     syncFromStorage();
     wireAccept();
 
-    function resetBannerTypography() {
-        banner.style.removeProperty("font-size");
-        banner.style.removeProperty("-webkit-text-size-adjust");
-        banner.style.removeProperty("text-size-adjust");
+    function lockBannerTypography() {
+        /* px fissi: dopo rotate iOS a volte gonfia rem/% sul banner */
+        banner.style.setProperty("-webkit-text-size-adjust", "100%", "important");
+        banner.style.setProperty("text-size-adjust", "100%", "important");
         var p = banner.querySelector("p");
         if (p) {
-            p.style.removeProperty("font-size");
-            p.style.removeProperty("-webkit-text-size-adjust");
-            p.style.removeProperty("text-size-adjust");
+            p.style.setProperty("font-size", "14.4px", "important");
+            p.style.setProperty("line-height", "1.4", "important");
+            p.style.setProperty("-webkit-text-size-adjust", "100%", "important");
+            p.style.setProperty("text-size-adjust", "100%", "important");
         }
         var acceptBtn = banner.querySelector(".cookie-banner-btn");
         if (acceptBtn) {
-            acceptBtn.style.removeProperty("font-size");
-            acceptBtn.style.removeProperty("-webkit-text-size-adjust");
-            acceptBtn.style.removeProperty("text-size-adjust");
+            acceptBtn.style.setProperty("font-size", "16px", "important");
+            acceptBtn.style.setProperty("-webkit-text-size-adjust", "100%", "important");
+            acceptBtn.style.setProperty("text-size-adjust", "100%", "important");
         }
     }
 
+    function onOrientationSettle() {
+        syncFromStorage();
+        if (root.classList.contains("gadly-cookie-prompt") &&
+            !root.classList.contains("gadly-cookie-accepted")) {
+            lockBannerTypography();
+        }
+    }
+
+    lockBannerTypography();
+
     window.addEventListener("orientationchange", function () {
-        setTimeout(function () {
-            syncFromStorage();
-            resetBannerTypography();
-        }, 120);
+        setTimeout(onOrientationSettle, 50);
+        setTimeout(onOrientationSettle, 200);
+        setTimeout(onOrientationSettle, 450);
     });
+    window.addEventListener("resize", function () {
+        if (window.matchMedia && window.matchMedia("(orientation: portrait)").matches) {
+            onOrientationSettle();
+        }
+    }, { passive: true });
+    window.addEventListener("gadly-orient-unlocked", onOrientationSettle);
 
     window.addEventListener("pageshow", function(ev) {
         if (!ev.persisted) return;
         syncFromStorage();
+        lockBannerTypography();
     });
 })();

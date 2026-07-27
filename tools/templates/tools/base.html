@@ -39,9 +39,6 @@
     (function () {
         try {
             if (!window.matchMedia) return;
-            try {
-                if (localStorage.getItem("gadly-cookies-accepted") !== "1") return;
-            } catch (eCookieEarly) { return; }
             var landscape = window.matchMedia("(orientation: landscape) and (max-height: 1100px)").matches ||
                 (window.innerWidth > window.innerHeight && window.innerHeight <= 1100);
             var desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -109,20 +106,6 @@
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-    }
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted) .gadly-orient-lock {
-        display: none !important;
-        pointer-events: none !important;
-    }
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-locked body > *:not(.gadly-orient-lock),
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-settling body > *:not(.gadly-orient-lock) {
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-locked body,
-    html.gadly-cookie-prompt:not(.gadly-cookie-accepted).gadly-orient-settling body {
-        overflow: auto !important;
     }
     </style>
     <style id="gadly-drose-entry-critical">
@@ -1830,7 +1813,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=240">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=21">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=22">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1846,7 +1829,7 @@
     </style>
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=34">
-    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=8">
+    <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=9">
     <style id="gadly-cookie-banner-shield">
     /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body → niente frame “neutro” ai refresh rapidi. */
     #cookie-banner {
@@ -2569,7 +2552,7 @@
                 {% endif %}
             </div>
         </footer>
-    <script src="{% static 'tools/js/cookie-banner.js' %}?v=15"></script>
+    <script src="{% static 'tools/js/cookie-banner.js' %}?v=16"></script>
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=7"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
@@ -2595,7 +2578,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=17"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=18"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
