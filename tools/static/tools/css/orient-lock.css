@@ -212,6 +212,21 @@ html.gadly-orient-settling .gadly-orient-lock {
     /* Stesso layout subito (evita “scatto” quando arriva il media landscape) */
     padding: 12px max(16px, env(safe-area-inset-right))
              12px max(16px, env(safe-area-inset-left));
+    z-index: 100000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Cookie banner non deve riapparire sopra/al posto dell’overlay in landscape */
+html.gadly-orient-locked #cookie-banner,
+html.gadly-orient-settling #cookie-banner,
+html.gadly-orient-locked.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner,
+html.gadly-orient-settling.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* Durante la rotazione OS: un solo colore pieno (= chrome sito, niente spacco) */

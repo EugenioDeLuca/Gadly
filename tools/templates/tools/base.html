@@ -106,6 +106,19 @@
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
+        z-index: 100000 !important;
+    }
+    /* Refresh in landscape + cookie prompt: il banner non deve vincere sull’overlay */
+    html.gadly-orient-locked #cookie-banner,
+    html.gadly-orient-settling #cookie-banner,
+    html.gadly-orient-locked.gadly-cookie-prompt #cookie-banner,
+    html.gadly-orient-settling.gadly-cookie-prompt #cookie-banner,
+    html.gadly-orient-locked.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner,
+    html.gadly-orient-settling.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
     </style>
     <style id="gadly-drose-entry-critical">
@@ -1813,7 +1826,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=240">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=22">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=23">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1865,6 +1878,16 @@
         }
     }
     html.gadly-cookie-accepted #cookie-banner {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    /* Landscape lock: sempre sopra/prioritario rispetto allo shield cookie */
+    html.gadly-orient-locked #cookie-banner,
+    html.gadly-orient-settling #cookie-banner,
+    html.gadly-orient-locked.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner,
+    html.gadly-orient-settling.gadly-cookie-prompt:not(.gadly-cookie-accepted) #cookie-banner {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -2552,7 +2575,7 @@
                 {% endif %}
             </div>
         </footer>
-    <script src="{% static 'tools/js/cookie-banner.js' %}?v=16"></script>
+    <script src="{% static 'tools/js/cookie-banner.js' %}?v=17"></script>
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=7"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}

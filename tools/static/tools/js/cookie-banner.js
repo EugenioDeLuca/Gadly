@@ -16,6 +16,13 @@
     function applyPromptState() {
         root.classList.remove("gadly-cookie-accepted");
         root.classList.add("gadly-cookie-prompt");
+        /* In landscape lock l’overlay ha priorità: non forzare il banner in vista */
+        if (root.classList.contains("gadly-orient-locked") ||
+            root.classList.contains("gadly-orient-settling")) {
+            banner.setAttribute("hidden", "");
+            banner.classList.add("hidden");
+            return;
+        }
         banner.removeAttribute("hidden");
         banner.classList.remove("hidden");
     }
@@ -101,7 +108,15 @@
             onOrientationSettle();
         }
     }, { passive: true });
-    window.addEventListener("gadly-orient-unlocked", onOrientationSettle);
+    window.addEventListener("gadly-orient-unlocked", function () {
+        syncFromStorage();
+        if (root.classList.contains("gadly-cookie-prompt") &&
+            !root.classList.contains("gadly-cookie-accepted")) {
+            banner.removeAttribute("hidden");
+            banner.classList.remove("hidden");
+            lockBannerTypography();
+        }
+    });
 
     window.addEventListener("pageshow", function(ev) {
         if (!ev.persisted) return;
