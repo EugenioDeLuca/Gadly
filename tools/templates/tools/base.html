@@ -176,8 +176,8 @@
             var orientLocked = root.classList.contains('gadly-orient-locked');
             if (!orientLocked && window.matchMedia) {
                 try {
-                    orientLocked = window.matchMedia('(orientation: landscape) and (max-height: 1100px)').matches &&
-                        !(window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+                    orientLocked = window.matchMedia('(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)').matches &&
+                        !(window.innerWidth > 1024 && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
                 } catch (eOrient) {
                     orientLocked = false;
                 }
