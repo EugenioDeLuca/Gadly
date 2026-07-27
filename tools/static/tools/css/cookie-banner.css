@@ -14,6 +14,8 @@
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     contain: layout;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 .cookie-banner.hidden {
@@ -22,7 +24,9 @@
 
 .cookie-banner p {
     margin: 0;
-    font-size: 15.2px;
+    /* px fissi: in landscape il width supera 768 e i rem/% “saltano” */
+    font-size: 14.4px;
+    line-height: 1.4;
     flex: 1;
     min-width: 200px;
     -webkit-text-size-adjust: 100%;
@@ -45,35 +49,42 @@
     border: none;
     border-radius: 8px;
     font-weight: 600;
+    font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 .cookie-banner-btn:hover {
     background: #e8f4fd;
 }
 
-@media (max-width: 768px) {
+/* Desktop vero: testo leggermente più grande */
+@media (min-width: 1025px) {
+    .cookie-banner p {
+        font-size: 15.2px;
+        min-width: 200px;
+        text-align: left;
+    }
+}
+
+/* Telefono (portrait o landscape stretto): layout colonna, stesso font 14.4px */
+@media (max-width: 1024px) {
     .cookie-banner {
         padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
         gap: 12px;
         flex-direction: column;
         align-items: stretch;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
     }
     .cookie-banner p {
         font-size: 14.4px;
         min-width: 0;
         text-align: center;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
     }
     .cookie-banner-btn {
         align-self: stretch;
         min-height: 44px;
         font-size: 16px;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
     }
 }

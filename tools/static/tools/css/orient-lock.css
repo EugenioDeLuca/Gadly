@@ -361,14 +361,14 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     background-color: #26201c !important;
 }
 
-@media (orientation: landscape) and (max-height: 1100px) {
+@media (orientation: landscape) and (max-height: 1100px) and (max-width: 1024px) {
     .gadly-orient-lock {
         display: flex !important;
     }
 }
 
-/* Desktop (mouse reale): mai. DevTools mobile ha often any-pointer:coarse → overlay ok */
-@media (hover: hover) and (pointer: fine) and (not (any-pointer: coarse)) {
+/* Desktop largo: mai. Viewport ≤1024 (DevTools device / telefono) → overlay ok */
+@media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
     .gadly-orient-lock {
         display: none !important;
         pointer-events: none !important;

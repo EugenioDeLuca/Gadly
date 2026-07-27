@@ -8,10 +8,9 @@
 (function () {
     if (!window.matchMedia) return;
 
-    /* 1100: in landscape molti telefoni superano 600px e sbloccavano l'overlay al refresh */
-    var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 1100px)');
+    /* 1024: viewport telefono anche in DevTools; esclude monitor desktop larghi */
+    var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)');
     var desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-    var coarsePointer = window.matchMedia('(any-pointer: coarse)');
     var locked = false;
     var unlocking = false;
     var unlockTimer = null;
@@ -23,21 +22,20 @@
     var ROTATE_COVER_MS = 50;
 
     function isDesktop() {
-        /* Mouse desktop sì; DevTools “iPhone” / touch no (altrimenti overlay sparisce in emulation). */
-        if (!desktopPointer.matches) return false;
-        if (coarsePointer.matches) return false;
         try {
-            if (navigator.maxTouchPoints > 0) return false;
-        } catch (eTp) {}
-        return true;
+            /* DevTools / telefono: viewport stretto → mai “desktop” per l’overlay */
+            if (window.innerWidth <= 1024) return false;
+        } catch (eW) {}
+        return desktopPointer.matches;
     }
 
     function wantsLock() {
         if (isDesktop()) return false;
         if (phoneLandscape.matches) return true;
-        /* Fallback: width>height e altezza ancora “telefono” */
         try {
-            return window.innerWidth > window.innerHeight && window.innerHeight <= 1100;
+            return window.innerWidth > window.innerHeight &&
+                window.innerHeight <= 1100 &&
+                window.innerWidth <= 1024;
         } catch (e) {
             return false;
         }
@@ -338,7 +336,6 @@
 
     bind(phoneLandscape);
     bind(desktopPointer);
-    bind(coarsePointer);
     window.addEventListener('resize', onResize, { passive: true });
     window.addEventListener('orientationchange', coverDuringRotate);
 
