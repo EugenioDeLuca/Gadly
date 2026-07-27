@@ -338,6 +338,7 @@
 
     bind(phoneLandscape);
     bind(desktopPointer);
+    bind(coarsePointer);
     window.addEventListener('resize', onResize, { passive: true });
     window.addEventListener('orientationchange', coverDuringRotate);
 
