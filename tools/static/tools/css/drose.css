@@ -1244,10 +1244,19 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
     display: none !important;
 }
 
-/* In layout ma invisibile: evita lo scatto hidden→visible */
+/* Sfondo lightbox subito; foto nascosta finché decode + fit sono pronti */
 .drose-works-lightbox.drose-works-lightbox--preparing {
-    opacity: 0 !important;
     pointer-events: none !important;
+}
+
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__content,
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__image,
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__video,
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__rotate-hint,
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__close,
+.drose-works-lightbox.drose-works-lightbox--preparing .drose-works-lightbox__nav {
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 body.drose-works-lightbox-open {
@@ -5195,18 +5204,36 @@ body.drose-works-lightbox-open.dark-mode.warm-tone {
 
 @media (min-width: 769px) {
     body.drose-works-page .drose-works-lightbox {
-        padding: 6px 12px 12px;
+        /* Frecce/chiudi sopra la foto: niente padding laterale che rimpicciolisce le orizzontali */
+        padding: 4px;
+        align-items: center;
+        justify-content: center;
     }
 
-    body.drose-works-page .drose-works-lightbox__content {
-        width: auto;
-        max-width: 99vw;
-        max-height: 99vh;
+    body.drose-works-page .drose-works-lightbox__content,
+    body.drose-works-page .drose-works-lightbox--photo .drose-works-lightbox__content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        background: transparent;
+        border-radius: 0;
+        overflow: hidden;
     }
 
     body.drose-works-page .drose-works-lightbox__image,
+    body.drose-works-page .drose-works-lightbox__video,
+    body.drose-works-page .drose-works-lightbox--photo .drose-works-lightbox__image {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        object-position: center;
+        border-radius: 0;
+    }
+
     body.drose-works-page .drose-works-lightbox__video {
-        max-width: 99vw;
-        max-height: 99vh;
+        background: #000;
     }
 }

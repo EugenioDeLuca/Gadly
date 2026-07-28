@@ -690,6 +690,46 @@
 
         var photoRevealToken = 0;
 
+        function runWhenDecoded(imgOrProbe, cb) {
+            if (!imgOrProbe) {
+                cb();
+                return;
+            }
+            if (typeof imgOrProbe.decode === "function") {
+                imgOrProbe.decode().then(cb).catch(cb);
+            } else {
+                cb();
+            }
+        }
+
+        function loadDecodedImage(url, onDone) {
+            if (!url) {
+                onDone(null);
+                return;
+            }
+            var probe = new Image();
+            probe.decoding = "async";
+            var done = false;
+            function finish(ok) {
+                if (done) return;
+                done = true;
+                onDone(ok && probe.naturalWidth ? probe : null);
+            }
+            function ready() {
+                runWhenDecoded(probe, function () {
+                    finish(!!probe.naturalWidth);
+                });
+            }
+            probe.onload = ready;
+            probe.onerror = function () {
+                finish(false);
+            };
+            probe.src = url;
+            if (probe.complete && probe.naturalWidth) {
+                ready();
+            }
+        }
+
         function upgradePhotoToFull(item, revealToken) {
             var img = getPhotoImg();
             if (!img || !item) return;
@@ -707,11 +747,7 @@
                 img.src = fullSrc;
             }
             probe.onload = function () {
-                if (typeof probe.decode === "function") {
-                    probe.decode().then(applyFull).catch(applyFull);
-                } else {
-                    applyFull();
-                }
+                runWhenDecoded(probe, applyFull);
             };
             probe.src = fullSrc;
             if (probe.complete && probe.naturalWidth) {
@@ -804,11 +840,7 @@
 
             function ready() {
                 if (revealToken !== photoRevealToken) return;
-                if (typeof probe.decode === "function") {
-                    probe.decode().then(commitSwap).catch(commitSwap);
-                } else {
-                    commitSwap();
-                }
+                runWhenDecoded(probe, commitSwap);
             }
 
             probe.onload = ready;
@@ -827,7 +859,7 @@
             }
         }
 
-        function showPhotoAt(index, onFirstPaint) {
+        function showPhotoAt(index, onFirstPaint, forcedBootSrc) {
             if (index < 0 || index >= photoItems.length) return;
 
             /* Swipe / frecce con lightbox già aperta: swap senza scatto */
@@ -883,26 +915,28 @@
                 prefetchPhotoNeighbors(index);
             }
 
-            img.onload = function () {
-                onFirstFrame();
-            };
+            function armFirstFrame() {
+                runWhenDecoded(img, onFirstFrame);
+            }
+
+            img.onload = armFirstFrame;
             img.onerror = function () {
                 if (fullSrc && img.src !== fullSrc) {
                     img.src = fullSrc;
                     return;
                 }
                 img.onerror = null;
-                onFirstFrame();
+                armFirstFrame();
             };
             img.alt = item.caption;
             img.hidden = false;
             img.style.opacity = "1";
             img.style.visibility = "visible";
 
-            var bootSrc = pickBootSrc(item);
+            var bootSrc = forcedBootSrc || pickBootSrc(item);
             img.src = bootSrc;
             if (img.complete && img.naturalWidth) {
-                onFirstFrame();
+                armFirstFrame();
             }
             updateNavButtons();
         }
@@ -946,24 +980,46 @@
             lightbox.classList.remove("drose-works-lightbox--video");
             document.documentElement.classList.remove("drose-lightbox-allow-rotate");
 
-            /* Visibile al layout ma opacity 0: chrome + foto già pronti, poi un solo reveal */
+            /* Sfondo subito; foto solo dopo decode del full (niente salto thumb→full) */
             forceFullscreenChrome();
             document.body.classList.add("drose-works-lightbox-open");
             lightbox.classList.add("drose-works-lightbox--preparing");
             lightbox.hidden = false;
 
             var item = photoItems[photoIndex];
-            showPhotoAt(photoIndex, function () {
-                void lightbox.offsetWidth;
-                requestAnimationFrame(function () {
-                    requestAnimationFrame(function () {
-                        lightbox.classList.remove("drose-works-lightbox--preparing");
-                        if (document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
-                            showRotateHint();
-                        }
-                        lightbox.focus();
-                        upgradePhotoToFull(item, photoRevealToken);
-                    });
+            var started = false;
+
+            function revealReady(bootSrc) {
+                if (started) return;
+                started = true;
+                showPhotoAt(
+                    photoIndex,
+                    function () {
+                        void lightbox.offsetWidth;
+                        requestAnimationFrame(function () {
+                            requestAnimationFrame(function () {
+                                lightbox.classList.remove("drose-works-lightbox--preparing");
+                                if (document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                                    showRotateHint();
+                                }
+                                lightbox.focus();
+                                if (bootSrc !== item.src) {
+                                    upgradePhotoToFull(item, photoRevealToken);
+                                }
+                            });
+                        });
+                    },
+                    bootSrc
+                );
+            }
+
+            loadDecodedImage(item.src, function (fullProbe) {
+                if (fullProbe) {
+                    revealReady(item.src);
+                    return;
+                }
+                loadDecodedImage(item.thumbSrc || item.src, function () {
+                    revealReady(item.thumbSrc || item.src);
                 });
             });
         }
@@ -1191,6 +1247,16 @@
             var tapPointerId = null;
 
             trigger.addEventListener("pointerdown", function (event) {
+                if (trigger.getAttribute("data-media-type") === "photo") {
+                    var warm = trigger.getAttribute("data-src");
+                    if (warm) {
+                        try {
+                            var warmImg = new Image();
+                            warmImg.decoding = "async";
+                            warmImg.src = warm;
+                        } catch (errWarm) { /* ignore */ }
+                    }
+                }
                 if (event.pointerType !== "touch" && event.pointerType !== "pen") return;
                 tapStartX = event.clientX;
                 tapStartY = event.clientY;
