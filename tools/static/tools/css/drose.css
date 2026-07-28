@@ -1475,6 +1475,12 @@ body.drose-works-lightbox-open .header-nav {
     touch-action: none;
 }
 
+/* Evita flash a scatti: nascosta finché decode + fit sono pronti */
+.drose-works-lightbox--photo.drose-works-lightbox--photo-opening .drose-works-lightbox__image {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
 .drose-works-lightbox--photo.drose-works-lightbox--zoomed {
     touch-action: none;
 }
@@ -4990,11 +4996,12 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
         bottom: max(20px, env(safe-area-inset-bottom));
     }
 
-    /* Durante la rotazione: nascondi la foto (sfondo pieno) → un solo reveal */
+    /* Durante la rotazione / apertura: nascondi la foto (sfondo pieno) → un solo reveal */
     body.drose-works-page .drose-works-lightbox.drose-works-lightbox--rotating .drose-works-lightbox__content,
     body.drose-works-page .drose-works-lightbox.drose-works-lightbox--rotating .drose-works-lightbox__image,
     body.drose-works-page .drose-works-lightbox.drose-works-lightbox--rotating .drose-works-lightbox__video,
-    body.drose-works-page .drose-works-lightbox.drose-works-lightbox--rotating .drose-works-lightbox__rotate-hint {
+    body.drose-works-page .drose-works-lightbox.drose-works-lightbox--rotating .drose-works-lightbox__rotate-hint,
+    body.drose-works-page .drose-works-lightbox.drose-works-lightbox--photo-opening .drose-works-lightbox__image {
         visibility: hidden !important;
         opacity: 0 !important;
     }

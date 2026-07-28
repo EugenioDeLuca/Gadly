@@ -169,9 +169,9 @@ body.drose-works-page .drose-works-media--video {
         <span class="drose-works-lightbox__rotate-hint-text">{% trans "In full screen, you can rotate your device" %}</span>
     </div>
     <div class="drose-works-lightbox__content">
-        <img class="drose-works-lightbox__image" alt="" decoding="sync" draggable="false" hidden>
+        <img class="drose-works-lightbox__image" alt="" decoding="async" draggable="false" hidden>
     </div>
 </div>
-<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=40"></script>
+<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=42"></script>
 {% endif %}
 {% endblock %}

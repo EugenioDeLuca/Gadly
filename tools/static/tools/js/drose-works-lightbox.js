@@ -60,7 +60,7 @@
             if (img) return img;
             img = document.createElement("img");
             img.className = "drose-works-lightbox__image";
-            img.decoding = "sync";
+            img.decoding = "async";
             img.draggable = false;
             content.appendChild(img);
             return img;
@@ -245,6 +245,9 @@
 
         function shouldShowRotateHint() {
             if (!rotateHint || !window.matchMedia) return false;
+            if (!document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                return false;
+            }
             try {
                 return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches ||
                     window.matchMedia("(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)").matches;
@@ -271,6 +274,85 @@
                 rotateHint.classList.remove("is-visible");
                 rotateHintTimer = null;
             }, 4200);
+        }
+
+        /* Foto verticale (H > W): niente rotazione. Orizzontale/quadra: ok. */
+        function mediaAllowsDeviceRotate(imgOrVideo) {
+            if (!imgOrVideo) return false;
+            var nw = imgOrVideo.naturalWidth || imgOrVideo.videoWidth || 0;
+            var nh = imgOrVideo.naturalHeight || imgOrVideo.videoHeight || 0;
+            if (!nw || !nh) return false;
+            return nw >= nh;
+        }
+
+        function syncRotatePermission() {
+            var root = document.documentElement;
+            if (lightbox.hidden) {
+                root.classList.remove("drose-lightbox-allow-rotate");
+                return false;
+            }
+
+            var allow = false;
+            if (activeType === "video") {
+                var video = content.querySelector(".drose-works-lightbox__video");
+                allow = video ? mediaAllowsDeviceRotate(video) : true;
+            } else if (activeType === "photo") {
+                allow = mediaAllowsDeviceRotate(getPhotoImg());
+            }
+
+            if (allow) {
+                root.classList.add("drose-lightbox-allow-rotate");
+            } else {
+                root.classList.remove("drose-lightbox-allow-rotate");
+            }
+
+            if (typeof window.gadlyOrientLockSync === "function") {
+                window.gadlyOrientLockSync();
+            }
+            return allow;
+        }
+
+        function setPhotoOpeningHidden(hidden) {
+            lightbox.classList.toggle("drose-works-lightbox--photo-opening", !!hidden);
+            var img = getPhotoImg();
+            if (!img) return;
+            if (hidden) {
+                img.style.opacity = "0";
+                img.style.visibility = "hidden";
+            } else {
+                img.style.opacity = "1";
+                img.style.visibility = "visible";
+            }
+        }
+
+        function revealPhotoReady() {
+            if (lightbox.hidden || activeType !== "photo") return;
+            var allow = syncRotatePermission();
+            fitLandscapePhoto();
+            /* Un solo paint: mostra la foto già dimensionata */
+            requestAnimationFrame(function () {
+                setPhotoOpeningHidden(false);
+                if (allow) {
+                    showRotateHint();
+                } else {
+                    hideRotateHint();
+                }
+            });
+        }
+
+        function whenPhotoDecoded(img, done) {
+            if (!img) {
+                done();
+                return;
+            }
+            var finish = function () {
+                done();
+            };
+            if (typeof img.decode === "function") {
+                img.decode().then(finish).catch(finish);
+                return;
+            }
+            finish();
         }
 
         function updateNavButtons() {
@@ -325,6 +407,7 @@
             photoIndex = -1;
             lightbox.hidden = true;
             lightbox.classList.remove("drose-works-lightbox--photo", "drose-works-lightbox--video");
+            lightbox.classList.remove("drose-works-lightbox--photo-opening", "drose-works-lightbox--rotating");
             hideNavButtons();
             document.body.classList.remove("drose-works-lightbox-open");
             document.documentElement.classList.remove("drose-lightbox-allow-rotate");
@@ -436,10 +519,7 @@
         }
 
         function scheduleLandscapePhotoFit() {
-            requestAnimationFrame(function () {
-                fitLandscapePhoto();
-                requestAnimationFrame(fitLandscapePhoto);
-            });
+            fitLandscapePhoto();
         }
 
         var rotateSettleTimer = null;
@@ -459,17 +539,22 @@
                 return;
             }
             resetPhotoZoom();
-            scheduleLandscapePhotoFit();
-            /* Un frame dopo il fit: togli il velo (una sola rivelazione) */
+            fitLandscapePhoto();
             requestAnimationFrame(function () {
-                requestAnimationFrame(function () {
-                    setLightboxRotating(false);
-                });
+                setLightboxRotating(false);
             });
         }
 
         function onLightboxOrientationChange() {
             if (lightbox.hidden) return;
+            /* Foto verticale: niente fit landscape, lascia lavorare l'orient-lock */
+            if (!document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                setLightboxRotating(false);
+                if (typeof window.gadlyOrientLockSync === "function") {
+                    window.gadlyOrientLockSync();
+                }
+                return;
+            }
             /* Copri subito: evita i due scatti portrait→landscape */
             setLightboxRotating(true);
             if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
@@ -497,6 +582,8 @@
             }, 80);
         }
 
+        var photoRevealToken = 0;
+
         function showPhotoAt(index) {
             if (index < 0 || index >= photoItems.length) return;
             photoIndex = index;
@@ -505,9 +592,19 @@
             resetPhotoZoom();
 
             var img = ensurePhotoImg();
+            var revealToken = ++photoRevealToken;
             clearLandscapePhotoFit(img);
+            hideRotateHint();
+            document.documentElement.classList.remove("drose-lightbox-allow-rotate");
+            setPhotoOpeningHidden(true);
+
+            function onPhotoReady() {
+                if (revealToken !== photoRevealToken) return;
+                revealPhotoReady();
+            }
+
             img.onload = function () {
-                scheduleLandscapePhotoFit();
+                whenPhotoDecoded(img, onPhotoReady);
             };
             img.onerror = function () {
                 if (item.thumbSrc && img.src !== item.thumbSrc) {
@@ -515,12 +612,15 @@
                     return;
                 }
                 img.onerror = null;
+                if (revealToken === photoRevealToken) {
+                    setPhotoOpeningHidden(false);
+                }
             };
             img.src = item.src;
             img.alt = item.caption;
             img.hidden = false;
             if (img.complete && img.naturalWidth) {
-                scheduleLandscapePhotoFit();
+                whenPhotoDecoded(img, onPhotoReady);
             }
             updateNavButtons();
         }
@@ -564,10 +664,9 @@
             lightbox.classList.remove("drose-works-lightbox--video");
             lightbox.hidden = false;
             document.body.classList.add("drose-works-lightbox-open");
-            document.documentElement.classList.add("drose-lightbox-allow-rotate");
+            document.documentElement.classList.remove("drose-lightbox-allow-rotate");
             forceFullscreenChrome();
             showPhotoAt(photoIndex);
-            showRotateHint();
             lightbox.focus();
         }
 
@@ -594,9 +693,19 @@
             lightbox.classList.remove("drose-works-lightbox--photo");
             lightbox.hidden = false;
             document.body.classList.add("drose-works-lightbox-open");
-            document.documentElement.classList.add("drose-lightbox-allow-rotate");
+            document.documentElement.classList.remove("drose-lightbox-allow-rotate");
             forceFullscreenChrome();
-            showRotateHint();
+            function onVideoMeta() {
+                if (syncRotatePermission()) {
+                    showRotateHint();
+                } else {
+                    hideRotateHint();
+                }
+            }
+            video.addEventListener("loadedmetadata", onVideoMeta);
+            if (video.readyState >= 1) {
+                onVideoMeta();
+            }
             lightbox.focus();
             video.play().catch(function () { /* ignore */ });
         }

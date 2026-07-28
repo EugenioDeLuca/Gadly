@@ -36,8 +36,13 @@
             body.classList.contains('drose-works-lightbox-open');
     }
 
+    function isDroseLightboxAllowRotate() {
+        return document.documentElement.classList.contains('drose-lightbox-allow-rotate');
+    }
+
     function wantsLock() {
-        if (isDroseLightboxOpen()) return false;
+        /* Lightbox aperta: lock solo se la foto/video NON permette la rotazione */
+        if (isDroseLightboxOpen() && isDroseLightboxAllowRotate()) return false;
         if (isDesktop()) return false;
         if (phoneLandscape.matches) return true;
         try {
