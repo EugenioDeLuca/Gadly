@@ -150,6 +150,7 @@
                 if (!src) return;
                 photoItems.push({
                     src: src,
+                    thumbSrc: trigger.getAttribute("data-thumb-src") || src,
                     caption: trigger.getAttribute("data-caption") || "",
                     trigger: trigger,
                 });
@@ -325,6 +326,13 @@
             resetPhotoZoom();
 
             var img = ensurePhotoImg();
+            img.onerror = function () {
+                if (item.thumbSrc && img.src !== item.thumbSrc) {
+                    img.src = item.thumbSrc;
+                    return;
+                }
+                img.onerror = null;
+            };
             img.src = item.src;
             img.alt = item.caption;
             img.hidden = false;
@@ -353,6 +361,7 @@
             if (photoIndex < 0) {
                 photoItems.push({
                     src: src,
+                    thumbSrc: trigger.getAttribute("data-thumb-src") || src,
                     caption: trigger.getAttribute("data-caption") || "",
                     trigger: trigger,
                 });
