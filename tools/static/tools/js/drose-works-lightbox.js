@@ -258,9 +258,18 @@
             if (!document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
                 return false;
             }
+            /* Già in landscape: non serve più il messaggio di rotazione */
             try {
-                return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches ||
-                    window.matchMedia("(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)").matches;
+                if (
+                    window.matchMedia(
+                        "(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)"
+                    ).matches
+                ) {
+                    return false;
+                }
+            } catch (errLand) { /* ignore */ }
+            try {
+                return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
             } catch (err) {
                 return false;
             }
@@ -621,6 +630,7 @@
             }
             resetPhotoZoom();
             if (isPhoneLandscape()) {
+                hideRotateHint();
                 fitLandscapePhoto();
             } else {
                 clearLandscapePhotoFit(getPhotoImg());
@@ -657,7 +667,8 @@
                 return;
             }
 
-            /* Solo ingresso landscape: velo breve mentre si rifà il fit */
+            /* Solo ingresso landscape: via il hint, velo breve mentre si rifà il fit */
+            hideRotateHint();
             setLightboxRotating(true);
             if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
             rotateSettleTimer = setTimeout(function () {

@@ -5129,6 +5129,13 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
         border: 2px solid #fbbf24 !important;
         background: #0f0f23 !important;
     }
+
+    /* Già ruotato: nascondi il suggerimento di rotazione */
+    body.drose-works-page .drose-works-lightbox__rotate-hint {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
 }
 
 @media (max-width: 768px) {
