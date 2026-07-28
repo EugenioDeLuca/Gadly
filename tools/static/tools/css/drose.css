@@ -4866,12 +4866,23 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
 }
 
 @media (max-width: 768px) {
+    body.drose-works-page .drose-works-grid,
+    body.drose-works-page .drose-works-grid > .drose-works-slot {
+        list-style: none !important;
+    }
+
     body.drose-works-page:not(.drose-works-manage-page) .drose-works-slot:not(.drose-works-slot--filled) {
         display: none !important;
     }
 
     body.drose-works-page:not(.drose-works-manage-page) .drose-works-slot--filled {
-        display: flex !important;
+        display: block !important;
+        position: relative !important;
+        width: min(338px, 100%) !important;
+        max-width: 338px !important;
+        min-height: 254px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     .drose-works-lightbox__close,
@@ -4984,17 +4995,17 @@ body.drose-works-lightbox-open {
 
 @media (min-width: 769px) {
     body.drose-works-page .drose-works-lightbox {
-        padding: 20px 28px 28px;
+        padding: 10px 18px 18px;
     }
 
     body.drose-works-page .drose-works-lightbox__content {
         width: min(98vw, 1600px);
-        max-height: 96vh;
+        max-height: 98vh;
     }
 
     body.drose-works-page .drose-works-lightbox__image,
     body.drose-works-page .drose-works-lightbox__video {
         max-width: min(98vw, 1600px);
-        max-height: 96vh;
+        max-height: 98vh;
     }
 }
