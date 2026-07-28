@@ -586,7 +586,28 @@
                 lightbox.style.setProperty("background-color", c, "important");
             } else {
                 lightbox.style.removeProperty("background-color");
+                document.documentElement.style.removeProperty("background-color");
+                document.documentElement.style.removeProperty("background-image");
+                if (document.body) {
+                    document.body.style.removeProperty("background-color");
+                    document.body.style.removeProperty("background-image");
+                }
             }
+        }
+
+        function deviceReportsLandscape() {
+            try {
+                if (window.screen && screen.orientation && typeof screen.orientation.type === "string") {
+                    return screen.orientation.type.indexOf("landscape") === 0;
+                }
+            } catch (errType) { /* ignore */ }
+            try {
+                var ang = window.orientation;
+                if (typeof ang === "number") {
+                    return ang === 90 || ang === -90;
+                }
+            } catch (errAng) { /* ignore */ }
+            return isPhoneLandscape();
         }
 
         function settleLightboxAfterRotate() {
@@ -604,14 +625,13 @@
             } else {
                 clearLandscapePhotoFit(getPhotoImg());
             }
-            /* Via il velo subito: niente attesa lunga al ritorno in verticale */
             setLightboxRotating(false);
         }
 
         function onLightboxOrientationChange() {
             if (lightbox.hidden) return;
-            setLightboxRotating(true);
             if (!document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                setLightboxRotating(true);
                 if (typeof window.gadlyOrientLockSync === "function") {
                     window.gadlyOrientLockSync();
                 }
@@ -627,33 +647,38 @@
                     } else if (typeof window.gadlyOrientLockSync === "function") {
                         window.gadlyOrientLockSync();
                     }
-                }, 160);
+                }, 100);
                 return;
             }
+
+            /* Ritorno in verticale: niente velo pieno — layout portrait subito */
+            if (!deviceReportsLandscape()) {
+                settleLightboxAfterRotate();
+                return;
+            }
+
+            /* Solo ingresso landscape: velo breve mentre si rifà il fit */
+            setLightboxRotating(true);
             if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
-            /* Ritorno in portrait: svela subito; landscape: fit breve */
             rotateSettleTimer = setTimeout(function () {
                 rotateSettleTimer = null;
                 settleLightboxAfterRotate();
-            }, isPhoneLandscape() ? 200 : 120);
+            }, 80);
         }
 
         function onLightboxViewportResize() {
             if (lightbox.hidden) return;
             if (lightbox.classList.contains("drose-works-lightbox--rotating")) {
                 if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
-                /* Se siamo già in verticale, togli il velo al primo resize utile */
-                if (!isPhoneLandscape()) {
-                    rotateSettleTimer = setTimeout(function () {
-                        rotateSettleTimer = null;
-                        settleLightboxAfterRotate();
-                    }, 60);
+                /* Verticale: via il velo al primo resize; landscape: fit breve */
+                if (!isPhoneLandscape() || !deviceReportsLandscape()) {
+                    settleLightboxAfterRotate();
                     return;
                 }
                 rotateSettleTimer = setTimeout(function () {
                     rotateSettleTimer = null;
                     settleLightboxAfterRotate();
-                }, 160);
+                }, 80);
                 return;
             }
             if (resizeFitTimer) clearTimeout(resizeFitTimer);
