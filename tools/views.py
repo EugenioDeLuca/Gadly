@@ -488,7 +488,7 @@ def drose_works(request):
         video_slots = []
         has_work_media = has_any_media
     else:
-        attach_gallery_thumb_urls(photo_items)
+        attach_gallery_thumb_urls(photo_items, inline=False)
         show_photos = works_media_type in ("", DroseWorkItem.MEDIA_PHOTO)
         show_videos = works_media_type in ("", DroseWorkItem.MEDIA_VIDEO)
         photo_slots = (
@@ -560,7 +560,7 @@ def drose_works_manage(request):
 
     photo_items = work_items_by_slot(DroseWorkItem.MEDIA_PHOTO)
     video_items = work_items_by_slot(DroseWorkItem.MEDIA_VIDEO)
-    attach_gallery_thumb_urls(photo_items)
+    attach_gallery_thumb_urls(photo_items, inline=False)
     photo_slots = [(n, photo_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_PHOTO)]
     video_slots = [(n, video_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_VIDEO)]
     preload_urls = []
