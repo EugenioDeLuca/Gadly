@@ -501,9 +501,6 @@ def drose_works(request):
             if show_videos
             else []
         )
-        # Public gallery should show only actual media, not empty placeholder slots.
-        photo_slots = [(n, item) for n, item in photo_slots if item]
-        video_slots = [(n, item) for n, item in video_slots if item]
         if works_media_type == DroseWorkItem.MEDIA_PHOTO:
             has_work_media = bool(photo_items)
         elif works_media_type == DroseWorkItem.MEDIA_VIDEO:

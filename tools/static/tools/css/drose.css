@@ -4866,6 +4866,10 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
 }
 
 @media (max-width: 768px) {
+    body.drose-works-page:not(.drose-works-manage-page) .drose-works-slot:not(.drose-works-slot--filled) {
+        display: none;
+    }
+
     .drose-works-lightbox__close,
     .drose-works-lightbox__nav {
         display: none !important;
@@ -4972,4 +4976,21 @@ html:has(body.drose-works-lightbox-open) body,
 body.drose-works-lightbox-open {
     background-color: #020408 !important;
     background-image: none !important;
+}
+
+@media (min-width: 769px) {
+    body.drose-works-page .drose-works-lightbox {
+        padding: 20px 28px 28px;
+    }
+
+    body.drose-works-page .drose-works-lightbox__content {
+        width: min(98vw, 1600px);
+        max-height: 96vh;
+    }
+
+    body.drose-works-page .drose-works-lightbox__image,
+    body.drose-works-page .drose-works-lightbox__video {
+        max-width: min(98vw, 1600px);
+        max-height: 96vh;
+    }
 }

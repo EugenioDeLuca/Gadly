@@ -80,7 +80,7 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
             <p class="drose-works-view-hint">{% if works_media_type == "photo" %}{% trans "Click any photo to open it full screen" %}{% elif works_media_type == "video" %}{% trans "Click any video to open it full screen" %}{% else %}{% trans "Click any photo or video to open it full screen" %}{% endif %}</p>
             {% endif %}
 
-            {% if photo_slots and works_media_type != "photo" or photo_slots and has_work_media %}
+            {% if photo_slots %}
             <section class="drose-section drose-works-section--photos" aria-labelledby="drose-works-photos-title">
                 {% if not works_media_type %}
                 <h2 id="drose-works-photos-title" class="drose-works-section-title"><span class="drose-works-section-ornament" aria-hidden="true"></span>{% trans "Photos" %}<span class="drose-works-section-ornament" aria-hidden="true"></span></h2>
@@ -105,7 +105,7 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
             </section>
             {% endif %}
 
-            {% if video_slots and works_media_type != "video" or video_slots and has_work_media %}
+            {% if video_slots %}
             <section class="drose-section drose-works-section--videos" aria-labelledby="drose-works-videos-title">
                 {% if not works_media_type %}
                 <h2 id="drose-works-videos-title" class="drose-works-section-title"><span class="drose-works-section-ornament" aria-hidden="true"></span>{% trans "Videos" %}<span class="drose-works-section-ornament" aria-hidden="true"></span></h2>
