@@ -95,7 +95,7 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
                     <article class="drose-card drose-works-slot drose-works-slot--photo{% if item %} drose-works-slot--filled{% endif %}" role="listitem" aria-label="{% blocktrans with num=slot %}Photo slot {{ num }}{% endblocktrans %}">
                         {% if item %}
                         <button type="button" class="drose-works-open drose-works-open--photo" data-media-type="photo" data-src="{{ item.file.url }}" data-thumb-src="{{ item.gallery_thumb_src|default:item.gallery_thumb_url|default:item.file.url }}" data-caption="{{ item.caption|default:'' }}" aria-label="{% if item.caption %}{{ item.caption }} — {% endif %}{% trans 'View photo full screen' %}">
-                            <img class="drose-works-media" src="{{ item.gallery_thumb_src|default:item.gallery_thumb_url|default:item.file.url }}" alt="" width="320" height="240" decoding="sync" fetchpriority="{% if forloop.counter <= 5 %}high{% else %}low{% endif %}">
+                            <img class="drose-works-media" src="{{ item.gallery_thumb_src|default:item.gallery_thumb_url|default:item.file.url }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="sync" fetchpriority="{% if forloop.counter <= 5 %}high{% else %}low{% endif %}">
                             <span class="drose-works-expand-icon" aria-hidden="true"></span>
                         </button>
                         {% endif %}
