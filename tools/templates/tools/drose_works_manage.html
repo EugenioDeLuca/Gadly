@@ -51,7 +51,7 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
                     <p class="drose-works-manage-slot__label">{% blocktrans with num=slot %}Photo {{ num }}{% endblocktrans %}</p>
                     <div class="drose-card drose-works-slot drose-works-slot--photo{% if item %} drose-works-slot--filled{% endif %}">
                         {% if item %}
-                        <img class="drose-works-media" src="{{ item.gallery_thumb_src|default:item.gallery_thumb_url|default:item.file.url }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="sync"{% if forloop.counter <= 5 %} fetchpriority="high"{% endif %}>
+                        <img class="drose-works-media" src="{{ item.file.url }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="sync"{% if forloop.counter <= 5 %} fetchpriority="high"{% endif %}>
                         {% endif %}
                     </div>
                     <form method="post" enctype="multipart/form-data" class="drose-works-manage-form">
