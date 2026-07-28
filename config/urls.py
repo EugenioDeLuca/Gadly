@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.templatetags.static import static as static_url
 from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
+from django.views.static import serve as media_serve
 from django.contrib.sitemaps.views import sitemap
 from tools import views as tools_views
 from tools.forms import VerifiedEmailAuthenticationForm
@@ -92,7 +93,15 @@ urlpatterns = [
     path('accounts/logout/', tools_views.DroseAwareLogoutView.as_view(), name='logout'),
     path('', include('tools.urls')),
 ]
-# Serve uploaded media in both local dev and the current Render setup.
-# Static files are handled by WhiteNoise, but user uploads under /media/
-# need an explicit Django route here or the URLs resolve to broken images.
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Local: django.conf.urls.static.static() only works with DEBUG=True.
+# Production (Render): serve /media/ explicitly, otherwise uploads 404.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        re_path(
+            r"^media/(?P<path>.*)$",
+            media_serve,
+            {"document_root": settings.MEDIA_ROOT},
+        ),
+    ]
