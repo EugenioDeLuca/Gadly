@@ -44,13 +44,13 @@ def write_photo_thumb(item) -> bool:
     """Create/replace JPEG thumb next to the original. Returns True on success."""
     if not item or item.media_type != DroseWorkItem.MEDIA_PHOTO or not item.file:
         return False
-    from PIL import Image as PILImage
+    from PIL import Image as PILImage, ImageOps
 
     storage = item.file.storage
     thumb_name = photo_thumb_storage_name(item.file.name)
     try:
         with item.file.open("rb") as src:
-            img = PILImage.open(src)
+            img = ImageOps.exif_transpose(PILImage.open(src))
             img.load()
         if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
             rgba = img.convert("RGBA")

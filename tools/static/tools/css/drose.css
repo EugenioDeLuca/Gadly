@@ -4867,7 +4867,11 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
 
 @media (max-width: 768px) {
     body.drose-works-page:not(.drose-works-manage-page) .drose-works-slot:not(.drose-works-slot--filled) {
-        display: none;
+        display: none !important;
+    }
+
+    body.drose-works-page:not(.drose-works-manage-page) .drose-works-slot--filled {
+        display: flex !important;
     }
 
     .drose-works-lightbox__close,
