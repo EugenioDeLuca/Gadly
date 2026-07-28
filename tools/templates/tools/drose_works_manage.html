@@ -23,7 +23,7 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
 {% include "tools/includes/drose_works_media_head.html" %}
 {% endblock %}
 {% block blockbots %}
-<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=17">
 {% endblock %}
 {% block content %}
 <div class="drose-landing">
@@ -51,7 +51,9 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
                     <p class="drose-works-manage-slot__label">{% blocktrans with num=slot %}Photo {{ num }}{% endblocktrans %}</p>
                     <div class="drose-card drose-works-slot drose-works-slot--photo{% if item %} drose-works-slot--filled{% endif %}">
                         {% if item %}
-                        <img class="drose-works-media" src="{{ item.file.url }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="sync"{% if forloop.counter <= 5 %} fetchpriority="high"{% endif %}>
+                        {% with thumb=item.gallery_thumb_url|default:item.file.url %}
+                        <img class="drose-works-media" src="{{ thumb }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="async"{% if forloop.counter <= 5 %} fetchpriority="high"{% endif %} style="background-image: url('{{ thumb }}'); background-size: cover; background-position: center;">
+                        {% endwith %}
                         {% endif %}
                     </div>
                     <form method="post" enctype="multipart/form-data" class="drose-works-manage-form">

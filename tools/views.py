@@ -508,8 +508,16 @@ def drose_works(request):
         else:
             has_work_media = has_any_media
 
-    # data-URI già in pagina: niente preload (evita doppio fetch / race)
     preload_urls = []
+    if not show_works_chooser:
+        for item in photo_items.values():
+            url = getattr(item, "gallery_thumb_url", None) or (
+                item.file.url if item and item.file else ""
+            )
+            if url and url not in preload_urls:
+                preload_urls.append(url)
+            if len(preload_urls) >= 8:
+                break
     return render(
         request,
         'tools/drose_works.html',
@@ -564,6 +572,14 @@ def drose_works_manage(request):
     photo_slots = [(n, photo_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_PHOTO)]
     video_slots = [(n, video_items.get(n)) for n in slot_range(DroseWorkItem.MEDIA_VIDEO)]
     preload_urls = []
+    for item in photo_items.values():
+        url = getattr(item, "gallery_thumb_url", None) or (
+            item.file.url if item and item.file else ""
+        )
+        if url and url not in preload_urls:
+            preload_urls.append(url)
+        if len(preload_urls) >= 8:
+            break
     return render(
         request,
         'tools/drose_works_manage.html',

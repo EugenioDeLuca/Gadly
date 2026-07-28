@@ -101,6 +101,8 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
     object-fit: cover !important;
     border-radius: 12px !important;
     pointer-events: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     background: rgba(0, 63, 127, 0.04) !important;
     animation: none !important;
     transition: none !important;

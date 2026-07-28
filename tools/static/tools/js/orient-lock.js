@@ -256,8 +256,20 @@
             if (isActiveLock()) beginUnlock();
             return;
         }
-        if (wantsLock()) beginLock(REVEAL_AFTER_LOCK_MS);
-        else beginUnlock();
+        if (wantsLock()) {
+            var root = document.documentElement;
+            if (
+                locked &&
+                root.classList.contains('gadly-orient-locked') &&
+                !root.classList.contains('gadly-orient-settling')
+            ) {
+                paintLockedChrome();
+                return;
+            }
+            beginLock(REVEAL_AFTER_LOCK_MS);
+        } else {
+            beginUnlock();
+        }
     }
 
     function coverDuringRotate() {
@@ -354,16 +366,21 @@
     }
 
     try {
+        /* Solo tema (class su body): ridipinge il colore. Niente sync() qui → evita loop. */
         var mo = new MutationObserver(function () {
             if (!document.documentElement.classList.contains('gadly-orient-locked')) return;
             paintLockedChrome();
         });
-        if (document.body) {
+        function observeThemeClass() {
+            if (!document.body) return;
             mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        }
+        if (document.body) {
+            observeThemeClass();
         } else {
-            document.addEventListener('DOMContentLoaded', function () {
-                mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-            });
+            document.addEventListener('DOMContentLoaded', observeThemeClass);
         }
     } catch (eMo) {}
+
+    window.gadlyOrientLockSync = sync;
 })();

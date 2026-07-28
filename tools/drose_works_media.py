@@ -12,17 +12,17 @@ PHOTO_EXTENSIONS = frozenset({"jpg", "jpeg", "png", "webp", "gif"})
 VIDEO_EXTENSIONS = frozenset({"mp4", "webm", "mov"})
 PHOTO_MAX_BYTES = 12 * 1024 * 1024
 VIDEO_MAX_BYTES = 80 * 1024 * 1024
-# Griglia galleria: thumb piccole + data-URI in pagina (niente race cache/decode al refresh)
-PHOTO_THUMB_MAX_EDGE = 1200
-PHOTO_THUMB_QUALITY = 86
+# Griglia galleria: thumb compatte (caricano subito, meno flash al refresh)
+PHOTO_THUMB_MAX_EDGE = 640
+PHOTO_THUMB_QUALITY = 82
 PHOTO_THUMB_INLINE_MAX_BYTES = 0
 
 
 def photo_thumb_storage_name(file_name: str) -> str:
     base = file_name.rsplit(".", 1)[0] if "." in (file_name or "") else (file_name or "thumb")
-    if base.endswith(".thumb.v2"):
+    if base.endswith(".thumb.v3"):
         return f"{base}.jpg"
-    return f"{base}.thumb.v2.jpg"
+    return f"{base}.thumb.v3.jpg"
 
 
 def delete_photo_thumb(item) -> None:

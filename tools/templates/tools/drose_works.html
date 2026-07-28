@@ -25,8 +25,12 @@ body.drose-works-page .drose-works-open--photo .drose-works-media {
     animation: none;
     transition: none;
 }
-body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
-    opacity: 0;
+body.drose-works-page .drose-works-open--video {
+    background-color: #0f172a;
+}
+body.drose-works-page .drose-works-media--video {
+    opacity: 1;
+    visibility: visible;
 }
 </style>
 {% endblock %}
@@ -34,7 +38,7 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
 {% include "tools/includes/drose_works_media_head.html" %}
 {% endblock %}
 {% block blockbots %}
-<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=16">
+<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=17">
 <script src="{% static 'tools/js/drose-works-mobile-chooser.js' %}?v=4"></script>
 {% endblock %}
 {% block content %}
@@ -94,10 +98,12 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
                     {% for slot, item in photo_slots %}
                     <article class="drose-card drose-works-slot drose-works-slot--photo{% if item %} drose-works-slot--filled{% endif %}" role="listitem" aria-label="{% blocktrans with num=slot %}Photo slot {{ num }}{% endblocktrans %}">
                         {% if item %}
-                        <button type="button" class="drose-works-open drose-works-open--photo" data-media-type="photo" data-src="{{ item.file.url }}" data-thumb-src="{{ item.file.url }}" data-caption="{{ item.caption|default:'' }}" aria-label="{% if item.caption %}{{ item.caption }} — {% endif %}{% trans 'View photo full screen' %}">
-                            <img class="drose-works-media" src="{{ item.file.url }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="sync" fetchpriority="{% if forloop.counter <= 5 %}high{% else %}low{% endif %}">
+                        {% with thumb=item.gallery_thumb_url|default:item.file.url %}
+                        <button type="button" class="drose-works-open drose-works-open--photo" data-media-type="photo" data-src="{{ item.file.url }}" data-thumb-src="{{ thumb }}" data-caption="{{ item.caption|default:'' }}" aria-label="{% if item.caption %}{{ item.caption }} — {% endif %}{% trans 'View photo full screen' %}" style="background-image: url('{{ thumb }}')">
+                            <img class="drose-works-media" src="{{ thumb }}" data-full-src="{{ item.file.url }}" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src=this.dataset.fullSrc;}" alt="" width="320" height="240" decoding="async" fetchpriority="{% if forloop.counter <= 5 %}high{% else %}low{% endif %}">
                             <span class="drose-works-expand-icon" aria-hidden="true"></span>
                         </button>
+                        {% endwith %}
                         {% endif %}
                     </article>
                     {% endfor %}
@@ -119,8 +125,8 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
                     {% for slot, item in video_slots %}
                     <article class="drose-card drose-works-slot drose-works-slot--video{% if item %} drose-works-slot--filled{% endif %}" role="listitem" aria-label="{% blocktrans with num=slot %}Video slot {{ num }}{% endblocktrans %}">
                         {% if item %}
-                        <button type="button" class="drose-works-open" data-media-type="video" data-src="{{ item.file.url }}" aria-label="{% trans 'Play video full screen' %}">
-                            <video class="drose-works-media drose-works-media--video" muted playsinline preload="{% if forloop.counter <= 3 %}auto{% else %}metadata{% endif %}" style="opacity:0" onloadeddata="this.style.opacity='1'" onerror="this.style.opacity='1'">
+                        <button type="button" class="drose-works-open drose-works-open--video" data-media-type="video" data-src="{{ item.file.url }}" aria-label="{% trans 'Play video full screen' %}">
+                            <video class="drose-works-media drose-works-media--video" muted playsinline preload="{% if forloop.counter <= 3 %}metadata{% else %}none{% endif %}">
                                 <source src="{{ item.file.url }}">
                             </video>
                             <span class="drose-works-play-icon" aria-hidden="true"></span>
@@ -140,15 +146,6 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
         {% endif %}
     </div>
 </div>
-{% if not show_works_chooser %}
-<script>
-(function () {
-    document.querySelectorAll(".drose-works-media--video").forEach(function (el) {
-        if (el.readyState >= 2) el.style.opacity = "1";
-    });
-})();
-</script>
-{% endif %}
 {% endblock %}
 {% block after_quick_nav %}
 {% if not show_works_chooser %}
@@ -175,6 +172,6 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
         <img class="drose-works-lightbox__image" alt="" decoding="sync" draggable="false" hidden>
     </div>
 </div>
-<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=33"></script>
+<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=40"></script>
 {% endif %}
 {% endblock %}

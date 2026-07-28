@@ -11,16 +11,17 @@
     display: none;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
              max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
-    background:
-        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.18), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.16), transparent 40%),
-        #ffffff;
+    /* Sfondo pieno omogeneo (niente gradienti / strisce) */
+    background: #ffffff;
     background-color: #ffffff;
+    background-image: none;
     color: #0f172a;
     text-align: center;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
 }
 
 .gadly-orient-lock__card {
@@ -94,11 +95,9 @@
 }
 
 .gadly-orient-lock--drose {
-    background:
-        radial-gradient(circle at 85% 100%, rgba(192, 0, 0, 0.12), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(192, 0, 0, 0.1), transparent 40%),
-        #ffffff;
+    background: #ffffff;
     background-color: #ffffff;
+    background-image: none;
 }
 
 .gadly-orient-lock__icon {
@@ -152,11 +151,9 @@
 
 /* ——— Dark mode ——— */
 body.dark-mode .gadly-orient-lock {
-    background:
-        radial-gradient(circle at 85% 100%, rgba(106, 13, 173, 0.55), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(53, 84, 166, 0.5), transparent 40%),
-        #0f0f23;
+    background: #0f0f23;
     background-color: #0f0f23;
+    background-image: none;
     color: #fff;
 }
 
@@ -174,11 +171,9 @@ body.dark-mode .gadly-orient-lock--drose .gadly-orient-lock__name {
 }
 
 body.dark-mode .gadly-orient-lock--drose {
-    background:
-        radial-gradient(circle at 85% 100%, rgba(220, 38, 38, 0.4), transparent 45%),
-        radial-gradient(circle at 15% 0%, rgba(239, 68, 68, 0.22), transparent 40%),
-        #0f0f23;
+    background: #0f0f23;
     background-color: #0f0f23;
+    background-image: none;
 }
 
 body.dark-mode .gadly-orient-lock__icon,
@@ -364,6 +359,52 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
 @media (orientation: landscape) and (max-height: 1100px) and (max-width: 1024px) {
     .gadly-orient-lock {
         display: flex !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+    }
+
+    body.dark-mode .gadly-orient-lock {
+        background: #0f0f23 !important;
+        background-color: #0f0f23 !important;
+        background-image: none !important;
+    }
+
+    body.warm-tone:not(.dark-mode) .gadly-orient-lock {
+        background: #fff8ec !important;
+        background-color: #fff8ec !important;
+        background-image: none !important;
+    }
+
+    body.dark-mode.warm-tone .gadly-orient-lock {
+        background: #26201c !important;
+        background-color: #26201c !important;
+        background-image: none !important;
+    }
+
+    /* Stesso colore su html/body subito (anche prima del lock JS), evita striscia */
+    html:not(.drose-lightbox-allow-rotate),
+    html:not(.drose-lightbox-allow-rotate) body {
+        background-color: #ffffff !important;
+        background-image: none !important;
+    }
+
+    html:not(.drose-lightbox-allow-rotate):has(body.dark-mode),
+    html:not(.drose-lightbox-allow-rotate) body.dark-mode {
+        background-color: #0f0f23 !important;
+        background-image: none !important;
+    }
+
+    html:not(.drose-lightbox-allow-rotate):has(body.warm-tone:not(.dark-mode)),
+    html:not(.drose-lightbox-allow-rotate) body.warm-tone:not(.dark-mode) {
+        background-color: #fff8ec !important;
+        background-image: none !important;
+    }
+
+    html:not(.drose-lightbox-allow-rotate):has(body.dark-mode.warm-tone),
+    html:not(.drose-lightbox-allow-rotate) body.dark-mode.warm-tone {
+        background-color: #26201c !important;
+        background-image: none !important;
     }
 }
 
