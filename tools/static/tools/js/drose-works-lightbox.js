@@ -164,11 +164,21 @@
             activeMedia = null;
         }
 
+        function lightboxThemeChromeColor() {
+            var body = document.body;
+            if (!body) return "#0f0f23";
+            if (body.classList.contains("dark-mode")) {
+                return body.classList.contains("warm-tone") ? "#26201c" : "#0f0f23";
+            }
+            return "#ffffff";
+        }
+
         function forceFullscreenChrome() {
             var head = document.head || document.getElementsByTagName("head")[0];
             if (!head) return;
             var root = document.documentElement;
             var body = document.body;
+            var chromeColor = lightboxThemeChromeColor();
             ["gadly-theme-color", "gadly-theme-color-light", "gadly-theme-color-dark"].forEach(function (id) {
                 var meta = document.getElementById(id);
                 if (!meta) {
@@ -177,7 +187,7 @@
                     meta.setAttribute("name", "theme-color");
                     head.insertBefore(meta, head.firstChild);
                 }
-                meta.setAttribute("content", "#000000");
+                meta.setAttribute("content", chromeColor);
                 meta.removeAttribute("media");
             });
             var apple = document.getElementById("gadly-apple-status-bar") ||
@@ -198,16 +208,16 @@
                 document.getElementById("gadly-viewport-chrome"),
             ].filter(Boolean);
             forcedChromeNodes.forEach(function (node) {
-                node.style.setProperty("background", "#000", "important");
-                node.style.setProperty("background-color", "#000", "important");
+                node.style.setProperty("background", chromeColor, "important");
+                node.style.setProperty("background-color", chromeColor, "important");
                 node.style.setProperty("background-image", "none", "important");
             });
-            root.style.setProperty("color-scheme", "dark", "important");
+            root.style.setProperty("color-scheme", body && body.classList.contains("dark-mode") ? "dark" : "light", "important");
             if (body) {
-                body.style.setProperty("--bg-header", "#000");
-                body.style.setProperty("--bg-card", "#000");
-                body.style.setProperty("--bg-body", "#000");
-                body.style.setProperty("color-scheme", "dark", "important");
+                body.style.setProperty("--bg-header", chromeColor);
+                body.style.setProperty("--bg-card", chromeColor);
+                body.style.setProperty("--bg-body", chromeColor);
+                body.style.setProperty("color-scheme", body.classList.contains("dark-mode") ? "dark" : "light", "important");
             }
             chromeWasForced = true;
         }
@@ -285,9 +295,9 @@
             return nw >= nh;
         }
 
-        function syncRotatePermission() {
+        function syncRotatePermission(opts) {
             var root = document.documentElement;
-            if (lightbox.hidden) {
+            if (lightbox.hidden && !(opts && opts.allowHidden)) {
                 root.classList.remove("drose-lightbox-allow-rotate");
                 return false;
             }
@@ -306,7 +316,7 @@
                 root.classList.remove("drose-lightbox-allow-rotate");
             }
 
-            if (typeof window.gadlyOrientLockSync === "function") {
+            if (!(opts && opts.skipOrientSync) && typeof window.gadlyOrientLockSync === "function") {
                 window.gadlyOrientLockSync();
             }
             return allow;
@@ -325,34 +335,26 @@
             }
         }
 
-        function revealPhotoReady() {
-            if (lightbox.hidden || activeType !== "photo") return;
-            var allow = syncRotatePermission();
-            fitLandscapePhoto();
-            /* Un solo paint: mostra la foto già dimensionata */
-            requestAnimationFrame(function () {
-                setPhotoOpeningHidden(false);
+        function settleVisiblePhoto(opts) {
+            if (lightbox.hidden && !(opts && opts.allowHidden)) return;
+            if (activeType !== "photo") return;
+            var allow = syncRotatePermission({
+                allowHidden: !!(opts && opts.allowHidden),
+                skipOrientSync: !!(opts && opts.skipOrientSync),
+            });
+            if (isPhoneLandscape()) {
+                fitLandscapePhoto();
+            } else {
+                clearLandscapePhotoFit(getPhotoImg());
+            }
+            if (!(opts && opts.silentHint)) {
                 if (allow) {
                     showRotateHint();
                 } else {
                     hideRotateHint();
                 }
-            });
-        }
-
-        function whenPhotoDecoded(img, done) {
-            if (!img) {
-                done();
-                return;
             }
-            var finish = function () {
-                done();
-            };
-            if (typeof img.decode === "function") {
-                img.decode().then(finish).catch(finish);
-                return;
-            }
-            finish();
+            return allow;
         }
 
         function updateNavButtons() {
@@ -387,6 +389,12 @@
             if (img && !img.parentNode) {
                 content.appendChild(img);
             }
+            if (content) {
+                content.style.removeProperty("background-image");
+                content.style.removeProperty("background-size");
+                content.style.removeProperty("background-position");
+                content.style.removeProperty("background-repeat");
+            }
         }
 
         function closeLightbox() {
@@ -407,7 +415,15 @@
             photoIndex = -1;
             lightbox.hidden = true;
             lightbox.classList.remove("drose-works-lightbox--photo", "drose-works-lightbox--video");
-            lightbox.classList.remove("drose-works-lightbox--photo-opening", "drose-works-lightbox--rotating");
+            lightbox.classList.remove(
+                "drose-works-lightbox--photo-opening",
+                "drose-works-lightbox--rotating",
+                "drose-works-lightbox--preparing"
+            );
+            document.documentElement.classList.remove("drose-lb-rotating");
+            if (document.body) {
+                document.body.classList.remove("drose-lb-rotating");
+            }
             hideNavButtons();
             document.body.classList.remove("drose-works-lightbox-open");
             document.documentElement.classList.remove("drose-lightbox-allow-rotate");
@@ -457,18 +473,8 @@
             }
         }
 
-        function fitLandscapePhoto() {
-            var img = getPhotoImg();
-            if (!img || img.hidden || activeType !== "photo" || lightbox.hidden) return;
-
-            if (!isPhoneLandscape()) {
-                clearLandscapePhotoFit(img);
-                return;
-            }
-
-            var nw = img.naturalWidth || 0;
-            var nh = img.naturalHeight || 0;
-            if (!nw || !nh) return;
+        function computeLandscapeFitSize(nw, nh) {
+            if (!nw || !nh || !isPhoneLandscape()) return null;
 
             /* Area davvero visibile (DevTools / browser chrome), non clientHeight gonfiato */
             var viewW = window.innerWidth || 0;
@@ -486,28 +492,52 @@
 
             var borderX = 4;
             var borderY = 4;
+            var img = getPhotoImg();
+            if (img) {
+                try {
+                    var imgStyle = window.getComputedStyle(img);
+                    borderX =
+                        (parseFloat(imgStyle.borderLeftWidth) || 0) +
+                        (parseFloat(imgStyle.borderRightWidth) || 0);
+                    borderY =
+                        (parseFloat(imgStyle.borderTopWidth) || 0) +
+                        (parseFloat(imgStyle.borderBottomWidth) || 0);
+                } catch (errBorder) { /* ignore */ }
+            }
+
+            /* Margini minimi + safe-area: quasi schermo intero, foto intera, bordo visibile */
+            var safeL = 0;
+            var safeR = 0;
+            var safeT = 0;
+            var safeB = 0;
             try {
-                var imgStyle = window.getComputedStyle(img);
-                borderX =
-                    (parseFloat(imgStyle.borderLeftWidth) || 0) +
-                    (parseFloat(imgStyle.borderRightWidth) || 0);
-                borderY =
-                    (parseFloat(imgStyle.borderTopWidth) || 0) +
-                    (parseFloat(imgStyle.borderBottomWidth) || 0);
-            } catch (errBorder) { /* ignore */ }
-
-            /* Margine fisso sopra/sotto/lati: bordo e foto restano dentro lo schermo */
-            var marginX = 32;
-            var marginY = 28;
-            var availW = Math.max(1, viewW - marginX * 2 - borderX);
-            var availH = Math.max(1, viewH - marginY * 2 - borderY);
+                var padProbe = document.createElement("div");
+                padProbe.style.cssText =
+                    "position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;" +
+                    "padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);";
+                document.documentElement.appendChild(padProbe);
+                var ps = window.getComputedStyle(padProbe);
+                safeT = parseFloat(ps.paddingTop) || 0;
+                safeR = parseFloat(ps.paddingRight) || 0;
+                safeB = parseFloat(ps.paddingBottom) || 0;
+                safeL = parseFloat(ps.paddingLeft) || 0;
+                document.documentElement.removeChild(padProbe);
+            } catch (errPad) { /* ignore */ }
+            var edge = 6;
+            var availW = Math.max(1, viewW - safeL - safeR - edge * 2 - borderX);
+            var availH = Math.max(1, viewH - safeT - safeB - edge * 2 - borderY);
             var scale = Math.min(availW / nw, availH / nh);
-            var w = Math.max(1, Math.floor(nw * scale));
-            var h = Math.max(1, Math.floor(nh * scale));
+            return {
+                w: Math.max(1, Math.floor(nw * scale)),
+                h: Math.max(1, Math.floor(nh * scale)),
+            };
+        }
 
+        function applyLandscapeFitSize(img, size) {
+            if (!img || !size) return;
             img.style.boxSizing = "content-box";
-            img.style.width = w + "px";
-            img.style.height = h + "px";
+            img.style.width = size.w + "px";
+            img.style.height = size.h + "px";
             img.style.maxWidth = "none";
             img.style.maxHeight = "none";
             if (content) {
@@ -516,6 +546,20 @@
                 content.style.maxWidth = "none";
                 content.style.maxHeight = "none";
             }
+        }
+
+        function fitLandscapePhoto() {
+            var img = getPhotoImg();
+            if (!img || img.hidden || activeType !== "photo" || lightbox.hidden) return;
+
+            if (!isPhoneLandscape()) {
+                clearLandscapePhotoFit(img);
+                return;
+            }
+
+            var size = computeLandscapeFitSize(img.naturalWidth || 0, img.naturalHeight || 0);
+            if (!size) return;
+            applyLandscapeFitSize(img, size);
         }
 
         function scheduleLandscapePhotoFit() {
@@ -527,6 +571,22 @@
 
         function setLightboxRotating(on) {
             lightbox.classList.toggle("drose-works-lightbox--rotating", !!on);
+            document.documentElement.classList.toggle("drose-lb-rotating", !!on);
+            if (document.body) {
+                document.body.classList.toggle("drose-lb-rotating", !!on);
+            }
+            if (on) {
+                var c = lightboxThemeChromeColor();
+                document.documentElement.style.setProperty("background-color", c, "important");
+                document.documentElement.style.setProperty("background-image", "none", "important");
+                if (document.body) {
+                    document.body.style.setProperty("background-color", c, "important");
+                    document.body.style.setProperty("background-image", "none", "important");
+                }
+                lightbox.style.setProperty("background-color", c, "important");
+            } else {
+                lightbox.style.removeProperty("background-color");
+            }
         }
 
         function settleLightboxAfterRotate() {
@@ -539,40 +599,61 @@
                 return;
             }
             resetPhotoZoom();
-            fitLandscapePhoto();
-            requestAnimationFrame(function () {
-                setLightboxRotating(false);
-            });
+            if (isPhoneLandscape()) {
+                fitLandscapePhoto();
+            } else {
+                clearLandscapePhotoFit(getPhotoImg());
+            }
+            /* Via il velo subito: niente attesa lunga al ritorno in verticale */
+            setLightboxRotating(false);
         }
 
         function onLightboxOrientationChange() {
             if (lightbox.hidden) return;
-            /* Foto verticale: niente fit landscape, lascia lavorare l'orient-lock */
+            setLightboxRotating(true);
             if (!document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
-                setLightboxRotating(false);
                 if (typeof window.gadlyOrientLockSync === "function") {
                     window.gadlyOrientLockSync();
                 }
+                if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
+                rotateSettleTimer = setTimeout(function () {
+                    rotateSettleTimer = null;
+                    if (lightbox.hidden) {
+                        setLightboxRotating(false);
+                        return;
+                    }
+                    if (!isPhoneLandscape()) {
+                        setLightboxRotating(false);
+                    } else if (typeof window.gadlyOrientLockSync === "function") {
+                        window.gadlyOrientLockSync();
+                    }
+                }, 160);
                 return;
             }
-            /* Copri subito: evita i due scatti portrait→landscape */
-            setLightboxRotating(true);
             if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
+            /* Ritorno in portrait: svela subito; landscape: fit breve */
             rotateSettleTimer = setTimeout(function () {
                 rotateSettleTimer = null;
                 settleLightboxAfterRotate();
-            }, 320);
+            }, isPhoneLandscape() ? 200 : 120);
         }
 
         function onLightboxViewportResize() {
             if (lightbox.hidden) return;
-            /* Durante la rotazione gestisce orientationchange; qui solo resize “fermi” */
             if (lightbox.classList.contains("drose-works-lightbox--rotating")) {
                 if (rotateSettleTimer) clearTimeout(rotateSettleTimer);
+                /* Se siamo già in verticale, togli il velo al primo resize utile */
+                if (!isPhoneLandscape()) {
+                    rotateSettleTimer = setTimeout(function () {
+                        rotateSettleTimer = null;
+                        settleLightboxAfterRotate();
+                    }, 60);
+                    return;
+                }
                 rotateSettleTimer = setTimeout(function () {
                     rotateSettleTimer = null;
                     settleLightboxAfterRotate();
-                }, 280);
+                }, 160);
                 return;
             }
             if (resizeFitTimer) clearTimeout(resizeFitTimer);
@@ -584,8 +665,157 @@
 
         var photoRevealToken = 0;
 
-        function showPhotoAt(index) {
+        function upgradePhotoToFull(item, revealToken) {
+            var img = getPhotoImg();
+            if (!img || !item) return;
+            var fullSrc = item.src;
+            var thumbSrc = item.thumbSrc || fullSrc;
+            if (!fullSrc || thumbSrc === fullSrc) return;
+            if (img.getAttribute("src") === fullSrc) return;
+
+            var probe = new Image();
+            probe.decoding = "async";
+            function applyFull() {
+                if (revealToken !== photoRevealToken) return;
+                if (img.getAttribute("src") === fullSrc) return;
+                /* Swap senza toccare width/height/fit */
+                img.src = fullSrc;
+            }
+            probe.onload = function () {
+                if (typeof probe.decode === "function") {
+                    probe.decode().then(applyFull).catch(applyFull);
+                } else {
+                    applyFull();
+                }
+            };
+            probe.src = fullSrc;
+            if (probe.complete && probe.naturalWidth) {
+                probe.onload();
+            }
+        }
+
+        function pickBootSrc(item) {
+            var fullSrc = item.src;
+            var thumbSrc = item.thumbSrc || fullSrc;
+            try {
+                var cachedFull = new Image();
+                cachedFull.src = fullSrc;
+                if (cachedFull.complete && cachedFull.naturalWidth) {
+                    return fullSrc;
+                }
+            } catch (errCache) { /* ignore */ }
+            return thumbSrc;
+        }
+
+        function prefetchPhotoNeighbors(centerIndex) {
+            [centerIndex - 1, centerIndex + 1].forEach(function (i) {
+                if (i < 0 || i >= photoItems.length) return;
+                var it = photoItems[i];
+                if (!it) return;
+                try {
+                    var a = new Image();
+                    a.decoding = "async";
+                    a.src = it.thumbSrc || it.src;
+                    var b = new Image();
+                    b.decoding = "async";
+                    b.src = it.src;
+                } catch (errPrefetch) { /* ignore */ }
+            });
+        }
+
+        /**
+         * Cambio foto (swipe/frecce): lascia la foto attuale finché la nuova è decodificata,
+         * poi applica src (+ size landscape) in un solo frame.
+         */
+        function swapPhotoAt(index) {
             if (index < 0 || index >= photoItems.length) return;
+            var item = photoItems[index];
+            if (!item) return;
+            var img = ensurePhotoImg();
+            if (!img) return;
+
+            photoIndex = index;
+            lastFocus = item.trigger;
+            resetPhotoZoom();
+            hideRotateHint();
+            updateNavButtons();
+
+            var revealToken = ++photoRevealToken;
+            var bootSrc = pickBootSrc(item);
+            var probe = new Image();
+            probe.decoding = "async";
+
+            function commitSwap() {
+                if (revealToken !== photoRevealToken) return;
+                var nw = probe.naturalWidth || 0;
+                var nh = probe.naturalHeight || 0;
+                var landSize = computeLandscapeFitSize(nw, nh);
+
+                img.onload = null;
+                img.onerror = null;
+                img.alt = item.caption;
+
+                if (landSize) {
+                    applyLandscapeFitSize(img, landSize);
+                } else {
+                    clearLandscapePhotoFit(img);
+                }
+
+                img.src = bootSrc;
+
+                var allow = nw && nh ? nw >= nh : false;
+                if (allow) {
+                    document.documentElement.classList.add("drose-lightbox-allow-rotate");
+                    showRotateHint();
+                } else {
+                    document.documentElement.classList.remove("drose-lightbox-allow-rotate");
+                }
+
+                if (bootSrc !== item.src) {
+                    upgradePhotoToFull(item, revealToken);
+                }
+                prefetchPhotoNeighbors(index);
+            }
+
+            function ready() {
+                if (revealToken !== photoRevealToken) return;
+                if (typeof probe.decode === "function") {
+                    probe.decode().then(commitSwap).catch(commitSwap);
+                } else {
+                    commitSwap();
+                }
+            }
+
+            probe.onload = ready;
+            probe.onerror = function () {
+                if (bootSrc !== item.src) {
+                    bootSrc = item.src;
+                    probe.onload = ready;
+                    probe.src = bootSrc;
+                    return;
+                }
+                commitSwap();
+            };
+            probe.src = bootSrc;
+            if (probe.complete && probe.naturalWidth) {
+                ready();
+            }
+        }
+
+        function showPhotoAt(index, onFirstPaint) {
+            if (index < 0 || index >= photoItems.length) return;
+
+            /* Swipe / frecce con lightbox già aperta: swap senza scatto */
+            if (
+                typeof onFirstPaint !== "function" &&
+                !lightbox.hidden &&
+                activeType === "photo" &&
+                !lightbox.classList.contains("drose-works-lightbox--preparing")
+            ) {
+                swapPhotoAt(index);
+                return;
+            }
+
             photoIndex = index;
             var item = photoItems[index];
             lastFocus = item.trigger;
@@ -593,34 +823,61 @@
 
             var img = ensurePhotoImg();
             var revealToken = ++photoRevealToken;
-            clearLandscapePhotoFit(img);
+            var fullSrc = item.src;
             hideRotateHint();
             document.documentElement.classList.remove("drose-lightbox-allow-rotate");
-            setPhotoOpeningHidden(true);
+            setPhotoOpeningHidden(false);
+            if (content) {
+                content.style.removeProperty("background-image");
+                content.style.removeProperty("background-size");
+                content.style.removeProperty("background-position");
+                content.style.removeProperty("background-repeat");
+            }
 
-            function onPhotoReady() {
-                if (revealToken !== photoRevealToken) return;
-                revealPhotoReady();
+            if (isPhoneLandscape()) {
+                clearLandscapePhotoFit(img);
+            }
+
+            var painted = false;
+            function onFirstFrame() {
+                if (revealToken !== photoRevealToken || painted) return;
+                painted = true;
+                settleVisiblePhoto({
+                    allowHidden: true,
+                    silentHint: true,
+                    skipOrientSync: true,
+                });
+                if (typeof onFirstPaint === "function") {
+                    onFirstPaint();
+                } else {
+                    if (document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                        showRotateHint();
+                    }
+                    upgradePhotoToFull(item, revealToken);
+                }
+                prefetchPhotoNeighbors(index);
             }
 
             img.onload = function () {
-                whenPhotoDecoded(img, onPhotoReady);
+                onFirstFrame();
             };
             img.onerror = function () {
-                if (item.thumbSrc && img.src !== item.thumbSrc) {
-                    img.src = item.thumbSrc;
+                if (fullSrc && img.src !== fullSrc) {
+                    img.src = fullSrc;
                     return;
                 }
                 img.onerror = null;
-                if (revealToken === photoRevealToken) {
-                    setPhotoOpeningHidden(false);
-                }
+                onFirstFrame();
             };
-            img.src = item.src;
             img.alt = item.caption;
             img.hidden = false;
+            img.style.opacity = "1";
+            img.style.visibility = "visible";
+
+            var bootSrc = pickBootSrc(item);
+            img.src = bootSrc;
             if (img.complete && img.naturalWidth) {
-                whenPhotoDecoded(img, onPhotoReady);
+                onFirstFrame();
             }
             updateNavButtons();
         }
@@ -662,12 +919,28 @@
             activeMedia = null;
             lightbox.classList.add("drose-works-lightbox--photo");
             lightbox.classList.remove("drose-works-lightbox--video");
-            lightbox.hidden = false;
-            document.body.classList.add("drose-works-lightbox-open");
             document.documentElement.classList.remove("drose-lightbox-allow-rotate");
+
+            /* Visibile al layout ma opacity 0: chrome + foto già pronti, poi un solo reveal */
             forceFullscreenChrome();
-            showPhotoAt(photoIndex);
-            lightbox.focus();
+            document.body.classList.add("drose-works-lightbox-open");
+            lightbox.classList.add("drose-works-lightbox--preparing");
+            lightbox.hidden = false;
+
+            var item = photoItems[photoIndex];
+            showPhotoAt(photoIndex, function () {
+                void lightbox.offsetWidth;
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        lightbox.classList.remove("drose-works-lightbox--preparing");
+                        if (document.documentElement.classList.contains("drose-lightbox-allow-rotate")) {
+                            showRotateHint();
+                        }
+                        lightbox.focus();
+                        upgradePhotoToFull(item, photoRevealToken);
+                    });
+                });
+            });
         }
 
         function openVideoLightbox(trigger) {

@@ -1244,14 +1244,71 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
     display: none !important;
 }
 
+/* In layout ma invisibile: evita lo scatto hidden→visible */
+.drose-works-lightbox.drose-works-lightbox--preparing {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 body.drose-works-lightbox-open {
     overflow: hidden;
-    background: #000;
+    background: #0f0f23;
+}
+
+/* Sotto la lightbox non deve restare la pagina: altrimenti in rotazione si vede “Back to…” */
+body.drose-works-lightbox-open > *:not(#drose-works-lightbox):not(.gadly-orient-lock) {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 html.drose-lightbox-allow-rotate,
 html.drose-lightbox-allow-rotate body {
-    background: #000 !important;
+    background: #0f0f23 !important;
+}
+
+/* Velo pieno durante la rotazione OS — stessi colori del tema (niente blu diverso) */
+html.drose-lb-rotating,
+html.drose-lb-rotating body,
+body.drose-lb-rotating {
+    background-color: #0f0f23 !important;
+    background-image: none !important;
+    overflow: hidden !important;
+}
+
+html.drose-lb-rotating:has(body:not(.dark-mode)),
+html.drose-lb-rotating body:not(.dark-mode),
+body.drose-lb-rotating:not(.dark-mode) {
+    background-color: #ffffff !important;
+}
+
+html.drose-lb-rotating:has(body.dark-mode.warm-tone),
+html.drose-lb-rotating body.dark-mode.warm-tone,
+body.drose-lb-rotating.dark-mode.warm-tone {
+    background-color: #26201c !important;
+}
+
+html.drose-lb-rotating .drose-works-lightbox,
+body.drose-lb-rotating .drose-works-lightbox {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100vmax !important;
+    min-height: 100vmax !important;
+    z-index: 12000 !important;
+    background-color: #0f0f23 !important;
+    background-image: none !important;
+}
+
+html.drose-lb-rotating:has(body:not(.dark-mode)) .drose-works-lightbox,
+body.drose-lb-rotating:not(.dark-mode) .drose-works-lightbox {
+    background-color: #ffffff !important;
+}
+
+html.drose-lb-rotating:has(body.dark-mode.warm-tone) .drose-works-lightbox,
+body.drose-lb-rotating.dark-mode.warm-tone .drose-works-lightbox {
+    background-color: #26201c !important;
 }
 
 body.drose-works-lightbox-open .site-header,
@@ -4978,18 +5035,18 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
 
     body.dark-mode.drose-works-page .drose-works-lightbox,
     body.dark-mode.drose-works-page .drose-works-lightbox__backdrop {
-        background: #0a1220 !important;
+        background: #0f0f23 !important;
     }
 
     body.dark-mode.drose-works-page .drose-works-lightbox__content {
-        background: #0a1220 !important;
+        background: #0f0f23 !important;
         border: 2px solid #fbbf24;
     }
 
     body.dark-mode.drose-works-page .drose-works-lightbox__image,
     body.dark-mode.drose-works-page .drose-works-lightbox__video {
         border: none;
-        background: #0a1220;
+        background: #0f0f23;
     }
 
     body.drose-works-page .drose-works-lightbox__rotate-hint {
@@ -5007,10 +5064,10 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     }
 }
 
-/* Landscape: foto intera, bordo sulla foto; sizing reale via JS (visualViewport) */
+/* Landscape: foto intera quasi a schermo intero; sizing reale via JS (visualViewport) */
 @media (max-width: 1024px) and (max-height: 1100px) and (orientation: landscape) {
     body.drose-works-page .drose-works-lightbox {
-        padding: 28px 32px max(28px, env(safe-area-inset-bottom)) !important;
+        padding: max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)) !important;
         align-items: center !important;
         justify-content: center !important;
         overflow: hidden !important;
@@ -5061,7 +5118,7 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     body.dark-mode.drose-works-page .drose-works-lightbox__image,
     body.dark-mode.drose-works-page .drose-works-lightbox__video {
         border: 2px solid #fbbf24 !important;
-        background: #0a1220 !important;
+        background: #0f0f23 !important;
     }
 }
 
@@ -5116,7 +5173,7 @@ html.drose-lightbox-allow-rotate:has(body.drose-page),
 html:has(body.drose-works-lightbox-open),
 html:has(body.drose-works-lightbox-open) body,
 body.drose-works-lightbox-open {
-    background-color: #0a1220 !important;
+    background-color: #0f0f23 !important;
     background-image: none !important;
 }
 
@@ -5125,6 +5182,14 @@ html:has(body.drose-works-lightbox-open:not(.dark-mode)),
 html:has(body.drose-works-lightbox-open:not(.dark-mode)) body,
 body.drose-works-lightbox-open:not(.dark-mode) {
     background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+html.drose-lightbox-allow-rotate:has(body.dark-mode.warm-tone),
+html:has(body.drose-works-lightbox-open.dark-mode.warm-tone),
+html:has(body.drose-works-lightbox-open.dark-mode.warm-tone) body,
+body.drose-works-lightbox-open.dark-mode.warm-tone {
+    background-color: #26201c !important;
     background-image: none !important;
 }
 
