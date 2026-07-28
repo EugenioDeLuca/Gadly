@@ -92,5 +92,7 @@ urlpatterns = [
     path('accounts/logout/', tools_views.DroseAwareLogoutView.as_view(), name='logout'),
     path('', include('tools.urls')),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve uploaded media in both local dev and the current Render setup.
+# Static files are handled by WhiteNoise, but user uploads under /media/
+# need an explicit Django route here or the URLs resolve to broken images.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
