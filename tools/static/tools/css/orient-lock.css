@@ -367,6 +367,31 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     }
 }
 
+html.drose-lightbox-allow-rotate .gadly-orient-lock,
+html.drose-lightbox-allow-rotate.gadly-orient-locked .gadly-orient-lock,
+html.drose-lightbox-allow-rotate.gadly-orient-settling .gadly-orient-lock {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+html.drose-lightbox-allow-rotate.gadly-orient-locked body > *:not(.gadly-orient-lock),
+html.drose-lightbox-allow-rotate.gadly-orient-settling body > *:not(.gadly-orient-lock) {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+html.drose-lightbox-allow-rotate.gadly-orient-locked,
+html.drose-lightbox-allow-rotate.gadly-orient-locked body,
+html.drose-lightbox-allow-rotate.gadly-orient-settling,
+html.drose-lightbox-allow-rotate.gadly-orient-settling body {
+    overflow: visible !important;
+    touch-action: auto !important;
+    overscroll-behavior: auto !important;
+}
+
 /* Desktop largo: mai. Viewport ≤1024 (DevTools device / telefono) → overlay ok */
 @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
     .gadly-orient-lock {

@@ -34,8 +34,8 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
 {% include "tools/includes/drose_works_media_head.html" %}
 {% endblock %}
 {% block blockbots %}
-<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=12">
-<script src="{% static 'tools/js/drose-works-mobile-chooser.js' %}?v=3"></script>
+<link rel="stylesheet" href="{% static 'tools/css/drose-works-critical.css' %}?v=16">
+<script src="{% static 'tools/js/drose-works-mobile-chooser.js' %}?v=4"></script>
 {% endblock %}
 {% block content %}
 <div class="drose-landing">
@@ -77,7 +77,7 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
                 {% endif %}
             </div>
             {% else %}
-            <p class="drose-works-view-hint">{% if works_media_type == "photo" %}{% trans "Click any photo to open it full screen." %}{% elif works_media_type == "video" %}{% trans "Click any video to open it full screen." %}{% else %}{% trans "Click any photo or video to open it full screen." %}{% endif %}</p>
+            <p class="drose-works-view-hint">{% if works_media_type == "photo" %}{% trans "Click any photo to open it full screen" %}{% elif works_media_type == "video" %}{% trans "Click any video to open it full screen" %}{% else %}{% trans "Click any photo or video to open it full screen" %}{% endif %}</p>
             {% endif %}
 
             {% if photo_slots %}
@@ -133,16 +133,11 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
             {% endif %}
         {% endif %}
 
+        {% if works_media_type %}
         <p class="drose-landing__back">
-            {% if works_media_type %}
             <a href="{% url 'drose_works' %}?choose=1" class="drose-landing__back-link drose-works-back-chooser">{% trans "Back to photos or videos" %}</a>
-            <a href="{% url 'drose' %}" class="drose-landing__back-link drose-works-back-home">{% trans "Back to Drose home" %}</a>
-            {% elif show_works_chooser %}
-            <a href="{% url 'drose' %}" class="drose-landing__back-link">{% trans "Back to Drose home" %}</a>
-            {% else %}
-            <a href="{% url 'drose' %}" class="drose-landing__back-link">{% trans "Back to Drose home" %}</a>
-            {% endif %}
         </p>
+        {% endif %}
     </div>
 </div>
 {% if not show_works_chooser %}
@@ -168,10 +163,18 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6l6 6-6 6"/></svg>
     </button>
     <div class="drose-works-lightbox__backdrop"></div>
+    <div class="drose-works-lightbox__rotate-hint" aria-hidden="true">
+        <span class="drose-works-lightbox__rotate-hint-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V4H7zm4 14h2v1h-2v-1z"/>
+            </svg>
+        </span>
+        <span class="drose-works-lightbox__rotate-hint-text">{% trans "In full screen, you can rotate your device" %}</span>
+    </div>
     <div class="drose-works-lightbox__content">
         <img class="drose-works-lightbox__image" alt="" decoding="sync" draggable="false" hidden>
     </div>
 </div>
-<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=17"></script>
+<script src="{% static 'tools/js/drose-works-lightbox.js' %}?v=33"></script>
 {% endif %}
 {% endblock %}

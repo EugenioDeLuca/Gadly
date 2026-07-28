@@ -4153,16 +4153,16 @@ msgstr ""
 "missioni."
 
 #: .\tools\templates\tools\drose_works.html:79
-msgid "Click any photo to open it full screen."
-msgstr "Clicca una foto per aprirla a schermo intero."
+msgid "Click any photo to open it full screen"
+msgstr "Clicca una foto per aprirla a schermo intero"
 
 #: .\tools\templates\tools\drose_works.html:79
-msgid "Click any video to open it full screen."
-msgstr "Clicca un video per aprirlo a schermo intero."
+msgid "Click any video to open it full screen"
+msgstr "Clicca un video per aprirlo a schermo intero"
 
 #: .\tools\templates\tools\drose_works.html:61
-msgid "Click any photo or video to open it full screen."
-msgstr "Clicca una foto o un video per aprirlo a schermo intero."
+msgid "Click any photo or video to open it full screen"
+msgstr "Clicca una foto o un video per aprirlo a schermo intero"
 
 #: .\tools\templates\tools\drose_works.html:138
 msgid "Back to photos or videos"
@@ -8438,6 +8438,10 @@ msgstr "Si è verificato un errore durante l'ottimizzazione del CV."
 #: .\tools\templates\tools\base.html
 msgid "Rotate your phone"
 msgstr "Gira il telefono"
+
+#: .\tools\templates\tools\drose_works.html
+msgid "In full screen, you can rotate your device"
+msgstr "A schermo intero puoi ruotare il dispositivo"
 
 #: .\tools\templates\tools\base.html
 msgid "Gadly is designed for portrait mode. Rotate your device to continue"

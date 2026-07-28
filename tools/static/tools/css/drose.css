@@ -359,9 +359,39 @@ body.is-drose-brand:not(.dark-mode) .drose-hero__logo .drose-star {
 
     .drose-hero__actions .drose-works-cta--mobile {
         display: inline-flex;
+        align-items: center;
+        justify-content: center;
         width: 338px;
         max-width: 338px;
+        height: 52px;
+        min-height: 52px;
+        max-height: 52px;
+        padding: 0 20px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.15;
+        white-space: nowrap;
         box-sizing: border-box;
+        background: #b45309;
+        border: 2px solid #b45309;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+
+    /* Solo scale al tap: niente cambio colore (hover sticky / tap) */
+    .drose-hero__actions .drose-works-cta--mobile:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: #b45309;
+        border-color: #b45309;
+        color: #fff;
+        -webkit-text-fill-color: #fff;
+    }
+
+    body.dark-mode.drose-page .site-main .drose-hero__actions a.drose-works-cta--mobile,
+    body.dark-mode.drose-page .site-main .drose-hero__actions a.drose-works-cta--mobile:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: #fbbf24 !important;
+        border-color: #fbbf24 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
     }
 }
 
@@ -820,20 +850,71 @@ body.drose-works-page .drose-works-section-ornament {
 .drose-works-chooser-panel {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     gap: 14px;
     width: 100%;
-    max-width: 22rem;
+    max-width: 338px;
     margin: 8px auto 0;
     padding: 0;
 }
 
 .drose-works-chooser-btn {
-    width: 100%;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 338px !important;
+    max-width: 338px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    padding: 0 20px !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap;
+    box-sizing: border-box !important;
+    /* Ambra logo light (#b45309) */
+    background: #b45309 !important;
+    border: 2px solid #b45309 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+.drose-works-chooser-btn:is(:hover, :focus-visible, .is-drose-hover) {
+    /* Mobile: niente cambio colore al tap; scale solo via .tap-active */
+    background: #b45309 !important;
+    border-color: #b45309 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+body.dark-mode.drose-page .drose-works-chooser-btn,
+body.dark-mode.drose-page .drose-works-chooser-btn:is(:hover, :focus-visible, .is-drose-hover) {
+    /* Ambra logo dark (#fbbf24); testo blu per contrasto */
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+
+body.dark-mode.drose-page .drose-works-chooser-btn:is(:hover, :focus-visible, .is-drose-hover) {
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+
+/* Vince su .site-main a.drose-btn--primary { color:#fff } */
+body.dark-mode.drose-page .site-main a.drose-works-chooser-btn,
+body.dark-mode.drose-page .site-main a.drose-works-chooser-btn:hover,
+body.dark-mode.drose-page .site-main a.drose-works-chooser-btn:focus-visible,
+body.dark-mode.drose-page .site-main a.drose-works-chooser-btn.is-drose-hover {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
 }
 
 body.drose-works-chooser .drose-works-manage-link-wrap {
-    margin-bottom: 8px;
+    margin: 10px 0 0;
 }
 
 /* Desktop filtrato: torna a home; mobile: torna alla scelta */
@@ -846,12 +927,151 @@ body.drose-works-chooser .drose-works-manage-link-wrap {
         display: inline;
     }
 
-    body.drose-works-filtered .drose-works-back-home {
-        display: none;
+    /* Galleria filtrata vuota: niente box, solo testo colore titolo */
+    body.drose-works-filtered .drose-works-empty {
+        padding: 12px 14px;
+        background: transparent;
+    }
+
+    body.drose-works-filtered:not(.dark-mode) .drose-works-empty {
+        border-color: #b45309;
+    }
+
+    body.drose-works-filtered:not(.dark-mode) .drose-works-empty p {
+        color: #b45309;
+        -webkit-text-fill-color: #b45309;
+    }
+
+    body.dark-mode.drose-works-filtered .drose-works-empty {
+        border-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-works-filtered .drose-works-empty p {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-works-page .site-main .drose-works-empty {
+        border-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-works-page .site-main .drose-works-empty p {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        text-decoration: none !important;
+    }
+
+    body.drose-works-page:not(.dark-mode) .site-main .drose-works-manage-link-wrap a,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-works-manage-link-wrap a:visited,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-works-manage-link-wrap a:is(:hover, :focus, :focus-visible, :active),
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap a,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap a:visited,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap a:is(:hover, :focus, :focus-visible, :active) {
+        color: #be123c !important;
+        -webkit-text-fill-color: #be123c !important;
+        text-decoration: none !important;
+    }
+
+    body.drose-works-page:not(.dark-mode) .drose-card.drose-works-slot {
+        border-color: #b45309 !important;
+    }
+
+    body.dark-mode.drose-works-page .drose-card.drose-works-slot {
+        border-color: #fbbf24 !important;
+    }
+
+    /* Titolo + lead vicini ai bottoni (niente gap largo del head generico) */
+    body.drose-works-chooser .drose-subpage__head {
+        margin-bottom: 12px;
+    }
+
+    body.drose-works-chooser .drose-subpage__head h1 {
+        margin-bottom: 8px;
     }
 
     body.drose-works-chooser .drose-subpage__lead {
-        margin-bottom: 22px;
+        margin-bottom: 0;
+    }
+
+    /*
+     * Our work mobile: centra il blocco contenuto nello schermo
+     * (orizzontale + verticale sulla pagina di scelta).
+     */
+    body.drose-works-page .drose-landing {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    body.drose-works-chooser .drose-landing {
+        min-height: calc(100dvh - var(--site-header-height, 82px) - 96px);
+    }
+
+    body.drose-works-page .site-main .drose-landing__container {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+        gap: 0;
+    }
+
+    body.drose-works-page .drose-subpage__head,
+    body.drose-works-page .drose-subpage__lead,
+    body.drose-works-page .drose-works-manage-link-wrap,
+    body.drose-works-page .drose-works-empty,
+    body.drose-works-page .drose-works-view-hint,
+    body.drose-works-page .drose-landing__back,
+    body.drose-works-page .drose-section,
+    body.drose-works-page .drose-section__lead {
+        width: 100%;
+        text-align: center !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.drose-works-page .drose-works-chooser-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 338px;
+        margin: 0 auto;
+        padding: 0;
+        gap: 12px;
+    }
+
+    body.drose-works-page .drose-works-chooser-btn {
+        width: min(338px, 100%) !important;
+        max-width: 338px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body.drose-works-page .drose-card-grid {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Mobile: niente sticky hover scale; press = tap-active come Gadly (0.96) */
+    body.drose-page .site-main .drose-btn:not(.tap-active):is(:hover, :focus, :focus-visible),
+    body.is-drose-brand .site-main .drose-btn:not(.tap-active):is(:hover, :focus, :focus-visible) {
+        transform: scale(1) !important;
+    }
+
+    body.drose-page .site-main .drose-btn.tap-active,
+    body.is-drose-brand .site-main .drose-btn.tap-active {
+        transform: scale(0.96) !important;
     }
 }
 
@@ -1013,10 +1233,11 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
     inset: 0;
     z-index: 12000;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 24px;
     box-sizing: border-box;
+    background: #000;
 }
 
 .drose-works-lightbox[hidden] {
@@ -1025,12 +1246,91 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
 
 body.drose-works-lightbox-open {
     overflow: hidden;
+    background: #000;
+}
+
+html.drose-lightbox-allow-rotate,
+html.drose-lightbox-allow-rotate body {
+    background: #000 !important;
+}
+
+body.drose-works-lightbox-open .site-header,
+body.drose-works-lightbox-open #cookie-banner,
+body.drose-works-lightbox-open #gadly-viewport-chrome,
+body.drose-works-lightbox-open .header-nav {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 .drose-works-lightbox__backdrop {
     position: absolute;
     inset: 0;
     background: rgba(2, 4, 8, 0.996);
+}
+
+.drose-works-lightbox__rotate-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 24px;
+    right: 24px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #ef4444;
+    -webkit-text-fill-color: #ef4444;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    box-sizing: border-box;
+    transform: translateY(10px) scale(0.96);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    text-align: center;
+    transition: opacity 0.24s ease, transform 0.24s ease, visibility 0s linear 0.24s;
+}
+
+.drose-works-lightbox__rotate-hint.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.drose-works-lightbox__rotate-hint-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    line-height: 1;
+}
+
+.drose-works-lightbox__rotate-hint.is-visible .drose-works-lightbox__rotate-hint-icon {
+    animation: drose-phone-tilt 1.6s ease-in-out infinite;
+}
+
+.drose-works-lightbox__rotate-hint-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: #ef4444;
+}
+
+.drose-works-lightbox__rotate-hint-text {
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+@keyframes drose-phone-tilt {
+    0%, 100% { transform: rotate(-18deg); }
+    50% { transform: rotate(12deg); }
 }
 
 .drose-works-lightbox__close {
@@ -1203,7 +1503,9 @@ body.drose-works-lightbox-open {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
+    overflow: hidden;
+    background: #000;
+    border-radius: 10px;
 }
 
 .drose-works-lightbox__image,
@@ -3006,8 +3308,43 @@ body.drose-page .header-logo--drose:hover {
     }
 }
 
-/* Mobile: testo "Drose" = stessi colori della striscia logo (#b45309 / #fbbf24). Solo ≤768px. */
+/* Mobile: scritta "Drose" = ambra striscia logo; titoli/link body allineati a quella. */
 @media (max-width: 768px) {
+    /*
+     * Slot fisso + icone sovrapposte (come desktop): altrimenti light (SVG inline)
+     * e dark (display:block) cambiano la distanza reale dalla scritta "Drose".
+     */
+    .header-logo--drose {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header-logo--drose .header-logo-icon-slot {
+        position: relative;
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+        line-height: 0;
+    }
+
+    .header-logo--drose .header-logo-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block !important;
+        width: 46px;
+        height: 46px;
+    }
+
+    body.dark-mode .header-logo--drose .header-logo-icon.header-logo-light {
+        display: none !important;
+    }
+
+    body:not(.dark-mode) .header-logo--drose .header-logo-icon.header-logo-dark {
+        display: none !important;
+    }
+
     body.is-drose-brand:not(.dark-mode) .header-logo--drose .header-logo-text,
     body.drose-page:not(.dark-mode) .header-logo--drose .header-logo-text,
     body.is-drose-brand:not(.dark-mode) .header-logo--drose:hover .header-logo-text,
@@ -3026,6 +3363,19 @@ body.drose-page .header-logo--drose:hover {
     body.dark-mode.drose-page .header-logo--drose:focus .header-logo-text {
         color: #fbbf24 !important;
         -webkit-text-fill-color: #fbbf24 !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .header-logo--drose .header-logo-icon-slot {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .header-logo--drose .header-logo-icon {
+        width: 42px;
+        height: 42px;
     }
 }
 
@@ -3925,10 +4275,14 @@ body.drose-page.faq-page .faq-item h3 {
         overflow: hidden;
         border-radius: 12px;
         background: #1a1a1a;
-        border: 2px solid rgba(0, 63, 127, 0.18);
+        border: 2px solid #b45309;
         box-sizing: border-box;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
+    }
+
+    body.dark-mode.drose-home .drose-card-grid > .drose-card--service {
+        border-color: #fbbf24;
     }
 
     body.drose-home .drose-card--service .drose-card__media {
@@ -4141,6 +4495,10 @@ body.drose-page.faq-page .faq-item h3 {
     body.drose-home .drose-hero__actions .drose-works-cta--mobile {
         width: 338px;
         max-width: 338px;
+        height: 52px;
+        min-height: 52px;
+        max-height: 52px;
+        padding: 0 20px;
         box-sizing: border-box;
     }
 
@@ -4154,6 +4512,22 @@ body.drose-page.faq-page .faq-item h3 {
         box-sizing: border-box;
     }
 
+    /* Richiedi preventivo: altezza esatta 52px (niente padding verticale che lo gonfia) */
+    body.drose-home .drose-cta .drose-btn--primary {
+        height: 52px;
+        min-height: 52px;
+        max-height: 52px;
+        padding: 0 20px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.15;
+        white-space: nowrap;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .drose-btn {
         width: 100%;
     }
@@ -4164,7 +4538,99 @@ body.drose-page.faq-page .faq-item h3 {
         box-sizing: border-box;
     }
 
-    /* Dark mode mobile Drose: testo leggibile sul cielo notte (solo ≤768px) */
+    /* Light mobile: titoli/link testuali = ambra logo (#b45309), non blu #003f7f */
+    body.drose-page:not(.dark-mode) .drose-hero h1,
+    body.drose-page:not(.dark-mode) .drose-hero__title,
+    body.drose-page:not(.dark-mode) .drose-subpage__head h1,
+    body.drose-page:not(.dark-mode) .drose-section h2,
+    body.drose-page:not(.dark-mode) .drose-faq-item h3,
+    body.drose-page:not(.dark-mode) .drose-card:not(.drose-card--service) h3,
+    body.drose-page:not(.dark-mode) .drose-works-section-title,
+    body.is-drose-brand.login-page:not(.dark-mode) .static-container h1,
+    body.is-drose-brand.login-page:not(.dark-mode) .static-container h2 {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    /* Foto servizi: testo bianco come in dark (sopra l’ambra dei titoli pagina) */
+    body.drose-page:not(.dark-mode).drose-home .drose-card-grid > .drose-card--service h3,
+    body.drose-page:not(.dark-mode).drose-home .drose-card-grid > .drose-card--service .drose-card__title,
+    body.drose-page:not(.dark-mode).drose-home .drose-card-grid > .drose-card--service .drose-card__title-text,
+    body.drose-page:not(.dark-mode).drose-home .drose-card-grid > .drose-card--service p:not(.drose-card__unavailable),
+    body.drose-page:not(.dark-mode).drose-home .drose-card-grid > .drose-card--service .drose-card__desc {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    body.drose-works-manage-page:not(.dark-mode) .drose-works-manage-slot__label {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.drose-page:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item),
+    body.drose-page:not(.dark-mode) .drose-landing__back-link,
+    body.is-drose-brand.login-page:not(.dark-mode) .static-container a:not(.drose-btn) {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.drose-page:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):is(:hover, :focus-visible),
+    body.drose-page:not(.dark-mode) .drose-landing__back-link:is(:hover, :focus-visible) {
+        color: #d97706 !important;
+        -webkit-text-fill-color: #d97706 !important;
+    }
+
+    /* Light mobile: bottoni = ambra logo; al tap/hover niente cambio colore (solo scale) */
+    body.drose-page:not(.dark-mode) .site-main .drose-btn--primary,
+    body.drose-page:not(.dark-mode) .site-main a.drose-btn--primary,
+    body.drose-page:not(.dark-mode) .site-main button.drose-btn--primary,
+    body.drose-page:not(.dark-mode) .site-main .drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.drose-page:not(.dark-mode) .site-main a.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.drose-page:not(.dark-mode) .site-main button.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .drose-btn--primary,
+    body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn,
+    body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: #b45309 !important;
+        border-color: #b45309 !important;
+        color: #fff !important;
+        -webkit-text-fill-color: #fff !important;
+    }
+
+    body.drose-page:not(.dark-mode) .site-main .drose-btn--secondary,
+    body.drose-page:not(.dark-mode) .site-main a.drose-btn--secondary,
+    body.drose-page:not(.dark-mode) .site-main button.drose-btn--secondary,
+    body.drose-page:not(.dark-mode) .site-main .drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.drose-page:not(.dark-mode) .site-main a.drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.drose-page:not(.dark-mode) .site-main button.drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: #fff7ed !important;
+        border-color: #b45309 !important;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.drose-works-manage-page .drose-works-choose-file-btn {
+        min-height: 47.5px !important;
+        height: 47.5px !important;
+        line-height: 47.5px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.drose-works-manage-page:not(.dark-mode) button.drose-works-manage-remove,
+    body.drose-works-manage-page:not(.dark-mode) button.drose-works-manage-remove:is(:hover, :focus, :focus-visible, .is-drose-hover) {
+        font-size: 16px !important;
+        line-height: 1.25 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.drose-works-manage-page button.drose-works-manage-remove,
+    body.dark-mode.drose-works-manage-page button.drose-works-manage-remove:is(:hover, :focus, :focus-visible, .is-drose-hover) {
+        font-size: 16px !important;
+        line-height: 1.25 !important;
+    }
+
+    /* Dark mode mobile Drose: titoli/link = ambra logo (#fbbf24), non blu #7eb8f0 */
     body.dark-mode.drose-page .drose-hero h1,
     body.dark-mode.drose-page .drose-hero__title,
     body.dark-mode.drose-page .drose-subpage__head h1,
@@ -4174,8 +4640,8 @@ body.drose-page.faq-page .faq-item h3 {
     body.dark-mode.drose-page .drose-works-section-title,
     body.dark-mode.is-drose-brand.login-page .static-container h1,
     body.dark-mode.is-drose-brand.login-page .static-container h2 {
-        color: #7eb8f0 !important;
-        -webkit-text-fill-color: #7eb8f0 !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
     }
 
     body.dark-mode.drose-page .drose-hero__tagline,
@@ -4192,31 +4658,132 @@ body.drose-page.faq-page .faq-item h3 {
         -webkit-text-fill-color: #e8eef6 !important;
     }
 
-    /* Box chiari (Why / CTA): tengono i colori light per contrasto */
+    /* Box chiari (Why / CTA): niente fill, solo bordo; testo leggibile sul cielo */
+    body.dark-mode.drose-home .drose-why,
+    body.dark-mode.drose-home .drose-cta {
+        background: transparent !important;
+        border-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-home .drose-benefits li {
+        background: transparent !important;
+        border-color: rgba(251, 191, 36, 0.55) !important;
+    }
+
+    /* Light mobile: stesso bordo ambra delle foto; niente fill (come dark) */
+    body.drose-home:not(.dark-mode) .drose-why,
+    body.drose-home:not(.dark-mode) .drose-cta {
+        background: transparent !important;
+        border-color: #b45309 !important;
+    }
+
+    body.drose-home:not(.dark-mode) .drose-benefits li {
+        background: transparent !important;
+        border-color: rgba(180, 83, 9, 0.55) !important;
+    }
+
     body.dark-mode.drose-page .drose-cta h2,
     body.dark-mode.drose-page .drose-why h2 {
-        color: #003f7f !important;
-        -webkit-text-fill-color: #003f7f !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
     }
 
     body.dark-mode.drose-page .drose-cta p:not(.drose-quote-error),
     body.dark-mode.drose-page .drose-benefits li {
-        color: #1a1a1a !important;
-        -webkit-text-fill-color: #1a1a1a !important;
+        color: #e8eef6 !important;
+        -webkit-text-fill-color: #e8eef6 !important;
     }
 
     body.dark-mode.drose-page .drose-works-view-hint,
     body.dark-mode.drose-page .drose-quote-staff-muted,
     body.dark-mode.drose-page .drose-quote-staff-lead {
-        color: #b0c4de !important;
-        -webkit-text-fill-color: #b0c4de !important;
+        color: #22c55e !important;
+        -webkit-text-fill-color: #22c55e !important;
+    }
+
+    body.dark-mode.drose-works-manage-page .drose-works-manage-slot__label {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-works-manage-page .drose-works-manage-hint {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
 
     body.dark-mode.drose-page .drose-landing__back-link,
-    body.dark-mode.drose-page .drose-works-manage-link-wrap a,
     body.dark-mode.is-drose-brand.login-page .static-container a:not(.drose-btn) {
-        color: #7eb8f0 !important;
-        -webkit-text-fill-color: #7eb8f0 !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.drose-works-page .site-main .drose-works-manage-link-wrap a,
+    body.drose-works-page .site-main .drose-works-manage-link-wrap a:visited,
+    body.drose-works-page .site-main .drose-works-manage-link-wrap a:is(:hover, :focus, :focus-visible, :active) {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        text-decoration: none !important;
+    }
+
+    /* Dark mobile: bottoni = ambra logo (#fbbf24) + testo #003f7f; al tap niente cambio colore */
+    body.dark-mode.drose-page .site-main .drose-btn--primary,
+    body.dark-mode.drose-page .site-main a.drose-btn--primary,
+    body.dark-mode.drose-page .site-main a.drose-btn--primary:hover,
+    body.dark-mode.drose-page .site-main a.drose-btn--primary:focus-visible,
+    body.dark-mode.drose-page .site-main button.drose-btn--primary,
+    body.dark-mode.drose-page .site-main button.drose-btn--primary:hover,
+    body.dark-mode.drose-page .site-main button.drose-btn--primary:focus-visible,
+    body.dark-mode.drose-page .site-main .drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-page .site-main a.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-page .site-main button.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.dark-mode.is-drose-brand.login-page .site-main .drose-btn--primary,
+    body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn,
+    body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: #fbbf24 !important;
+        border-color: #fbbf24 !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn,
+    body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn * {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.drose-page .site-main .drose-btn--secondary,
+    body.dark-mode.drose-page .site-main a.drose-btn--secondary,
+    body.dark-mode.drose-page .site-main button.drose-btn--secondary,
+    body.dark-mode.drose-page .site-main .drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-page .site-main a.drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-page .site-main button.drose-btn--secondary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
+        background: transparent !important;
+        border-color: #fbbf24 !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    /* Home Drose dark: link Gadly = colore titoli (#fbbf24), senza sottolineatura */
+    body.dark-mode.drose-home .drose-landing__back-link,
+    body.dark-mode.drose-home .drose-landing__back a.drose-landing__back-link,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:visited,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:hover,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:focus,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:active {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        transform: none !important;
+    }
+
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:hover,
+    body.dark-mode.drose-home .drose-landing__container a.drose-landing__back-link:focus-visible {
+        color: #fcd34d !important;
+        -webkit-text-fill-color: #fcd34d !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode.drose-page .drose-quote-error,
@@ -4296,4 +4863,113 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     overflow-wrap: anywhere;
     word-break: break-word;
     line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+    .drose-works-lightbox__close,
+    .drose-works-lightbox__nav {
+        display: none !important;
+    }
+
+    .drose-works-lightbox__rotate-hint {
+        bottom: max(14px, env(safe-area-inset-bottom));
+    }
+
+    body.drose-works-page .drose-works-lightbox {
+        padding:
+            12px
+            16px
+            max(12px, env(safe-area-inset-bottom));
+    }
+
+    body.drose-works-page .drose-works-lightbox__content {
+        width: calc(100vw - 32px);
+        height: calc(100dvh - 12px - max(12px, env(safe-area-inset-bottom)));
+        max-width: none;
+        max-height: none;
+    }
+
+    body.drose-works-page .drose-works-lightbox__image,
+    body.drose-works-page .drose-works-lightbox__video {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 10px;
+        box-shadow: none;
+        background: #000;
+    }
+
+    body.drose-works-page .drose-works-lightbox--photo .drose-works-lightbox__image {
+        object-fit: cover;
+        object-position: center;
+    }
+
+    body.drose-works-page .drose-works-lightbox__video {
+        object-fit: contain;
+    }
+
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link:visited,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link:hover,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link:focus,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link:focus-visible,
+    body.drose-works-page:not(.dark-mode) .site-main .drose-landing__container .drose-works-manage-link-wrap .drose-landing__back-link:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        text-decoration: none !important;
+    }
+
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:visited,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:hover,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:focus,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:active {
+        color: #be123c !important;
+        -webkit-text-fill-color: #be123c !important;
+        text-decoration: none !important;
+    }
+
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link,
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:visited,
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:hover,
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:focus,
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:active {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        text-decoration: none !important;
+    }
+
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link,
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:visited,
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:hover,
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:focus,
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:active {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        text-decoration: none !important;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 1100px) and (max-width: 1024px) {
+    body.drose-works-page .drose-works-lightbox__close,
+    body.drose-works-page .drose-works-lightbox__nav {
+        display: none !important;
+    }
+
+    body.drose-works-page .drose-works-lightbox__rotate-hint {
+        bottom: max(10px, env(safe-area-inset-bottom));
+    }
+}
+
+html.drose-lightbox-allow-rotate,
+html.drose-lightbox-allow-rotate:has(body.drose-page),
+html:has(body.drose-works-lightbox-open),
+html:has(body.drose-works-lightbox-open) body,
+body.drose-works-lightbox-open {
+    background-color: #020408 !important;
+    background-image: none !important;
 }

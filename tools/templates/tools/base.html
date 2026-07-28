@@ -1828,7 +1828,7 @@
     <!-- CSS globale -->
 <link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=240">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=25">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=26">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1929,7 +1929,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=356">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=426">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2585,7 +2585,7 @@
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
     {% endif %}
-    <script src="{% static 'tools/js/mobile-tap.js' %}?v=51"></script>
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=54"></script>
     {% if not is_drose_site %}
     {% include "tools/includes/tool_quick_nav.html" %}
     {% endif %}
@@ -2603,7 +2603,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=21"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=23"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare

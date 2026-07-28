@@ -29,7 +29,15 @@
         return desktopPointer.matches;
     }
 
+    function isDroseLightboxOpen() {
+        var body = document.body;
+        if (!body) return false;
+        return body.classList.contains('drose-works-page') &&
+            body.classList.contains('drose-works-lightbox-open');
+    }
+
     function wantsLock() {
+        if (isDroseLightboxOpen()) return false;
         if (isDesktop()) return false;
         if (phoneLandscape.matches) return true;
         try {

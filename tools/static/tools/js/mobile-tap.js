@@ -28,6 +28,7 @@
         ".site-main a.tool-btn",
         ".site-main .login-required-btn",
         ".site-main .btn",
+        ".site-main .drose-btn",
         ".site-main .home-link-wrap .home-link"
     ].join(", ");
     var excludeSelector = [
@@ -234,6 +235,37 @@
                 link.setAttribute("data-gadly-help-nav", "1");
                 window.location.href = link.href;
             }, HELP_NAV_RELEASE_MS);
+        }, waitHold);
+    }, true);
+
+    /* Home Drose + chooser Our works: bottoni CTA — finiscono press+release, poi navigano */
+    var DROSE_BTN_NAV_HOLD_MS = 220;
+    var DROSE_BTN_NAV_RELEASE_MS = 220;
+    document.addEventListener("click", function (event) {
+        if (!document.body || !event.target || !event.target.closest) return;
+        var isDroseHome = document.body.classList.contains("drose-home");
+        var isWorksChooser = document.body.classList.contains("drose-works-chooser");
+        if (!isDroseHome && !isWorksChooser) return;
+        var link = event.target.closest(".site-main a.drose-btn[href]");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (!href || href.charAt(0) === "#") return;
+        if (link.getAttribute("data-drose-btn-nav") === "1") return;
+
+        event.preventDefault();
+        if (typeof event.stopImmediatePropagation === "function") {
+            event.stopImmediatePropagation();
+        }
+
+        setTapPressed(link, true);
+        var elapsed = Date.now() - tapPressStart;
+        var waitHold = Math.max(80, DROSE_BTN_NAV_HOLD_MS - elapsed);
+        setTimeout(function () {
+            setTapPressed(link, false);
+            setTimeout(function () {
+                link.setAttribute("data-drose-btn-nav", "1");
+                window.location.href = link.href;
+            }, DROSE_BTN_NAV_RELEASE_MS);
         }, waitHold);
     }, true);
 

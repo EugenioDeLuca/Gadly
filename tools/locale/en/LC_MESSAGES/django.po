@@ -3885,15 +3885,15 @@ msgid ""
 msgstr ""
 
 #: .\tools\templates\tools\drose_works.html:79
-msgid "Click any photo to open it full screen."
+msgid "Click any photo to open it full screen"
 msgstr ""
 
 #: .\tools\templates\tools\drose_works.html:79
-msgid "Click any video to open it full screen."
+msgid "Click any video to open it full screen"
 msgstr ""
 
 #: .\tools\templates\tools\drose_works.html:61
-msgid "Click any photo or video to open it full screen."
+msgid "Click any photo or video to open it full screen"
 msgstr ""
 
 #: .\tools\templates\tools\drose_works.html:138
@@ -7876,6 +7876,10 @@ msgstr ""
 
 #: .\tools\templates\tools\base.html
 msgid "Rotate your phone"
+msgstr ""
+
+#: .\tools\templates\tools\drose_works.html
+msgid "In full screen, you can rotate your device"
 msgstr ""
 
 #: .\tools\templates\tools\base.html

@@ -114,8 +114,49 @@ body.drose-works-page:not(.drose-works-manage-page) .drose-works-media--video {
 }
 
 @media (max-width: 768px) {
+    body.drose-works-page:not(.dark-mode) .drose-card.drose-works-slot {
+        border-color: #b45309 !important;
+    }
+
+    body.dark-mode.drose-works-page .drose-card.drose-works-slot {
+        border-color: #fbbf24 !important;
+    }
+
+    body.drose-works-page .drose-landing {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    body.drose-works-chooser .drose-landing {
+        min-height: calc(100dvh - var(--site-header-height, 82px) - 96px) !important;
+    }
+
+    body.drose-works-page .drose-landing__container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 8px 16px 28px !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        box-sizing: border-box !important;
+    }
+
     body.drose-works-page .drose-card-grid {
         grid-template-columns: 1fr !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 }
 
