@@ -161,6 +161,18 @@
         setTapPressed(target, true);
     }, { passive: true });
 
+    function isHelpBackLink(el) {
+        return !!(
+            document.body &&
+            document.body.classList.contains("help-page") &&
+            el &&
+            el.classList &&
+            el.classList.contains("home-link") &&
+            el.closest &&
+            el.closest(".home-link-wrap")
+        );
+    }
+
     function releaseTapPress(event) {
         if (document.documentElement.classList.contains("gadly-trash-mobile-press") ||
             document.documentElement.classList.contains("gadly-trash-drag-active")) {
@@ -170,6 +182,9 @@
             return;
         }
         var target = resolveTapTarget(event);
+        /* Help back: il ciclo press→release lo completa il click, poi naviga */
+        if (target && isHelpBackLink(target)) return;
+        if (!target && tapPressTarget && isHelpBackLink(tapPressTarget)) return;
         if (target) {
             setTapPressed(target, false);
         } else if (tapPressTarget) {
@@ -189,7 +204,9 @@
         }, 0);
     });
 
-    /* Help: bottone "Torna al tool" — naviga solo dopo fine animazione tap. */
+    /* Help: come gli altri bottoni (press→release), poi naviga a animazione finita */
+    var HELP_NAV_HOLD_MS = 160;
+    var HELP_NAV_RELEASE_MS = 80;
     document.addEventListener(
         "click",
         function (event) {
@@ -199,22 +216,32 @@
             if (!link) return;
             var href = link.getAttribute("href");
             if (!href || href.charAt(0) === "#") return;
+            if (link.getAttribute("data-gadly-help-nav") === "1") return;
 
             event.preventDefault();
             if (typeof event.stopImmediatePropagation === "function") {
                 event.stopImmediatePropagation();
             }
 
-            // Non “bussare” con setTapPressed: la scala viene gestita da pointerdown/up.
-            // Qui aspettiamo che finisca la rimozione della classe tap-active + transition CSS.
+            if (tapReleaseTimer) {
+                clearTimeout(tapReleaseTimer);
+                tapReleaseTimer = null;
+            }
+            /* Se già in press da pointerdown, non rifare remove+reflow (lampeggio) */
+            if (!link.classList.contains(tapClass)) {
+                setTapPressed(link, true);
+            } else {
+                tapPressTarget = link;
+            }
             var elapsed = Date.now() - tapPressStart;
-            var remaining = Math.max(0, TAP_MIN_MS - elapsed);
-            var TRANSITION_BUFFER_MS = 90;
-            var waitMs = Math.max(40, remaining + TRANSITION_BUFFER_MS);
-
+            var waitHold = Math.max(60, HELP_NAV_HOLD_MS - elapsed);
             setTimeout(function () {
-                window.location.href = link.href;
-            }, waitMs);
+                setTapPressed(link, false);
+                setTimeout(function () {
+                    link.setAttribute("data-gadly-help-nav", "1");
+                    window.location.href = link.href;
+                }, HELP_NAV_RELEASE_MS);
+            }, waitHold);
         },
         true
     );
