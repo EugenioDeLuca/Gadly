@@ -68,21 +68,8 @@
         } catch (e2) { /* ignore */ }
     }
 
-    function isHelpBackLink(el) {
-        return !!(
-            document.body &&
-            document.body.classList.contains("help-page") &&
-            el &&
-            el.classList &&
-            el.classList.contains("home-link") &&
-            el.closest &&
-            el.closest(".home-link-wrap")
-        );
-    }
-
     function setTapPressed(target, pressed) {
         if (!target || !target.classList) return;
-        var smoothHelp = isHelpBackLink(target);
         if (pressed) {
             if (tapReleaseTimer) {
                 clearTimeout(tapReleaseTimer);
@@ -93,11 +80,6 @@
             }
             tapPressTarget = target;
             tapPressStart = Date.now();
-            if (smoothHelp) {
-                /* Niente remove+reflow: lascia animare la transition CSS */
-                target.classList.add(tapClass);
-                return;
-            }
             target.classList.remove(tapClass);
             void target.offsetWidth;
             target.classList.add(tapClass);
@@ -105,8 +87,7 @@
             return;
         }
         var elapsed = Date.now() - tapPressStart;
-        var minMs = smoothHelp ? 0 : TAP_MIN_MS;
-        var delay = Math.max(0, minMs - elapsed);
+        var delay = Math.max(0, TAP_MIN_MS - elapsed);
         var releaseTarget = target;
         tapReleaseTimer = setTimeout(function () {
             requestAnimationFrame(function () {
@@ -208,35 +189,35 @@
         }, 0);
     });
 
-    /* Help: bottone "Torna al tool" — anima press+release fluidi, poi naviga */
-    var HELP_NAV_HOLD_MS = 220;
-    var HELP_NAV_RELEASE_MS = 220;
-    document.addEventListener("click", function (event) {
-        if (!document.body || !document.body.classList.contains("help-page")) return;
-        if (!event.target || !event.target.closest) return;
-        var link = event.target.closest(".site-main .home-link-wrap a.home-link");
-        if (!link) return;
-        var href = link.getAttribute("href");
-        if (!href || href.charAt(0) === "#") return;
-        if (link.getAttribute("data-gadly-help-nav") === "1") return;
+    /* Help: bottone "Torna al tool" — naviga solo dopo fine animazione tap. */
+    document.addEventListener(
+        "click",
+        function (event) {
+            if (!document.body || !document.body.classList.contains("help-page")) return;
+            if (!event.target || !event.target.closest) return;
+            var link = event.target.closest(".site-main .home-link-wrap a.home-link");
+            if (!link) return;
+            var href = link.getAttribute("href");
+            if (!href || href.charAt(0) === "#") return;
 
-        event.preventDefault();
-        if (typeof event.stopImmediatePropagation === "function") {
-            event.stopImmediatePropagation();
-        }
+            event.preventDefault();
+            if (typeof event.stopImmediatePropagation === "function") {
+                event.stopImmediatePropagation();
+            }
 
-        /* Tiene premuto (annulla release di pointerup) finché l’animazione è completa */
-        setTapPressed(link, true);
-        var elapsed = Date.now() - tapPressStart;
-        var waitHold = Math.max(80, HELP_NAV_HOLD_MS - elapsed);
-        setTimeout(function () {
-            setTapPressed(link, false);
+            // Non “bussare” con setTapPressed: la scala viene gestita da pointerdown/up.
+            // Qui aspettiamo che finisca la rimozione della classe tap-active + transition CSS.
+            var elapsed = Date.now() - tapPressStart;
+            var remaining = Math.max(0, TAP_MIN_MS - elapsed);
+            var TRANSITION_BUFFER_MS = 90;
+            var waitMs = Math.max(40, remaining + TRANSITION_BUFFER_MS);
+
             setTimeout(function () {
-                link.setAttribute("data-gadly-help-nav", "1");
                 window.location.href = link.href;
-            }, HELP_NAV_RELEASE_MS);
-        }, waitHold);
-    }, true);
+            }, waitMs);
+        },
+        true
+    );
 
     /* Home Drose + chooser Our works: bottoni CTA — finiscono press+release, poi navigano */
     var DROSE_BTN_NAV_HOLD_MS = 220;
