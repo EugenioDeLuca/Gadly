@@ -47,7 +47,8 @@
         ".cv-score-tab-close",
         "#cv-target-role",
         "#cv-language-list .lang-level-select .text-tool-select-menu li",
-        "#btn-copy.copy-disabled"
+        "#btn-copy.copy-disabled",
+        ".login-password-toggle"
     ].join(", ");
 
     var tapPressTarget = null;

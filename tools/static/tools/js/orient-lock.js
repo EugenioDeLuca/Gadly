@@ -126,11 +126,22 @@
         el.style.removeProperty('background-image');
     }
 
+    function clearThemeToggleFlash() {
+        ['theme-toggle', 'warm-tone-toggle'].forEach(function (id) {
+            var b = document.getElementById(id);
+            if (!b) return;
+            try { b.blur(); } catch (eBlur) {}
+            b.classList.remove('is-nav-link-hover', 'tap-active');
+        });
+    }
+
     function restoreChrome() {
         clearInlineOverlayBg();
+        clearThemeToggleFlash();
         try {
             if (typeof window.gadlySyncViewportChrome === 'function') {
-                window.gadlySyncViewportChrome(isDark(), { forceResample: true });
+                /* Niente forceResample: absolute→fixed sull'header fa lampeggiare il toggle tema. */
+                window.gadlySyncViewportChrome(isDark(), { forceResample: false });
                 return;
             }
         } catch (e) {}
@@ -197,16 +208,23 @@
         }
         root.style.removeProperty('overflow');
         root.style.removeProperty('touch-action');
+        /* Congela stile toggle tema mentre l'header ridiventa visibile */
+        root.classList.add('gadly-orient-post-unlock');
         root.classList.remove('gadly-orient-locked', 'gadly-orient-settling');
         if (el) el.classList.remove('gadly-orient-lock--layouting');
         locked = false;
         unlocking = false;
-        /* Resample dopo lo sblocco: evita di campionare il velo bianco/blu */
+        clearThemeToggleFlash();
+        /* Paint chrome dopo lo sblocco: evita di campionare il velo bianco/blu */
         requestAnimationFrame(function () {
             restoreChrome();
             try {
                 window.dispatchEvent(new Event('gadly-orient-unlocked'));
             } catch (eUnlockEv) { /* ignore */ }
+            settleTimers.push(setTimeout(function () {
+                root.classList.remove('gadly-orient-post-unlock');
+                clearThemeToggleFlash();
+            }, 320));
         });
     }
 
@@ -248,6 +266,21 @@
             clearTimeout(unlockTimer);
             unlockTimer = null;
         }
+        clearSettleTimers();
+        root.classList.remove('gadly-orient-post-unlock');
+
+        /* Già in lock stabile: non ri-nascondere la card (evita flash logo in rotazione). */
+        var el = lockEl();
+        var stablyLocked =
+            locked &&
+            root.classList.contains('gadly-orient-locked') &&
+            !root.classList.contains('gadly-orient-settling') &&
+            !(el && el.classList.contains('gadly-orient-lock--layouting'));
+        if (stablyLocked) {
+            paintLockedChrome();
+            return;
+        }
+
         veilCardOnly();
         root.classList.add('gadly-orient-locked');
         root.classList.remove('gadly-orient-settling');
@@ -277,7 +310,20 @@
         }
     }
 
+    var rotateCoverQueued = false;
+
     function coverDuringRotate() {
+        if (isDesktop()) return;
+        /* orientationchange + screen.orientation.change spesso sparano entrambi → 1 solo ciclo */
+        if (rotateCoverQueued) return;
+        rotateCoverQueued = true;
+        requestAnimationFrame(function () {
+            rotateCoverQueued = false;
+            coverDuringRotateNow();
+        });
+    }
+
+    function coverDuringRotateNow() {
         if (isDesktop()) return;
         var root = document.documentElement;
 
@@ -298,6 +344,7 @@
         }
 
         veilCardOnly();
+        root.classList.remove('gadly-orient-post-unlock');
         root.classList.add('gadly-orient-locked', 'gadly-orient-settling');
         paintLockedChrome();
         locked = true;
@@ -329,6 +376,15 @@
             }
         }
         if (wantsLock()) {
+            var root = document.documentElement;
+            if (
+                locked &&
+                root.classList.contains('gadly-orient-locked') &&
+                !root.classList.contains('gadly-orient-settling')
+            ) {
+                paintLockedChrome();
+                return;
+            }
             beginLock(REVEAL_AFTER_LOCK_MS);
         } else if (isActiveLock()) {
             beginUnlock();

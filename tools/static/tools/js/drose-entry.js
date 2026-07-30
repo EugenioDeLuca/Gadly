@@ -336,24 +336,10 @@
             }
         });
 
+        /* Layout drone: versione anti-freeze (niente rAF loop / MutationObserver). */
         var LAYOUT_GAP = 24;
         var VIEWPORT_PAD = 8;
-        var LAYOUT_RESIZE_SETTLE_MS = 180;
         var layoutResizeTimer = 0;
-        var resizeRafId = 0;
-        var isResizingLayout = false;
-        var lockedDroneSide = null;
-        var pendingInitialReveal = true;
-        var revealRafId = 0;
-        var lastStableLeft = null;
-        var stableFrameCount = 0;
-        var REVEAL_STABLE_FRAMES = 4;
-        var NO_SPACE_STABLE_FRAMES = 4;
-        var revealCommitted = false;
-        var revealGraceUntil = 0;
-        var revealHideLockUntil = 0;
-        var hideNullFrameCount = 0;
-        var noSpaceFrameCount = 0;
 
         function getViewportWidth() {
             var vv = window.visualViewport;
@@ -377,18 +363,12 @@
         function getDroneSide() {
             var root = document.documentElement;
             if (root.classList.contains('gadly-qn-anchor-left') || document.body.classList.contains('gadly-qn-anchor-left')) {
-                lockedDroneSide = 'right';
                 return 'right';
             }
             if (root.classList.contains('gadly-qn-anchor-right') || document.body.classList.contains('gadly-qn-anchor-right')) {
-                lockedDroneSide = 'left';
                 return 'left';
             }
-            if (lockedDroneSide === 'left' || lockedDroneSide === 'right') {
-                return lockedDroneSide;
-            }
-            lockedDroneSide = 'left';
-            return lockedDroneSide;
+            return 'left';
         }
 
         var LABEL_COLOR_LIGHT = [180, 83, 9];
@@ -436,23 +416,16 @@
             return document.querySelector('.site-main .container');
         }
 
-        function isRevealGraceActive() {
-            return revealCommitted && Date.now() < revealGraceUntil;
-        }
-
         function computeTargetLeft() {
             if (!DESKTOP.matches) {
                 return null;
             }
-
             var droneWidth = entry.offsetWidth || 168;
             var viewportWidth = getViewportWidth();
-
             var container = getMainContainer();
             if (!container) {
                 return null;
             }
-
             var rect = container.getBoundingClientRect();
             if (!rect.width || !rect.height) {
                 return null;
@@ -463,9 +436,7 @@
             var targetLeft = side === 'right'
                 ? Math.round(rect.right + LAYOUT_GAP)
                 : Math.round(rect.left - LAYOUT_GAP - droneWidth);
-
             targetLeft = Math.max(minLeft, Math.min(maxLeft, targetLeft));
-
             if (overlapsContainer(targetLeft, droneWidth, rect)) {
                 return null;
             }
@@ -475,210 +446,90 @@
             return targetLeft;
         }
 
-        function isLayoutMeasureReady() {
-            return typeof window.__gadlyQnPlacedW === 'number';
+        function hideDroneLayout() {
+            entry.classList.add('is-layout-hidden');
+            entry.style.removeProperty('display');
+            entry.style.left = '';
+            entry.style.right = '';
+            document.documentElement.classList.remove('drose-layout-ready');
+            document.documentElement.classList.remove('drose-layout-pending');
         }
 
-        function isRevealHideLocked() {
-            return revealHideLockUntil > 0 && Date.now() < revealHideLockUntil;
-        }
-
-        function applyLayoutPosition(left, opts) {
-            opts = opts || {};
+        function showDroneLayout(left) {
             if (left === null) {
-                if (!opts.allowHide || isRevealHideLocked()) {
-                    return;
-                }
-                if (isRevealGraceActive()) {
-                    hideNullFrameCount += 1;
-                    if (hideNullFrameCount < 12) {
-                        return;
-                    }
-                }
-                hideNullFrameCount = 0;
-                entry.classList.add('is-layout-hidden');
+                hideDroneLayout();
                 return;
             }
-            hideNullFrameCount = 0;
-            entry.style.transition = 'none';
             entry.style.left = left + 'px';
             entry.style.right = 'auto';
-            void entry.offsetHeight;
-            entry.style.transition = '';
-            if (!pendingInitialReveal && opts.allowShow !== false) {
-                entry.classList.remove('is-layout-hidden');
-            }
+            entry.classList.remove('is-layout-hidden');
+            entry.style.removeProperty('display');
+            document.documentElement.classList.add('drose-layout-ready');
+            document.documentElement.classList.remove('drose-layout-pending');
             syncLabelDarkBg();
         }
 
-        function markLayoutPending() {
-            document.documentElement.classList.add('drose-layout-pending');
-        }
-
-        function commitLayoutReveal(left) {
-            pendingInitialReveal = false;
-            revealCommitted = true;
-            revealGraceUntil = Date.now() + 2000;
-            syncPointerOverWithoutSpin();
-
-            if (left === null) {
-                revealHideLockUntil = 0;
-                entry.classList.add('is-layout-hidden');
-                entry.style.removeProperty('display');
-                document.documentElement.classList.remove('drose-layout-ready');
-            } else {
-                applyLayoutPosition(left, { allowShow: false });
-                entry.classList.remove('is-layout-hidden');
-                entry.style.removeProperty('display');
-                document.documentElement.classList.add('drose-layout-ready');
-                revealHideLockUntil = Date.now() + 3000;
+        function placeDroneOnce() {
+            if (!DESKTOP.matches) {
+                hideDroneLayout();
+                return;
             }
-            document.documentElement.classList.remove('drose-layout-pending');
-            void entry.offsetHeight;
-        }
-
-        function primeQuickNavLayout() {
             if (typeof window.__gadlyPlaceQuickNav === 'function') {
-                window.__gadlyPlaceQuickNav();
+                try {
+                    window.__gadlyPlaceQuickNav();
+                } catch (ePlace) { /* ignore */ }
             }
+            showDroneLayout(computeTargetLeft());
         }
 
-        function tryRevealWhenStable() {
-            if (!pendingInitialReveal) {
-                revealRafId = 0;
-                return;
+        function schedulePlaceDrone() {
+            if (layoutResizeTimer) {
+                window.clearTimeout(layoutResizeTimer);
             }
-
-            if (!isLayoutMeasureReady()) {
-                primeQuickNavLayout();
-                revealRafId = window.requestAnimationFrame(tryRevealWhenStable);
-                return;
-            }
-
-            var left = computeTargetLeft();
-            if (left === null) {
-                noSpaceFrameCount += 1;
-                stableFrameCount = 0;
-                lastStableLeft = null;
-                if (noSpaceFrameCount >= NO_SPACE_STABLE_FRAMES) {
-                    commitLayoutReveal(null);
-                    revealRafId = 0;
-                    return;
-                }
-                revealRafId = window.requestAnimationFrame(tryRevealWhenStable);
-                return;
-            }
-
-            noSpaceFrameCount = 0;
-            applyLayoutPosition(left, { allowShow: false });
-            if (left === lastStableLeft) {
-                stableFrameCount += 1;
-            } else {
-                stableFrameCount = 1;
-                lastStableLeft = left;
-            }
-
-            if (stableFrameCount >= REVEAL_STABLE_FRAMES) {
-                commitLayoutReveal(left);
-                revealRafId = 0;
-                return;
-            }
-
-            revealRafId = window.requestAnimationFrame(tryRevealWhenStable);
-        }
-
-        function scheduleInitialReveal() {
-            markLayoutPending();
-            stableFrameCount = 0;
-            lastStableLeft = null;
-            noSpaceFrameCount = 0;
-            hideNullFrameCount = 0;
-            revealCommitted = false;
-            revealGraceUntil = 0;
-            revealHideLockUntil = 0;
-            pendingInitialReveal = true;
+            document.documentElement.classList.add('drose-layout-pending');
             entry.classList.add('is-layout-hidden');
             entry.style.setProperty('display', 'none', 'important');
-            if (revealRafId) {
-                window.cancelAnimationFrame(revealRafId);
-            }
-            window.requestAnimationFrame(function () {
-                primeQuickNavLayout();
-                window.requestAnimationFrame(function () {
-                    primeQuickNavLayout();
-                    tryRevealWhenStable();
-                });
-            });
+            layoutResizeTimer = window.setTimeout(function () {
+                layoutResizeTimer = 0;
+                placeDroneOnce();
+            }, 100);
         }
 
-        function syncLayoutPosition() {
-            applyLayoutPosition(computeTargetLeft(), { allowHide: true, allowShow: true });
-        }
-
-        function syncLayoutPositionDuringResize() {
-            resizeRafId = 0;
-            applyLayoutPosition(computeTargetLeft(), { allowHide: true, allowShow: true });
-        }
-
-        function settleLayoutAfterResize() {
-            isResizingLayout = false;
-            entry.classList.remove('is-layout-resizing');
-            syncLayoutPosition();
-            syncLabelDarkBg();
-            layoutResizeTimer = 0;
-        }
-
-        function handleLayoutResize() {
-            isResizingLayout = true;
-            entry.classList.add('is-layout-resizing');
-            if (!resizeRafId) {
-                resizeRafId = window.requestAnimationFrame(syncLayoutPositionDuringResize);
+        window.addEventListener('scroll', syncLabelDarkBg, { passive: true });
+        window.addEventListener('resize', function () {
+            if (!DESKTOP.matches) {
+                hideDroneLayout();
+                return;
             }
             if (layoutResizeTimer) {
                 window.clearTimeout(layoutResizeTimer);
             }
-            layoutResizeTimer = window.setTimeout(settleLayoutAfterResize, LAYOUT_RESIZE_SETTLE_MS);
-        }
-
-        window.addEventListener('resize', handleLayoutResize, { passive: true });
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleLayoutResize, { passive: true });
-            window.visualViewport.addEventListener('scroll', handleLayoutResize, { passive: true });
-        }
-
-        if (typeof MutationObserver !== 'undefined') {
-            var anchorObserver = new MutationObserver(function () {
-                if (isRevealGraceActive() || isRevealHideLocked()) {
-                    syncLabelDarkBg();
-                    return;
-                }
-                if (!isResizingLayout && !pendingInitialReveal) {
-                    syncLayoutPosition();
-                }
-                syncLabelDarkBg();
-            });
-            anchorObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-            anchorObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-        }
-
-        window.addEventListener('scroll', syncLabelDarkBg, { passive: true });
-        syncLabelDarkBg();
+            layoutResizeTimer = window.setTimeout(function () {
+                layoutResizeTimer = 0;
+                placeDroneOnce();
+            }, 200);
+        }, { passive: true });
 
         DESKTOP.addEventListener('change', function () {
             if (!DESKTOP.matches) {
-                entry.style.left = '';
-                entry.style.right = '';
+                if (layoutResizeTimer) {
+                    window.clearTimeout(layoutResizeTimer);
+                    layoutResizeTimer = 0;
+                }
+                hideDroneLayout();
                 entry.style.setProperty('--drose-label-color', mixLabelColor(0));
-                document.documentElement.classList.remove('drose-layout-ready');
-                document.documentElement.classList.remove('drose-layout-pending');
-                pendingInitialReveal = false;
                 return;
             }
-            scheduleInitialReveal();
-            syncLabelDarkBg();
+            schedulePlaceDrone();
         });
 
-        scheduleInitialReveal();
+        if (DESKTOP.matches) {
+            schedulePlaceDrone();
+        } else {
+            hideDroneLayout();
+        }
+        syncLabelDarkBg();
+
         if (entry.classList.contains('is-active')) {
             try {
                 sessionStorage.removeItem(STORAGE_PHASE_KEY);

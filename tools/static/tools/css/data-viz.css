@@ -1153,8 +1153,7 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:visited {
         color: #7eb8ff !important;
         -webkit-text-fill-color: #7eb8ff !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:hover,
@@ -1163,7 +1162,7 @@ body.data-viz:not(.dark-mode) .site-main .data-viz .container .tool-desc {
     body.dark-mode.data-viz .site-main .data-viz > .container > .tool-help a:active {
         color: #a8d4ff !important;
         -webkit-text-fill-color: #a8d4ff !important;
-        text-decoration: underline !important;
+        text-decoration: none !important;
         transform: none !important;
         opacity: 1 !important;
     }

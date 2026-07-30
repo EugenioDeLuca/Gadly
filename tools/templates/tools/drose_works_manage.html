@@ -31,7 +31,11 @@ body.drose-works-manage-page .drose-works-slot--filled .drose-works-media {
         <header class="drose-subpage__head">
             <h1>{% trans "Manage portfolio" %}</h1>
             <p class="drose-subpage__lead">{% trans "Choose a file for each slot — the upload starts automatically. Replacing a file updates the public gallery immediately." %}</p>
-            <p class="drose-works-manage-hint">{% trans "Photos: JPG, PNG, WebP, GIF (max 12 MB). Videos: MP4, WebM, MOV (max 80 MB)." %}</p>
+            <p class="drose-works-manage-hint drose-works-manage-hint--desktop">{% trans "Photos: JPG, PNG, WebP, GIF (max 12 MB). Videos: MP4, WebM, MOV (max 80 MB)." %}</p>
+            <p class="drose-works-manage-hint drose-works-manage-hint--mobile">
+                <span class="drose-works-manage-hint__photos">{% trans "Photos: JPG, PNG, WebP, GIF (max 12 MB)" %}</span>
+                <span class="drose-works-manage-hint__videos">{% trans "Videos: MP4, WebM, MOV (max 80 MB)" %}</span>
+            </p>
         </header>
 
         <div class="drose-works-manage-status" id="drose-works-manage-status" aria-live="polite">

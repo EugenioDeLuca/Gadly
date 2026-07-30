@@ -1613,8 +1613,13 @@ body.drose-works-lightbox-open .header-nav {
     text-align: center;
 }
 
+/* Desktop invariato; mobile = 2 righe senza punto finale (vedi @media) */
+.drose-works-manage-hint--mobile {
+    display: none;
+}
+
 @media (min-width: 769px) {
-    body.drose-works-manage-page .drose-works-manage-hint {
+    body.drose-works-manage-page .drose-works-manage-hint--desktop {
         max-width: none;
         white-space: nowrap;
     }
@@ -2145,11 +2150,30 @@ body.drose-home .drose-benefits li::after {
     text-align: left;
 }
 
+/* Django CheckboxSelectMultiple: wrapper div (non più ul/li) */
+.drose-quote-field #id_deliverables {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+}
+
+.drose-quote-field #id_deliverables > div {
+    width: 100%;
+}
+
 .drose-quote-field ul li {
     width: 100%;
 }
 
-.drose-quote-field ul li label {
+.drose-quote-field ul li label,
+.drose-quote-field #id_deliverables label,
+.drose-quote-field label:has(input[type="checkbox"]) {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
@@ -4585,6 +4609,269 @@ body.drose-page.faq-page .faq-item h3 {
         box-sizing: border-box;
     }
 
+    /* Richiesta preventivo: box largo e centrato (niente 100vw che sfalsa) */
+    body.drose-quote-request-page .site-main .drose-landing__container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    body.drose-quote-request-page .drose-subpage__head,
+    body.drose-quote-request-page .drose-section.drose-cta,
+    body.drose-quote-request-page .drose-landing__back {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
+        align-self: stretch !important;
+    }
+
+    body.drose-quote-request-page .drose-section.drose-cta {
+        background: transparent !important;
+        border: 2px solid #b45309 !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-section.drose-cta {
+        background: transparent !important;
+        border-color: #fbbf24 !important;
+    }
+
+    /* Quote request mobile: campi 47.5px; label centrate ambra/giallo */
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field > label,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field > span {
+        text-align: center;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field > label,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field > span {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    /* “Materiali e file da ricevere”: font leggermente più grande (solo mobile) */
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field:has(#id_deliverables) > span {
+        font-size: 1.05rem !important;
+    }
+
+    /* Opzioni checkbox (Django = div>label, non ul>li): blu light; giallo logo dark */
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field label:has(input[type="checkbox"]),
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field ul li label,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field #id_deliverables label {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field label:has(input[type="checkbox"]),
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field ul li label,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field #id_deliverables label,
+    body.dark-mode.drose-quote-request-page .site-main .drose-quote-form .drose-quote-field label:has(input[type="checkbox"]),
+    body.dark-mode.drose-quote-request-page .site-main .drose-quote-form #id_deliverables label {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field input[type="checkbox"],
+    body.drose-quote-request-page .drose-quote-form .drose-quote-consent input[type="checkbox"] {
+        accent-color: #28a745 !important;
+        color: #28a745 !important;
+        background-color: transparent !important;
+        border: 1.5px solid #28a745 !important;
+        border-radius: 3px;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1.05rem !important;
+        height: 1.05rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        align-self: center !important;
+        flex: 0 0 auto;
+        cursor: pointer;
+        box-sizing: border-box !important;
+        display: inline-grid;
+        place-content: center;
+    }
+
+    /* Check + testo allineati verticalmente al centro (solo mobile) */
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field label:has(input[type="checkbox"]),
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field #id_deliverables label,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field ul li label,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-consent {
+        align-items: center !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field input[type="checkbox"]::before,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-consent input[type="checkbox"]::before {
+        content: "";
+        width: 0.55rem;
+        height: 0.55rem;
+        transform: scale(0);
+        transition: transform 0.12s ease;
+        box-shadow: inset 1em 1em #28a745;
+        background-color: #28a745;
+        border-radius: 1px;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field input[type="checkbox"]:checked::before,
+    body.drose-quote-request-page .drose-quote-form .drose-quote-consent input[type="checkbox"]:checked::before {
+        transform: scale(1);
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-consent label {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-consent label {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    /* Hint “indica cosa vuoi ricevere…” centrato sotto il titolo consegne */
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field-hint,
+    body.drose-quote-request-page .drose-cta .drose-quote-form .drose-quote-field-hint {
+        text-align: center !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field input:not([type="checkbox"]),
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field .text-tool-select-trigger {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field .text-tool-select-trigger {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Dropdown quote: stile Drose (niente rosa; light ambra, dark giallo logo) */
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger:hover,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger:focus,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger:focus-visible,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger:active,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger.tap-active,
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger.is-drose-hover {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: 2px solid #b45309 !important;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-trigger::after {
+        border-top-color: #b45309 !important;
+    }
+
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-menu {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: 2px solid #b45309 !important;
+        box-shadow: 0 6px 18px rgba(180, 83, 9, 0.18) !important;
+    }
+
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-menu li {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-menu li:is(:hover, .is-drose-hover, .tap-active),
+    body.drose-quote-request-page:not(.dark-mode) .drose-quote-form .text-tool-select-menu li.selected {
+        background: rgba(180, 83, 9, 0.1) !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger:hover,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger:focus,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger:focus-visible,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger:active,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger.tap-active,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger.is-drose-hover {
+        background: rgba(15, 23, 42, 0.72) !important;
+        background-color: rgba(15, 23, 42, 0.72) !important;
+        border: 2px solid #fbbf24 !important;
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-trigger::after {
+        border-top-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-menu {
+        background: #0f172a !important;
+        background-color: #0f172a !important;
+        border: 2px solid #fbbf24 !important;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-menu li {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-menu li:is(:hover, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-quote-request-page .drose-quote-form .text-tool-select-menu li.selected {
+        background: rgba(251, 191, 36, 0.16) !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field textarea:not(.drose-quote-textarea--autogrow) {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+        resize: none !important;
+        overflow: hidden !important;
+    }
+
+    body.drose-quote-request-page .drose-quote-form .drose-quote-field textarea.drose-quote-textarea--autogrow {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: none !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+    }
+
+    /* Invia richiesta preventivo: altezza 52px come CTA home */
+    body.drose-quote-request-page .drose-quote-form > .drose-btn--primary,
+    body.drose-quote-request-page .drose-cta .drose-quote-form > button.drose-btn--primary {
+        height: 52px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1.15 !important;
+    }
+
     /* Richiedi preventivo: altezza esatta 52px (niente padding verticale che lo gonfia) */
     body.drose-home .drose-cta .drose-btn--primary {
         height: 52px;
@@ -4640,6 +4927,19 @@ body.drose-page.faq-page .faq-item h3 {
         -webkit-text-fill-color: #b45309 !important;
     }
 
+    /* Hint upload: Foto senza punto; Video a capo senza punto (solo mobile) */
+    body.drose-works-manage-page .drose-works-manage-hint--desktop {
+        display: none !important;
+    }
+
+    body.drose-works-manage-page .drose-works-manage-hint--mobile {
+        display: block !important;
+    }
+
+    body.drose-works-manage-page .drose-works-manage-hint--mobile .drose-works-manage-hint__videos {
+        display: block;
+    }
+
     body.drose-page:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item),
     body.drose-page:not(.dark-mode) .drose-landing__back-link,
     body.is-drose-brand.login-page:not(.dark-mode) .static-container a:not(.drose-btn) {
@@ -4653,6 +4953,79 @@ body.drose-page.faq-page .faq-item h3 {
         -webkit-text-fill-color: #d97706 !important;
     }
 
+    /* Quote request: “Torna alla home Drose” blu Gadly (dopo regola ambra generica) */
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a.drose-landing__back-link,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a:visited,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a:hover,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a:focus,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a:focus-visible,
+    body.drose-quote-request-page:not(.dark-mode) .drose-landing__back a:active,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link:visited,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link:hover,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link:focus,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link:focus-visible,
+    body.drose-quote-request-page:not(.dark-mode) .site-main .drose-landing__container a.drose-landing__back-link:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        text-decoration: none !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-landing__back a,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a.drose-landing__back-link,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a:visited,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a:hover,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a:focus,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a:focus-visible,
+    body.dark-mode.drose-quote-request-page .drose-landing__back a:active,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link:visited,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link:hover,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link:focus,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-quote-request-page .site-main .drose-landing__container a.drose-landing__back-link:active {
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+        text-decoration: none !important;
+    }
+
+    /* Home Drose mobile light: link blu Gadly */
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item),
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):visited,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link:visited {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):hover,
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):focus,
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):focus-visible,
+    body.drose-home:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):active,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link:hover,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link:focus,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link:focus-visible,
+    body.drose-home:not(.dark-mode) .drose-landing__back-link:active {
+        color: #0056b3 !important;
+        -webkit-text-fill-color: #0056b3 !important;
+    }
+
+    /* Login/signup Drose mobile light: link blu Gadly, non arancio */
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn),
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn):visited {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn):hover,
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn):focus,
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn):focus-visible,
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-container a:not(.login-btn):active {
+        color: #0056b3 !important;
+        -webkit-text-fill-color: #0056b3 !important;
+    }
+
     /* Light mobile: bottoni = ambra logo; al tap/hover niente cambio colore (solo scale) */
     body.drose-page:not(.dark-mode) .site-main .drose-btn--primary,
     body.drose-page:not(.dark-mode) .site-main a.drose-btn--primary,
@@ -4661,6 +5034,8 @@ body.drose-page.faq-page .faq-item h3 {
     body.drose-page:not(.dark-mode) .site-main a.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
     body.drose-page:not(.dark-mode) .site-main button.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
     body.is-drose-brand.login-page:not(.dark-mode) .site-main .drose-btn--primary,
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-form .login-btn,
+    body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-form .login-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
     body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn,
     body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
         background: #b45309 !important;
@@ -4790,6 +5165,42 @@ body.drose-page.faq-page .faq-item h3 {
         -webkit-text-fill-color: #fbbf24 !important;
     }
 
+    /* Home Drose mobile dark: link blu chiaro Gadly */
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item),
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):visited,
+    body.dark-mode.drose-home .drose-landing__back-link,
+    body.dark-mode.drose-home .drose-landing__back-link:visited {
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+    }
+
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):hover,
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):focus,
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):focus-visible,
+    body.dark-mode.drose-home .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item):active,
+    body.dark-mode.drose-home .drose-landing__back-link:hover,
+    body.dark-mode.drose-home .drose-landing__back-link:focus,
+    body.dark-mode.drose-home .drose-landing__back-link:focus-visible,
+    body.dark-mode.drose-home .drose-landing__back-link:active {
+        color: #a8d4ff !important;
+        -webkit-text-fill-color: #a8d4ff !important;
+    }
+
+    /* Login/signup Drose mobile dark: link blu chiaro Gadly, non gialli */
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn),
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn):visited {
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+    }
+
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn):hover,
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn):focus,
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn):focus-visible,
+    body.dark-mode.is-drose-brand.login-page .site-main .login-container a:not(.login-btn):active {
+        color: #a8d4ff !important;
+        -webkit-text-fill-color: #a8d4ff !important;
+    }
+
     body.drose-works-page .site-main .drose-works-manage-link-wrap a,
     body.drose-works-page .site-main .drose-works-manage-link-wrap a:visited,
     body.drose-works-page .site-main .drose-works-manage-link-wrap a:is(:hover, :focus, :focus-visible, :active) {
@@ -4810,6 +5221,8 @@ body.drose-page.faq-page .faq-item h3 {
     body.dark-mode.drose-page .site-main a.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
     body.dark-mode.drose-page .site-main button.drose-btn--primary:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active),
     body.dark-mode.is-drose-brand.login-page .site-main .drose-btn--primary,
+    body.dark-mode.is-drose-brand.login-page .site-main .login-form .login-btn,
+    body.dark-mode.is-drose-brand.login-page .site-main .login-form .login-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
     body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn,
     body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
         background: #fbbf24 !important;
@@ -4876,6 +5289,65 @@ body.drose-page.faq-page .faq-item h3 {
     body.dark-mode.drose-page.drose-home .drose-card-grid > .drose-card--service .drose-card__desc {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* Static pages + FAQ opened from Drose: mobile colors follow Drose branding */
+    body.drose-page:not(.dark-mode) .site-main .static-container h1,
+    body.drose-page:not(.dark-mode) .site-main .static-container h2,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-main-title,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-section h2,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-item h3 {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+    }
+
+    body.drose-page:not(.dark-mode) .site-main .static-container p,
+    body.drose-page:not(.dark-mode) .site-main .static-container .static-updated,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-intro,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-item p {
+        color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+    }
+
+    body.drose-page:not(.dark-mode) .site-main .static-container a:not(.drose-btn),
+    body.drose-page:not(.dark-mode) .site-main .static-container a:not(.drose-btn):visited,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-item p a,
+    body.drose-page:not(.dark-mode) .site-main .faq-container .faq-item p a:visited,
+    body.drose-page:not(.dark-mode) .site-main .faq-footer .home-link,
+    body.drose-page:not(.dark-mode) .site-main .faq-footer .home-link svg {
+        color: #003f7f !important;
+        fill: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        text-decoration-color: rgba(0, 63, 127, 0.75) !important;
+    }
+
+    body.dark-mode.drose-page .site-main .static-container h1,
+    body.dark-mode.drose-page .site-main .static-container h2,
+    body.dark-mode.drose-page .site-main .faq-container .faq-main-title,
+    body.dark-mode.drose-page .site-main .faq-container .faq-section h2,
+    body.dark-mode.drose-page .site-main .faq-container .faq-item h3 {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.drose-page .site-main .static-container p,
+    body.dark-mode.drose-page .site-main .static-container .static-updated,
+    body.dark-mode.drose-page .site-main .faq-container .faq-intro,
+    body.dark-mode.drose-page .site-main .faq-container .faq-item p {
+        color: #e8eef6 !important;
+        -webkit-text-fill-color: #e8eef6 !important;
+    }
+
+    body.dark-mode.drose-page .site-main .static-container a:not(.drose-btn),
+    body.dark-mode.drose-page .site-main .static-container a:not(.drose-btn):visited,
+    body.dark-mode.drose-page .site-main .faq-container .faq-item p a,
+    body.dark-mode.drose-page .site-main .faq-container .faq-item p a:visited,
+    body.dark-mode.drose-page .site-main .faq-footer .home-link,
+    body.dark-mode.drose-page .site-main .faq-footer .home-link svg {
+        color: #72b8ff !important;
+        fill: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+        text-decoration-color: rgba(114, 184, 255, 0.85) !important;
     }
 }
 
@@ -5156,8 +5628,19 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:focus,
     body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:focus-visible,
     body.dark-mode.drose-works-page .site-main .drose-works-manage-link-wrap .drose-landing__back-link:active {
-        color: #be123c !important;
-        -webkit-text-fill-color: #be123c !important;
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+        text-decoration: none !important;
+    }
+
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link,
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:visited,
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:hover,
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:focus,
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
+    body.drose-works-manage-page:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
         text-decoration: none !important;
     }
 
@@ -5167,8 +5650,19 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:focus,
     body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
     body.dark-mode.drose-works-manage-page .site-main .drose-landing__back .drose-landing__back-link:active {
-        color: #fbbf24 !important;
-        -webkit-text-fill-color: #fbbf24 !important;
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
+        text-decoration: none !important;
+    }
+
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link,
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:visited,
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:hover,
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:focus,
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
+    body.drose-works-filtered:not(.dark-mode) .site-main .drose-landing__back .drose-landing__back-link:active {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
         text-decoration: none !important;
     }
 
@@ -5178,8 +5672,8 @@ body.drose-page.drose-subpage:not(.drose-quote-staff-page) .drose-quote-form .dr
     body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:focus,
     body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:focus-visible,
     body.dark-mode.drose-works-filtered .site-main .drose-landing__back .drose-landing__back-link:active {
-        color: #fbbf24 !important;
-        -webkit-text-fill-color: #fbbf24 !important;
+        color: #72b8ff !important;
+        -webkit-text-fill-color: #72b8ff !important;
         text-decoration: none !important;
     }
 }
@@ -5242,5 +5736,62 @@ body.drose-works-lightbox-open.dark-mode.warm-tone {
 
     body.drose-works-page .drose-works-lightbox__video {
         background: #000;
+    }
+}
+
+/* Mobile hamburger Drose: voci = colore font "Drose" (Gadly resta blu) */
+@media (max-width: 768px) {
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout),
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):visited,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):hover,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):active,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout),
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):hover,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):active,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):focus,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):focus-visible,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:hover,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:active,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:focus,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:focus-visible,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout),
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):visited,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):hover,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):active,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus-visible {
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+        background: transparent !important;
+    }
+
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout),
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):visited,
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):hover,
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):active,
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):focus,
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout),
+    body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):hover,
+    body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):active,
+    body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):focus,
+    body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):focus-visible,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:hover,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:active,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:focus,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:focus-visible,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout),
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):visited,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):hover,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):active,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):focus,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):focus-visible {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+        background: transparent !important;
     }
 }

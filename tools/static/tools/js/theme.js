@@ -28,7 +28,10 @@
 
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
-        if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        if (btn) {
+            var nextIcon = isDark ? '☀️' : '🌙';
+            if (btn.textContent !== nextIcon) btn.textContent = nextIcon;
+        }
         if (document.body.classList.contains('cv-generator')) {
             document.documentElement.classList.toggle('cv-gen-mobile-light', mobile && !isDark);
         }
@@ -65,7 +68,10 @@
         } else {
             syncViewportChrome(isDark, false);
             var syncBtn = document.getElementById('theme-toggle');
-            if (syncBtn) syncBtn.textContent = isDark ? '☀️' : '🌙';
+            if (syncBtn) {
+                var syncIcon = isDark ? '☀️' : '🌙';
+                if (syncBtn.textContent !== syncIcon) syncBtn.textContent = syncIcon;
+            }
         }
 
         var warmSaved = localStorage.getItem(warmKey);

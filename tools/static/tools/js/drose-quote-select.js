@@ -47,10 +47,11 @@
             trigger.addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                var willOpen = !wrap.classList.contains("open");
                 document.querySelectorAll(".drose-quote-form .text-tool-select.open").forEach(function (w) {
                     w.classList.remove("open");
                 });
-                wrap.classList.toggle("open");
+                if (willOpen) wrap.classList.add("open");
             });
         }
 

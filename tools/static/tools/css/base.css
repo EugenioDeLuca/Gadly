@@ -1043,6 +1043,34 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     .header-nav .header-dropdown-item {
         text-align: left;
     }
+
+    /* Hamburger: “Esci” sempre rosso (Gadly + Drose, light e dark) — solo mobile */
+    .header-nav .header-link.header-link--logout,
+    .header-nav .header-nav-logout-form .header-link.header-link--logout,
+    .header-nav .header-link.header-link--logout:visited,
+    .header-nav .header-link.header-link--logout:hover,
+    .header-nav .header-link.header-link--logout:focus,
+    .header-nav .header-link.header-link--logout:focus-visible,
+    .header-nav .header-link.header-link--logout:active,
+    .header-nav .header-link.header-link--logout.tap-active,
+    .header-nav .header-link.header-link--logout.is-nav-link-hover,
+    body.dark-mode .header-nav .header-link.header-link--logout,
+    body.dark-mode .header-nav .header-nav-logout-form .header-link.header-link--logout,
+    body.dark-mode .header-nav .header-link.header-link--logout:visited,
+    body.dark-mode .header-nav .header-link.header-link--logout:hover,
+    body.dark-mode .header-nav .header-link.header-link--logout:focus,
+    body.dark-mode .header-nav .header-link.header-link--logout:focus-visible,
+    body.dark-mode .header-nav .header-link.header-link--logout:active,
+    body.dark-mode .header-nav .header-link.header-link--logout.tap-active,
+    body.dark-mode .header-nav .header-link.header-link--logout.is-nav-link-hover,
+    body.drose-page .header-nav .header-link.header-link--logout,
+    body.is-drose-brand .header-nav .header-link.header-link--logout,
+    body.dark-mode.drose-page .header-nav .header-link.header-link--logout,
+    body.dark-mode.is-drose-brand .header-nav .header-link.header-link--logout {
+        color: #dc2626 !important;
+        -webkit-text-fill-color: #dc2626 !important;
+    }
+
     @media (max-width: 480px) {
         body.dark-mode .header-nav,
         body.dark-mode .header-nav.is-open {
@@ -1571,8 +1599,7 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
     body.dark-mode.text-tool .site-main .container .tool-help a {
         color: #7eb8ff !important;
-        text-decoration: underline;
-        text-underline-offset: 3px;
+        text-decoration: none;
     }
     body.dark-mode.text-tool .site-main .container .tool-help a:hover {
         color: #a8d4ff !important;
@@ -1945,4 +1972,20 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     body.help-page .site-main .container .home-link-wrap .home-link.tap-active:hover {
         transform: scale(0.96) !important;
     }
+}
+
+/* Dark mode: link alle pagine help dei tool senza sottolineatura (colori invariati) */
+body.dark-mode .site-main .tool-help a,
+body.dark-mode .site-main .tool-help a:visited,
+body.dark-mode .site-main .tool-help a:hover,
+body.dark-mode .site-main .tool-help a:focus,
+body.dark-mode .site-main .tool-help a:focus-visible,
+body.dark-mode .site-main .tool-help a:active,
+body.dark-mode .site-main .container .tool-help a,
+body.dark-mode .site-main .container .tool-help a:visited,
+body.dark-mode .site-main .container .tool-help a:hover,
+body.dark-mode .site-main .container .tool-help a:focus,
+body.dark-mode .site-main .container .tool-help a:focus-visible,
+body.dark-mode .site-main .container .tool-help a:active {
+    text-decoration: none !important;
 }

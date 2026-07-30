@@ -21,6 +21,24 @@ def is_drose_path(path: str) -> bool:
     return normalized == "/drose" or path.startswith("/drose/")
 
 
+def is_admin_path(path: str) -> bool:
+    """True for the configured Django admin URL (and legacy /admin/)."""
+    if not path:
+        return False
+    try:
+        from django.conf import settings
+
+        admin_url = (getattr(settings, "ADMIN_URL", "admin/") or "admin/").strip("/")
+    except Exception:
+        admin_url = "admin"
+    prefixes = (f"/{admin_url}", "/admin")
+    normalized = path.rstrip("/") or "/"
+    for prefix in prefixes:
+        if normalized == prefix or path.startswith(prefix + "/"):
+            return True
+    return False
+
+
 def safe_drose_next(raw: str) -> str:
     raw = (raw or "").strip()
     if not raw.startswith("/") or raw.startswith("//"):
@@ -57,7 +75,7 @@ def resolve_auth_next(request):
     if path.startswith("/accounts/") and session_next:
         return session_next
 
-    if session is not None and not path.startswith("/accounts/"):
+    if session is not None and not path.startswith("/accounts/") and not is_admin_path(path):
         session.pop(DROSE_AUTH_NEXT_SESSION_KEY, None)
 
     return ""
@@ -170,3 +188,42 @@ def resolve_logout_redirect(request) -> str:
             return DROSE_HOME_PATH
 
     return ""
+
+
+ADMIN_VIEW_SITE_HOME_KEY = "admin_view_site_home"
+
+
+def resolve_admin_view_site_url(request) -> str:
+    """
+    Admin “View site” / “Visualizza sito” target:
+    - /drose/ when admin was opened from Drose
+    - / when opened from Gadly
+    Persists across admin navigation via session.
+    """
+    from urllib.parse import urlparse
+
+    session = getattr(request, "session", None)
+    referer = request.META.get("HTTP_REFERER", "")
+
+    if referer and session is not None:
+        parsed = urlparse(referer)
+        host = (request.get_host() or "").split(":")[0]
+        ref_host = (parsed.netloc or "").split(":")[0]
+        if ref_host in ("", host) and not is_admin_path(parsed.path):
+            if is_drose_path(parsed.path):
+                session[ADMIN_VIEW_SITE_HOME_KEY] = DROSE_HOME_PATH
+            else:
+                session[ADMIN_VIEW_SITE_HOME_KEY] = "/"
+
+    if session is not None:
+        stored = session.get(ADMIN_VIEW_SITE_HOME_KEY)
+        if stored in (DROSE_HOME_PATH, "/"):
+            return stored
+        # Fallback: still on a Drose auth/browse trail
+        if safe_drose_next(session.get(DROSE_AUTH_NEXT_SESSION_KEY, "")):
+            session[ADMIN_VIEW_SITE_HOME_KEY] = DROSE_HOME_PATH
+            return DROSE_HOME_PATH
+        session[ADMIN_VIEW_SITE_HOME_KEY] = "/"
+        return "/"
+
+    return "/"

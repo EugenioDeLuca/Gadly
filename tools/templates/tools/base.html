@@ -1826,9 +1826,9 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=242">
-<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=161">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=28">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=244">
+<link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=162">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=30">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1929,7 +1929,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=450">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=476">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2581,11 +2581,11 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=7"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=40"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=43"></script>
     {% if not is_drose_site %}
-    <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=2"></script>
+    <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=3"></script>
     {% endif %}
-    <script src="{% static 'tools/js/mobile-tap.js' %}?v=58"></script>
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=59"></script>
     {% if not is_drose_site %}
     {% include "tools/includes/tool_quick_nav.html" %}
     {% endif %}
@@ -2594,7 +2594,7 @@
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/tool-quick-nav.js' %}?v=107"></script>
     {% endif %}
-    <script src="{% static 'tools/js/drose-entry.js' %}?v=69"></script>
+    <script src="{% static 'tools/js/drose-entry.js' %}?v=74"></script>
     <script src="{% static 'tools/js/nav-link-hover-lock.js' %}?v=2"></script>
     {% if is_drose_site %}
     <script src="{% static 'tools/js/drose-hover-lock.js' %}?v=8"></script>
@@ -2603,7 +2603,7 @@
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
     <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=26"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=28"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare

@@ -256,6 +256,19 @@ body.dark-mode.warm-tone .gadly-orient-lock.gadly-orient-lock--layouting {
     pointer-events: none !important;
 }
 
+/* Gadly: ferma la rotazione del logo header sotto l’overlay (evita scatto allo sblocco) */
+html.gadly-orient-locked .header-logo:not(.header-logo--drose) .header-logo-icon,
+html.gadly-orient-settling .header-logo:not(.header-logo--drose) .header-logo-icon {
+    animation-play-state: paused !important;
+}
+
+/* Logo overlay: niente reflow/decode flash quando la card riappare */
+html.gadly-orient-locked .gadly-orient-lock__logo,
+html.gadly-orient-settling .gadly-orient-lock__logo {
+    content-visibility: visible;
+    contain: layout style;
+}
+
 html.gadly-orient-locked .gadly-orient-lock__card,
 html.gadly-orient-settling .gadly-orient-lock__card {
     padding: 18px 20px 16px;
@@ -431,6 +444,36 @@ html.drose-lightbox-allow-rotate.gadly-orient-settling body {
     overflow: visible !important;
     touch-action: auto !important;
     overscroll-behavior: auto !important;
+}
+
+/* Dopo ritorno in portrait: niente flash pill/hover sul toggle tema (solo telefono). */
+html.gadly-orient-post-unlock .site-header .theme-toggle:not(.warm-tone-toggle),
+html.gadly-orient-post-unlock .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+html.gadly-orient-post-unlock .site-header .theme-toggle:not(.warm-tone-toggle):active,
+html.gadly-orient-post-unlock .site-header .theme-toggle:not(.warm-tone-toggle):focus,
+html.gadly-orient-post-unlock .site-header .warm-tone-toggle:not(.is-active),
+html.gadly-orient-post-unlock .site-header .warm-tone-toggle:not(.is-active):hover,
+html.gadly-orient-post-unlock .site-header .warm-tone-toggle:not(.is-active):active,
+html.gadly-orient-post-unlock .site-header .warm-tone-toggle:not(.is-active):focus {
+    transition: none !important;
+    animation: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+html.gadly-orient-post-unlock body:not(.dark-mode) .site-header .theme-toggle:not(.warm-tone-toggle),
+html.gadly-orient-post-unlock body:not(.dark-mode) .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+html.gadly-orient-post-unlock body:not(.dark-mode) .site-header .theme-toggle:not(.warm-tone-toggle):active,
+html.gadly-orient-post-unlock body:not(.dark-mode) .site-header .theme-toggle:not(.warm-tone-toggle):focus {
+    color: #003f7f !important;
+    -webkit-text-fill-color: #003f7f !important;
+}
+html.gadly-orient-post-unlock body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle),
+html.gadly-orient-post-unlock body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):hover,
+html.gadly-orient-post-unlock body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):active,
+html.gadly-orient-post-unlock body.dark-mode .site-header .theme-toggle:not(.warm-tone-toggle):focus {
+    color: var(--text-secondary, #b0c4de) !important;
+    -webkit-text-fill-color: var(--text-secondary, #b0c4de) !important;
 }
 
 /* Desktop largo: mai. Viewport ≤1024 (DevTools device / telefono) → overlay ok */

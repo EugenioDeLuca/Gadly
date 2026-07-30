@@ -984,6 +984,14 @@ msgid "Login"
 msgstr ""
 
 #: .\tools\templates\registration\login.html:16
+msgid "Sign in with your Gadly account."
+msgstr "Sign in with your Gadly account."
+
+#: .\tools\templates\registration\login.html:17
+msgid "The same login works for Gadly tools and Drose pages"
+msgstr "The same login works for Gadly tools and Drose pages"
+
+#: .\tools\templates\registration\login.html:16
 msgid ""
 "Sign in with your Gadly account. The same login works for Gadly tools and "
 "Drose pages."
@@ -1022,6 +1030,12 @@ msgstr "Password Gen"
 #: .\tools\templates\tools\verify_email_invalid.html:23
 msgid "Sign in"
 msgstr ""
+
+msgid "Show password"
+msgstr "Show password"
+
+msgid "Hide password"
+msgstr "Hide password"
 
 #: .\tools\templates\registration\login.html:63
 msgid "Didn't receive the verification email?"
@@ -3987,11 +4001,19 @@ msgid ""
 "Photos: JPG, PNG, WebP, GIF (max 12 MB). Videos: MP4, WebM, MOV (max 80 MB)."
 msgstr ""
 
-#: .\tools\templates\tools\drose_works_manage.html:39
+#: .\tools\templates\tools\drose_works_manage.html:36
+msgid "Photos: JPG, PNG, WebP, GIF (max 12 MB)"
+msgstr ""
+
+#: .\tools\templates\tools\drose_works_manage.html:37
+msgid "Videos: MP4, WebM, MOV (max 80 MB)"
+msgstr ""
+
+#: .\tools\templates\tools\drose_works_manage.html:42
 msgid "File uploaded successfully."
 msgstr ""
 
-#: .\tools\templates\tools\drose_works_manage.html:40
+#: .\tools\templates\tools\drose_works_manage.html:43
 msgid "File removed successfully."
 msgstr ""
 

@@ -6,18 +6,24 @@
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=23">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=37">
 {% endblock %}
 {% block content %}
 <div class="static-container login-container">
     <h1>{% trans "Login" %}</h1>
-    <p style="margin: 16px 0; color: #555; line-height: 1.6;">
-        {% if is_drose_site %}
+    {% if is_drose_site %}
+    <p class="login-desc login-desc--drose-desktop">
         {% trans "Sign in with your Gadly account. The same login works for Gadly tools and Drose pages." %}
-        {% else %}
-        {% trans "Sign in to manage your account and continue using Gadly tools." %}
-        {% endif %}
     </p>
+    <p class="login-desc login-desc--drose-mobile">
+        <span class="login-desc__a">{% trans "Sign in with your Gadly account." %}</span>
+        <span class="login-desc__b">{% trans "The same login works for Gadly tools and Drose pages" %}</span>
+    </p>
+    {% else %}
+    <p class="login-desc">
+        {% trans "Sign in to manage your account and continue using Gadly tools." %}
+    </p>
+    {% endif %}
 
     {% if request.GET.email_changed %}
     <p class="login-email-changed-msg" role="status">
@@ -48,7 +54,9 @@
         </div>
         <div class="form-group">
             <input type="password" name="password" id="id_password" required
-                   placeholder="{% trans 'Password' %}" class="login-input">
+                   placeholder="{% trans 'Password' %}" class="login-input"
+                   data-toggle-show="{% trans 'Show password' %}"
+                   data-toggle-hide="{% trans 'Hide password' %}">
             {% if form.password.errors %}
             <span class="field-error">{{ form.password.errors.0 }}</span>
             {% endif %}
@@ -65,4 +73,7 @@
     <p class="login-hint">{% trans "Don't have an account?" %} <a href="{% auth_link 'register' %}">{% trans "Sign up" %}</a></p>
 
 </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/login-password-toggle.js' %}?v=2"></script>
 {% endblock %}

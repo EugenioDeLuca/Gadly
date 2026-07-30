@@ -1125,6 +1125,12 @@ body.dark-mode .warm-tone-toggle.is-active {
     .site-header .header-menu-btn {
         -webkit-tap-highlight-color: transparent;
     }
+    /* Niente transition colore/sfondo: evita flash al ritorno da landscape */
+    .site-header .theme-toggle,
+    .site-header .warm-tone-toggle {
+        transition: none !important;
+        touch-action: manipulation;
+    }
     .site-header .header-lang-btn,
     .header-lang-form .header-lang-btn {
         transition: none !important;

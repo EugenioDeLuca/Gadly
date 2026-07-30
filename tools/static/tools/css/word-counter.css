@@ -417,8 +417,7 @@ body.word-counter.help-page .home-link-wrap {
     /* Dark mobile: theme imposta link container = #b0c4de come il testo — link “tips” più visibile */
     body.dark-mode.word-counter .tool-help a {
         color: #7eb8ff !important;
-        text-decoration: underline;
-        text-underline-offset: 3px;
+        text-decoration: none;
     }
     body.dark-mode.word-counter .tool-help a:hover {
         color: #a8d4ff !important;

@@ -3652,8 +3652,7 @@ body.web-seo.robots-txt-gen:not(.dark-mode) .site-main .container p.tool-desc {
     body.dark-mode.web-seo.robots-txt-gen .site-main .container .tool-help a:visited {
         color: #7eb8ff !important;
         -webkit-text-fill-color: #7eb8ff !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode.web-seo.robots-txt-gen .site-main .container .tool-help a:hover,
@@ -3662,7 +3661,7 @@ body.web-seo.robots-txt-gen:not(.dark-mode) .site-main .container p.tool-desc {
     body.dark-mode.web-seo.robots-txt-gen .site-main .container .tool-help a:active {
         color: #a8d4ff !important;
         -webkit-text-fill-color: #a8d4ff !important;
-        text-decoration: underline !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode.web-seo.robots-txt-gen .site-main .container .robots-import-panel .robots-import-heading,
@@ -4529,8 +4528,7 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
         color: #7eb8ff !important;
         -webkit-text-fill-color: #7eb8ff !important;
         font-size: 1rem !important;
-        text-decoration: underline !important;
-        text-underline-offset: 3px !important;
+        text-decoration: none !important;
     }
 
     body.dark-mode.web-seo.cron-explainer .site-main .container .tool-help a:hover,
@@ -4539,7 +4537,7 @@ body.dark-mode.web-seo.robots-txt-gen .site-main .container .form-group input#si
     body.dark-mode.web-seo.cron-explainer .site-main .container .tool-help a:active {
         color: #a8d4ff !important;
         -webkit-text-fill-color: #a8d4ff !important;
-        text-decoration: underline !important;
+        text-decoration: none !important;
         transform: none !important;
     }
 

@@ -1090,6 +1090,14 @@ msgid "Login"
 msgstr "Accedi"
 
 #: .\tools\templates\registration\login.html:16
+msgid "Sign in with your Gadly account."
+msgstr "Accedi con il tuo account Gadly."
+
+#: .\tools\templates\registration\login.html:17
+msgid "The same login works for Gadly tools and Drose pages"
+msgstr "Lo stesso login vale per gli strumenti di Gadly e le pagine di Drose"
+
+#: .\tools\templates\registration\login.html:16
 msgid ""
 "Sign in with your Gadly account. The same login works for Gadly tools and "
 "Drose pages."
@@ -1124,6 +1132,12 @@ msgstr ""
 #: .\tools\templates\tools\qr_generator.html:220
 msgid "Password"
 msgstr "Password"
+
+msgid "Show password"
+msgstr "Mostra password"
+
+msgid "Hide password"
+msgstr "Nascondi password"
 
 #: .\tools\templates\registration\login.html:56
 #: .\tools\templates\registration\password_reset_complete.html:19
@@ -4248,11 +4262,19 @@ msgid ""
 msgstr ""
 "Foto: JPG, PNG, WebP, GIF (max 12 MB). Video: MP4, WebM, MOV (max 80 MB)."
 
-#: .\tools\templates\tools\drose_works_manage.html:39
+#: .\tools\templates\tools\drose_works_manage.html:36
+msgid "Photos: JPG, PNG, WebP, GIF (max 12 MB)"
+msgstr "Foto: JPG, PNG, WebP, GIF (max 12 MB)"
+
+#: .\tools\templates\tools\drose_works_manage.html:37
+msgid "Videos: MP4, WebM, MOV (max 80 MB)"
+msgstr "Video: MP4, WebM, MOV (max 80 MB)"
+
+#: .\tools\templates\tools\drose_works_manage.html:42
 msgid "File uploaded successfully."
 msgstr "File caricato correttamente."
 
-#: .\tools\templates\tools\drose_works_manage.html:40
+#: .\tools\templates\tools\drose_works_manage.html:43
 msgid "File removed successfully."
 msgstr "File rimosso correttamente."
 

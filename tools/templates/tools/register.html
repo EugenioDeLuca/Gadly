@@ -6,7 +6,7 @@
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/login.css' %}">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=37">
 {% endblock %}
 {% block content %}
 {% trans "Username must be at least 3 characters" as msg_username_min %}
@@ -55,14 +55,18 @@
         </div>
         <div class="form-group">
             <input type="password" name="password1" id="id_password1" required minlength="12"
-                   placeholder="{% trans 'Password (min 12 characters)' %}" class="login-input" autocomplete="new-password">
+                   placeholder="{% trans 'Password (min 12 characters)' %}" class="login-input" autocomplete="new-password"
+                   data-toggle-show="{% trans 'Show password' %}"
+                   data-toggle-hide="{% trans 'Hide password' %}">
             {% if form.password1.errors %}
             <span class="field-error">{{ form.password1.errors.0 }}</span>
             {% endif %}
         </div>
         <div class="form-group">
             <input type="password" name="password2" id="id_password2" required
-                   placeholder="{% trans 'Confirm password' %}" class="login-input" autocomplete="new-password">
+                   placeholder="{% trans 'Confirm password' %}" class="login-input" autocomplete="new-password"
+                   data-toggle-show="{% trans 'Show password' %}"
+                   data-toggle-hide="{% trans 'Hide password' %}">
             {% if form.password2.errors %}
             <span class="field-error">{{ form.password2.errors.0 }}</span>
             {% endif %}
@@ -146,4 +150,7 @@
     });
 })();
 </script>
+{% endblock %}
+{% block page_scripts %}
+<script src="{% static 'tools/js/login-password-toggle.js' %}?v=2"></script>
 {% endblock %}

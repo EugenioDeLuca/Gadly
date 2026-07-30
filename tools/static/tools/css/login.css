@@ -8,6 +8,17 @@
     text-align: center;
 }
 
+.login-desc {
+    margin: 16px 0;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Drose: desktop invariato; mobile = 2 righe (vedi @media) */
+.login-desc--drose-mobile {
+    display: none;
+}
+
 .login-form {
     margin: 24px 0;
 }
@@ -134,6 +145,81 @@ body.dark-mode .login-error {
 
 .username-input-wrap .login-input {
     padding-right: 40px;
+}
+
+/* Password: occhilino custom (il nativo ::-ms-reveal sparisce al cambio tema) */
+.login-password-wrap {
+    position: relative;
+}
+
+.login-password-wrap .login-input {
+    padding-right: 44px;
+}
+
+.login-password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: #003f7f;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.login-password-toggle:hover,
+.login-password-toggle:focus,
+.login-password-toggle:focus-visible,
+.login-password-toggle:active,
+body.login-page .site-main .login-password-toggle.tap-active,
+body.login-page .site-main .login-password-toggle.tap-active:hover {
+    color: #002d5c;
+    outline: none;
+    background: transparent;
+    box-shadow: none;
+    transform: translateY(-50%) !important;
+}
+
+.login-password-toggle__icon {
+    display: block;
+    pointer-events: none;
+}
+
+.login-password-toggle__slash {
+    opacity: 1;
+}
+
+/* Password visibile: sparisce solo la barra, occhio fermo */
+.login-password-toggle.is-password-visible .login-password-toggle__slash {
+    opacity: 0;
+}
+
+body.login-page .login-form input[type="password"].login-input::-ms-reveal,
+body.login-page .login-form input[type="password"].login-input::-ms-clear,
+body.login-page .login-form input[type="text"].login-input::-ms-reveal,
+body.login-page .login-form input[type="text"].login-input::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+body.dark-mode.login-page .login-password-toggle {
+    color: #003f7f;
+}
+
+body.dark-mode.login-page .login-password-toggle:hover,
+body.dark-mode.login-page .login-password-toggle:focus,
+body.dark-mode.login-page .login-password-toggle:focus-visible {
+    color: #002d5c;
 }
 
 .username-check {
@@ -288,5 +374,155 @@ body.dark-mode .login-page .verify-done-check {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Mobile: campi e Accedi allineati a 338px (come gli altri tool) */
+@media (max-width: 480px) {
+    body.login-page .site-main .static-container.login-container,
+    body.login-page .static-container.login-container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Drose mobile: a capo dopo la 1ª frase, senza punto finale sulla 2ª */
+    body.login-page .login-desc--drose-desktop {
+        display: none !important;
+    }
+
+    body.login-page .login-desc--drose-mobile {
+        display: block !important;
+    }
+
+    body.login-page .login-desc--drose-mobile .login-desc__a {
+        display: block;
+    }
+
+    body.login-page .login-form .login-input {
+        width: 338px !important;
+        max-width: 338px !important;
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.login-page .login-form .login-btn {
+        width: 338px !important;
+        max-width: 338px !important;
+        height: 52px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        box-sizing: border-box !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+/* Mobile: Accedi = stessi colori/tap degli altri bottoni tool */
+@media (max-width: 768px) {
+    body.login-page:not(.dark-mode) .site-main .login-form .login-btn,
+    body.login-page:not(.dark-mode) .site-main .login-form .login-btn:hover,
+    body.login-page:not(.dark-mode) .site-main .login-form .login-btn:focus,
+    body.login-page:not(.dark-mode) .site-main .login-form .login-btn:focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+
+    body.dark-mode.login-page .site-main .login-form .login-btn,
+    body.dark-mode.login-page .site-main .login-form .login-btn:hover,
+    body.dark-mode.login-page .site-main .login-form .login-btn:focus,
+    body.dark-mode.login-page .site-main .login-form .login-btn:focus-visible {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+        -webkit-text-fill-color: var(--text-secondary) !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        transform: scale(1) !important;
+        transition: transform 0.05s ease-out !important;
+    }
+
+    body.login-page .site-main .login-form .login-btn:active,
+    body.login-page .site-main .login-form .login-btn.tap-active,
+    body.login-page .site-main .login-form .login-btn.tap-active:hover {
+        transform: scale(0.96) !important;
+    }
+
+    /* Dark mode mobile: input grigio chiaro delle altre textarea (theme.css) */
+    body.dark-mode.login-page .site-main .login-form .login-input {
+        background: rgba(240, 242, 245, 0.95) !important;
+        background-color: rgba(240, 242, 245, 0.95) !important;
+        border: 2px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.login-page .site-main .login-form .login-input:focus {
+        border-color: #c41e3a !important;
+    }
+
+    body.dark-mode.login-page .site-main .login-form .login-input::placeholder {
+        color: #666 !important;
+        -webkit-text-fill-color: #666 !important;
+    }
+
+    /* Dark mode mobile: occhilino blu (come light / desktop dark) */
+    body.dark-mode.login-page .site-main .login-password-toggle,
+    body.dark-mode.login-page .site-main .login-password-toggle:hover,
+    body.dark-mode.login-page .site-main .login-password-toggle:focus,
+    body.dark-mode.login-page .site-main .login-password-toggle:focus-visible {
+        color: #003f7f !important;
+    }
+
+    /* Dark mode mobile: messaggi errore login restano rossi (override theme/drose) */
+    body.dark-mode.login-page .site-main .static-container.login-container p.login-error-inline,
+    body.dark-mode.login-page .site-main .static-container.login-container .login-error-inline,
+    body.dark-mode.login-page .site-main .static-container.login-container .login-error-inline a,
+    body.dark-mode.login-page .site-main .static-container.login-container .login-error-inline a:visited,
+    body.dark-mode.login-page .site-main .static-container.login-container .login-error-inline a:hover,
+    body.dark-mode.login-page .site-main .static-container.login-container .field-error {
+        color: #dc2626 !important;
+        -webkit-text-fill-color: #dc2626 !important;
+    }
+
+    /* Dark mode mobile: link hint login/signup #7eb8ff (non errori) */
+    body.dark-mode.login-page .site-main .login-hint a,
+    body.dark-mode.login-page .site-main .login-hint a:visited,
+    body.dark-mode.login-page .site-main .verify-invalid-link {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+    }
+
+    body.dark-mode.login-page .site-main .login-hint a:hover,
+    body.dark-mode.login-page .site-main .verify-invalid-link:hover {
+        color: #a8d4ff !important;
+        -webkit-text-fill-color: #a8d4ff !important;
     }
 }

@@ -1,7 +1,7 @@
 {% extends "tools/base.html" %}
 {% load static i18n %}
 {% block title %}{% trans "Request a quote - Drose" %}{% endblock %}
-{% block body_class %}drose-page static-page drose-subpage{% endblock %}
+{% block body_class %}drose-page static-page drose-subpage drose-quote-request-page{% endblock %}
 {% block extrahead %}
 <meta name="description" content="{% trans 'Send a detailed quote request to Drose Drone Services with project scope, deliverables, timing, and budget range.' %}">
 <style id="drose-quote-select-critical">
@@ -160,14 +160,14 @@
         </section>
 
         <p class="drose-landing__back">
-            <a href="{% url 'drose' %}">{% trans "Back to Drose home" %}</a>
+            <a class="drose-landing__back-link" href="{% url 'drose' %}">{% trans "Back to Drose home" %}</a>
         </p>
     </div>
 </div>
 {% endblock %}
 
 {% block page_scripts %}
-<script src="{% static 'tools/js/drose-quote-select.js' %}?v=7"></script>
+<script src="{% static 'tools/js/drose-quote-select.js' %}?v=8"></script>
 <script>
 (function () {
     var panel = document.getElementById("drose-quote-panel");

@@ -45,4 +45,5 @@
     scheduleApply();
     document.addEventListener("DOMContentLoaded", scheduleApply, { once: true });
     window.addEventListener("load", applyLogoRotation, { once: true });
+    window.addEventListener("gadly-orient-unlocked", scheduleApply);
 })();
