@@ -2406,6 +2406,15 @@ body.dark-mode.drose-quote-staff-page .drose-quote-staff-search-empty {
     -webkit-text-fill-color: #e8eef6;
 }
 
+/* Freccia espandi: nascosta in tabella desktop; nelle card mobile sta sulla riga email. */
+body.drose-quote-staff-page .drose-quote-staff-card-toggle {
+    display: none !important;
+}
+
+body.drose-quote-staff-page .drose-quote-staff-expand-col {
+    display: none !important;
+}
+
 /* Mobile staff: card per preventivo (tutti i campi, niente scroll orizzontale).
  * Incluso landscape telefono (width spesso > 768). */
 @media (max-width: 768px), ((max-height: 560px) and (orientation: landscape) and (max-width: 1024px)) {
@@ -2600,7 +2609,7 @@ body.dark-mode.drose-quote-staff-page .drose-quote-staff-search-empty {
 
     body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell::before {
         grid-column: 1;
-        grid-row: 1 / -1;
+        grid-row: 1;
         align-self: start;
     }
 
@@ -2629,6 +2638,54 @@ body.dark-mode.drose-quote-staff-page .drose-quote-staff-search-empty {
         overflow: visible;
         overflow-wrap: anywhere;
         word-break: break-word;
+    }
+
+    /* Freccia: stessa riga dell’email, sotto CLIENTE a sinistra */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell .drose-quote-staff-card-toggle {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: start;
+        align-self: center;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: flex-start;
+        width: auto;
+        min-width: 1.25rem;
+        height: auto;
+        min-height: 1.2em;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        color: #003f7f;
+        -webkit-text-fill-color: #003f7f;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    /* Collapsed: nasconde Servizio / Stato / data — freccia per espandere */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr:not(.is-expanded) td.drose-quote-staff-extra {
+        display: none !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-card-toggle__chevron {
+        display: block;
+        font-size: 0.72rem;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        transition: transform 0.18s ease;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr.is-expanded .drose-quote-staff-card-toggle__chevron {
+        transform: rotate(180deg);
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-card-toggle {
+        color: #b45309;
+        -webkit-text-fill-color: #b45309;
     }
 
     body.drose-quote-staff-page .drose-quote-staff-unread {

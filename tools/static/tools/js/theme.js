@@ -29,7 +29,7 @@
         document.body.classList.toggle(darkClass, isDark);
         var btn = document.getElementById('theme-toggle');
         if (btn) {
-            var nextIcon = isDark ? '☀️' : '🌙';
+            var nextIcon = isDark ? '\u2600\uFE0F' : '\u{1F319}';
             if (btn.textContent !== nextIcon) btn.textContent = nextIcon;
         }
         if (document.body.classList.contains('cv-generator')) {
@@ -69,7 +69,7 @@
             syncViewportChrome(isDark, false);
             var syncBtn = document.getElementById('theme-toggle');
             if (syncBtn) {
-                var syncIcon = isDark ? '☀️' : '🌙';
+                var syncIcon = isDark ? '\u2600\uFE0F' : '\u{1F319}';
                 if (syncBtn.textContent !== syncIcon) syncBtn.textContent = syncIcon;
             }
         }

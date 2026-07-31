@@ -295,4 +295,21 @@
     }
 
     initCopyEmailButtons();
+
+    /* Mobile card: Servizio / Stato / data nascosti → freccia per espandere */
+    document.querySelectorAll(".drose-quote-staff-card-toggle").forEach(function (btn) {
+        btn.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var row = btn.closest("tr");
+            if (!row) {
+                return;
+            }
+            var open = row.classList.toggle("is-expanded");
+            btn.setAttribute("aria-expanded", open ? "true" : "false");
+            var labelExpand = btn.getAttribute("data-label-expand") || "Show details";
+            var labelCollapse = btn.getAttribute("data-label-collapse") || "Hide details";
+            btn.setAttribute("aria-label", open ? labelCollapse : labelExpand);
+        });
+    });
 })();

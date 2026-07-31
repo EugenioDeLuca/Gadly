@@ -4026,6 +4026,12 @@ msgstr "Non ancora visualizzata"
 msgid "Quote actions"
 msgstr "Azioni preventivo"
 
+msgid "Show details"
+msgstr "Mostra dettagli"
+
+msgid "Hide details"
+msgstr "Nascondi dettagli"
+
 #: .\tools\templates\tools\drose_quote_staff_list.html:43
 msgid "Open"
 msgstr "Apri"

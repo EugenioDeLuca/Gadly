@@ -30,10 +30,16 @@
                         {% for quote in quotes %}
                         <tr data-quote-id="{{ quote.pk }}" data-ref="{{ quote.reference }}" data-name="{{ quote.full_name }}" data-email="{{ quote.email }}" data-search="{{ quote.reference }} {{ quote.full_name }} {{ quote.email }} {{ quote.service_label }} {{ quote.get_status_display }} {{ quote.deleted_at|date:'d/m/Y H:i' }}">
                             <td data-label="{% trans 'Reference' %}"><span class="drose-quote-staff-ref">{{ quote.reference }}</span></td>
-                            <td data-label="{% trans 'Client' %}" class="drose-quote-staff-client-cell"><span class="drose-quote-staff-client-name">{{ quote.full_name }}</span><span class="drose-quote-staff-muted">{{ quote.email }}</span></td>
-                            <td data-label="{% trans 'Service' %}">{{ quote.service_label }}</td>
-                            <td data-label="{% trans 'Status' %}"><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
-                            <td data-label="{% trans 'Removed' %}">{{ quote.deleted_at|date:"d/m/Y H:i" }}</td>
+                            <td data-label="{% trans 'Client' %}" class="drose-quote-staff-client-cell">
+                                <span class="drose-quote-staff-client-name">{{ quote.full_name }}</span>
+                                <button type="button" class="drose-quote-staff-card-toggle" aria-expanded="false" aria-label="{% trans 'Show details' %}" data-label-expand="{% trans 'Show details' %}" data-label-collapse="{% trans 'Hide details' %}">
+                                    <span class="drose-quote-staff-card-toggle__chevron" aria-hidden="true">&#x25BC;</span>
+                                </button>
+                                <span class="drose-quote-staff-muted">{{ quote.email }}</span>
+                            </td>
+                            <td data-label="{% trans 'Service' %}" class="drose-quote-staff-extra">{{ quote.service_label }}</td>
+                            <td data-label="{% trans 'Status' %}" class="drose-quote-staff-extra"><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
+                            <td data-label="{% trans 'Removed' %}" class="drose-quote-staff-extra">{{ quote.deleted_at|date:"d/m/Y H:i" }}</td>
                             <td class="drose-quote-staff-actions-col">
                                 <div class="drose-quote-staff-menu">
                                     <button type="button" class="drose-quote-staff-menu__trigger" aria-label="{% trans 'Quote actions' %}" aria-expanded="false" aria-haspopup="true">
@@ -82,5 +88,5 @@
 </div>
 {% endblock %}
 {% block page_scripts %}
-<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=9"></script>
+<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=10"></script>
 {% endblock %}

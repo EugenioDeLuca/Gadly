@@ -3744,6 +3744,12 @@ msgstr "Not yet viewed"
 msgid "Quote actions"
 msgstr ""
 
+msgid "Show details"
+msgstr ""
+
+msgid "Hide details"
+msgstr ""
+
 #: .\tools\templates\tools\drose_quote_staff_list.html:43
 msgid "Open"
 msgstr ""

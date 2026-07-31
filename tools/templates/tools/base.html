@@ -408,7 +408,7 @@
             }
             window.gadlySyncViewportChrome(!!darkSys, { forceResample: true });
             var themeBtnEarly = document.getElementById('theme-toggle');
-            if (themeBtnEarly) themeBtnEarly.textContent = darkSys ? '☀️' : '🌙';
+            if (themeBtnEarly) themeBtnEarly.textContent = darkSys ? '\u2600\uFE0F' : '\u{1F319}';
         };
         (function bindSystemThemeChrome() {
             if (!window.matchMedia) return;
@@ -761,7 +761,7 @@
             transition: none !important;
         }
         body.homepage .tool-btn-wrap .tool-fav::before {
-            content: "☆";
+            content: "\2606";
             font-size: 1.1rem;
             line-height: 1;
             color: inherit;
@@ -771,7 +771,7 @@
             color: #dc3545;
         }
         body.homepage .tool-btn-wrap .tool-fav.is-favorite::before {
-            content: "★";
+            content: "\2605";
         }
         body.homepage .category-btn-label--mobile,
         body.homepage .category-btn-chevron,
@@ -1948,7 +1948,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=530">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=535">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2558,8 +2558,8 @@
                     });
                 })();
                 </script>
-                <button type="button" id="warm-tone-toggle" class="theme-toggle warm-tone-toggle" title="Warm tone" aria-label="Warm tone" aria-pressed="false">🟠</button>
-                <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
+                <button type="button" id="warm-tone-toggle" class="theme-toggle warm-tone-toggle" title="Warm tone" aria-label="Warm tone" aria-pressed="false">&#x1F7E0;</button>
+                <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">&#x1F319;</button>
                 <script>
                 (function() {
                     try {
@@ -2567,7 +2567,7 @@
                         var s = localStorage.getItem(k);
                         var isDark = s === 'dark' || (!s && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
                         var tb = document.getElementById('theme-toggle');
-                        if (tb) tb.textContent = isDark ? '☀️' : '🌙';
+                        if (tb) tb.textContent = isDark ? '\u2600\uFE0F' : '\u{1F319}';
                         var wb = document.getElementById('warm-tone-toggle');
                         if (wb) {
                             var w = localStorage.getItem('gadly-warm-tone') === '1';
@@ -2637,7 +2637,7 @@
                         <span class="header-avatar header-avatar--letter" aria-hidden="true"><span class="header-avatar-initials">{{ user|user_initials }}</span></span>
                         {% endif %}
                         <span class="header-username">{{ user.username }}</span>
-                        <span class="header-user-chevron" aria-hidden="true">▼</span>
+                        <span class="header-user-chevron" aria-hidden="true">&#x25BC;</span>
                     </button>
                     <div class="header-user-dropdown" id="header-user-dropdown" hidden>
                         <a href="{% url 'account_profile' %}" class="header-dropdown-item">{% trans "Account" %}</a>
@@ -2702,7 +2702,7 @@
     <script src="{% static 'tools/js/gadly-page-scrollbar.js' %}?v=7"></script>
     <script src="{% url 'javascript_catalog' %}?lang={{ LANGUAGE_CODE|slice:':2' }}"></script>
     {% block page_scripts %}{% endblock %}
-    <script src="{% static 'tools/js/theme.js' %}?v=43"></script>
+    <script src="{% static 'tools/js/theme.js' %}?v=44"></script>
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=3"></script>
     {% endif %}
