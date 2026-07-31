@@ -468,10 +468,14 @@ body.dark-mode .login-page .verify-done-check {
         transition: transform 0.05s ease-out !important;
     }
 
-    body.login-page .site-main .login-form .login-btn:active,
+    /* Solo .tap-active: :active resta sticky durante il submit/navigazione */
     body.login-page .site-main .login-form .login-btn.tap-active,
     body.login-page .site-main .login-form .login-btn.tap-active:hover {
         transform: scale(0.96) !important;
+    }
+
+    body.login-page .site-main .login-form .login-btn:active:not(.tap-active) {
+        transform: scale(1) !important;
     }
 
     /* Dark mode mobile: input grigio chiaro delle altre textarea (theme.css) */

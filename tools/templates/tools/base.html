@@ -1845,7 +1845,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=252">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=253">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=162">
 <link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=35">
     {% if is_drose_site %}
@@ -1948,7 +1948,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=526">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=529">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2694,7 +2694,7 @@
     {% if not is_drose_site %}
     <script src="{% static 'tools/js/logo-rotate-continuity.js' %}?v=3"></script>
     {% endif %}
-    <script src="{% static 'tools/js/mobile-tap.js' %}?v=59"></script>
+    <script src="{% static 'tools/js/mobile-tap.js' %}?v=60"></script>
     {% if not is_drose_site %}
     {% include "tools/includes/tool_quick_nav.html" %}
     {% endif %}

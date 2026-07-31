@@ -278,6 +278,64 @@
         }, waitHold);
     }, true);
 
+    function clearAllTapActive() {
+        if (tapReleaseTimer) {
+            clearTimeout(tapReleaseTimer);
+            tapReleaseTimer = null;
+        }
+        if (tapPressTarget && tapPressTarget.classList) {
+            tapPressTarget.classList.remove(tapClass);
+        }
+        tapPressTarget = null;
+        document.querySelectorAll("." + tapClass).forEach(function (el) {
+            el.classList.remove(tapClass);
+        });
+    }
+
+    /* Submit/navigazione: togli scale subito (altrimenti resta rimpicciolito durante il load) */
+    document.addEventListener(
+        "submit",
+        function (event) {
+            var form = event.target;
+            if (!form || !form.querySelector) return;
+            var btn = form.querySelector(".login-btn, input[type=\"submit\"], button[type=\"submit\"]");
+            if (btn && btn.classList) {
+                if (tapReleaseTimer) {
+                    clearTimeout(tapReleaseTimer);
+                    tapReleaseTimer = null;
+                }
+                btn.classList.remove(tapClass);
+                if (tapPressTarget === btn) tapPressTarget = null;
+            }
+            clearAllTapActive();
+        },
+        true
+    );
+
+    document.addEventListener(
+        "click",
+        function (event) {
+            if (!event.target || !event.target.closest) return;
+            var btn = event.target.closest(".site-main .login-form .login-btn, .site-main form .login-btn");
+            if (!btn) return;
+            /* Dopo il press minimo, ripristina dimensione prima/durante il submit */
+            var elapsed = Date.now() - tapPressStart;
+            var wait = Math.max(0, TAP_MIN_MS - elapsed);
+            setTimeout(function () {
+                if (tapReleaseTimer) {
+                    clearTimeout(tapReleaseTimer);
+                    tapReleaseTimer = null;
+                }
+                if (btn.classList) btn.classList.remove(tapClass);
+                if (tapPressTarget === btn) tapPressTarget = null;
+            }, wait);
+        },
+        true
+    );
+
+    window.addEventListener("pageshow", clearAllTapActive);
+    window.addEventListener("pagehide", clearAllTapActive);
+
     setupNoFocusMobileControls();
     setInterval(setupNoFocusMobileControls, 1000);
 })();

@@ -6318,14 +6318,85 @@ body.drose-works-lightbox-open.dark-mode.warm-tone {
     }
 }
 
-/* Mobile hamburger Drose: voci = colore font "Drose" (Gadly resta blu) */
-@media (max-width: 768px) {
+/* Mobile: bottone hamburger Drose (barre + sfondo) = brand, non blu Gadly */
+@media (max-width: 768px), ((max-height: 560px) and (orientation: landscape) and (max-width: 1024px)) {
+    body.is-drose-brand:not(.dark-mode) .header-menu-btn,
+    body.is-drose-brand:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-btn,
+    body.is-drose-brand:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-btn:hover,
+    body.drose-page:not(.dark-mode) .header-menu-btn,
+    body.drose-page:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-btn {
+        background: linear-gradient(145deg, #ffedd5 0%, #fed7aa 100%) !important;
+        background-image: linear-gradient(145deg, #ffedd5 0%, #fed7aa 100%) !important;
+        box-shadow: 0 2px 8px rgba(180, 83, 9, 0.22) !important;
+    }
+
+    body.is-drose-brand:not(.dark-mode) .site-header .header-menu-btn:hover,
+    body.is-drose-brand:not(.dark-mode) .site-header .header-menu-btn:active,
+    body.is-drose-brand:not(.dark-mode) .site-header .header-menu-btn:focus:not(:focus-visible),
+    body.drose-page:not(.dark-mode) .site-header .header-menu-btn:hover,
+    body.drose-page:not(.dark-mode) .site-header .header-menu-btn:active,
+    body.drose-page:not(.dark-mode) .site-header .header-menu-btn:focus:not(:focus-visible) {
+        box-shadow: 0 2px 8px rgba(180, 83, 9, 0.22) !important;
+    }
+
+    body.is-drose-brand:not(.dark-mode) .header-menu-icon,
+    body.is-drose-brand:not(.dark-mode) .header-menu-icon::before,
+    body.is-drose-brand:not(.dark-mode) .header-menu-icon::after,
+    body.is-drose-brand:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-icon,
+    body.is-drose-brand:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-icon::before,
+    body.is-drose-brand:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-icon::after,
+    body.drose-page:not(.dark-mode) .header-menu-icon,
+    body.drose-page:not(.dark-mode) .header-menu-icon::before,
+    body.drose-page:not(.dark-mode) .header-menu-icon::after,
+    body.drose-page:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-icon::before,
+    body.drose-page:not(.dark-mode).nav-open:not(.nav-closing) .header-menu-icon::after {
+        background: #b45309 !important;
+    }
+
+    body.dark-mode.is-drose-brand .header-menu-btn,
+    body.dark-mode.is-drose-brand.nav-open:not(.nav-closing) .header-menu-btn,
+    body.dark-mode.is-drose-brand.nav-open:not(.nav-closing) .header-menu-btn:hover,
+    body.dark-mode.drose-page .header-menu-btn,
+    body.dark-mode.drose-page.nav-open:not(.nav-closing) .header-menu-btn {
+        background: linear-gradient(145deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.1) 100%) !important;
+        background-image: linear-gradient(145deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.1) 100%) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    body.dark-mode.is-drose-brand .site-header .header-menu-btn:hover,
+    body.dark-mode.is-drose-brand .site-header .header-menu-btn:active,
+    body.dark-mode.is-drose-brand .site-header .header-menu-btn:focus:not(:focus-visible),
+    body.dark-mode.drose-page .site-header .header-menu-btn:hover,
+    body.dark-mode.drose-page .site-header .header-menu-btn:active,
+    body.dark-mode.drose-page .site-header .header-menu-btn:focus:not(:focus-visible) {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    body.dark-mode.is-drose-brand .header-menu-icon,
+    body.dark-mode.is-drose-brand .header-menu-icon::before,
+    body.dark-mode.is-drose-brand .header-menu-icon::after,
+    body.dark-mode.is-drose-brand.nav-open:not(.nav-closing) .header-menu-icon,
+    body.dark-mode.is-drose-brand.nav-open:not(.nav-closing) .header-menu-icon::before,
+    body.dark-mode.is-drose-brand.nav-open:not(.nav-closing) .header-menu-icon::after,
+    body.dark-mode.drose-page .header-menu-icon,
+    body.dark-mode.drose-page .header-menu-icon::before,
+    body.dark-mode.drose-page .header-menu-icon::after,
+    body.dark-mode.drose-page.nav-open:not(.nav-closing) .header-menu-icon::before,
+    body.dark-mode.drose-page.nav-open:not(.nav-closing) .header-menu-icon::after {
+        background: #fbbf24 !important;
+    }
+}
+
+/* Mobile hamburger Drose: voci = ambra/oro brand (non blu Gadly) */
+@media (max-width: 768px), ((max-height: 560px) and (orientation: landscape) and (max-width: 1024px)) {
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout),
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):link,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):visited,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):hover,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):active,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-link:not(.header-link--logout).is-nav-link-hover,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout),
     body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):hover,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-auth-wrap .header-link:not(.header-link--logout):active,
@@ -6336,23 +6407,32 @@ body.drose-works-lightbox-open.dark-mode.warm-tone {
     body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:active,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:focus,
     body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-manage-wrap .header-link:focus-visible,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-account .header-link:not(.header-link--logout),
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-account .header-link:not(.header-link--logout):hover,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-account .header-link:not(.header-link--logout):active,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-account .header-link:not(.header-link--logout):focus,
+    body.is-drose-brand:not(.dark-mode) .header-nav .header-nav-account .header-link:not(.header-link--logout):focus-visible,
     body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout),
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):link,
     body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):visited,
     body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):hover,
     body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):active,
     body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus,
-    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus-visible {
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.drose-page:not(.dark-mode) .header-nav .header-link:not(.header-link--logout).is-nav-link-hover {
         color: #b45309 !important;
         -webkit-text-fill-color: #b45309 !important;
         background: transparent !important;
     }
 
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout),
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):link,
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):visited,
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):hover,
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):active,
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):focus,
     body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.dark-mode.is-drose-brand .header-nav .header-link:not(.header-link--logout).is-nav-link-hover,
     body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout),
     body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):hover,
     body.dark-mode.is-drose-brand .header-nav .header-auth-wrap .header-link:not(.header-link--logout):active,
@@ -6363,12 +6443,19 @@ body.drose-works-lightbox-open.dark-mode.warm-tone {
     body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:active,
     body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:focus,
     body.dark-mode.is-drose-brand .header-nav .header-nav-manage-wrap .header-link:focus-visible,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-account .header-link:not(.header-link--logout),
+    body.dark-mode.is-drose-brand .header-nav .header-nav-account .header-link:not(.header-link--logout):hover,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-account .header-link:not(.header-link--logout):active,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-account .header-link:not(.header-link--logout):focus,
+    body.dark-mode.is-drose-brand .header-nav .header-nav-account .header-link:not(.header-link--logout):focus-visible,
     body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout),
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):link,
     body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):visited,
     body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):hover,
     body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):active,
     body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):focus,
-    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):focus-visible {
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout):focus-visible,
+    body.dark-mode.drose-page .header-nav .header-link:not(.header-link--logout).is-nav-link-hover {
         color: #fbbf24 !important;
         -webkit-text-fill-color: #fbbf24 !important;
         background: transparent !important;
