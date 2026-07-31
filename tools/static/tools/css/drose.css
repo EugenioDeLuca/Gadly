@@ -1962,6 +1962,13 @@ body.drose-home .drose-benefits li::after {
     min-width: 180px;
 }
 
+/* Quote request: lead sotto Project brief — niente parola orfana (EN “quote”) */
+body.drose-quote-request-page .drose-cta > p.drose-quote-brief-lead {
+    max-width: none;
+    width: 100%;
+    text-wrap: pretty;
+}
+
 .drose-quote-form {
     margin: 0 auto;
     max-width: 720px;
@@ -1980,6 +1987,16 @@ body.drose-home .drose-benefits li::after {
     font-size: 0.95rem;
     line-height: 1.5;
     color: #1a1a1a;
+}
+
+body.drose-quote-request-page .drose-cta > p.drose-quote-required-note {
+    max-width: none;
+    width: 100%;
+    text-wrap: pretty;
+}
+
+body.drose-quote-request-page .drose-quote-required-note .drose-quote-required-tail {
+    white-space: nowrap;
 }
 
 .drose-quote-required-star {
@@ -2315,6 +2332,494 @@ body.drose-quote-staff-page .drose-quote-field textarea {
 
 .drose-quote-staff-table-wrap {
     overflow-x: auto;
+}
+
+/* Search quotes — mobile + desktop */
+.drose-quote-staff-search {
+    width: 100%;
+    margin: 0 0 14px;
+    box-sizing: border-box;
+}
+
+.drose-quote-staff-search__input {
+    display: block;
+    width: 100%;
+    height: 47.5px;
+    min-height: 47.5px;
+    max-height: 47.5px;
+    margin: 0;
+    padding: 0 14px;
+    border: 2px solid rgba(0, 63, 127, 0.28);
+    border-radius: 12px;
+    background: #ffffff;
+    color: #0f172a;
+    -webkit-text-fill-color: #0f172a;
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.drose-quote-staff-search__input::placeholder {
+    color: #64748b;
+    -webkit-text-fill-color: #64748b;
+    opacity: 1;
+}
+
+.drose-quote-staff-search__input:focus {
+    outline: none;
+    border-color: #b45309;
+    box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.18), 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+/* Dark desktop: rilievo soft (non toccare — ok così) */
+body.dark-mode.drose-quote-staff-page .drose-quote-staff-search__input {
+    background: #ffffff !important;
+    border: 2px solid #fbbf24 !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-mode.drose-quote-staff-page .drose-quote-staff-search__input::placeholder {
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
+}
+
+body.dark-mode.drose-quote-staff-page .drose-quote-staff-search__input:focus {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.28), 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.drose-quote-staff-search-empty {
+    margin: 0 0 12px;
+    text-align: center;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+body.dark-mode.drose-quote-staff-page .drose-quote-staff-search-empty {
+    color: #e8eef6;
+    -webkit-text-fill-color: #e8eef6;
+}
+
+/* Mobile staff: card per preventivo (tutti i campi, niente scroll orizzontale).
+ * Incluso landscape telefono (width spesso > 768). */
+@media (max-width: 768px), ((max-height: 560px) and (orientation: landscape) and (max-width: 1024px)) {
+    body.drose-quote-staff-page .site-header {
+        width: 100dvw;
+        max-width: 100dvw;
+        left: 0;
+        right: auto;
+        box-sizing: border-box;
+    }
+
+    body.drose-quote-staff-page .header-inner {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.drose-quote-staff-page .header-nav {
+        width: 100dvw;
+        max-width: 100dvw;
+        left: 0;
+        right: auto;
+        box-sizing: border-box;
+    }
+
+    body.drose-quote-staff-page .drose-landing,
+    body.drose-quote-staff-page .drose-landing__container,
+    body.drose-quote-staff-page .drose-section.drose-cta {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    /* Più spazio alle card: niente box CTA esterno, padding laterale ridotto */
+    body.drose-quote-staff-page .site-main .drose-landing__container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    body.drose-quote-staff-page .drose-section.drose-cta {
+        margin: 0;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table-wrap {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: visible;
+        contain: inline-size;
+        margin: 0;
+        padding: 0;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 16px;
+        table-layout: fixed;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table thead {
+        display: none;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody,
+    body.drose-quote-staff-page .drose-quote-staff-table td {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Card: ref + ⋮ sulla stessa riga (⋮ a destra); altri campi sotto */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        column-gap: 8px;
+        position: relative;
+        padding: 16px 14px 14px;
+        margin: 0 0 8px;
+        border: 2px solid rgba(0, 63, 127, 0.14);
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+        box-sizing: border-box;
+    }
+
+    /* display:grid sopra vince su [hidden] → search non filtrava su mobile */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr[hidden] {
+        display: none !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Etichette a sinistra, valori a destra */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 6px 0;
+        display: grid;
+        grid-template-columns: 6.5rem minmax(0, 1fr);
+        column-gap: 10px;
+        align-items: start;
+        grid-column: 1 / -1;
+        text-align: right;
+        min-width: 0;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td::before {
+        content: attr(data-label);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: #003f7f;
+        -webkit-text-fill-color: #003f7f;
+        line-height: 1.35;
+        padding-top: 0.15em;
+        text-align: left;
+        justify-self: start;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        margin: 0;
+        padding: 0 0 6px;
+        border-bottom: none !important;
+        grid-template-columns: 1fr;
+        align-self: center;
+        text-align: left;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td:first-child::before {
+        display: none;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td:first-child .drose-quote-staff-ref {
+        font-size: 1.02rem;
+    }
+
+    /* Linea sotto codice: full-bleed fino ai bordi laterali della card */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody tr::after {
+        content: "";
+        grid-column: 1 / -1;
+        grid-row: 1;
+        align-self: end;
+        justify-self: stretch;
+        box-sizing: border-box;
+        height: 1px;
+        margin: 0 -14px;
+        width: calc(100% + 28px);
+        background: rgba(0, 63, 127, 0.14);
+        pointer-events: none;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-actions-col {
+        grid-column: 2;
+        grid-row: 1;
+        position: relative;
+        width: auto;
+        padding: 0 0 6px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        align-self: center;
+        justify-self: end;
+        text-align: right;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-actions-col::before {
+        display: none;
+    }
+
+    /* Email sotto il nome (destra), non sotto la dicitura Cliente */
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell {
+        grid-template-columns: 6.5rem minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        align-items: start;
+        column-gap: 10px;
+        row-gap: 2px;
+        text-align: left;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell::before {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        align-self: start;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell .drose-quote-staff-client-name {
+        grid-column: 2;
+        grid-row: 1;
+        text-align: right;
+        justify-self: stretch;
+        min-width: 0;
+        word-break: break-word;
+        font-weight: 700;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table tbody td.drose-quote-staff-client-cell .drose-quote-staff-muted {
+        grid-column: 2;
+        grid-row: 2;
+        display: block;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: 0.86rem;
+        line-height: 1.35;
+        text-align: right;
+        justify-self: stretch;
+        white-space: normal;
+        overflow: visible;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-unread {
+        top: 4px;
+        right: 4px;
+    }
+
+    body.drose-quote-staff-page:not(.dark-mode) .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open,
+    body.drose-quote-staff-page:not(.dark-mode) .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open td {
+        background: color-mix(in srgb, #b45309 14%, #ffffff) !important;
+        border-color: color-mix(in srgb, #b45309 36%, #ffffff);
+    }
+
+    /* Dark mobile: card bianco puro (contrasto netto su sfondo scuro) */
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr {
+        background: #ffffff !important;
+        border: 2px solid #fbbf24;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+        color: #0f172a;
+        -webkit-text-fill-color: #0f172a;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr[hidden] {
+        display: none !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody td {
+        color: #0f172a;
+        -webkit-text-fill-color: #0f172a;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody .drose-quote-staff-muted {
+        color: #475569 !important;
+        -webkit-text-fill-color: #475569 !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody td::before {
+        color: #003f7f;
+        -webkit-text-fill-color: #003f7f;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody td:first-child {
+        border-bottom: none !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr::after {
+        background: rgba(0, 63, 127, 0.16);
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open,
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open td {
+        background: #fff6d6 !important;
+        border-color: #f59e0b;
+        color: #0f172a;
+        -webkit-text-fill-color: #0f172a;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody .drose-quote-staff-ref,
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody .drose-quote-staff-ref--new {
+        color: #dc2626 !important;
+        -webkit-text-fill-color: #dc2626 !important;
+    }
+
+    /* Dark mobile: ⋮ come light (grigio scuro) su card chiara */
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__dots {
+        background: #475569 !important;
+        box-shadow: 0 -6px 0 #475569, 0 6px 0 #475569 !important;
+    }
+
+    /* Dark mobile: dropdown ⋮ bianco (come light), non scuro come la card */
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__panel {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        background: transparent !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item:is(:hover, .is-drose-hover, .tap-active) {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page a.drose-quote-staff-menu__item {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page a.drose-quote-staff-menu__item:is(:hover, .is-drose-hover, .tap-active) {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        background: #f1f5f9 !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item--restore {
+        color: #16a34a !important;
+        -webkit-text-fill-color: #16a34a !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item--restore:is(:hover, .is-drose-hover, .tap-active) {
+        color: #15803d !important;
+        -webkit-text-fill-color: #15803d !important;
+        background: #f0fdf4 !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item--danger {
+        color: #dc2626 !important;
+        -webkit-text-fill-color: #dc2626 !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__item--danger:is(:hover, .is-drose-hover, .tap-active) {
+        color: #b91c1c !important;
+        -webkit-text-fill-color: #b91c1c !important;
+        background: #fef2f2 !important;
+    }
+
+    /* Dark mobile: evidenziazione ambra soft a menu aperto (non azzurro) */
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__trigger:is(:hover, .is-drose-hover, .tap-active),
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu.is-open .drose-quote-staff-menu__trigger,
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open .drose-quote-staff-menu__trigger {
+        background: rgba(245, 158, 11, 0.22) !important;
+    }
+
+    /* Status mobile: stesso box (niente pill) in light e dark → niente salto al cambio tema */
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status,
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--received,
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--offer_sent,
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--accepted,
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--declined {
+        display: inline !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-size: inherit !important;
+        font-weight: 700;
+        line-height: inherit;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--received {
+        color: #15803d !important;
+        -webkit-text-fill-color: #15803d !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--offer_sent {
+        color: #c2410c !important;
+        -webkit-text-fill-color: #c2410c !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--accepted {
+        color: #15803d !important;
+        -webkit-text-fill-color: #15803d !important;
+    }
+
+    body.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--declined {
+        color: #475569 !important;
+        -webkit-text-fill-color: #475569 !important;
+    }
+
+    /* Status dark mobile: stessi colori della light (card chiara) */
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--received {
+        color: #15803d !important;
+        -webkit-text-fill-color: #15803d !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--offer_sent {
+        color: #c2410c !important;
+        -webkit-text-fill-color: #c2410c !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--accepted {
+        color: #15803d !important;
+        -webkit-text-fill-color: #15803d !important;
+    }
+
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table .drose-quote-status--declined {
+        color: #475569 !important;
+        -webkit-text-fill-color: #475569 !important;
+    }
+
+    body:not(.homepage).drose-quote-staff-page .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
+        right: auto !important;
+        left: calc(100dvw - 22px - 58px) !important;
+    }
 }
 
 @media (min-width: 769px) {
@@ -2667,19 +3172,22 @@ body.drose-quote-staff-page:not(.dark-mode) .drose-quote-staff-table tbody tr.dr
     border-color: color-mix(in srgb, #b45309 36%, #ffffff);
 }
 
-body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open td {
-    background: color-mix(in srgb, #fbbf24 20%, #ffffff);
-    border-color: color-mix(in srgb, #fbbf24 38%, #ffffff);
-}
+/* Desktop only: highlight chiaro a menu aperto (su mobile dark usa le regole nel media ≤768) */
+@media (min-width: 769px) {
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open td {
+        background: color-mix(in srgb, #fbbf24 20%, #ffffff);
+        border-color: color-mix(in srgb, #fbbf24 38%, #ffffff);
+    }
 
-body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__trigger:is(:hover, .is-drose-hover),
-body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu.is-open .drose-quote-staff-menu__trigger {
-    background: color-mix(in srgb, #fbbf24 24%, #ffffff);
-}
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu__trigger:is(:hover, .is-drose-hover),
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu.is-open .drose-quote-staff-menu__trigger {
+        background: color-mix(in srgb, #fbbf24 24%, #ffffff);
+    }
 
-body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open .drose-quote-staff-menu__trigger,
-body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu.is-open .drose-quote-staff-menu__trigger {
-    background: color-mix(in srgb, #fbbf24 32%, #ffffff);
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-table tbody tr.drose-quote-staff-row--menu-open .drose-quote-staff-menu__trigger,
+    body.dark-mode.drose-quote-staff-page .drose-quote-staff-menu.is-open .drose-quote-staff-menu__trigger {
+        background: color-mix(in srgb, #fbbf24 32%, #ffffff);
+    }
 }
 
 @keyframes drose-quote-staff-row-restored-flash {
@@ -2787,6 +3295,12 @@ body.dark-mode.drose-page .footer-links a.footer-link-quote-requests:is(:hover, 
     font-size: 0.86rem;
 }
 
+/* Desktop/tabella: nome e email uno sotto l’altro nella cella Cliente */
+.drose-quote-staff-client-cell .drose-quote-staff-client-name,
+.drose-quote-staff-client-cell .drose-quote-staff-muted {
+    display: block;
+}
+
 .drose-quote-status {
     display: inline-block;
     padding: 3px 8px;
@@ -2869,21 +3383,37 @@ body.drose-quote-staff-page:not(.dark-mode) .drose-quote-staff-menu.is-open .dro
 .drose-quote-staff-menu__panel {
     position: fixed;
     z-index: 1200;
-    min-width: 10.75rem;
+    min-width: 12rem;
     padding: 6px;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
     background: #fff;
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+    box-sizing: border-box;
+}
+
+/* Solo quando aperto: flex non deve vincere su [hidden] (altrimenti i menu restano visibili) */
+.drose-quote-staff-menu__panel:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.drose-quote-staff-menu__panel[hidden] {
+    display: none !important;
 }
 
 .drose-quote-staff-menu__delete-form {
     margin: 0;
+    width: 100%;
+    display: block;
 }
 
 .drose-quote-staff-menu__restore-form,
 .drose-quote-staff-menu__purge-form {
     margin: 0;
+    width: 100%;
+    display: block;
 }
 
 .drose-quote-staff-menu__item {
@@ -2901,6 +3431,7 @@ body.drose-quote-staff-page:not(.dark-mode) .drose-quote-staff-menu.is-open .dro
     text-decoration: none;
     cursor: pointer;
     box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .drose-quote-staff-menu__item:is(:hover, .is-drose-hover) {
@@ -3252,6 +3783,13 @@ body.dark-mode.drose-page .drose-landing__container a:not(.drose-btn):not(.drose
 
 body.drose-quote-trash-page .drose-landing__back a {
     font-weight: 700;
+}
+
+/* Bin mobile: link testuale “Torna a Quotes” inutile (c’è il FAB Back to Drose) */
+@media (max-width: 768px) {
+    body.drose-quote-trash-page .drose-landing__back {
+        display: none !important;
+    }
 }
 
 .drose-subpage__head {
@@ -4643,6 +5181,13 @@ body.drose-page.faq-page .faq-item h3 {
         border-color: #fbbf24 !important;
     }
 
+    /* EN: evita “quote” sola a capo (niente font più piccolo) */
+    body.drose-quote-request-page .drose-cta > p.drose-quote-brief-lead {
+        max-width: none !important;
+        width: 100% !important;
+        text-wrap: pretty;
+    }
+
     /* Quote request mobile: campi 47.5px; label centrate ambra/giallo */
     body.drose-quote-request-page .drose-quote-form .drose-quote-field > label,
     body.drose-quote-request-page .drose-quote-form .drose-quote-field > span {
@@ -4848,13 +5393,40 @@ body.drose-page.faq-page .faq-item h3 {
     }
 
     body.drose-quote-request-page .drose-quote-form .drose-quote-field textarea.drose-quote-textarea--autogrow {
-        height: 47.5px !important;
-        min-height: 47.5px !important;
+        height: 112px !important;
+        min-height: 112px !important;
         max-height: none !important;
         box-sizing: border-box !important;
-        line-height: 1.25 !important;
+        line-height: 1.35 !important;
         padding-top: 12px !important;
         padding-bottom: 12px !important;
+    }
+
+    /* Dark mode mobile: campi testo + textarea grigi come login */
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field input:not([type="checkbox"]),
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field input:not([type="checkbox"]):focus,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field input:not([type="checkbox"]):not(:focus),
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea:focus,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea:not(:focus),
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea.drose-quote-textarea--autogrow,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea.drose-quote-textarea--autogrow:focus,
+    body.dark-mode.drose-quote-request-page .site-main .drose-quote-form .drose-quote-field input:not([type="checkbox"]),
+    body.dark-mode.drose-quote-request-page .site-main .drose-quote-form .drose-quote-field textarea {
+        background: rgba(240, 242, 245, 0.95) !important;
+        background-color: rgba(240, 242, 245, 0.95) !important;
+        border: 2px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field input:not([type="checkbox"])::placeholder,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea::placeholder,
+    body.dark-mode.drose-quote-request-page .drose-quote-form .drose-quote-field textarea.drose-quote-textarea--autogrow::placeholder {
+        color: #666 !important;
+        -webkit-text-fill-color: #666 !important;
+        opacity: 1 !important;
     }
 
     /* Invia richiesta preventivo: altezza 52px come CTA home */
@@ -5095,6 +5667,9 @@ body.drose-page.faq-page .faq-item h3 {
     body.dark-mode.drose-page .drose-hero__tagline,
     body.dark-mode.drose-page .drose-section__lead,
     body.dark-mode.drose-page .drose-subpage__lead,
+    body.dark-mode.drose-page .drose-quote-staff-lead,
+    body.dark-mode.drose-page .drose-quote-trash-intro,
+    body.dark-mode.drose-page .drose-quote-trash-intro-hint,
     body.dark-mode.drose-page .drose-faq-item p,
     body.dark-mode.drose-page .drose-about-copy p,
     body.dark-mode.drose-page .drose-card p:not(.drose-card__desc):not(.drose-card__unavailable),
@@ -5142,11 +5717,15 @@ body.drose-page.faq-page .faq-item h3 {
         -webkit-text-fill-color: #e8eef6 !important;
     }
 
-    body.dark-mode.drose-page .drose-works-view-hint,
-    body.dark-mode.drose-page .drose-quote-staff-muted,
-    body.dark-mode.drose-page .drose-quote-staff-lead {
+    /* Hint “works” resta verde; lead/testi secondari quote no */
+    body.dark-mode.drose-page .drose-works-view-hint {
         color: #22c55e !important;
         -webkit-text-fill-color: #22c55e !important;
+    }
+
+    body.dark-mode.drose-page .drose-quote-staff-muted {
+        color: #94a3b8 !important;
+        -webkit-text-fill-color: #94a3b8 !important;
     }
 
     body.dark-mode.drose-works-manage-page .drose-works-manage-slot__label {

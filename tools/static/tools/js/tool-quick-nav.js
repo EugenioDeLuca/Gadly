@@ -320,6 +320,9 @@
             root.classList.add("gadly-qn-anchor-right");
             document.body.classList.add("gadly-qn-anchor-right");
         }
+        try {
+            window.dispatchEvent(new CustomEvent("gadly-qn-side-changed", { detail: { side: side } }));
+        } catch (eSideEv) { /* ignore */ }
     }
 
     function resolveQuickNavSide(options) {

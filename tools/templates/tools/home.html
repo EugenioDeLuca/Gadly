@@ -224,7 +224,7 @@ window.GADLY_HOME_SECTION_PATHS = {{ home_section_paths_json|safe }};
 
 {% block extra_css %}
 {# Ultimo CSS della home (dopo base/theme/drose): vince sul cascade, niente override tardivo #}
-<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=144">
+<link rel="stylesheet" href="{% static 'tools/css/home.css' %}?v=145">
 <link rel="stylesheet" href="{% static 'tools/css/desktop-trash-bin.css' %}?v=80">
 <link rel="stylesheet" href="{% static 'tools/css/home-trash.css' %}?v=110">
 <style id="gadly-home-shortcuts-title-mobile">
@@ -321,7 +321,7 @@ html.gadly-home-booting body.homepage .tool-btn-wrap .tool-fav::before {
 
     <div class="home-hero">
     <h1 class="home-main-title">{% trans "Free tools for everyday tasks" %}</h1>
-    <p class="intro">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more. Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</p>
+    <p class="intro"><span class="intro-lead">{% trans "Welcome to Gadly - free online tools for text, files, social media, web and more." %}</span><br class="intro-desktop-break" aria-hidden="true"> <span class="intro-tail">{% trans "Use search to quickly find the tool you need and, if you are logged in, save favorites in Quick access." %}</span></p>
     </div>
     <div class="search-wrap">
         <input type="text" id="tool-search" placeholder="{% trans 'Search tools...' %}" class="tool-search-input" autocomplete="off">

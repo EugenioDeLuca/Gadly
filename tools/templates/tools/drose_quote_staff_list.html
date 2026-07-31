@@ -11,6 +11,7 @@
         </header>
 
         {% if quotes %}
+        {% include "tools/includes/drose_quote_staff_search.html" %}
         <section class="drose-section drose-cta">
             <div class="drose-quote-staff-table-wrap">
                 <table class="drose-quote-staff-table">
@@ -26,12 +27,12 @@
                     </thead>
                     <tbody>
                         {% for quote in quotes %}
-                        <tr data-quote-id="{{ quote.pk }}"{% if quote.needs_staff_attention %} class="drose-quote-staff-row--new"{% endif %}>
-                            <td><span class="drose-quote-staff-ref">{{ quote.reference }}</span></td>
-                            <td>{{ quote.full_name }}<br><span class="drose-quote-staff-muted">{{ quote.email }}</span></td>
-                            <td>{{ quote.service_label }}</td>
-                            <td><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
-                            <td>{{ quote.created_at|date:"d/m/Y H:i" }}</td>
+                        <tr data-quote-id="{{ quote.pk }}" data-ref="{{ quote.reference }}" data-name="{{ quote.full_name }}" data-email="{{ quote.email }}" data-search="{{ quote.reference }} {{ quote.full_name }} {{ quote.email }} {{ quote.service_label }} {{ quote.get_status_display }} {{ quote.created_at|date:'d/m/Y H:i' }}"{% if quote.needs_staff_attention %} class="drose-quote-staff-row--new"{% endif %}>
+                            <td data-label="{% trans 'Reference' %}"><span class="drose-quote-staff-ref">{{ quote.reference }}</span></td>
+                            <td data-label="{% trans 'Client' %}" class="drose-quote-staff-client-cell"><span class="drose-quote-staff-client-name">{{ quote.full_name }}</span><span class="drose-quote-staff-muted">{{ quote.email }}</span></td>
+                            <td data-label="{% trans 'Service' %}">{{ quote.service_label }}</td>
+                            <td data-label="{% trans 'Status' %}"><span class="drose-quote-status drose-quote-status--{{ quote.status }}">{{ quote.get_status_display }}</span></td>
+                            <td data-label="{% trans 'Received' %}">{{ quote.created_at|date:"d/m/Y H:i" }}</td>
                             <td class="drose-quote-staff-actions-col">
                                 {% if quote.needs_staff_attention %}
                                 <span class="drose-quote-staff-unread" title="{% trans 'Not yet viewed' %}" aria-label="{% trans 'Not yet viewed' %}"></span>
@@ -42,6 +43,7 @@
                                     </button>
                                     <div class="drose-quote-staff-menu__panel" hidden>
                                         <a class="drose-quote-staff-menu__item" href="{% url 'drose_quote_staff_detail' quote.pk %}">{% trans "Open" %}</a>
+                                        <button type="button" class="drose-quote-staff-menu__item drose-quote-staff-menu__item--copy-email" data-email="{{ quote.email }}" data-label-copy="{% trans 'Copy email' %}" data-label-copied="{% trans 'Copied!' %}">{% trans "Copy email" %}</button>
                                         <form method="post" action="{% url 'drose_quote_staff_delete' quote.pk %}" class="drose-quote-staff-menu__delete-form" onsubmit="return confirm('{% trans "Delete this quote request?" %}');">
                                             {% csrf_token %}
                                             <button type="submit" class="drose-quote-staff-menu__item drose-quote-staff-menu__item--danger">{% trans "Delete" %}</button>
@@ -66,5 +68,5 @@
 </div>
 {% endblock %}
 {% block page_scripts %}
-<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=5"></script>
+<script src="{% static 'tools/js/drose-quote-staff-list.js' %}?v=9"></script>
 {% endblock %}

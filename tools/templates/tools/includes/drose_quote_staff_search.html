@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="drose-quote-staff-search">
+    <label class="visually-hidden" for="drose-quote-staff-search-input">{% trans "Search quotes" %}</label>
+    <input
+        type="search"
+        id="drose-quote-staff-search-input"
+        class="drose-quote-staff-search__input"
+        placeholder="{% trans 'Search by name, email or reference…' %}"
+        autocomplete="off"
+        enterkeyhint="search"
+    >
+</div>
+<p class="drose-quote-staff-search-empty" id="drose-quote-staff-search-empty" hidden>{% trans "No quotes match your search." %}</p>

@@ -55,14 +55,14 @@
 <div class="drose-landing">
     <div class="drose-landing__container">
         <header class="drose-subpage__head">
-            <h1>{% trans "Detailed quote request" %}</h1>
+            <h1>{% trans "Quote request" %}</h1>
             <p>{% trans "Tell us what you need and we will prepare a structured estimate with scope, deliverables, timeline, and price." %}</p>
         </header>
 
         <section class="drose-section drose-cta" aria-labelledby="drose-quote-title">
             <h2 id="drose-quote-title">{% trans "Project brief" %}</h2>
-            <p>{% trans "Fill in as much detail as possible. More context helps us send a clearer and faster quote." %}</p>
-            <p class="drose-quote-required-note">{% trans "Fields marked with" %} <span class="drose-quote-required-star" aria-hidden="true">*</span> {% trans "are required." %}</p>
+            <p class="drose-quote-brief-lead">{% blocktrans trimmed %}Fill in as much detail as possible. More context helps us send a clearer and faster&nbsp;quote.{% endblocktrans %}</p>
+            <p class="drose-quote-required-note">{% trans "Fields marked with" %} <span class="drose-quote-required-star" aria-hidden="true">*</span> <span class="drose-quote-required-tail">{% trans "are required." %}</span></p>
 
             <div id="drose-quote-panel">
             {% if quote_sent %}

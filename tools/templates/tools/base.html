@@ -93,7 +93,7 @@
         opacity: 0 !important;
         pointer-events: none !important;
     }
-    /* Resta in layout (niente display:none) così allo sblocco non c’è frame bianco/blu vuoto */
+    /* Resta in layout (niente display:none) cosi allo sblocco non c'e frame bianco/blu vuoto */
     html.gadly-orient-locked .container,
     html.gadly-orient-locked .site-main,
     html.gadly-orient-locked .site-header,
@@ -590,7 +590,26 @@
         } catch (eMobileScrollBoot) { /* ignore */ }
     })();
     </script>
+    <script>
+    /* Pre-hide solo fino al boot subito sotto il FAB (non fino a fine pagina). */
+    (function () {
+        try {
+            var desktop = window.matchMedia &&
+                window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)").matches;
+            if (!desktop) document.documentElement.classList.add("gadly-fab-hide");
+        } catch (eFabHide) {
+            try { document.documentElement.classList.add("gadly-fab-hide"); } catch (e2) {}
+        }
+    })();
+    </script>
     <style id="gadly-first-paint-critical">
+    /* Solo opacity: niente display:none (quello faceva sparire/riapparire il FAB su mobile). */
+    html.gadly-fab-hide #mobile-home-fab,
+    #mobile-home-fab.mobile-home-fab--layout-pending {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
     html {
         overflow-x: hidden;
         scrollbar-width: none;
@@ -1826,9 +1845,9 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=244">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=252">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=162">
-<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=30">
+<link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=35">
     {% if is_drose_site %}
     <style id="drose-sky-shield">
     @media (min-width: 769px) {
@@ -1929,7 +1948,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=476">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=526">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2034,7 +2053,7 @@
     </div>
     <!-- FAB subito dopo il tema: posizione salvata applicata prima del resto del body (evita flash al default) -->
     {% if not is_drose_home %}
-    <div id="mobile-home-fab" class="mobile-home-fab mobile-home-fab--layout-pending">
+    <div id="mobile-home-fab" class="mobile-home-fab mobile-home-fab--layout-pending" style="opacity:0;visibility:hidden;pointer-events:none">
         <a href="{% if is_drose_site %}{% url 'drose' %}{% else %}{% url 'home' %}{% endif %}" class="mobile-home-fab-link{% if is_drose_site %} mobile-home-fab-link--drose{% else %} mobile-home-fab-link--gadly{% endif %}" aria-label="{% if is_drose_site %}{% trans 'Back to Drose' %}{% else %}{% trans 'Back to Home' %}{% endif %}" title="{% if is_drose_site %}{% trans 'Back to Drose' %}{% else %}{% trans 'Back to Home' %}{% endif %}">
             {% if is_drose_site %}
             {% include "tools/includes/drose_home_icon.html" with extra_class="mobile-home-fab-drose-logo" %}
@@ -2050,11 +2069,86 @@
             if (document.body.classList.contains('homepage')) return;
             var fab = document.getElementById('mobile-home-fab');
             if (!fab) return;
-            var raw = localStorage.getItem('gadly-home-fab-pos');
+            function fabBootViewport() {
+                var d = document.documentElement;
+                var iw = (typeof window.innerWidth === 'number' && window.innerWidth > 0) ? window.innerWidth : 0;
+                var ih = (typeof window.innerHeight === 'number' && window.innerHeight > 0) ? window.innerHeight : 0;
+                var cw = (d && d.clientWidth) || 0;
+                var ch = (d && d.clientHeight) || 0;
+                var vv = window.visualViewport;
+                var vw = (vv && vv.width > 0) ? vv.width : 0;
+                var vh = (vv && vv.height > 0) ? vv.height : 0;
+                var desktop = false;
+                try {
+                    desktop = !!(window.matchMedia &&
+                        window.matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)').matches);
+                } catch (eDv) {}
+                var w = iw;
+                var h = ih;
+                /* Mobile: prendi SEMPRE il minimo (innerWidth gonfiato dalla tabella = FAB fuori schermo). */
+                if (!desktop) {
+                    var ws = [];
+                    var hs = [];
+                    if (vw > 0) ws.push(vw);
+                    if (cw > 0) ws.push(cw);
+                    if (iw > 0) ws.push(iw);
+                    if (vh > 0) hs.push(vh);
+                    if (ch > 0) hs.push(ch);
+                    if (ih > 0) hs.push(ih);
+                    if (ws.length) w = Math.min.apply(null, ws);
+                    if (hs.length) h = Math.min.apply(null, hs);
+                } else {
+                    if (vw > 0 && iw > vw + 40) w = vw;
+                    else if (cw > 0 && iw > cw + 40) w = cw;
+                    else if (!(iw > 0)) w = vw > 0 ? vw : cw;
+                    if (vh > 0 && ih > vh + 40) h = vh;
+                    else if (ch > 0 && ih > ch + 40) h = ch;
+                    else if (!(ih > 0)) h = vh > 0 ? vh : ch;
+                }
+                return { iw: Math.round(w), ih: Math.round(h) };
+            }
+            function fabIsDesktopUi() {
+                try {
+                    return !!(window.matchMedia &&
+                        window.matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)').matches);
+                } catch (eD) { return false; }
+            }
+            function fabIsMobileUi() {
+                if (fabIsDesktopUi()) return false;
+                try {
+                    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return true;
+                    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches &&
+                        window.matchMedia('(max-width: 1024px)').matches) return true;
+                } catch (eM) {}
+                return !fabIsDesktopUi();
+            }
+            function fabBootReveal() {
+                /* Come desktop: mostra SUBITO dopo la posa (niente attesa fine pagina = sparire/riapparire). */
+                fab.classList.remove('mobile-home-fab--layout-pending');
+                fab.style.removeProperty('opacity');
+                fab.style.removeProperty('visibility');
+                fab.style.removeProperty('pointer-events');
+                fab.style.removeProperty('display');
+                try { document.documentElement.classList.remove('gadly-fab-hide'); } catch (eH) {}
+                try { fab.setAttribute('data-fab-revealed', '1'); } catch (eA) {}
+            }
+            var __fabBootVp = fabBootViewport();
+            var __fabBootW = __fabBootVp.iw;
+            var __fabBootKey = fabIsMobileUi() ? 'gadly-home-fab-pos-mobile' : 'gadly-home-fab-pos-desktop';
+            var raw = localStorage.getItem(__fabBootKey);
             if (!raw) {
-                var d0 = document.documentElement;
-                var iw0 = Math.round((typeof window.innerWidth === 'number' && window.innerWidth > 0) ? window.innerWidth : ((d0 && d0.clientWidth) || 0));
-                var ih0 = Math.round((typeof window.innerHeight === 'number' && window.innerHeight > 0) ? window.innerHeight : ((d0 && d0.clientHeight) || 0));
+                try {
+                    var __fabLegacy = localStorage.getItem('gadly-home-fab-pos');
+                    if (__fabLegacy) {
+                        raw = __fabLegacy;
+                        localStorage.setItem(__fabBootKey, __fabLegacy);
+                    }
+                } catch (eFabLeg) {}
+            }
+            if (!raw) {
+                var vp0 = fabBootViewport();
+                var iw0 = vp0.iw;
+                var ih0 = vp0.ih;
                 if (iw0 > 0 && ih0 > 0) {
                     function fabDefRight(iw) {
                         if (iw >= 2560) return '64px';
@@ -2068,22 +2162,29 @@
                         if (iw >= 1920) return 'calc(124px + env(safe-area-inset-bottom))';
                         return 'calc(96px + env(safe-area-inset-bottom))';
                     }
-                    fab.style.setProperty('right', fabDefRight(iw0), 'important');
+                    var S0 = fabIsMobileUi() ? 58 : 62;
+                    if (fabIsMobileUi()) {
+                        /* 100dvw: stabile anche se innerWidth ? ancora incerto al boot. */
+                        fab.style.setProperty('left', 'calc(100dvw - 22px - ' + S0 + 'px)', 'important');
+                        fab.style.setProperty('right', 'auto', 'important');
+                    } else {
+                        fab.style.setProperty('right', fabDefRight(iw0), 'important');
+                        fab.style.setProperty('left', 'auto', 'important');
+                    }
                     fab.style.setProperty('bottom', fabDefBottom(iw0), 'important');
-                    fab.style.setProperty('left', 'auto', 'important');
                     fab.style.setProperty('top', 'auto', 'important');
                     fab.style.transform = 'none';
-                    fab.classList.remove('mobile-home-fab--layout-pending');
+                    fabBootReveal();
                 }
                 return;
             }
             var p = JSON.parse(raw);
-            var d = document.documentElement;
-            var iw = Math.round((typeof window.innerWidth === 'number' && window.innerWidth > 0) ? window.innerWidth : ((d && d.clientWidth) || 0));
-            var ih = Math.round((typeof window.innerHeight === 'number' && window.innerHeight > 0) ? window.innerHeight : ((d && d.clientHeight) || 0));
+            var vp = fabBootViewport();
+            var iw = vp.iw;
+            var ih = vp.ih;
             if (iw <= 0 || ih <= 0) return;
             /* Posizione salvata: stessi margin/minR di mobile-home-fab.js (evita salto al refresh su mobile). */
-            var S = iw <= 768 ? 58 : 62;
+            var S = fabIsMobileUi() ? 58 : 62;
             function fabEdgeMarginBoot(w) {
                 if (w >= 2560) return 34;
                 if (w >= 2200) return 26;
@@ -2164,13 +2265,21 @@
             /* v17: right/bottom in % del viewport (più px dal bordo su schermo più grande). */
             if (p.v === 17 && typeof p.pr === 'number' && typeof p.pb === 'number') {
                 var cp17 = clampPRPBBoot(p.pr, p.pb);
+                var c17 = clampRBBoot((cp17.pr / 100) * iw, (cp17.pb / 100) * ih);
                 fab.classList.add('mobile-home-fab--user-positioned');
-                fab.style.setProperty('right', pctStr(cp17.pr), 'important');
-                fab.style.setProperty('bottom', pctStr(cp17.pb), 'important');
-                fab.style.setProperty('left', 'auto', 'important');
-                fab.style.setProperty('top', 'auto', 'important');
+                if (fabIsMobileUi()) {
+                    fab.style.setProperty('left', posPxBoot(Math.max(0, iw - c17.r - S)), 'important');
+                    fab.style.setProperty('bottom', posPxBoot(c17.b), 'important');
+                    fab.style.setProperty('right', 'auto', 'important');
+                    fab.style.setProperty('top', 'auto', 'important');
+                } else {
+                    fab.style.setProperty('right', pctStr(cp17.pr), 'important');
+                    fab.style.setProperty('bottom', pctStr(cp17.pb), 'important');
+                    fab.style.setProperty('left', 'auto', 'important');
+                    fab.style.setProperty('top', 'auto', 'important');
+                }
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v16: inset px → % (migrazione a v17). */
@@ -2182,7 +2291,7 @@
                 fab.style.setProperty('left', 'auto', 'important');
                 fab.style.setProperty('top', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v15: pr % + bp px o pr/pb % → % entrambi. */
@@ -2205,7 +2314,7 @@
                 fab.style.setProperty('left', 'auto', 'important');
                 fab.style.setProperty('top', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v14: % viewport. */
@@ -2217,7 +2326,7 @@
                 fab.style.setProperty('left', 'auto', 'important');
                 fab.style.setProperty('top', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v13 → %. */
@@ -2230,7 +2339,7 @@
                 fab.style.setProperty('left', 'auto', 'important');
                 fab.style.setProperty('top', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v12: px → %. */
@@ -2242,7 +2351,7 @@
                 fab.style.setProperty('left', 'auto', 'important');
                 fab.style.setProperty('top', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             /* v11: migrazione; stessa geometria applyNorm. */
@@ -2267,7 +2376,7 @@
                         fab.style.setProperty('right', 'auto', 'important');
                         fab.style.setProperty('bottom', 'auto', 'important');
                         fab.style.transform = 'none';
-                        fab.classList.remove('mobile-home-fab--layout-pending');
+                        fabBootReveal();
                         return;
                     }
                 }
@@ -2283,7 +2392,7 @@
                 fab.style.setProperty('right', 'auto', 'important');
                 fab.style.setProperty('bottom', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             if (p.v === 10 && typeof p.sr === 'number' && typeof p.sb === 'number' && window.visualViewport) {
@@ -2297,7 +2406,7 @@
                 fab.style.setProperty('right', 'auto', 'important');
                 fab.style.setProperty('bottom', 'auto', 'important');
                 fab.style.transform = 'none';
-                fab.classList.remove('mobile-home-fab--layout-pending');
+                fabBootReveal();
                 return;
             }
             if ((p.v === 10 || p.v === 9) && typeof p.r === 'number' && typeof p.b === 'number') {
@@ -2341,7 +2450,7 @@
             fab.style.setProperty('left', 'auto', 'important');
             fab.style.setProperty('top', 'auto', 'important');
             fab.style.transform = 'none';
-            fab.classList.remove('mobile-home-fab--layout-pending');
+            fabBootReveal();
         } catch (e) {}
     })();
     </script>
@@ -2602,8 +2711,8 @@
     {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
-    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=149"></script>
-    <script src="{% static 'tools/js/orient-lock.js' %}?v=28"></script>
+    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=160"></script>
+    <script src="{% static 'tools/js/orient-lock.js' %}?v=32"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare

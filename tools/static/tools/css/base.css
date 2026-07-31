@@ -639,8 +639,11 @@ body:not(.homepage) .mobile-home-fab.is-dragging {
     z-index: 410 !important;
 }
 
-/* Nascosto finché mobile-home-fab.js non ha applicato la posizione (niente flash default → salvata). */
+/* Pre-hide brevissimo (tolto dal boot subito sotto il FAB). Solo opacity, no display:none. */
+html.gadly-fab-hide #mobile-home-fab,
+#mobile-home-fab.mobile-home-fab--layout-pending,
 body:not(.homepage) .mobile-home-fab.mobile-home-fab--layout-pending {
+    opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
 }
@@ -809,6 +812,12 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned .mobile-home-fab-link svg {
         width: 28px !important;
         height: 28px !important;
+    }
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+    body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-fab-link {
+        animation: none !important;
     }
 }
 
@@ -1782,7 +1791,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         position: fixed;
         width: 58px;
         height: 58px;
-        right: 22px;
+        /* left+dvw: se innerWidth è gonfiato (tabella staff) right:px mette il FAB fuori schermo */
+        right: auto !important;
+        left: calc(100dvw - 22px - 58px) !important;
         bottom: calc(96px + env(safe-area-inset-bottom));
         z-index: 1100;
         touch-action: none;

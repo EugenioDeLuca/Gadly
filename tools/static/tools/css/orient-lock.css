@@ -6,7 +6,15 @@
 /* ——— Light mode (default) ——— */
 .gadly-orient-lock {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+    /* dvw/dvh: se innerWidth è gonfiato (tabella staff) inset:0 centra la card fuori dallo schermo */
+    width: 100dvw;
+    height: 100dvh;
+    max-width: 100dvw;
+    max-height: 100dvh;
     z-index: 99999;
     display: none;
     align-items: center;
@@ -400,6 +408,7 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     html:not(.drose-lightbox-allow-rotate) body {
         background-color: #ffffff !important;
         background-image: none !important;
+        overflow: hidden !important;
     }
 
     html:not(.drose-lightbox-allow-rotate):has(body.dark-mode),
@@ -418,6 +427,29 @@ html.gadly-orient-settling body.dark-mode.warm-tone {
     html:not(.drose-lightbox-allow-rotate) body.dark-mode.warm-tone {
         background-color: #26201c !important;
         background-image: none !important;
+    }
+
+    /* Nascondi header/pagina appena CSS è landscape (prima ancora del JS) */
+    html:not(.drose-lightbox-allow-rotate) body > *:not(.gadly-orient-lock) {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    html:not(.drose-lightbox-allow-rotate) .gadly-orient-lock {
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        z-index: 100000 !important;
+        /* Pieno schermo durante rotate: evita buchi se il pin JS non è ancora attivo */
+        top: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100dvw !important;
+        height: 100dvh !important;
+        max-width: 100dvw !important;
+        max-height: 100dvh !important;
     }
 }
 

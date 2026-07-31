@@ -3581,8 +3581,8 @@ msgid ""
 msgstr ""
 
 #: .\tools\templates\tools\drose_quote_request.html:58
-msgid "Detailed quote request"
-msgstr ""
+msgid "Quote request"
+msgstr "Quote request"
 
 #: .\tools\templates\tools\drose_quote_request.html:59
 msgid ""
@@ -3591,16 +3591,16 @@ msgid ""
 msgstr ""
 
 #: .\tools\templates\tools\drose_quote_request.html:63
-#, fuzzy
-#| msgid "Drone Services"
 msgid "Project brief"
-msgstr "Drone Services"
+msgstr "Project brief"
 
 #: .\tools\templates\tools\drose_quote_request.html:64
 msgid ""
 "Fill in as much detail as possible. More context helps us send a clearer and "
-"faster quote."
+"faster quote."
 msgstr ""
+"Fill in as much detail as possible. More context helps us send a clearer and "
+"faster quote."
 
 #: .\tools\templates\tools\drose_quote_request.html:65
 msgid "Fields marked with"
@@ -3746,6 +3746,9 @@ msgstr ""
 
 #: .\tools\templates\tools\drose_quote_staff_list.html:43
 msgid "Open"
+msgstr ""
+
+msgid "Copy email"
 msgstr ""
 
 #: .\tools\templates\tools\drose_quote_staff_list.html:44
@@ -5105,17 +5108,19 @@ msgstr ""
 msgid "Free tools for everyday tasks"
 msgstr "Free tools for everyday tasks"
 
-#: .\tools\templates\tools\home.html:157
-msgid ""
-"Welcome to Gadly - free online tools for text, files, social media, web and "
-"more. Use search to quickly find the tool you need and, if you are logged "
-"in, save favorites in Quick access."
-msgstr ""
-"Welcome to Gadly - free online tools for text, files, social media, web and "
-"more. Use search to quickly find the tool you need and, if you are logged "
-"in, save favorites in Quick access."
+#: .\tools\templates\tools\home.html:324
+msgid "Welcome to Gadly - free online tools for text, files, social media, web and more."
+msgstr "Welcome to Gadly - free online tools for text, files, social media, web and more."
 
-#: .\tools\templates\tools\home.html:160
+#: .\tools\templates\tools\home.html:324
+msgid ""
+"Use search to quickly find the tool you need and, if you are logged in, save "
+"favorites in Quick access."
+msgstr ""
+"Use search to quickly find the tool you need and, if you are logged in, save "
+"favorites in Quick access."
+
+#: .\tools\templates\tools\home.html:327
 msgid "Search tools..."
 msgstr ""
 
@@ -8049,3 +8054,15 @@ msgstr ""
 
 #~ msgid "Dismiss"
 #~ msgstr "Dismiss"
+
+msgid "Search quotes"
+msgstr "Search quotes"
+
+msgid "Search quotes…"
+msgstr "Search quotes…"
+
+msgid "Search by name, email or reference…"
+msgstr "Search by name, email or reference…"
+
+msgid "No quotes match your search."
+msgstr "No quotes match your search."

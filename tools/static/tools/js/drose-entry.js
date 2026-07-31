@@ -469,12 +469,13 @@
             syncLabelDarkBg();
         }
 
-        function placeDroneOnce() {
+        function placeDroneOnce(opts) {
+            opts = opts || {};
             if (!DESKTOP.matches) {
                 hideDroneLayout();
                 return;
             }
-            if (typeof window.__gadlyPlaceQuickNav === 'function') {
+            if (!opts.skipQuickNav && typeof window.__gadlyPlaceQuickNav === 'function') {
                 try {
                     window.__gadlyPlaceQuickNav();
                 } catch (ePlace) { /* ignore */ }
@@ -494,6 +495,23 @@
                 placeDroneOnce();
             }, 100);
         }
+
+        var sideMoveTimer = 0;
+        function onQuickNavSideChanged() {
+            if (!DESKTOP.matches) {
+                return;
+            }
+            /* Solo riposiziona: niente PlaceQuickNav (evita loop) e niente hide flash */
+            if (sideMoveTimer) {
+                window.clearTimeout(sideMoveTimer);
+            }
+            sideMoveTimer = window.setTimeout(function () {
+                sideMoveTimer = 0;
+                placeDroneOnce({ skipQuickNav: true });
+            }, 0);
+        }
+
+        window.addEventListener('gadly-qn-side-changed', onQuickNavSideChanged);
 
         window.addEventListener('scroll', syncLabelDarkBg, { passive: true });
         window.addEventListener('resize', function () {
@@ -515,6 +533,10 @@
                 if (layoutResizeTimer) {
                     window.clearTimeout(layoutResizeTimer);
                     layoutResizeTimer = 0;
+                }
+                if (sideMoveTimer) {
+                    window.clearTimeout(sideMoveTimer);
+                    sideMoveTimer = 0;
                 }
                 hideDroneLayout();
                 entry.style.setProperty('--drose-label-color', mixLabelColor(0));

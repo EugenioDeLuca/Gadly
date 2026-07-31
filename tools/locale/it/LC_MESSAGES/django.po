@@ -3863,8 +3863,8 @@ msgstr ""
 "progetto, consegne, tempistiche e fascia budget."
 
 #: .\tools\templates\tools\drose_quote_request.html:58
-msgid "Detailed quote request"
-msgstr "Richiesta preventivo dettagliata"
+msgid "Quote request"
+msgstr "Richiesta preventivo"
 
 #: .\tools\templates\tools\drose_quote_request.html:59
 msgid ""
@@ -3881,10 +3881,10 @@ msgstr "Scheda progetto"
 #: .\tools\templates\tools\drose_quote_request.html:64
 msgid ""
 "Fill in as much detail as possible. More context helps us send a clearer and "
-"faster quote."
+"faster quote."
 msgstr ""
 "Compila con più dettagli possibile. Maggior contesto ci aiuta a inviarti un "
-"preventivo più chiaro e veloce."
+"preventivo più chiaro e veloce."
 
 #: .\tools\templates\tools\drose_quote_request.html:65
 msgid "Fields marked with"
@@ -4029,6 +4029,9 @@ msgstr "Azioni preventivo"
 #: .\tools\templates\tools\drose_quote_staff_list.html:43
 msgid "Open"
 msgstr "Apri"
+
+msgid "Copy email"
+msgstr "Copia email"
 
 #: .\tools\templates\tools\drose_quote_staff_list.html:44
 msgid "Delete this quote request?"
@@ -5496,16 +5499,18 @@ msgstr "Accedi"
 msgid "Free tools for everyday tasks"
 msgstr "Strumenti gratuiti per le attività di ogni giorno"
 
-#: .\tools\templates\tools\home.html:157
-msgid ""
-"Welcome to Gadly - free online tools for text, files, social media, web and "
-"more. Use search to quickly find the tool you need and, if you are logged "
-"in, save favorites in Quick access."
-msgstr ""
-"Benvenuto su Gadly: tool gratuiti per testi, file, social e web. Usa la "
-"ricerca; con accesso effettuato, salva i preferiti in Accesso rapido."
+#: .\tools\templates\tools\home.html:324
+msgid "Welcome to Gadly - free online tools for text, files, social media, web and more."
+msgstr "Benvenuto su Gadly: tool gratuiti per testi, file, social e web."
 
-#: .\tools\templates\tools\home.html:160
+#: .\tools\templates\tools\home.html:324
+msgid ""
+"Use search to quickly find the tool you need and, if you are logged in, save "
+"favorites in Quick access."
+msgstr ""
+"Usa la ricerca; con accesso effettuato, salva i preferiti in Accesso rapido."
+
+#: .\tools\templates\tools\home.html:327
 msgid "Search tools..."
 msgstr "Cerca strumenti…"
 
@@ -9139,3 +9144,15 @@ msgstr "Modalità orizzontale non supportata"
 
 #~ msgid "Dismiss"
 #~ msgstr "Chiudi"
+
+msgid "Search quotes"
+msgstr "Cerca preventivi"
+
+msgid "Search quotes…"
+msgstr "Cerca preventivi…"
+
+msgid "Search by name, email or reference…"
+msgstr "Cerca per nome, email o codice…"
+
+msgid "No quotes match your search."
+msgstr "Nessun preventivo corrisponde alla ricerca."

@@ -1,5 +1,7 @@
 (function() {
-    var STORAGE_KEY = "gadly-home-fab-pos";
+    var STORAGE_KEY_LEGACY = "gadly-home-fab-pos";
+    var STORAGE_KEY_MOBILE = "gadly-home-fab-pos-mobile";
+    var STORAGE_KEY_DESKTOP = "gadly-home-fab-pos-desktop";
     var INTRO_KEY = "gadly-home-fab-intro-shown";
     var INTRO_CLASS = "mobile-home-fab--intro-pulse";
     var USER_POS_CLASS = "mobile-home-fab--user-positioned";
@@ -10,6 +12,134 @@
     var inited = false;
     var MARGIN = 8;
     var MIN_R = 28;
+
+    function isDesktopFabUi() {
+        try {
+            return !!(
+                window.matchMedia &&
+                window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)").matches
+            );
+        } catch (eD) {
+            return false;
+        }
+    }
+
+    function isMobileFabViewport(w) {
+        if (isDesktopFabUi()) {
+            w = w != null ? w : layoutW();
+            return false;
+        }
+        try {
+            if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) return true;
+            if (
+                window.matchMedia &&
+                window.matchMedia("(pointer: coarse)").matches &&
+                window.matchMedia("(max-width: 1024px)").matches
+            ) {
+                return true;
+            }
+        } catch (eMm) {}
+        w = w != null ? w : layoutW();
+        if (w > 0 && w <= 768) return true;
+        /* Non-desktop senza width chiara: tratta come mobile (pos left + hide sicuro). */
+        return !isDesktopFabUi();
+    }
+
+    function clearFabBootHide(fab) {
+        if (fab) {
+            fab.classList.remove(LAYOUT_PENDING_CLASS);
+            try {
+                fab.style.removeProperty("opacity");
+                fab.style.removeProperty("visibility");
+                fab.style.removeProperty("pointer-events");
+                fab.style.removeProperty("display");
+            } catch (eSt) {}
+        }
+        try {
+            document.documentElement.classList.remove("gadly-fab-hide");
+        } catch (eHide) {}
+    }
+
+    function layoutW() {
+        var iw =
+            typeof window.innerWidth === "number" && window.innerWidth > 0
+                ? window.innerWidth
+                : 0;
+        var cw =
+            (document.documentElement && document.documentElement.clientWidth) || 0;
+        var vv = window.visualViewport;
+        var vw = vv && vv.width > 0 ? vv.width : 0;
+        /* Mobile/touch: SEMPRE il minimo — innerWidth gonfiato manda il FAB fuori schermo (sparisce). */
+        if (!isDesktopFabUi()) {
+            var ws = [];
+            if (vw > 0) ws.push(vw);
+            if (cw > 0) ws.push(cw);
+            if (iw > 0) ws.push(iw);
+            if (ws.length) return Math.round(Math.min.apply(null, ws));
+            return 0;
+        }
+        if (vw > 0 && iw > vw + 40) return Math.round(vw);
+        if (cw > 0 && iw > cw + 40) return Math.round(cw);
+        if (iw > 0) return Math.round(iw);
+        if (vw > 0) return Math.round(vw);
+        return Math.round(cw);
+    }
+    function layoutH() {
+        var ih =
+            typeof window.innerHeight === "number" && window.innerHeight > 0
+                ? window.innerHeight
+                : 0;
+        var ch =
+            (document.documentElement && document.documentElement.clientHeight) || 0;
+        var vv = window.visualViewport;
+        var vh = vv && vv.height > 0 ? vv.height : 0;
+        if (!isDesktopFabUi()) {
+            var hs = [];
+            if (vh > 0) hs.push(vh);
+            if (ch > 0) hs.push(ch);
+            if (ih > 0) hs.push(ih);
+            if (hs.length) return Math.round(Math.min.apply(null, hs));
+            return 0;
+        }
+        if (vh > 0 && ih > vh + 40) return Math.round(vh);
+        if (ch > 0 && ih > ch + 40) return Math.round(ch);
+        if (ih > 0) return Math.round(ih);
+        if (vh > 0) return Math.round(vh);
+        return Math.round(ch);
+    }
+
+    /** Posizione desktop e mobile separate: spostare su uno non deve influenzare l’altro. */
+    function storageKeyForViewport(w) {
+        return isMobileFabViewport(w) ? STORAGE_KEY_MOBILE : STORAGE_KEY_DESKTOP;
+    }
+
+    function readStoredPosRaw(w) {
+        var key = storageKeyForViewport(w);
+        var s = null;
+        try {
+            s = localStorage.getItem(key);
+        } catch (eRead) {
+            return null;
+        }
+        if (s) return s;
+        /* Migrazione one-shot dalla chiave unica legacy → solo per questa modalità. */
+        try {
+            var legacy = localStorage.getItem(STORAGE_KEY_LEGACY);
+            if (!legacy) return null;
+            localStorage.setItem(key, legacy);
+            return legacy;
+        } catch (eLeg) {
+            return null;
+        }
+    }
+
+    function writeStoredPosRaw(payload, w) {
+        try {
+            localStorage.setItem(storageKeyForViewport(w), payload);
+            /* Evita che il vecchio slot condiviso continui a propagarsi tra modalità. */
+            localStorage.removeItem(STORAGE_KEY_LEGACY);
+        } catch (eWrite) {}
+    }
     /** Schermi larghi (es. 34"): più distanza dai bordi per clamp e ancoraggio proporzionale. */
     function fabEdgeMarginPx(iw) {
         iw = iw != null ? iw : layoutW();
@@ -73,6 +203,11 @@
     }
 
     function maybeStartIntroPulse(fab, link) {
+        /* Solo desktop vero: altrove il pulse è percepito come lampeggio al refresh. */
+        if (!isDesktopFabUi()) {
+            markIntroShown();
+            return;
+        }
         try {
             if (localStorage.getItem(INTRO_KEY) === "1") return;
         } catch (e) {
@@ -87,21 +222,6 @@
         setTimeout(function() {
             dismissIntroPulse(fab);
         }, 1500);
-    }
-
-    function layoutW() {
-        var w =
-            typeof window.innerWidth === "number" && window.innerWidth > 0
-                ? window.innerWidth
-                : (document.documentElement && document.documentElement.clientWidth) || 0;
-        return Math.round(w);
-    }
-    function layoutH() {
-        var h =
-            typeof window.innerHeight === "number" && window.innerHeight > 0
-                ? window.innerHeight
-                : (document.documentElement && document.documentElement.clientHeight) || 0;
-        return Math.round(h);
     }
 
     /**
@@ -309,10 +429,13 @@
     }
 
     function applyRB(fab, r, b) {
+        var iw = layoutW();
+        var S = fabSizeForClamp(fab);
         fab.classList.add(USER_POS_CLASS);
-        fab.style.setProperty("right", r + "px", "important");
-        fab.style.setProperty("bottom", b + "px", "important");
-        fab.style.setProperty("left", "auto", "important");
+        /* left in px sul viewport reale: right:%/px su CB fixed gonfiato mette il FAB fuori schermo */
+        fab.style.setProperty("left", posPx(Math.max(0, iw - Number(r) - S)), "important");
+        fab.style.setProperty("bottom", posPx(b), "important");
+        fab.style.setProperty("right", "auto", "important");
         fab.style.setProperty("top", "auto", "important");
         fab.style.transform = "none";
     }
@@ -332,12 +455,13 @@
     }
 
     function applyRBPercent(fab, pr, pb) {
-        fab.classList.add(USER_POS_CLASS);
-        fab.style.setProperty("right", posPct(pr), "important");
-        fab.style.setProperty("bottom", posPct(pb), "important");
-        fab.style.setProperty("left", "auto", "important");
-        fab.style.setProperty("top", "auto", "important");
-        fab.style.transform = "none";
+        var iw = layoutW();
+        var ih = layoutH();
+        var S = fabSizeForClamp(fab);
+        var r = (Number(pr) / 100) * iw;
+        var b = (Number(pb) / 100) * ih;
+        var cr = clampRB(r, b, iw, ih, S);
+        applyRB(fab, cr.r, cr.b);
     }
 
     /** Inset destro/basso (px layout) clampati alla finestra corrente. */
@@ -413,11 +537,20 @@
         fab.style.removeProperty("top");
         fab.style.removeProperty("right");
         fab.style.removeProperty("bottom");
-        fab.style.right = fabDefaultRightStr();
-        fab.style.bottom = fabDefaultBottomStr();
+        var iw = layoutW();
+        var S = layoutFabSide();
+        if (iw > 0 && isMobileFabViewport(iw)) {
+            /* Preferisci 100dvw: non dipende da innerWidth gonfiato. */
+            fab.style.setProperty("left", "calc(100dvw - 22px - " + S + "px)", "important");
+            fab.style.setProperty("right", "auto", "important");
+            fab.style.setProperty("top", "auto", "important");
+            fab.style.setProperty("bottom", fabDefaultBottomStr(), "important");
+        } else {
+            fab.style.right = fabDefaultRightStr();
+            fab.style.bottom = fabDefaultBottomStr();
+        }
         fab.style.transform = "none";
-        /* Rimuovi pending solo dopo aver applicato il canton default (evita un frame visibile “nel vuoto”). */
-        fab.classList.remove(LAYOUT_PENDING_CLASS);
+        /* Non togliere layout-pending qui: altrimenti il FAB lampeggia al refresh (posa → riposa). */
     }
 
     function savePosFromInsets(cr, sl, st) {
@@ -428,8 +561,7 @@
         var pb0 = ih > 0 ? (cr2.b / ih) * 100 : 0;
         var cp = clampPRPB(pr0, pb0, iw, ih, FAB_USER_PX);
         try {
-            localStorage.setItem(
-                STORAGE_KEY,
+            writeStoredPosRaw(
                 JSON.stringify({
                     v: POS_SCHEMA,
                     pr: cp.pr,
@@ -438,7 +570,8 @@
                     b: cr2.b,
                     sl: typeof sl === "number" ? clamp01(sl) : 0.5,
                     st: typeof st === "number" ? clamp01(st) : 0.5
-                })
+                }),
+                iw
             );
         } catch (e) {}
         return {
@@ -494,7 +627,7 @@
 
     function loadPos(fab) {
         try {
-            var s = localStorage.getItem(STORAGE_KEY);
+            var s = readStoredPosRaw(layoutW());
             if (!s) return null;
             var p = JSON.parse(s);
             if (p.v === POS_SCHEMA && typeof p.pr === "number" && typeof p.pb === "number") {
@@ -664,15 +797,7 @@
             clearUserStyles(fab);
             return;
         }
-        /* Boot inline in base.html ha già applicato v17: evita secondo setProperty (flash). */
-        if (
-            !fab.classList.contains(LAYOUT_PENDING_CLASS) &&
-            fab.classList.contains(USER_POS_CLASS) &&
-            typeof pos.pr === "number" &&
-            typeof pos.pb === "number"
-        ) {
-            return;
-        }
+        /* Sempre riapplica: right/% su viewport gonfiato lasciava il FAB fuori schermo (Bin/Quotes). */
         applyFabDual(fab, pos);
     }
 
@@ -711,9 +836,21 @@
     }
 
     function finishFabReveal(fab) {
-        if (fab && fab.classList.contains(LAYOUT_PENDING_CLASS)) {
-            fab.classList.remove(LAYOUT_PENDING_CLASS);
+        if (!fab) return;
+        /* Boot ha già rivelato su mobile: non nascondere di nuovo (evita sparire/riapparire). */
+        if (fab.getAttribute("data-fab-revealed") === "1") {
+            try {
+                applySavedOrDefault(fab);
+            } catch (eAlready) {}
+            return;
         }
+        try {
+            applySavedOrDefault(fab);
+        } catch (eRe) {}
+        clearFabBootHide(fab);
+        try {
+            fab.setAttribute("data-fab-revealed", "1");
+        } catch (eAttr) {}
     }
 
     function init() {
@@ -722,11 +859,11 @@
             return;
         }
         if (isHomepage()) {
-            fab.style.display = "none";
-            fab.classList.remove(LAYOUT_PENDING_CLASS);
+            clearFabBootHide(fab);
+            fab.style.setProperty("display", "none", "important");
             return;
         }
-        fab.style.display = "block";
+        /* Non forzare display qui: resta none finché clearFabBootHide (evita flash). */
         fab.style.removeProperty("--home-fab-bg");
         fab.style.removeProperty("--home-fab-icon");
         fab.style.removeProperty("--home-fab-border");
