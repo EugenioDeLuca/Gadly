@@ -430,13 +430,24 @@
 
     function applyRB(fab, r, b) {
         var iw = layoutW();
+        var ih = layoutH();
         var S = fabSizeForClamp(fab);
         fab.classList.add(USER_POS_CLASS);
-        /* left in px sul viewport reale: right:%/px su CB fixed gonfiato mette il FAB fuori schermo */
-        fab.style.setProperty("left", posPx(Math.max(0, iw - Number(r) - S)), "important");
-        fab.style.setProperty("bottom", posPx(b), "important");
-        fab.style.setProperty("right", "auto", "important");
-        fab.style.setProperty("top", "auto", "important");
+        if (isDesktopFabUi()) {
+            /* Desktop: right/bottom in % — restano ancorati al bordo al resize (niente salto). */
+            var pr = iw > 0 ? (Number(r) / iw) * 100 : 0;
+            var pb = ih > 0 ? (Number(b) / ih) * 100 : 0;
+            fab.style.setProperty("right", posPct(pr), "important");
+            fab.style.setProperty("bottom", posPct(pb), "important");
+            fab.style.setProperty("left", "auto", "important");
+            fab.style.setProperty("top", "auto", "important");
+        } else {
+            /* Mobile: left in px sul viewport reale (right:% su viewport gonfiato = fuori schermo). */
+            fab.style.setProperty("left", posPx(Math.max(0, iw - Number(r) - S)), "important");
+            fab.style.setProperty("bottom", posPx(b), "important");
+            fab.style.setProperty("right", "auto", "important");
+            fab.style.setProperty("top", "auto", "important");
+        }
         fab.style.transform = "none";
     }
 
@@ -540,17 +551,92 @@
         var iw = layoutW();
         var S = layoutFabSide();
         if (iw > 0 && isMobileFabViewport(iw)) {
-            /* Preferisci 100dvw: non dipende da innerWidth gonfiato. */
-            fab.style.setProperty("left", "calc(100dvw - 22px - " + S + "px)", "important");
+            /* left da layoutW (min vv/cw/iw): 100dvw a volte spinge il FAB fuori schermo. */
+            fab.style.setProperty("left", posPx(Math.max(0, iw - 22 - S)), "important");
             fab.style.setProperty("right", "auto", "important");
             fab.style.setProperty("top", "auto", "important");
             fab.style.setProperty("bottom", fabDefaultBottomStr(), "important");
         } else {
-            fab.style.right = fabDefaultRightStr();
-            fab.style.bottom = fabDefaultBottomStr();
+            fab.style.setProperty("right", fabDefaultRightStr(), "important");
+            fab.style.setProperty("bottom", fabDefaultBottomStr(), "important");
+            fab.style.setProperty("left", "auto", "important");
+            fab.style.setProperty("top", "auto", "important");
         }
         fab.style.transform = "none";
         /* Non togliere layout-pending qui: altrimenti il FAB lampeggia al refresh (posa → riposa). */
+    }
+
+    function hideFabForModeSwitch(fab) {
+        if (!fab) return;
+        try {
+            fab.style.setProperty("opacity", "0", "important");
+            fab.style.setProperty("visibility", "hidden", "important");
+            fab.style.setProperty("pointer-events", "none", "important");
+        } catch (eH) {}
+    }
+
+    function revealFabAfterModeSwitch(fab) {
+        if (!fab) return;
+        clearFabBootHide(fab);
+        try {
+            fab.style.removeProperty("opacity");
+            fab.style.removeProperty("visibility");
+            fab.style.removeProperty("pointer-events");
+        } catch (eR) {}
+    }
+
+    /**
+     * Se il FAB è fuori (o quasi) dal visual viewport, riposizionalo in vista.
+     * Causa tipica mobile: viewport gonfiato / 100dvw / rotazione / tastiera.
+     */
+    function ensureFabOnScreen(fab, allowPersist) {
+        if (!fab || isHomepage()) return false;
+        /* Solo mobile/touch: su desktop il riposizionamento crea salti al resize. */
+        if (isDesktopFabUi()) {
+            clearFabBootHide(fab);
+            return false;
+        }
+        clearFabBootHide(fab);
+        var rect = fab.getBoundingClientRect();
+        var S = rect.width > 8 ? rect.width : layoutFabSideForEl(fab);
+        var H = rect.height > 8 ? rect.height : S;
+        var vv = window.visualViewport;
+        var vx = vv && vv.width > 0 ? vv.offsetLeft : 0;
+        var vy = vv && vv.height > 0 ? vv.offsetTop : 0;
+        var vw = vv && vv.width > 0 ? vv.width : layoutW();
+        var vh = vv && vv.height > 0 ? vv.height : layoutH();
+        if (!(vw > 0 && vh > 0)) return false;
+
+        var ol = Math.max(rect.left, vx);
+        var oright = Math.min(rect.right, vx + vw);
+        var ot = Math.max(rect.top, vy);
+        var ob = Math.min(rect.bottom, vy + vh);
+        var ow = Math.max(0, oright - ol);
+        var oh = Math.max(0, ob - ot);
+        var area = Math.max(1, S * H);
+        var visible = (ow * oh) / area;
+        if (visible >= 0.55 && rect.width > 8 && rect.height > 8) return false;
+
+        var iw = layoutW();
+        var m = fabEdgeMarginPx(iw);
+        var minR = fabMinRightInsetPx(iw);
+        var targetLeft;
+        var targetTop;
+        if (visible < 0.08) {
+            /* Quasi invisibile: default basso-destra nel viewport visibile */
+            targetLeft = vx + Math.max(m, vw - S - Math.max(minR, 22));
+            targetTop = vy + Math.max(m, vh - H - Math.max(m, 96));
+        } else {
+            targetLeft = Math.min(Math.max(rect.left, vx + m), vx + vw - S - minR);
+            targetTop = Math.min(Math.max(rect.top, vy + m), vy + vh - H - m);
+        }
+        clampAndApplyLT(fab, targetLeft, targetTop);
+        if (allowPersist !== false) {
+            try {
+                persistPixelFromRect(fab);
+            } catch (ePers) {}
+        }
+        return true;
     }
 
     function savePosFromInsets(cr, sl, st) {
@@ -842,6 +928,9 @@
             try {
                 applySavedOrDefault(fab);
             } catch (eAlready) {}
+            try {
+                ensureFabOnScreen(fab, true);
+            } catch (eEns0) {}
             return;
         }
         try {
@@ -851,6 +940,9 @@
         try {
             fab.setAttribute("data-fab-revealed", "1");
         } catch (eAttr) {}
+        try {
+            ensureFabOnScreen(fab, true);
+        } catch (eEns1) {}
     }
 
     function init() {
@@ -899,11 +991,100 @@
         applySavedOrDefault(fab);
         finishFabReveal(fab);
 
-        window.addEventListener("orientationchange", function() {
+        var fabEnsureTimer = null;
+        var fabModeSwitchTimer = null;
+        var lastFabUiMode = isMobileFabViewport() ? "mobile" : "desktop";
+        var fabModeSwitchPending = false;
+        var fabDraggingRef = function() {
+            return dragging;
+        };
+        function currentFabUiMode() {
+            return isMobileFabViewport() ? "mobile" : "desktop";
+        }
+        function settleFabAfterModeSwitch(f) {
+            fabModeSwitchPending = false;
+            fabModeSwitchTimer = null;
+            if (!f || isHomepage()) return;
+            lastFabUiMode = currentFabUiMode();
+            try {
+                applySavedOrDefault(f);
+            } catch (eAp) {}
+            /* Solo mobile: riporta in vista se fuori schermo. Desktop non persistire clamp “mobile”. */
+            if (lastFabUiMode === "mobile") {
+                try {
+                    ensureFabOnScreen(f, true);
+                } catch (eEn) {}
+            }
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    revealFabAfterModeSwitch(f);
+                });
+            });
+        }
+        function scheduleEnsureFabOnScreen() {
+            if (fabDraggingRef()) return;
             var f = document.getElementById("mobile-home-fab");
             if (!f || isHomepage()) return;
-            applySavedOrDefault(f);
+            var mode = currentFabUiMode();
+            if (mode !== lastFabUiMode) {
+                /* Mobile ↔ desktop: nascondi subito, poi applica lo slot corretto a resize finito (niente salto). */
+                if (!fabModeSwitchPending) {
+                    fabModeSwitchPending = true;
+                    hideFabForModeSwitch(f);
+                }
+                if (fabEnsureTimer) {
+                    clearTimeout(fabEnsureTimer);
+                    fabEnsureTimer = null;
+                }
+                if (fabModeSwitchTimer) clearTimeout(fabModeSwitchTimer);
+                fabModeSwitchTimer = setTimeout(function() {
+                    settleFabAfterModeSwitch(f);
+                }, 240);
+                return;
+            }
+            if (fabModeSwitchPending) return;
+            if (fabEnsureTimer) clearTimeout(fabEnsureTimer);
+            fabEnsureTimer = setTimeout(function() {
+                fabEnsureTimer = null;
+                if (fabDraggingRef() || fabModeSwitchPending) return;
+                var f2 = document.getElementById("mobile-home-fab");
+                if (!f2 || isHomepage()) return;
+                try {
+                    applySavedOrDefault(f2);
+                } catch (eAp2) {}
+                if (currentFabUiMode() === "mobile") {
+                    try {
+                        ensureFabOnScreen(f2, true);
+                    } catch (eEn2) {}
+                }
+            }, 140);
+        }
+
+        window.addEventListener("orientationchange", function() {
+            setTimeout(scheduleEnsureFabOnScreen, 80);
+            setTimeout(scheduleEnsureFabOnScreen, 420);
         });
+        window.addEventListener("resize", scheduleEnsureFabOnScreen, { passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", scheduleEnsureFabOnScreen, { passive: true });
+        }
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible") scheduleEnsureFabOnScreen();
+        });
+        if (window.matchMedia) {
+            try {
+                var deskMq = window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
+                var mobMq = window.matchMedia("(max-width: 768px)");
+                var onModeMq = function() { scheduleEnsureFabOnScreen(); };
+                if (typeof deskMq.addEventListener === "function") {
+                    deskMq.addEventListener("change", onModeMq);
+                    mobMq.addEventListener("change", onModeMq);
+                } else if (typeof deskMq.addListener === "function") {
+                    deskMq.addListener(onModeMq);
+                    mobMq.addListener(onModeMq);
+                }
+            } catch (eMq) {}
+        }
 
         function dragThresholdSq(type) {
             var px = type === "mouse" ? DRAG_DIST_MOUSE_PX : DRAG_DIST_TOUCH_PX;
@@ -1122,6 +1303,7 @@
         window.addEventListener("pageshow", function() {
             hardResetGesture();
             suppressNextLinkClick = false;
+            scheduleEnsureFabOnScreen();
         });
 
         requestAnimationFrame(function() {

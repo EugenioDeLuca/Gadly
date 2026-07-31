@@ -729,10 +729,8 @@ body:not(.homepage) .mobile-home-fab.is-dragging .mobile-home-fab-link {
     transform: none !important;
 }
 
-/* Posizione impostata dall’utente: niente right/bottom dal CSS; stessa misura desktop anche sotto 480px (altrimenti il resize “sposta” il cerchio). */
+/* Posizione utente: stessa misura; right/bottom auto solo dove si usa left (mobile). */
 body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned {
-    right: auto !important;
-    bottom: auto !important;
     width: 62px !important;
     height: 62px !important;
     min-width: 62px !important;
@@ -794,6 +792,8 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
     }
 
     body:not(.homepage) .mobile-home-fab.mobile-home-fab--user-positioned {
+        right: auto !important;
+        bottom: auto !important;
         width: 58px !important;
         height: 58px !important;
         min-width: 58px !important;
@@ -1791,9 +1791,9 @@ body:not(.homepage) .mobile-home-fab.mobile-home-fab--intro-pulse .mobile-home-f
         position: fixed;
         width: 58px;
         height: 58px;
-        /* left+dvw: se innerWidth è gonfiato (tabella staff) right:px mette il FAB fuori schermo */
+        /* left da 100svw (small viewport): più stabile di 100dvw che a volte spinge fuori schermo */
         right: auto !important;
-        left: calc(100dvw - 22px - 58px) !important;
+        left: calc(100svw - 22px - 58px) !important;
         bottom: calc(96px + env(safe-area-inset-bottom));
         z-index: 1100;
         touch-action: none;

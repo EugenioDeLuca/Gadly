@@ -2818,7 +2818,7 @@ body.dark-mode.drose-quote-staff-page .drose-quote-staff-search-empty {
 
     body:not(.homepage).drose-quote-staff-page .mobile-home-fab:not(.mobile-home-fab--user-positioned) {
         right: auto !important;
-        left: calc(100dvw - 22px - 58px) !important;
+        left: calc(100svw - 22px - 58px) !important;
     }
 }
 

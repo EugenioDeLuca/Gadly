@@ -41,7 +41,7 @@
             if (!window.matchMedia) return;
             var landscape = window.matchMedia("(orientation: landscape) and (max-height: 1100px) and (max-width: 1024px)").matches ||
                 (window.innerWidth > window.innerHeight && window.innerHeight <= 1100 && window.innerWidth <= 1024);
-            /* Solo desktop “vero” (viewport largo): in DevTools device mode width ≤1024 → overlay sì */
+            /* Solo desktop ?vero? (viewport largo): in DevTools device mode width ?1024 ? overlay s? */
             var desktop = window.innerWidth > 1024 &&
                 window.matchMedia("(hover: hover) and (pointer: fine)").matches;
             if (!landscape || desktop) return;
@@ -110,7 +110,7 @@
         pointer-events: auto !important;
         z-index: 100000 !important;
     }
-    /* Refresh in landscape + cookie prompt: il banner non deve vincere sull’overlay */
+    /* Refresh in landscape + cookie prompt: il banner non deve vincere sull?overlay */
     html.gadly-orient-locked #cookie-banner,
     html.gadly-orient-settling #cookie-banner,
     html.gadly-orient-locked.gadly-cookie-prompt #cookie-banner,
@@ -307,8 +307,8 @@
                 if (!head) return;
                 /*
                  * Sempre il colore del TEMA SITO su tutti i meta, senza media OS.
-                 * Altrimenti con warm light + telefono/scrim “dark”, Safari prende
-                 * theme-color dark (#26201c) → barra nera, mentre light normale resta bianca.
+                 * Altrimenti con warm light + telefono/scrim ?dark?, Safari prende
+                 * theme-color dark (#26201c) ? barra nera, mentre light normale resta bianca.
                  */
                 ensureThemeColorMeta('gadly-theme-color', c, null);
                 ensureThemeColorMeta('gadly-theme-color-light', c, null);
@@ -355,7 +355,7 @@
             void root.offsetHeight;
 
             /*
-             * iOS 26: ri-campiona in sincrono (niente rAF → niente ritardo vs tema pagina).
+             * iOS 26: ri-campiona in sincrono (niente rAF ? niente ritardo vs tema pagina).
              */
             if (mobile && forceResample && body) {
                 var header = document.querySelector('.site-header');
@@ -743,7 +743,7 @@
             border-color: #fff;
             box-shadow: 0 0 0 1px rgba(0, 63, 127, 0.35), 0 4px 14px rgba(0, 63, 127, 0.22);
         }
-        /* Stelle: glifo via ::before così i preferiti possono essere ★ già dal CSS in head */
+        /* Stelle: glifo via ::before cos? i preferiti possono essere ? gi? dal CSS in head */
         body.homepage .tool-btn-wrap .tool-fav {
             position: absolute;
             right: 6px;
@@ -910,15 +910,15 @@
             if ("scrollRestoration" in history) {
                 history.scrollRestoration = "manual";
             }
-            // Evita frame “neutro”/clamp: se c'è scroll salvato in sessionStorage,
-            // su refresh desktop può provocare flash/resize percepito.
+            // Evita frame ?neutro?/clamp: se c'? scroll salvato in sessionStorage,
+            // su refresh desktop pu? provocare flash/resize percepito.
             var KEY_PREFIX = "gadly-page-scroll-y-v1:";
             var p = location.pathname || "/";
             if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
             if (!p) p = "/";
             sessionStorage.removeItem(KEY_PREFIX + p);
             sessionStorage.removeItem(KEY_PREFIX + p + "/");
-            /* Mobile: solo reload/PTR → in cima. */
+            /* Mobile: solo reload/PTR ? in cima. */
             try {
                 var mobileTop = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
                 var isReloadTop = false;
@@ -965,7 +965,7 @@
                 if (typeof window.__gadlySaveHomeContainerHeight === "function") {
                     window.__gadlySaveHomeContainerHeight();
                 }
-                // Sblocca min-height dopo il layout stabile (stessa altezza → niente salto).
+                // Sblocca min-height dopo il layout stabile (stessa altezza ? niente salto).
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
                         document.documentElement.style.removeProperty("--gadly-home-container-min-h");
@@ -1825,7 +1825,7 @@
     {% if is_drose_site %}
     <link rel="icon" type="image/svg+xml" href="{% static 'tools/images/drose-favicon.svg' %}?v=24">
     {% else %}
-    {# PNG prima dell'SVG: Google Search preferisce raster ≥48px (multipli di 48). #}
+    {# PNG prima dell'SVG: Google Search preferisce raster ?48px (multipli di 48). #}
     <link rel="icon" type="image/png" sizes="48x48" href="{% static 'tools/images/favicon-48.png' %}?v=3">
     <link rel="icon" type="image/png" sizes="96x96" href="{% static 'tools/images/favicon-96.png' %}?v=3">
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'tools/images/favicon-192.png' %}?v=3">
@@ -1845,7 +1845,7 @@
     {% block extrahead %}{% endblock %}
 
     <!-- CSS globale -->
-<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=253">
+<link rel="stylesheet" href="{% static 'tools/css/base.css' %}?v=255">
 <link rel="stylesheet" href="{% static 'tools/css/theme.css' %}?v=162">
 <link rel="stylesheet" href="{% static 'tools/css/orient-lock.css' %}?v=35">
     {% if is_drose_site %}
@@ -1865,7 +1865,7 @@
     <link rel="stylesheet" href="{% static 'tools/css/footer.css' %}?v=34">
     <link rel="stylesheet" href="{% static 'tools/css/cookie-banner.css' %}?v=11">
     <style id="gadly-cookie-banner-shield">
-    /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body → niente frame “neutro” ai refresh rapidi. */
+    /* Stato cookie deciso in <head> (.gadly-cookie-accepted | .gadly-cookie-prompt) prima del body ? niente frame ?neutro? ai refresh rapidi. */
     #cookie-banner {
         display: none !important;
         visibility: hidden !important;
@@ -1934,7 +1934,7 @@
 </style>
 
     <style id="gadly-boot-ui-shield">
-    /* Primo caricamento: quick-nav/footer nascosti finché layout e scroll non sono stabili. */
+    /* Primo caricamento: quick-nav/footer nascosti finch? layout e scroll non sono stabili. */
     html.gadly-boot-ui aside.tool-quick-nav,
     html.gadly-boot-ui aside.tool-popular-nav {
         opacity: 0 !important;
@@ -1948,7 +1948,7 @@
     </style>
     {% block extra_css %}{% endblock %}
     {% if is_drose_site %}
-    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=529">
+    <link rel="stylesheet" href="{% static 'tools/css/drose.css' %}?v=530">
     {% endif %}
     <link rel="stylesheet" href="{% static 'tools/css/nav-link-hover-lock.css' %}?v=5">
     {% if request.resolver_match and request.resolver_match.url_name == 'word_counter' or request.resolver_match and request.resolver_match.url_name == 'help_text_tools' %}
@@ -2164,8 +2164,8 @@
                     }
                     var S0 = fabIsMobileUi() ? 58 : 62;
                     if (fabIsMobileUi()) {
-                        /* 100dvw: stabile anche se innerWidth ? ancora incerto al boot. */
-                        fab.style.setProperty('left', 'calc(100dvw - 22px - ' + S0 + 'px)', 'important');
+                        /* left da viewport reale (min): 100dvw a volte manda il FAB fuori schermo. */
+                        fab.style.setProperty('left', (Math.max(0, iw0 - 22 - S0)) + 'px', 'important');
                         fab.style.setProperty('right', 'auto', 'important');
                     } else {
                         fab.style.setProperty('right', fabDefRight(iw0), 'important');
@@ -2175,6 +2175,9 @@
                     fab.style.setProperty('top', 'auto', 'important');
                     fab.style.transform = 'none';
                     fabBootReveal();
+                } else {
+                    /* Viewport non pronto: rivela comunque (JS riposiziona dopo). */
+                    fabBootReveal();
                 }
                 return;
             }
@@ -2182,7 +2185,10 @@
             var vp = fabBootViewport();
             var iw = vp.iw;
             var ih = vp.ih;
-            if (iw <= 0 || ih <= 0) return;
+            if (iw <= 0 || ih <= 0) {
+                fabBootReveal();
+                return;
+            }
             /* Posizione salvata: stessi margin/minR di mobile-home-fab.js (evita salto al refresh su mobile). */
             var S = fabIsMobileUi() ? 58 : 62;
             function fabEdgeMarginBoot(w) {
@@ -2262,7 +2268,7 @@
                 return { pr: iw > 0 ? (c.r / iw) * 100 : 0, pb: ih > 0 ? (c.b / ih) * 100 : 0 };
             }
             var r, b;
-            /* v17: right/bottom in % del viewport (più px dal bordo su schermo più grande). */
+            /* v17: right/bottom in % del viewport (pi? px dal bordo su schermo pi? grande). */
             if (p.v === 17 && typeof p.pr === 'number' && typeof p.pb === 'number') {
                 var cp17 = clampPRPBBoot(p.pr, p.pb);
                 var c17 = clampRBBoot((cp17.pr / 100) * iw, (cp17.pb / 100) * ih);
@@ -2282,7 +2288,7 @@
                 fabBootReveal();
                 return;
             }
-            /* v16: inset px → % (migrazione a v17). */
+            /* v16: inset px ? % (migrazione a v17). */
             if (p.v === 16 && typeof p.r === 'number' && typeof p.b === 'number') {
                 var c16 = clampRBBoot(p.r, p.b);
                 fab.classList.add('mobile-home-fab--user-positioned');
@@ -2294,7 +2300,7 @@
                 fabBootReveal();
                 return;
             }
-            /* v15: pr % + bp px o pr/pb % → % entrambi. */
+            /* v15: pr % + bp px o pr/pb % ? % entrambi. */
             if (p.v === 15) {
                 var cp15;
                 if (typeof p.r === 'number' && typeof p.b === 'number') {
@@ -2306,6 +2312,7 @@
                 } else if (typeof p.pr === 'number' && typeof p.pb === 'number') {
                     cp15 = clampPRPBBoot(p.pr, p.pb);
                 } else {
+                    fabBootReveal();
                     return;
                 }
                 fab.classList.add('mobile-home-fab--user-positioned');
@@ -2329,7 +2336,7 @@
                 fabBootReveal();
                 return;
             }
-            /* v13 → %. */
+            /* v13 ? %. */
             if (p.v === 13 && typeof p.nr === 'number' && typeof p.nb === 'number') {
                 var rb13 = rbFromNorm(p.nr, p.nb);
                 var c13 = clampRBBoot(rb13.r, rb13.b);
@@ -2342,7 +2349,7 @@
                 fabBootReveal();
                 return;
             }
-            /* v12: px → %. */
+            /* v12: px ? %. */
             if (p.v === 12 && typeof p.r === 'number' && typeof p.b === 'number') {
                 var c12 = clampRBBoot(p.r, p.b);
                 fab.classList.add('mobile-home-fab--user-positioned');
@@ -2442,7 +2449,10 @@
                 var c3 = clampLT(p.left, p.top);
                 r = Math.max(minR, Math.round(iw - c3.l - S));
                 b = Math.max(margin, Math.round(ih - c3.t - S));
-            } else return;
+            } else {
+                fabBootReveal();
+                return;
+            }
             var cFb = clampRBBoot(r, b);
             fab.classList.add('mobile-home-fab--user-positioned');
             fab.style.setProperty('right', pctStr(iw > 0 ? (cFb.r / iw) * 100 : 0), 'important');
@@ -2451,7 +2461,9 @@
             fab.style.setProperty('top', 'auto', 'important');
             fab.style.transform = 'none';
             fabBootReveal();
-        } catch (e) {}
+        } catch (e) {
+            try { fabBootReveal(); } catch (e2) {}
+        }
     })();
     </script>
     <section class="mobile-tablet-maintenance" aria-label="{% trans 'Mobile and tablet temporary notice' %}">
@@ -2711,14 +2723,14 @@
     {% endif %}
     <script src="{% static 'tools/js/tool-favorites.js' %}?v=1"></script>
     <script src="{% static 'tools/js/gadly-android-scroll.js' %}?v=3"></script>
-    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=160"></script>
+    <script src="{% static 'tools/js/mobile-home-fab.js' %}?v=162"></script>
     <script src="{% static 'tools/js/orient-lock.js' %}?v=32"></script>
     <script>
     /*
      * Prima c'era un touchmove globale (passive:false + preventDefault) per bloccare
      * il rubber-band in cima. Su alcuni WebView/Android window.scrollY resta 0 anche
-     * a pagina scrollata → preventDefault a sproposito → scroll morto.
-     * Basta CSS overscroll-behavior-y: none (già su html/body mobile).
+     * a pagina scrollata ? preventDefault a sproposito ? scroll morto.
+     * Basta CSS overscroll-behavior-y: none (gi? su html/body mobile).
      */
     (function () {
         try {
@@ -3033,7 +3045,7 @@
             });
             nav.querySelectorAll('a, .header-nav-logout-form button').forEach(function(el) {
                 el.addEventListener('click', function() {
-                    /* Navigazione / logout: non chiudere il menu prima —
+                    /* Navigazione / logout: non chiudere il menu prima ?
                        evita il flash della pagina corrente sotto il menu. */
                     if (el.tagName === 'A') {
                         var href = el.getAttribute('href') || '';
