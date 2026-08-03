@@ -5571,7 +5571,7 @@ body.drose-page.faq-page .faq-item h3 {
 
     body.drose-page:not(.dark-mode) .drose-landing__container a:not(.drose-btn):not(.drose-quote-staff-menu__item),
     body.drose-page:not(.dark-mode) .drose-landing__back-link,
-    body.is-drose-brand.login-page:not(.dark-mode) .static-container a:not(.drose-btn) {
+    body.is-drose-brand.login-page:not(.dark-mode) .static-container a:not(.drose-btn):not(.login-btn) {
         color: #b45309 !important;
         -webkit-text-fill-color: #b45309 !important;
     }
@@ -5665,12 +5665,46 @@ body.drose-page.faq-page .faq-item h3 {
     body.is-drose-brand.login-page:not(.dark-mode) .site-main .drose-btn--primary,
     body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-form .login-btn,
     body.is-drose-brand.login-page:not(.dark-mode) .site-main .login-form .login-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main .account-choose-file-btn,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main .account-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger),
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger):is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn--password,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn--password:is(:hover, :focus, :focus-visible, :active, .tap-active),
     body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn,
     body.drose-works-manage-page:not(.dark-mode) .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
         background: #b45309 !important;
-        border-color: #b45309 !important;
+        border: 2px solid #b45309 !important;
         color: #fff !important;
         -webkit-text-fill-color: #fff !important;
+    }
+
+    /* Elimina account Drose light mobile: testo bianco (non ambra link) */
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger:hover,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger:focus,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger:focus-visible,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger:visited,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger:active,
+    body.is-drose-brand.account-page:not(.dark-mode) .site-main a.login-btn.login-btn--danger.tap-active {
+        background: #c41e3a !important;
+        border: 2px solid #c41e3a !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    /* Account Drose mobile: card bordo = colore font logo */
+    body.is-drose-brand.account-page:not(.dark-mode) .account-section {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 2px solid #b45309 !important;
+    }
+
+    body.dark-mode.is-drose-brand.account-page .account-section {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 2px solid #fbbf24 !important;
     }
 
     body.drose-page:not(.dark-mode) .site-main .drose-btn--secondary,
@@ -5796,7 +5830,7 @@ body.drose-page.faq-page .faq-item h3 {
     }
 
     body.dark-mode.drose-page .drose-landing__back-link,
-    body.dark-mode.is-drose-brand.login-page .static-container a:not(.drose-btn) {
+    body.dark-mode.is-drose-brand.login-page .static-container a:not(.drose-btn):not(.login-btn) {
         color: #fbbf24 !important;
         -webkit-text-fill-color: #fbbf24 !important;
     }
@@ -5859,12 +5893,63 @@ body.drose-page.faq-page .faq-item h3 {
     body.dark-mode.is-drose-brand.login-page .site-main .drose-btn--primary,
     body.dark-mode.is-drose-brand.login-page .site-main .login-form .login-btn,
     body.dark-mode.is-drose-brand.login-page .site-main .login-form .login-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.dark-mode.is-drose-brand.account-page .site-main .account-choose-file-btn,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form .login-btn:not(.login-btn--danger),
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form .login-btn:not(.login-btn--danger):is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn--password,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn--password:is(:hover, :focus, :focus-visible, :active, .tap-active),
     body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn,
     body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .is-drose-hover, .tap-active) {
         background: #fbbf24 !important;
-        border-color: #fbbf24 !important;
+        border: 2px solid #fbbf24 !important;
         color: #003f7f !important;
         -webkit-text-fill-color: #003f7f !important;
+    }
+
+    body.dark-mode.is-drose-brand.account-page .site-main .account-choose-file-btn,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form .login-btn:not(.login-btn--danger),
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn--password,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form .login-btn:not(.login-btn--danger) .login-btn-save-label {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    /* Solo Scegli immagine Drose dark mobile: font blu (label, non testo pagina) */
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form label.account-choose-file-btn,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-form label.account-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .tap-active),
+    body.dark-mode.is-drose-brand.account-page .site-main .form-group label.account-choose-file-btn,
+    body.dark-mode.is-drose-brand.account-page .site-main .form-group label.account-choose-file-btn:is(:hover, :focus, :focus-visible, :active, .tap-active) {
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+    }
+
+    /* Elimina account Drose/Gadly dark mobile: testo bianco (non ambra link) */
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger:hover,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger:focus,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger:focus-visible,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger:visited,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger:active,
+    body.dark-mode.is-drose-brand.account-page .site-main a.login-btn.login-btn--danger.tap-active {
+        background: #c41e3a !important;
+        border: 2px solid #c41e3a !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    /* Account Drose dark: titoli ambra; testi #b0c4de come resto sito */
+    body.dark-mode.is-drose-brand.account-page .site-main .account-container h1,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-container .account-section h2:not(.account-section--danger h2) {
+        color: #fbbf24 !important;
+        -webkit-text-fill-color: #fbbf24 !important;
+    }
+
+    body.dark-mode.is-drose-brand.account-page .site-main .account-container .account-section--danger h2,
+    body.dark-mode.is-drose-brand.account-page .site-main .account-container .account-section--danger-centered h2 {
+        color: #e84c4c !important;
+        -webkit-text-fill-color: #e84c4c !important;
     }
 
     body.dark-mode.drose-works-manage-page .drose-works-choose-file-btn,

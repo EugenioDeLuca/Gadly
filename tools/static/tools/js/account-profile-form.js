@@ -328,11 +328,10 @@
         var actionBtn = submitter || avatarForm.querySelector('button[type="submit"][name="avatar_action"]');
         submitter = null;
         if (!actionBtn) return;
+        if (avatarForm.classList.contains("is-submitting")) return;
 
-        var buttons = avatarForm.querySelectorAll('button[type="submit"]');
-        buttons.forEach(function (btn) {
-            btn.disabled = true;
-        });
+        /* Blocca doppi invii senza disabled su tutti i bottoni (Rimuovi non deve lampeggiare grigio) */
+        avatarForm.classList.add("is-submitting");
 
         var body = new FormData(avatarForm);
         body.set("avatar_action", actionBtn.value);
@@ -364,9 +363,9 @@
                 avatarForm.submit();
             })
             .finally(function () {
-                buttons.forEach(function (btn) {
-                    btn.disabled = false;
-                });
+                avatarForm.classList.remove("is-submitting");
+                var hasImg = !!document.querySelector(".account-avatar-wrap img.account-avatar");
+                setRemoveAvatarEnabled(hasImg);
             });
     });
 })();

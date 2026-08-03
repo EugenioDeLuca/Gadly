@@ -262,6 +262,16 @@ body.dark-mode.account-page .account-flash-slot .account-avatar-removed-msg {
     padding: 14px 24px;
 }
 
+/* Durante upload/save AJAX: niente stile disabled su Rimuovi */
+.account-form.is-submitting {
+    pointer-events: none;
+}
+
+.account-form.is-submitting .login-btn,
+.account-form.is-submitting .account-choose-file-btn {
+    cursor: wait;
+}
+
 body.dark-mode .account-avatar-remove .login-btn--remove-avatar:disabled {
     background: #4a5568 !important;
     color: #e8f4fd !important;
@@ -360,5 +370,271 @@ body.dark-mode .account-avatar-remove .login-btn--remove-avatar:disabled {
     }
     body.account-page .site-main .static-container.account-container {
         margin: 24px auto 24px !important;
+    }
+}
+
+/* Mobile: bottoni 52px; larghezza piena inset nella card (non a filo bordo) */
+@media (max-width: 768px) {
+    body.account-page .site-main .static-container.account-container,
+    body.account-page .static-container.account-container {
+        width: 338px !important;
+        max-width: 338px !important;
+        min-width: 338px !important;
+        box-sizing: border-box !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    body.account-page .account-section {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border-style: solid !important;
+        border-width: 2px !important;
+        border-radius: 16px !important;
+    }
+
+    /* Gadly: bordo = colore font logo */
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .account-section {
+        border-color: #003f7f !important;
+    }
+
+    body.dark-mode.account-page:not(.is-drose-brand) .account-section {
+        border-color: #b0c4de !important;
+    }
+
+    /* Profilo: campi Username/Email altezza 47.5px (come login mobile) */
+    body.account-page .site-main #account-profile .account-form .login-input {
+        height: 47.5px !important;
+        min-height: 47.5px !important;
+        max-height: 47.5px !important;
+        box-sizing: border-box !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.account-page .account-choose-file-btn,
+    body.account-page .account-avatar-remove .login-btn,
+    body.account-page .account-form > .login-btn,
+    body.account-page a.login-btn--password,
+    body.account-page a.login-btn--danger {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 52px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        box-sizing: border-box !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    body.account-page .account-avatar-remove .login-btn--remove-avatar:disabled {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    body.account-page .account-avatar-buttons {
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 12px;
+        box-sizing: border-box !important;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    body.account-page .account-avatar-buttons .login-btn {
+        flex: 1 1 0 !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 52px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        box-sizing: border-box !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Gadly: stesso stile Accedi (Drose override in drose.css) */
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-choose-file-btn,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-choose-file-btn:hover,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-choose-file-btn:focus,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-choose-file-btn:focus-visible,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger),
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger):hover,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger):focus,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main .account-form .login-btn:not(.login-btn--danger):focus-visible,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main a.login-btn--password,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main a.login-btn--password:hover,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main a.login-btn--password:focus,
+    body.account-page:not(.is-drose-brand):not(.dark-mode) .site-main a.login-btn--password:focus-visible {
+        background: linear-gradient(145deg, #e8f4fd 0%, #d0e8f9 100%) !important;
+        border: 2px solid #003f7f !important;
+        color: #003f7f !important;
+        -webkit-text-fill-color: #003f7f !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-choose-file-btn,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-choose-file-btn:hover,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-choose-file-btn:focus,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-choose-file-btn:focus-visible,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn:not(.login-btn--danger),
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn:not(.login-btn--danger):hover,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn:not(.login-btn--danger):focus,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn:not(.login-btn--danger):focus-visible,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password:hover,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password:focus,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password:focus-visible,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password:visited {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+        border: 2px solid #b0c4de !important;
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn:not(.login-btn--danger) .login-btn-save-label,
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main a.login-btn--password * {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.account-page:not(.is-drose-brand) .site-main .account-form .login-btn--save-avatar:not(.login-btn--saved) .save-check {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    /* Testi pagina Account: stesso #b0c4de dei bottoni tool (niente #555 / #003f7f) */
+    body.dark-mode.account-page .site-main .account-container h1,
+    body.dark-mode.account-page .site-main .account-container .account-section h2,
+    body.dark-mode.account-page .site-main .account-container .account-intro,
+    body.dark-mode.account-page .site-main .account-container .account-home-sync-note,
+    body.dark-mode.account-page .site-main .account-container .account-pending-email-note,
+    body.dark-mode.account-page .site-main .account-container .account-section p,
+    body.dark-mode.account-page .site-main .account-container .account-form label:not(.account-choose-file-btn),
+    body.dark-mode.account-page .site-main .account-container .form-group label:not(.account-choose-file-btn) {
+        color: #b0c4de !important;
+        -webkit-text-fill-color: #b0c4de !important;
+    }
+
+    body.dark-mode.account-page .site-main .account-container .account-home-sync-note a,
+    body.dark-mode.account-page .site-main .account-container .account-home-sync-note a:visited {
+        color: #7eb8ff !important;
+        -webkit-text-fill-color: #7eb8ff !important;
+    }
+
+    /* Scale come gli altri tool: 1 a riposo, 0.96 solo con .tap-active */
+    body.account-page .site-main .account-choose-file-btn,
+    body.account-page .site-main .account-form .login-btn,
+    body.account-page .site-main a.login-btn {
+        transition: transform 0.05s ease-out !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    body.account-page .site-main .account-choose-file-btn:not(.tap-active),
+    body.account-page .site-main .account-choose-file-btn:not(.tap-active):hover,
+    body.account-page .site-main .account-choose-file-btn:not(.tap-active):focus,
+    body.account-page .site-main .account-choose-file-btn:not(.tap-active):focus-visible,
+    body.account-page .site-main .account-choose-file-btn:not(.tap-active):active,
+    body.account-page .site-main .account-form .login-btn:not(.tap-active),
+    body.account-page .site-main .account-form .login-btn:not(.tap-active):hover,
+    body.account-page .site-main .account-form .login-btn:not(.tap-active):focus,
+    body.account-page .site-main .account-form .login-btn:not(.tap-active):focus-visible,
+    body.account-page .site-main .account-form .login-btn:not(.tap-active):active,
+    body.account-page .site-main a.login-btn:not(.tap-active),
+    body.account-page .site-main a.login-btn:not(.tap-active):hover,
+    body.account-page .site-main a.login-btn:not(.tap-active):focus,
+    body.account-page .site-main a.login-btn:not(.tap-active):focus-visible,
+    body.account-page .site-main a.login-btn:not(.tap-active):active {
+        transform: scale(1) !important;
+    }
+
+    body.account-page .site-main .account-choose-file-btn.tap-active,
+    body.account-page .site-main .account-choose-file-btn.tap-active:hover,
+    body.account-page .site-main .account-choose-file-btn.tap-active:focus,
+    body.account-page .site-main .account-choose-file-btn.tap-active:focus-visible,
+    body.account-page .site-main .account-choose-file-btn.tap-active:active,
+    body.account-page .site-main .account-form .login-btn.tap-active,
+    body.account-page .site-main .account-form .login-btn.tap-active:hover,
+    body.account-page .site-main .account-form .login-btn.tap-active:focus,
+    body.account-page .site-main .account-form .login-btn.tap-active:focus-visible,
+    body.account-page .site-main .account-form .login-btn.tap-active:active,
+    body.account-page .site-main a.login-btn.tap-active,
+    body.account-page .site-main a.login-btn.tap-active:hover,
+    body.account-page .site-main a.login-btn.tap-active:focus,
+    body.account-page .site-main a.login-btn.tap-active:focus-visible,
+    body.account-page .site-main a.login-btn.tap-active:active {
+        transform: scale(0.96) !important;
+    }
+
+    /* Dark mode mobile: Elimina account = testo bianco (theme forza #b0c4de sui link) */
+    body.dark-mode.account-page .site-main a.login-btn--danger,
+    body.dark-mode.account-page .site-main a.login-btn--danger:hover,
+    body.dark-mode.account-page .site-main a.login-btn--danger:focus,
+    body.dark-mode.account-page .site-main a.login-btn--danger:focus-visible,
+    body.dark-mode.account-page .site-main a.login-btn--danger:visited,
+    body.dark-mode.account-page .site-main a.login-btn--danger:active,
+    body.dark-mode.account-page .site-main a.login-btn--danger.tap-active {
+        background: #c41e3a !important;
+        border-color: #c41e3a !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    /* Dark mode mobile: campi come le altre textarea del sito (grigio chiaro) */
+    body.dark-mode.account-page .site-main .account-form .login-input,
+    body.dark-mode.account-page .site-main .account-form .login-input:hover,
+    body.dark-mode.account-page .site-main .account-form .login-input:focus,
+    body.dark-mode.account-page .site-main .account-form .login-input:not(:focus) {
+        background: rgba(240, 242, 245, 0.95) !important;
+        background-color: rgba(240, 242, 245, 0.95) !important;
+        border: 2px solid rgba(220, 224, 230, 0.9) !important;
+        color: #1a1a2e !important;
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+    }
+
+    body.dark-mode.account-page .site-main .account-form .login-input:focus {
+        border-color: #c41e3a !important;
+    }
+
+    body.dark-mode.account-page .site-main .account-form .login-input::placeholder {
+        color: #666 !important;
+        -webkit-text-fill-color: #666 !important;
+        opacity: 1 !important;
+    }
+
+    body.dark-mode.account-page .site-main .account-form .login-input:-webkit-autofill,
+    body.dark-mode.account-page .site-main .account-form .login-input:-webkit-autofill:hover,
+    body.dark-mode.account-page .site-main .account-form .login-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #1a1a2e !important;
+        caret-color: #1a1a2e !important;
+        transition: background-color 99999s ease-out 0s;
+        box-shadow: 0 0 0 1000px rgba(240, 242, 245, 0.95) inset !important;
     }
 }

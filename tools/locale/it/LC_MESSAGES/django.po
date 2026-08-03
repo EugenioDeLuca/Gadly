@@ -1609,6 +1609,11 @@ msgstr "Elimina il mio account"
 msgid "Cancel - back to account"
 msgstr "Annulla - torna all'account"
 
+#: .\tools\templates\registration\password_change_form.html
+#: .\tools\templates\registration\password_change_done.html
+msgid "Back to account"
+msgstr "Torna all'account"
+
 #: .\tools\templates\tools\account_profile.html:5
 #, python-format
 msgid "Account - %(username)s - Drose"
