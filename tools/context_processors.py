@@ -21,10 +21,25 @@ def drose_staff_quotes(request):
 def canonical_url(request):
     """Absolute URL of the current path for <link rel=canonical> and og:url."""
     try:
+        from .noindex_auth import is_auth_noindex_path
+
         path = getattr(request, "path", "") or "/"
+        # Auth/account pages: no canonical (avoids reinforcing index signals)
+        if is_auth_noindex_path(path):
+            return {"canonical_url": ""}
         return {"canonical_url": request.build_absolute_uri(path)}
     except Exception:
         return {"canonical_url": ""}
+
+
+def auth_noindex(request):
+    """Flag for <meta name=robots noindex> on login/account/auth pages."""
+    try:
+        from .noindex_auth import is_auth_noindex_path
+
+        return {"auth_noindex": is_auth_noindex_path(getattr(request, "path", "") or "/")}
+    except Exception:
+        return {"auth_noindex": False}
 
 
 def drose_site(request):

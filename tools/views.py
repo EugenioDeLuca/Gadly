@@ -2337,14 +2337,14 @@ def cv_optimize_api(request):
 
 @require_GET
 def robots_txt(request):
-    """Root robots.txt: disallow admin/accounts/api; point crawlers to sitemap.xml."""
+    """Root robots.txt: disallow admin/api; allow /accounts/ so crawlers see noindex."""
     sitemap_abs = request.build_absolute_uri(reverse("sitemap_xml"))
     lines = [
         "User-agent: *",
         "Disallow: /admin/",
-        "Disallow: /accounts/",
         "Disallow: /api/",
         "Disallow: /jsi18n/",
+        "# /accounts/ is crawlable so bots can honor noindex on login/auth pages",
         "",
         f"Sitemap: {sitemap_abs}",
         "",

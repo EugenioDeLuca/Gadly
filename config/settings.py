@@ -140,6 +140,7 @@ MIDDLEWARE = [
     'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'tools.noindex_auth.AuthNoindexMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -198,6 +199,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'tools.context_processors.canonical_url',
+                'tools.context_processors.auth_noindex',
                 'tools.context_processors.drose_site',
                 'tools.context_processors.user_profile',
                 'tools.context_processors.home_layout',
