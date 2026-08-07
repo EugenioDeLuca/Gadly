@@ -519,7 +519,7 @@ msgid "PDF export is not available. Try PNG or SVG."
 msgstr ""
 
 #: .\tools\static\tools\js\data-viz.js:749
-msgid "Nothing to copy."
+msgid "Nothing to copy"
 msgstr ""
 
 #: .\tools\static\tools\js\data-viz.js:761

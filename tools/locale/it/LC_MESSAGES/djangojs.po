@@ -521,8 +521,8 @@ msgid "PDF export is not available. Try PNG or SVG."
 msgstr "Export PDF non disponibile. Prova PNG o SVG."
 
 #: .\tools\static\tools\js\data-viz.js:786
-msgid "Nothing to copy."
-msgstr "Niente da copiare."
+msgid "Nothing to copy"
+msgstr "Niente da copiare"
 
 #: .\tools\static\tools\js\data-viz.js:798
 msgid "Could not copy to clipboard."

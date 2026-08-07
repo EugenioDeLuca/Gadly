@@ -1989,7 +1989,7 @@ document.addEventListener("DOMContentLoaded", function() {
             try { btn.blur(); } catch (e0) { /* ignore */ }
         }
         if (!dataInput || !dataInput.value.trim()) {
-            showDataMessage(gettext("Nothing to copy."), true, isMobile);
+            showDataMessage(gettext("Nothing to copy"), true, isMobile);
             return;
         }
         navigator.clipboard.writeText(dataInput.value).then(function() {
