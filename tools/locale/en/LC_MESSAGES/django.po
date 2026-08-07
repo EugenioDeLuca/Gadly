@@ -376,6 +376,10 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
+#: .\tools\templates\registration\login.html
+msgid "Please fill in this field."
+msgstr ""
+
 #: .\tools\forms.py:289
 msgid "Please verify your email before signing in. Check your inbox or"
 msgstr ""

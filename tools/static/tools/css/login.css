@@ -139,6 +139,19 @@ body.dark-mode .login-error {
     margin-top: 12px;
 }
 
+.login-form .login-input.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Mobile: con tastiera il banner fixed sale sul form — nascondilo finché la tastiera è aperta */
+@media (max-width: 1024px) {
+    body.login-page #cookie-banner.cookie-banner--keyboard-away {
+        visibility: hidden !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
+}
+
 .username-input-wrap {
     position: relative;
 }

@@ -397,6 +397,10 @@ msgstr "L'email è obbligatoria."
 msgid "Username or email"
 msgstr "Username o email"
 
+#: .\tools\templates\registration\login.html
+msgid "Please fill in this field."
+msgstr "Compila questo campo."
+
 #: .\tools\forms.py:289
 msgid "Please verify your email before signing in. Check your inbox or"
 msgstr ""

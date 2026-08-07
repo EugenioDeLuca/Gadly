@@ -6,7 +6,7 @@
 {% block body_class %}static-page login-page{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'tools/css/static-pages.css' %}">
-<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=38">
+<link rel="stylesheet" href="{% static 'tools/css/login.css' %}?v=39">
 {% endblock %}
 {% block content %}
 <div class="static-container login-container">
@@ -41,11 +41,12 @@
         {% endfor %}
     {% endif %}
 
-    <form method="post" class="login-form">
+    <form method="post" class="login-form" novalidate
+          data-msg-required="{% trans 'Please fill in this field.' %}">
         {% csrf_token %}
         {% if next %}<input type="hidden" name="next" value="{{ next }}">{% elif auth_next %}<input type="hidden" name="next" value="{{ auth_next }}">{% endif %}
         <div class="form-group">
-            <input type="text" name="username" id="id_username" autofocus required
+            <input type="text" name="username" id="id_username" autofocus
                    placeholder="{% trans 'Username or email' %}" class="login-input"
                    value="{% firstof form.username.value request.GET.email '' %}" autocomplete="username email">
             {% if form.username.errors %}
@@ -53,7 +54,7 @@
             {% endif %}
         </div>
         <div class="form-group">
-            <input type="password" name="password" id="id_password" required
+            <input type="password" name="password" id="id_password"
                    placeholder="{% trans 'Password' %}" class="login-input"
                    data-toggle-show="{% trans 'Show password' %}"
                    data-toggle-hide="{% trans 'Hide password' %}">
@@ -76,4 +77,5 @@
 {% endblock %}
 {% block page_scripts %}
 <script src="{% static 'tools/js/login-password-toggle.js' %}?v=2"></script>
+<script src="{% static 'tools/js/login-form-validate.js' %}?v=1"></script>
 {% endblock %}
