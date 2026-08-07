@@ -143,36 +143,64 @@ body.dark-mode .login-error {
     border-color: #dc3545;
 }
 
-/*
- * Light: flash giallo. Dark: flash rosso (in mobile dark gli input sono grigi chiari:
- * il giallo lì non si vede).
- */
-.login-form .login-input.login-input--flash,
-body.login-page .site-main .login-form .login-input.login-input--flash {
-    border: 3px solid #ffea00 !important;
-    background: #ffe566 !important;
-    background-color: #ffe566 !important;
-    outline: 3px solid #ff9900 !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 0 0 4px rgba(255, 200, 0, 0.95), 0 0 18px rgba(255, 220, 0, 0.9) !important;
-    transition: none !important;
+@keyframes login-input-flash-red {
+    0%,
+    100% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+    12%,
+    28% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+    }
+    40% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+    55%,
+    72% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+    }
+    85% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
 }
 
-body.dark-mode .login-form .login-input.login-input--flash,
-body.dark-mode.login-page .site-main .login-form .login-input.login-input--flash,
-body.dark-mode .login-form .login-input.login-input--flash-dark {
-    border: 4px solid #ff0000 !important;
-    background: #ff3b4d !important;
-    background-color: #ff3b4d !important;
-    outline: 5px solid #ff0000 !important;
-    outline-offset: 3px !important;
-    box-shadow: 0 0 0 8px rgba(255, 0, 0, 0.85), 0 0 40px 8px rgba(255, 0, 0, 1) !important;
-    transition: none !important;
+body.dark-mode .login-form .login-input.login-input--flash {
+    animation-name: login-input-flash-red-dark;
 }
 
-.login-form .form-group.login-field--flash {
-    border-radius: 14px;
-    box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.55);
+@keyframes login-input-flash-red-dark {
+    0%,
+    100% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+    12%,
+    28% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.45);
+    }
+    40% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+    55%,
+    72% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.45);
+    }
+    85% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+}
+
+.login-form .login-input.login-input--flash {
+    animation: login-input-flash-red 0.85s ease-in-out 1;
 }
 
 @media (max-width: 1024px) {
@@ -536,24 +564,42 @@ body.dark-mode .login-page .verify-done-check {
         border-color: #c41e3a !important;
     }
 
-    /* Dark mobile: input grigi chiari → flash ROSSO impossibile da non vedere */
-    body.dark-mode.login-page .site-main .login-form .login-input.login-input--flash,
-    body.dark-mode.login-page .site-main .login-form .login-input.login-input--flash-dark {
-        border: 4px solid #ff0000 !important;
-        background: #ff3b4d !important;
-        background-color: #ff3b4d !important;
-        outline: 5px solid #ff0000 !important;
-        outline-offset: 3px !important;
-        box-shadow: 0 0 0 8px rgba(255, 0, 0, 0.85), 0 0 40px 8px rgba(255, 0, 0, 1) !important;
-        transition: none !important;
-        filter: none !important;
+    /*
+     * Solo mobile dark: flash via outline + alone (non tocca border/background:
+     * il border !important degli input grigi chiari spegneva l’animazione sul bordo).
+     */
+    @keyframes login-input-flash-red-dark-mobile {
+        0%,
+        100% {
+            outline: 3px solid transparent;
+            box-shadow: none;
+        }
+        12%,
+        28% {
+            outline: 3px solid #c41e3a;
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.5);
+        }
+        40% {
+            outline: 3px solid transparent;
+            box-shadow: none;
+        }
+        55%,
+        72% {
+            outline: 3px solid #c41e3a;
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.5);
+        }
+        85% {
+            outline: 3px solid transparent;
+            box-shadow: none;
+        }
     }
 
-    body.dark-mode.login-page .site-main .login-form .form-group.login-field--flash {
-        background: rgba(255, 0, 0, 0.35) !important;
-        box-shadow: 0 0 0 5px #ff0000, 0 0 30px rgba(255, 0, 0, 0.9) !important;
-        border-radius: 14px;
-        padding: 4px !important;
+    body.dark-mode.login-page .site-main .login-form .login-input.login-input--flash {
+        animation: login-input-flash-red-dark-mobile 0.85s ease-in-out 1 !important;
+        outline-offset: 0;
+        /* sfondo invariato — niente fill */
+        background: rgba(240, 242, 245, 0.95) !important;
+        background-color: rgba(240, 242, 245, 0.95) !important;
     }
 
     body.dark-mode.login-page .site-main .login-form .login-input::placeholder {

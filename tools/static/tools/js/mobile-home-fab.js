@@ -93,6 +93,12 @@
             (document.documentElement && document.documentElement.clientHeight) || 0;
         var vv = window.visualViewport;
         var vh = vv && vv.height > 0 ? vv.height : 0;
+        /* Tastiera: non usare l’altezza vv ridotta (sposterebbe bottom/top del FAB). */
+        if (!isDesktopFabUi() && isSoftKeyboardOpen()) {
+            if (ih > 0) return Math.round(ih);
+            if (ch > 0) return Math.round(ch);
+            return Math.round(vh);
+        }
         if (!isDesktopFabUi()) {
             var hs = [];
             if (vh > 0) hs.push(vh);
@@ -228,8 +234,34 @@
      * Usa il rettangolo del visual viewport solo quando è davvero diverso dal layout
      * (mobile: barra indirizzi, zoom, overscroll). Su desktop evita mismatch sub-pixel
      * tra vv e innerWidth che “ballano” il FAB.
+     * Non usare la tastiera soft: lì vv si restringe e il FAB salterebbe su/giù.
      */
+    function isSoftKeyboardOpen() {
+        if (isDesktopFabUi()) return false;
+        var vv = window.visualViewport;
+        if (!vv || !(vv.height > 0)) return false;
+        var ih =
+            typeof window.innerHeight === "number" && window.innerHeight > 0
+                ? window.innerHeight
+                : 0;
+        var ch =
+            (document.documentElement && document.documentElement.clientHeight) || 0;
+        var layoutH0 = Math.max(ih, ch);
+        if (!(layoutH0 > 0)) return false;
+        var ae = document.activeElement;
+        var tag = ae && String(ae.tagName || "").toUpperCase();
+        var focusingField =
+            tag === "INPUT" ||
+            tag === "TEXTAREA" ||
+            tag === "SELECT" ||
+            !!(ae && ae.isContentEditable);
+        /* Con focus su campo: soglia più bassa (tastiere piccole / barre). */
+        if (focusingField && vv.height < layoutH0 * 0.92) return true;
+        return vv.height < layoutH0 * 0.82;
+    }
+
     function useVisualViewportForFab() {
+        if (isSoftKeyboardOpen()) return false;
         var vv = window.visualViewport;
         if (!vv || vv.width <= 0 || vv.height <= 0) return false;
         if (typeof vv.scale === "number" && vv.scale > 1.02) return true;
@@ -587,7 +619,8 @@
 
     /**
      * Se il FAB è fuori (o quasi) dal visual viewport, riposizionalo in vista.
-     * Causa tipica mobile: viewport gonfiato / 100dvw / rotazione / tastiera.
+     * Causa tipica mobile: viewport gonfiato / 100dvw / rotazione.
+     * Non durante la tastiera soft: altrimenti sale e poi “salta” al close.
      */
     function ensureFabOnScreen(fab, allowPersist) {
         if (!fab || isHomepage()) return false;
@@ -596,6 +629,7 @@
             clearFabBootHide(fab);
             return false;
         }
+        if (isSoftKeyboardOpen()) return false;
         clearFabBootHide(fab);
         var rect = fab.getBoundingClientRect();
         var S = rect.width > 8 ? rect.width : layoutFabSideForEl(fab);
@@ -1043,10 +1077,13 @@
                 return;
             }
             if (fabModeSwitchPending) return;
+            /* Tastiera aperta: non riposizionare (evita salto su/giù del Back to Home). */
+            if (isSoftKeyboardOpen()) return;
             if (fabEnsureTimer) clearTimeout(fabEnsureTimer);
             fabEnsureTimer = setTimeout(function() {
                 fabEnsureTimer = null;
                 if (fabDraggingRef() || fabModeSwitchPending) return;
+                if (isSoftKeyboardOpen()) return;
                 var f2 = document.getElementById("mobile-home-fab");
                 if (!f2 || isHomepage()) return;
                 try {
