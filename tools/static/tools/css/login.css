@@ -143,6 +143,66 @@ body.dark-mode .login-error {
     border-color: #dc3545;
 }
 
+@keyframes login-input-flash-red {
+    0%,
+    100% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+    12%,
+    28% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+    }
+    40% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+    55%,
+    72% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+    }
+    85% {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+}
+
+body.dark-mode .login-form .login-input.login-input--flash {
+    animation-name: login-input-flash-red-dark;
+}
+
+@keyframes login-input-flash-red-dark {
+    0%,
+    100% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+    12%,
+    28% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.45);
+    }
+    40% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+    55%,
+    72% {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.45);
+    }
+    85% {
+        border-color: #64748b;
+        box-shadow: none;
+    }
+}
+
+.login-form .login-input.login-input--flash {
+    animation: login-input-flash-red 0.85s ease-in-out 1;
+}
+
 /* Mobile: con tastiera il banner fixed sale sul form — nascondilo finché la tastiera è aperta */
 @media (max-width: 1024px) {
     body.login-page #cookie-banner.cookie-banner--keyboard-away {
