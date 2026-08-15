@@ -947,8 +947,9 @@ def account_profile(request):
                 return redirect(reverse('account_profile') + '?avatar_removed=1')
             avatar_form = AvatarUploadForm(request.POST, request.FILES, instance=profile)
             if avatar_form.is_valid():
-                media_avatars = os.path.join(settings.MEDIA_ROOT, 'avatars')
-                os.makedirs(media_avatars, exist_ok=True)
+                if not getattr(settings, "USE_CLOUDINARY", False):
+                    media_avatars = os.path.join(settings.MEDIA_ROOT, "avatars")
+                    os.makedirs(media_avatars, exist_ok=True)
                 avatar_form.save()
                 profile.refresh_from_db(fields=['avatar'])
                 if request.POST.get('avatar_action') == 'save':

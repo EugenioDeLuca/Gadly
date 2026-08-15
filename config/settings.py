@@ -279,9 +279,42 @@ STATICFILES_DIRS = [
 # In produzione (se usi collectstatic), STATIC_ROOT dovrebbe essere configurato
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media (user uploads: avatars, etc.)
+# Media (user uploads: avatars, Drose portfolio, etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Cloudinary: persistent uploads on Render (ephemeral local disk).
+# Set CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+# or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET.
+# Local dev without these vars keeps files in MEDIA_ROOT.
+_cloudinary_url = (os.environ.get("CLOUDINARY_URL") or "").strip()
+_cloudinary_cloud_name = (os.environ.get("CLOUDINARY_CLOUD_NAME") or "").strip()
+_cloudinary_api_key = (os.environ.get("CLOUDINARY_API_KEY") or "").strip()
+_cloudinary_api_secret = (os.environ.get("CLOUDINARY_API_SECRET") or "").strip()
+USE_CLOUDINARY = bool(
+    _cloudinary_url
+    or (_cloudinary_cloud_name and _cloudinary_api_key and _cloudinary_api_secret)
+)
+if USE_CLOUDINARY:
+    INSTALLED_APPS = list(INSTALLED_APPS) + [
+        "cloudinary",
+        "cloudinary_storage",
+    ]
+    if _cloudinary_cloud_name and _cloudinary_api_key and _cloudinary_api_secret:
+        CLOUDINARY_STORAGE = {
+            "CLOUD_NAME": _cloudinary_cloud_name,
+            "API_KEY": _cloudinary_api_key,
+            "API_SECRET": _cloudinary_api_secret,
+        }
+    # Raw storage: photos + videos + avatars all work as normal file URLs.
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 # Login / Logout
 LOGIN_REDIRECT_URL = '/'

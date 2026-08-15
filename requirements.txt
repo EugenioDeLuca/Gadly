@@ -8,5 +8,7 @@ python-docx
 httpx
 gunicorn
 whitenoise
+cloudinary>=1.41,<2
+django-cloudinary-storage>=0.3.0,<1
 polib>=1.2.0
 django-axes>=7.0,<9

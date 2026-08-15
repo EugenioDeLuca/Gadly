@@ -98,8 +98,37 @@ Render mostra le istruzioni DNS precise quando aggiungi il dominio.
 
 ---
 
+## Passo 7: Cloudinary (foto/video che restano dopo i riavvii)
+
+Su Render il disco si svuota a ogni deploy/riavvio. Gli upload (portfolio Drose, avatar) vanno su Cloudinary.
+
+1. Crea un account free su [cloudinary.com](https://cloudinary.com)
+2. Nella dashboard copia **Cloud name**, **API Key**, **API Secret**
+   (oppure la stringa unica **CLOUDINARY_URL**)
+3. Su Render → tuo Web Service → **Environment** → aggiungi una di queste due opzioni:
+
+**Opzione A (consigliata):** una sola variabile
+
+| Key | Value |
+|-----|-------|
+| `CLOUDINARY_URL` | `cloudinary://API_KEY:API_SECRET@CLOUD_NAME` |
+
+**Opzione B:** tre variabili
+
+| Key | Value |
+|-----|-------|
+| `CLOUDINARY_CLOUD_NAME` | (dalla dashboard) |
+| `CLOUDINARY_API_KEY` | (dalla dashboard) |
+| `CLOUDINARY_API_SECRET` | (dalla dashboard) |
+
+4. Salva: Render ridistruisce. Poi **ricarica** foto/video dalla gestione Lavori Drose (i vecchi file solo su disco Render non tornano da soli).
+
+In locale, **senza** queste variabili, i file restano in `media/` come prima.
+
+---
+
 ## Note
 
-- **SQLite:** i dati potrebbero resettarsi ai redeploy (filesystem efimero). Per produzione seria, aggiungi PostgreSQL da Render.
+- **SQLite:** i dati potrebbero resettarsi ai redeploy (filesystem efimero). Quando servono dati stabili, aggiungi Postgres free esterno (Neon/Supabase) o Postgres a pagamento.
 - **Email:** le email (reset password, verifica) vanno in console in sviluppo. Per produzione configura SMTP.
-- **Media files:** gli upload (avatar, ecc.) su Render free potrebbero non persistere. Considera storage esterno (S3, Cloudflare R2) in futuro.
+- **Media files:** con Cloudinary configurato (Passo 7) foto/video/avatar restano dopo i riavvii di Render.

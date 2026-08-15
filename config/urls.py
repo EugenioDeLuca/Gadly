@@ -94,10 +94,11 @@ urlpatterns = [
     path('', include('tools.urls')),
 ]
 # Local: django.conf.urls.static.static() only works with DEBUG=True.
-# Production (Render): serve /media/ explicitly, otherwise uploads 404.
+# Production without Cloudinary: serve /media/ from disk (ephemeral on Render).
+# With Cloudinary, file.url points to res.cloudinary.com — no local /media/ needed.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
+elif not getattr(settings, "USE_CLOUDINARY", False):
     urlpatterns += [
         re_path(
             r"^media/(?P<path>.*)$",
