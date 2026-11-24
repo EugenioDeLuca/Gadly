@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Progetti legno — schede tecniche</title>
+  <style>
+    :root {
+      --bg: #f4f4f2;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --card: #fff;
+      --line: #ddd;
+      --accent: #1e5aa8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      padding: 16px;
+      padding-bottom: 40px;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; }
+    .lead { color: var(--muted); margin: 0 0 18px; font-size: 0.95rem; line-height: 1.4; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+    .tabs button {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      color: var(--fg);
+    }
+    .tabs button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    figure {
+      margin: 0 0 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fff;
+    }
+    figcaption {
+      padding: 12px 14px 14px;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+    figcaption strong { display: block; margin-bottom: 4px; }
+    figcaption span { color: var(--muted); font-size: 0.85rem; }
+    .hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+    a.download {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Progetti in legno</h1>
+  <p class="lead">4 schede tecniche per 2ª–5ª professionale. Tocca una scheda per aprirla, poi tieni premuto sull’immagine → «Salva nell’album».</p>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="list"></div>
+  <p class="hint">Solo chiodi e viti · quote in mm · tolleranza ±1 mm</p>
+
+  <script>
+    const items = [
+      { id: "2", title: "2ª — Portapenne", sub: "Difficoltà bassa · 200×120×100 mm", src: "01-2a-portapenne.png" },
+      { id: "3", title: "3ª — Sgabello", sub: "Difficoltà media-bassa · 300×300×418 mm", src: "02-3a-sgabello.png" },
+      { id: "4", title: "4ª — Mensola", sub: "Difficoltà media · 700×200×220 mm", src: "03-4a-mensola.png" },
+      { id: "5", title: "5ª — Cassapanca", sub: "Difficoltà media-alta · 500×300×295 mm", src: "04-5a-cassapanca.png" },
+    ];
+
+    const tabs = document.getElementById("tabs");
+    const list = document.getElementById("list");
+
+    function show(id) {
+      [...tabs.children].forEach((b) => b.classList.toggle("active", b.dataset.id === id));
+      [...list.children].forEach((fig) => {
+        fig.hidden = fig.dataset.id !== id;
+      });
+    }
+
+    items.forEach((it, i) => {
+      const b = document.createElement("button");
+      b.textContent = it.id + "ª";
+      b.dataset.id = it.id;
+      b.onclick = () => show(it.id);
+      if (i === 0) b.classList.add("active");
+      tabs.appendChild(b);
+
+      const fig = document.createElement("figure");
+      fig.dataset.id = it.id;
+      fig.hidden = i !== 0;
+      fig.innerHTML =
+        '<img src="' + it.src + '" alt="' + it.title + '" />' +
+        "<figcaption><strong>" + it.title + "</strong><span>" + it.sub + "</span>" +
+        '<br/><a class="download" href="' + it.src + '" download>Scarica PNG</a></figcaption>';
+      list.appendChild(fig);
+    });
+  </script>
+</body>
+</html>
