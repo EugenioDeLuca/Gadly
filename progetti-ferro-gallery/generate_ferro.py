@@ -289,86 +289,156 @@ def make_2a():
         "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 80 mm",
     )
 
-    y = panel(d, 24, 96, W - 48, 86, "OBIETTIVO")
-    d.text((36, y + 4), "Tornitura di base + limatura del gancio. Pezzo utile da portare a casa.", fill=BLACK, font=F12)
-    d.text((36, y + 30), "Dal grezzo Ø20×100 si ricava L=80 (avanzo ≈20 mm per prove di tornitura).", fill=GRAY, font=F12)
+    y = panel(d, 24, 96, W - 48, 70, "OBIETTIVO")
+    d.text((36, y + 6), "Tornitura di base + limatura del gancio. Pezzo utile da portare a casa.  Grezzo → L=80 (avanzo ≈20 mm).", fill=BLACK, font=F12)
 
-    # Disegno grande (pannello alto quanto serve al pezzo + quote + note)
-    draw_top = 198
-    draw_h = 700
-    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 8:1)")
+    # Disegno a tutta larghezza — profilo chiaro come un apribottiglie vero
+    draw_top = 182
+    draw_h = 780
+    y = panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — profilo del pezzo finito  (scala 9:1)")
 
-    sc = 8.0
-    mid = draw_top + 320
-    ox = 120
+    sc = 9.0
+    mid = draw_top + 280
+    ox = 90
 
     L_corpo, D_corpo = 50, 16
     L_testa, D_testa = 18, 18
     L_gancio = 12
 
     x0 = ox
-    d.rectangle(
-        [x0, mid - D_corpo * sc / 2, x0 + L_corpo * sc, mid + D_corpo * sc / 2],
-        fill=STEEL, outline=BLACK, width=2,
-    )
     x1 = x0 + L_corpo * sc
-    d.rectangle(
-        [x1, mid - D_testa * sc / 2, x1 + L_testa * sc, mid + D_testa * sc / 2],
-        fill=STEEL_D, outline=BLACK, width=2,
-    )
-    hole_r = 3 * sc
-    hx = x1 + L_testa * sc * 0.48
-    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], outline=BLACK, width=2)
-    d.line([hx - hole_r - 6, mid, hx + hole_r + 6, mid], fill=CL, width=1)
-    d.line([hx, mid - hole_r - 6, hx, mid + hole_r + 6], fill=CL, width=1)
-
     x2 = x1 + L_testa * sc
-    # Gancio: profilo a uncino (non semplice punta) — da limare
-    tip = [
-        (x2, mid - D_testa * sc / 2 + 4),
-        (x2 + L_gancio * sc * 0.55, mid - 2 * sc),
-        (x2 + L_gancio * sc, mid + 1 * sc),
-        (x2 + L_gancio * sc * 0.7, mid + 4 * sc),
-        (x2 + 3 * sc, mid + 5.5 * sc),
-        (x2, mid + D_testa * sc / 2),
-    ]
-    d.polygon(tip, fill=ORANGE, outline=BLACK)
-    # smussi
-    d.line([x0, mid - D_corpo * sc / 2, x0 + 6, mid - D_corpo * sc / 2 + 6], fill=BLACK, width=2)
-    d.line([x0, mid + D_corpo * sc / 2, x0 + 6, mid + D_corpo * sc / 2 - 6], fill=BLACK, width=2)
-
     end_x = x2 + L_gancio * sc
-    centerline(d, x0 - 40, end_x + 50, mid)
 
-    # Quote lunghezze (sopra, due livelli)
-    q1 = mid - D_testa * sc / 2 - 48
-    q0 = q1 - 48
+    # ——— CORPO (manico) ———
+    cy0, cy1 = mid - D_corpo * sc / 2, mid + D_corpo * sc / 2
+    d.rectangle([x0, cy0, x1, cy1], fill=STEEL, outline=BLACK, width=3)
+    # smussi estremità sinistra
+    d.polygon([(x0, cy0), (x0 + 8, cy0), (x0, cy0 + 8)], fill=WHITE, outline=BLACK)
+    d.polygon([(x0, cy1), (x0 + 8, cy1), (x0, cy1 - 8)], fill=WHITE, outline=BLACK)
+
+    # ——— TESTA ———
+    ty0, ty1 = mid - D_testa * sc / 2, mid + D_testa * sc / 2
+    d.rectangle([x1, ty0, x2, ty1], fill=STEEL_D, outline=BLACK, width=3)
+    # foro Ø6 — riempito bianco per contrasto
+    hole_r = 3 * sc
+    hx = x1 + L_testa * sc * 0.45
+    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], fill=WHITE, outline=BLACK, width=3)
+    d.line([hx - hole_r - 10, mid, hx + hole_r + 10, mid], fill=CL, width=1)
+    d.line([hx, mid - hole_r - 10, hx, mid + hole_r + 10], fill=CL, width=1)
+
+    # ——— GANCIO a “mascella” aperta (profilo tipico apribottiglie) ———
+    g = L_gancio * sc
+    # Contorno esterno del gancio (pieno)
+    hook_outer = [
+        (x2, ty0),
+        (x2 + g * 0.9, ty0 + 6),
+        (x2 + g, mid - 8),
+        (x2 + g, mid + 8),
+        (x2 + g * 0.55, ty1 + 18),   # punta uncino in basso
+        (x2 + g * 0.15, ty1),
+        (x2, ty1),
+    ]
+    d.polygon(hook_outer, fill=ORANGE, outline=BLACK)
+    # “Bocca” vuota (bianca) = dove entra il bordo della capsula — chiarissima
+    mouth = [
+        (x2 + g * 0.15, mid - 2),
+        (x2 + g * 0.78, mid - 6),
+        (x2 + g * 0.85, mid + 6),
+        (x2 + g * 0.45, mid + 22),
+        (x2 + g * 0.2, mid + 18),
+    ]
+    d.polygon(mouth, fill=WHITE, outline=BLACK)
+    d.line([(x2, ty0), (x2, ty1)], fill=BLACK, width=3)
+    # freccia + dicitura a DESTRA del gancio (non sotto)
+    ax = end_x + 25
+    d.line([ax + 70, mid + 8, x2 + g * 0.55, mid + 8], fill=CAP_RED, width=3)
+    d.polygon(
+        [
+            (x2 + g * 0.52, mid + 8),
+            (x2 + g * 0.65, mid),
+            (x2 + g * 0.65, mid + 16),
+        ],
+        fill=CAP_RED,
+    )
+    d.text((ax + 5, mid - 18), "BOCCA", fill=CAP_RED, font=F16)
+    d.text((ax + 5, mid + 10), "del gancio", fill=CAP_RED, font=F14)
+    d.text((ax + 5, mid + 36), "(entra la", fill=CAP_RED, font=F13)
+    d.text((ax + 5, mid + 58), "capsula)", fill=CAP_RED, font=F13)
+
+    centerline(d, x0 - 35, end_x + 60, mid)
+
+    # Quote lunghezze
+    q1 = ty0 - 50
+    q0 = q1 - 50
     for xx in (x0, x1, x2, end_x):
-        ext_tick(d, xx, mid - D_testa * sc / 2, q0 - 4)
+        ext_tick(d, xx, ty0, q0 - 4)
     dim_h(d, x0, x1, q1, "50")
     dim_h(d, x1, x2, q1, "18")
     dim_h(d, x2, end_x, q1, "12")
     dim_h(d, x0, end_x, q0, "80")
 
-    # Diametri a lato (fuori dal pezzo)
+    # Diametri sul corpo e sulla testa (non sul gancio)
     label_dia(d, x0, mid, "Ø16", side="left")
-    label_dia(d, end_x, mid, "Ø18", side="right")
+    # Ø18 centrato sulla testa, sopra
+    tw18 = d.textlength("Ø18", font=F16)
+    d.text((x1 + L_testa * sc / 2 - tw18 / 2, ty0 - 28), "Ø18", fill=DIM_COL, font=F16)
 
     # Foro
-    d.line([hx, mid + hole_r, hx, mid + D_testa * sc / 2 + 32], fill=DIM_COL, width=2)
-    d.text((hx + 8, mid + D_testa * sc / 2 + 20), "Ø6 passante", fill=DIM_COL, font=F16)
+    d.line([hx, mid + hole_r, hx, ty1 + 28], fill=DIM_COL, width=2)
+    d.text((hx - 50, ty1 + 32), "Ø6 passante", fill=DIM_COL, font=F16)
 
-    # Note
-    ny = mid + D_testa * sc / 2 + 78
-    label_note(d, x0, ny, "Smusso 1 × 45° alle estremità del corpo")
-    label_note(d, x0, ny + 30, "Gancio (arancio): limare dopo la tornitura — entra sotto la capsula")
-    label_note(d, x0, ny + 60, "Materiale: acciaio S235 oppure C40")
+    # Etichette colorate sotto ogni parte (chiarissime)
+    def tag(x_a, x_b, y_t, text, fill, tcol=WHITE):
+        d.rounded_rectangle([x_a + 6, y_t, x_b - 6, y_t + 36], radius=8, fill=fill, outline=BLACK)
+        tw = d.textlength(text, font=F15)
+        d.text(((x_a + x_b) / 2 - tw / 2, y_t + 7), text, fill=tcol, font=F15)
 
-    # Dettaglio gancio — schema capsula + uncino (più grande)
-    draw_hook_detail(d, 880, 220, 1190, 560)
+    tag_y = ty1 + 95
+    tag(x0, x1, tag_y, "1 · CORPO (manico)", STEEL, BLACK)
+    tag(x1, x2, tag_y, "2 · TESTA + foro", STEEL_D, WHITE)
+    tag(x2, end_x + 20, tag_y, "3 · GANCIO", ORANGE, WHITE)
+
+    # Note operative
+    ny = tag_y + 50
+    d.text((x0, ny), "Come si legge il disegno:", fill=ACCENT, font=F15)
+    d.text((x0, ny + 32), "• A sinistra tieni il CORPO (Ø16). Al centro la TESTA più grossa (Ø18) col foro per il dito.", fill=BLACK, font=F13)
+    d.text((x0, ny + 60), "• A destra il GANCIO arancio: è la parte che limi. La “bocca” aperta va sotto il bordo della capsula.", fill=BLACK, font=F13)
+    d.text((x0, ny + 88), "• Smusso 1×45° a sinistra sul corpo. Materiale: S235 oppure C40.", fill=GRAY, font=F13)
+
+    # Mini “prima / dopo limatura” a destra in basso nel pannello
+    mx1, my1 = 860, draw_top + 200
+    d.rectangle([mx1, my1, 1188, my1 + 200], fill=WHITE, outline=BLACK, width=2)
+    d.rectangle([mx1, my1, 1188, my1 + 30], fill=LIGHT, outline=BLACK, width=2)
+    d.text((mx1 + 10, my1 + 5), "PRIMA → DOPO la limatura", fill=ACCENT, font=F13)
+    # prima: cilindro
+    d.rectangle([mx1 + 30, my1 + 70, mx1 + 130, my1 + 130], fill=STEEL_D, outline=BLACK, width=2)
+    d.text((mx1 + 40, my1 + 145), "dopo tornitura", fill=GRAY, font=Fs)
+    d.text((mx1 + 45, my1 + 165), "(cilindro)", fill=GRAY, font=Fs)
+    # freccia
+    d.polygon([(mx1 + 150, my1 + 100), (mx1 + 180, my1 + 90), (mx1 + 180, my1 + 110)], fill=ACCENT)
+    # dopo: gancio
+    d.polygon(
+        [
+            (mx1 + 200, my1 + 70),
+            (mx1 + 280, my1 + 75),
+            (mx1 + 290, my1 + 100),
+            (mx1 + 250, my1 + 115),
+            (mx1 + 285, my1 + 135),
+            (mx1 + 230, my1 + 145),
+            (mx1 + 200, my1 + 130),
+        ],
+        fill=ORANGE,
+        outline=BLACK,
+    )
+    d.text((mx1 + 210, my1 + 155), "dopo limatura", fill=ORANGE, font=Fs)
+    d.text((mx1 + 220, my1 + 175), "(uncino)", fill=ORANGE, font=Fs)
+
+    # Dettaglio uso capsula — sotto, a tutta larghezza piccola
+    draw_hook_detail(d, 860, my1 + 220, 1188, draw_top + draw_h - 20)
 
     # Bottom
-    bot = draw_top + draw_h + 12
+    bot = draw_top + draw_h + 10
     bh = FOOT - bot - 8
     y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     for i, ln in enumerate(
@@ -382,7 +452,7 @@ def make_2a():
             "7. Prova bottiglia (con docente)",
         ]
     ):
-        d.text((36, y + 4 + i * 28), ln, fill=BLACK, font=F12)
+        d.text((36, y + 2 + i * 26), ln, fill=BLACK, font=F12)
 
     y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
     for i, ln in enumerate(
@@ -396,17 +466,15 @@ def make_2a():
             "□ Superficie satinata",
         ]
     ):
-        d.text((452, y2 + 4 + i * 28), ln, fill=BLACK, font=F12)
+        d.text((452, y2 + 2 + i * 26), ln, fill=BLACK, font=F12)
 
     y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    d.text((848, y3 + 8), "Alunno/a:", fill=BLACK, font=F12)
-    d.line([848, y3 + 36, 1185, y3 + 36], fill=BLACK, width=1)
-    d.text((848, y3 + 50), "Classe: ________  Data: __/__/____", fill=BLACK, font=F12)
-    d.text((848, y3 + 88), "Voto /10: ______", fill=BLACK, font=F12)
-    d.text((848, y3 + 126), "Firma docente:", fill=BLACK, font=F12)
-    d.line([848, y3 + 156, 1185, y3 + 156], fill=BLACK, width=1)
-    d.text((848, y3 + 176), "Note:", fill=BLACK, font=F12)
-    d.line([848, y3 + 206, 1185, y3 + 206], fill=BLACK, width=1)
+    d.text((848, y3 + 4), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([848, y3 + 28, 1185, y3 + 28], fill=BLACK, width=1)
+    d.text((848, y3 + 40), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((848, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((848, y3 + 104), "Firma docente:", fill=BLACK, font=F12)
+    d.line([848, y3 + 130, 1185, y3 + 130], fill=BLACK, width=1)
 
     save(img, "01-2a-apribottiglie.png", "STAMPA-2a-apribottiglie.png")
 
