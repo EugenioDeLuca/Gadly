@@ -441,49 +441,49 @@ def save(img, name, stampa=None):
 
 # ═══════════════════════════════════════════
 # 2ª TESTA DI MARTELLO — da BARRA (non cilindro)
-# Barra 20×20 · L=60 = 20+24+16 · solo ferro
+# Barra 16×16 · L=60 = 20+24+16 · Ø8 · ≈100 g · solo ferro
 # ═══════════════════════════════════════════
 def make_2a():
     img, d = new_sheet(
         "2ª CLASSE",
         "TESTA DI MARTELLO",
-        "Barra acciaio 20 × 20 × 100 mm  ·  SOLO testa in ferro  ·  L = 60 mm",
+        "Barra acciaio 16 × 16 × 100 mm  ·  SOLO testa  ·  L = 60 mm  ·  ≈ 100 g",
     )
     # badge: BARRA (non cilindro / non solo Ø)
     d.rectangle([W - 200, 16, W - 24, 76], fill=ACCENT, outline=BLACK, width=2)
     d.text((W - 188, 24), "BARRA", fill=WHITE, font=F13)
-    d.text((W - 188, 48), "20 × 20", fill=WHITE, font=F12)
+    d.text((W - 188, 48), "16 × 16", fill=WHITE, font=F12)
 
     draw_top = write_obiettivo(
         d,
         [
-            "Si parte da una BARRA 20×20 (non da un cilindro). Solo la testa in ferro.",
-            ("Faccia piatta · occhio Ø10 · penna a cuneo. Manico di legno = DOPO.", GRAY),
+            "Martello ≈ 100 g: BARRA 16×16 (non cilindro). Solo la testa in ferro.",
+            ("Faccia piatta · occhio Ø8 · penna a cuneo. Manico di legno = DOPO.", GRAY),
         ],
     )
 
     fasi = [
         "1. Taglio barra → L = 60",
-        "2. Squadro facce (20×20)",
-        "3. Foratura occhio Ø10",
+        "2. Squadro facce (16×16)",
+        "3. Foratura occhio Ø8",
         "4. Penna a cuneo (lima/sega)",
         "5. Smusso sulla faccia",
         "6. Satinatura + controllo",
     ]
     ctrl = [
         "□ L = 60 ± 0,3",
-        "□ Sezione 20 × 20",
-        "□ Occhio Ø10 passante",
+        "□ Sezione 16 × 16",
+        "□ Occhio Ø8 passante",
         "□ Penna a cuneo L = 16",
+        "□ Massa ≈ 100 g",
         "□ Solo ferro (no manico)",
-        "□ Superficie satinata",
     ]
     step = 24
     bh = 36 + max(len(fasi), len(ctrl)) * step + 12
     # più spazio al disegno (quote grandi)
     bot = FOOT - bh - 8
     draw_h = bot - draw_top - 8
-    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE (di fianco) — sezione sull’occhio (scala 11:1)")
+    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE (di fianco) — ≈100 g · sezione sull’occhio (scala 12:1)")
     panel_bottom = draw_top + draw_h
 
     FACE_C = (70, 110, 150)
@@ -500,8 +500,8 @@ def make_2a():
     d.text((info_x1 + 8, draw_top + 50), "LEGGI QUI", fill=ACCENT, font=F13)
 
     blocks = [
-        (FACE_C, "FACCIA", "20 × 20", "Piatta"),
-        (IRON, "OCCHIO", "foro Ø10", "TAGLIO"),
+        (FACE_C, "FACCIA", "16 × 16", "Piatta"),
+        (IRON, "OCCHIO", "foro Ø8", "TAGLIO"),
         (PEEN_C, "PENNA", "cuneo 16", "A taglio"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
@@ -521,14 +521,16 @@ def make_2a():
     text_in_box(d, info_x1 + 6, draw_top + 320, info_x2 - info_x1 - 20, 26, "Non cilindro", F12, WARN, pad=2)
 
     # ── VISTA LATERALE GRANDE + SEZIONE ──
-    sc = 11.0
+    # Misure reali martello ≈100 g: sezione 16×16, L=60, occhio Ø8
+    sc = 12.0
     mid = draw_top + 270
     ox = 56
-    Lf, Lo, Lp = 20, 24, 16
-    h = 10 * sc                 # metà altezza (20 mm) → 110 px
-    tip_h = 2.0 * sc
+    Lf, Lo, Lp = 20, 24, 16     # lunghezze zone (mm)
+    S = 16                       # sezione barra (mm)
+    h = (S / 2) * sc             # metà altezza 16 mm
+    tip_h = 1.5 * sc
     depth = 18
-    hole_r = 5 * sc             # Ø10 → 55 px
+    hole_r = 4 * sc              # Ø8 → raggio 4 mm
 
     x0 = ox
     x1 = ox + Lf * sc
@@ -596,14 +598,14 @@ def make_2a():
     d.polygon(penna, outline=BLACK, width=2)
     d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], outline=BLACK, width=3)
 
-    # Quota Ø10 — più grande
+    # Quota Ø8 — più grande
     qy = mid - hole_r - 28
     d.line([hx - hole_r, qy, hx + hole_r, qy], fill=DIM_COL, width=3)
     arrow_h(d, hx - hole_r, qy, left=True)
     arrow_h(d, hx + hole_r, qy, left=False)
-    otw = d.textlength("Ø10", font=F22)
+    otw = d.textlength("Ø8", font=F22)
     d.rectangle([hx - otw / 2 - 6, qy - 40, hx + otw / 2 + 6, qy - 6], fill=WHITE, outline=CAP_RED, width=2)
-    d.text((hx - otw / 2, qy - 36), "Ø10", fill=CAP_RED, font=F22)
+    d.text((hx - otw / 2, qy - 36), "Ø8", fill=CAP_RED, font=F22)
 
     # Manico sotto
     stem_w = 14
@@ -631,20 +633,20 @@ def make_2a():
     dim_h(d, x2, end_x, q1, "16")
     dim_h(d, x0, end_x, q0, "60")
 
-    # quota altezza 20 a sinistra
+    # quota altezza 16 a sinistra
     d.line([x0 - 28, mid - h, x0 - 28, mid + h], fill=DIM_COL, width=3)
     arrow_v(d, x0 - 28, mid - h, up=True)
     arrow_v(d, x0 - 28, mid + h, up=False)
-    tw20 = d.textlength("20", font=F22)
-    d.rectangle([x0 - 28 - tw20 / 2 - 6, mid - 18, x0 - 28 + tw20 / 2 + 6, mid + 18], fill=WHITE, outline=DIM_COL, width=1)
-    d.text((x0 - 28 - tw20 / 2, mid - 14), "20", fill=DIM_COL, font=F22)
+    tw16 = d.textlength("16", font=F22)
+    d.rectangle([x0 - 28 - tw16 / 2 - 6, mid - 18, x0 - 28 + tw16 / 2 + 6, mid + 18], fill=WHITE, outline=DIM_COL, width=1)
+    d.text((x0 - 28 - tw16 / 2, mid - 14), "16", fill=DIM_COL, font=F22)
 
     def lab_box(cx, yy, text, col):
         tw = d.textlength(text, font=F14)
         d.rectangle([cx - tw / 2 - 6, yy - 2, cx + tw / 2 + 6, yy + 24], fill=WHITE, outline=col, width=2)
         d.text((cx - tw / 2, yy), text, fill=col, font=F14)
 
-    lab_box((x0 + x1) / 2, mid - h - depth - 28, "20 × 20", DIM_COL)
+    lab_box((x0 + x1) / 2, mid - h - depth - 28, "16 × 16", DIM_COL)
     lab_box(peen_mid, mid - tip_h - depth - 8, "penna", (40, 100, 50))
 
     def badge(cx, cy, n, bg):
@@ -668,7 +670,7 @@ def make_2a():
     note_y = fy + 40
     text_in_box(
         d, ox, note_y, info_x1 - ox - 20, 28,
-        "BARRA 20×20: faccia 20 · occhio 24 · penna 16 → L=60 · foro Ø10 passante · manico DOPO",
+        "≈100 g · BARRA 16×16: faccia 20 · occhio 24 · penna 16 → L=60 · foro Ø8 · manico DOPO",
         F14, BLACK, pad=4,
     )
 
@@ -687,10 +689,10 @@ def make_2a():
 
     tip_y = tag_y + 42
     d.rectangle([36, tip_y, info_x1 - 16, tip_y + 36], fill=(255, 245, 245), outline=CAP_RED, width=2)
-    d.text((48, tip_y + 8), "Occhiali · morsa · foratura Ø10 · controlla L=60 e sez. 20×20", fill=BLACK, font=F13)
+    d.text((48, tip_y + 8), "Occhiali · morsa · foratura Ø8 · controlla L=60, sez. 16×16, ≈100 g", fill=BLACK, font=F13)
 
     right_y = draw_top + 370
-    checks = ["□ Solo testa", "□ Sez. 20×20", "□ Occhio Ø10", "□ Penna L=16", "□ L=60 ±0,3"]
+    checks = ["□ Solo testa", "□ Sez. 16×16", "□ Occhio Ø8", "□ ≈100 g", "□ L=60 ±0,3"]
     rh = 32 + len(checks) * 24 + 8
     d.rectangle([info_x1 + 6, right_y, info_x2 - 6, right_y + rh], fill=WHITE, outline=BLACK, width=2)
     d.text((info_x1 + 12, right_y + 6), "CHECK", fill=ACCENT, font=F13)
