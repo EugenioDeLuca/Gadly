@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Progetti ferro — tornio (2ª–5ª)</title>
+  <style>
+    :root {
+      --bg: #f4f4f2;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --card: #fff;
+      --line: #ddd;
+      --accent: #0a4a7a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      padding: 16px;
+      padding-bottom: 40px;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; }
+    .lead { color: var(--muted); margin: 0 0 18px; font-size: 0.95rem; line-height: 1.4; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+    .tabs button {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      color: var(--fg);
+    }
+    .tabs button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    figure {
+      margin: 0 0 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fff;
+    }
+    figcaption {
+      padding: 12px 14px 14px;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+    figcaption strong { display: block; margin-bottom: 4px; }
+    figcaption span { color: var(--muted); font-size: 0.85rem; }
+    .hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+    a.download {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Progetti ferro — tornio</h1>
+  <p class="lead">
+    Quattro pezzi utili da barra grezza <strong>Ø20 × 100 mm</strong>, difficoltà crescente (2ª→5ª).
+    Non è falegnameria: lavorazione del ferro al tornio.
+  </p>
+  <div class="tabs" role="tablist">
+    <button type="button" class="active" data-i="0">2ª Portachiavi</button>
+    <button type="button" data-i="1">3ª Fermacarte</button>
+    <button type="button" data-i="2">4ª Cacciavite</button>
+    <button type="button" data-i="3">5ª Martellino</button>
+  </div>
+
+  <figure data-panel="0">
+    <img src="01-2a-portachiavi.png" alt="2ª Portachiavi" />
+    <figcaption>
+      <strong>2ª — Portachiavi</strong>
+      <span>Tornitura base, smussi, foratura Ø5 · da portare a casa</span><br />
+      <a class="download" href="01-2a-portachiavi.png" download>Scarica PNG</a>
+    </figcaption>
+  </figure>
+  <figure data-panel="1" hidden>
+    <img src="02-3a-fermacarte.png" alt="3ª Fermacarte" />
+    <figcaption>
+      <strong>3ª — Fermacarte da scrivania</strong>
+      <span>Più diametri e spallamenti · oggetto utile / bello</span><br />
+      <a class="download" href="02-3a-fermacarte.png" download>Scarica PNG</a>
+    </figcaption>
+  </figure>
+  <figure data-panel="2" hidden>
+    <img src="03-4a-cacciavite.png" alt="4ª Cacciavite" />
+    <figcaption>
+      <strong>4ª — Cacciavite a taglio</strong>
+      <span>Zigrinatura, gola, lama · utensile monopezzo</span><br />
+      <a class="download" href="03-4a-cacciavite.png" download>Scarica PNG</a>
+    </figcaption>
+  </figure>
+  <figure data-panel="3" hidden>
+    <img src="04-5a-martellino.png" alt="5ª Martellino" />
+    <figcaption>
+      <strong>5ª — Martellino da officina</strong>
+      <span>Testa dal grezzo Ø20×100 + manico · insieme montato</span><br />
+      <a class="download" href="04-5a-martellino.png" download>Scarica PNG</a>
+    </figcaption>
+  </figure>
+
+  <p class="hint">Su iPhone: apri l’immagine → tieni premuto → “Aggiungi a Foto” / “Salva immagine”.</p>
+
+  <script>
+    const tabs = document.querySelectorAll(".tabs button");
+    const panels = document.querySelectorAll("figure[data-panel]");
+    tabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = btn.getAttribute("data-i");
+        tabs.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        panels.forEach((p) => {
+          p.hidden = p.getAttribute("data-panel") !== i;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
