@@ -49,9 +49,9 @@ def font_b(size):
     return font(size)
 
 
-F12, F13, F14 = font_b(18), font_b(20), font_b(22)
-F15, F18, F22 = font_b(23), font_b(26), font_b(30)
-Fm, Fs = font_b(16), font(15)
+F12, F13, F14 = font_b(20), font_b(22), font_b(24)
+F15, F18, F22 = font_b(26), font_b(28), font_b(32)
+Fm, Fs = font_b(17), font(17)
 
 
 def panel(d, x, y, w, h, title, fill=LIGHT):
