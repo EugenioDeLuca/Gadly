@@ -81,10 +81,12 @@ def new_sheet(classe, titolo, sub):
 
 
 def panel(d, x, y, w, h, title):
+    hdr = 32
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
-    d.rectangle([x, y, x + w, y + 28], fill=LIGHT, outline=BLACK, width=2)
-    d.text((x + 10, y + 5), title, fill=BLACK, font=F14)
-    return y + 34
+    d.rectangle([x, y, x + w, y + hdr], fill=LIGHT, outline=BLACK, width=2)
+    # titolo sempre dentro l’intestazione del pannello
+    text_in_box(d, x, y, w, hdr, title, F14, BLACK, pad=8)
+    return y + hdr + 6
 
 
 def arrow_h(d, x, y, left=True):
@@ -191,66 +193,98 @@ def knurl_box(d, x, y, w, h):
 
 
 def text_fit(d, text, font, max_w):
-    """Accorcia il testo con … se non entra nella larghezza data."""
+    """Ritorna il testo solo se entra; altrimenti None (per fallback)."""
     if d.textlength(text, font=font) <= max_w:
         return text
-    t = text
-    while len(t) > 1 and d.textlength(t + "…", font=font) > max_w:
-        t = t[:-1]
-    return t + "…"
+    return None
+
+
+def text_in_box(d, x, y, w, h, text, font, fill, pad=8):
+    """Scrive testo DENTRO il box: riduce il font se serve, mai fuori dai bordi."""
+    max_w = max(20, w - 2 * pad)
+    max_h = max(12, h - 2 * pad)
+    start = font.size if hasattr(font, "size") else 19
+    for sz in range(min(start, int(max_h)), 10, -1):
+        f = font_b(sz)
+        if d.textlength(text, font=f) <= max_w:
+            # ancora 2px di aria sotto la baseline
+            ty = y + pad + max(0, (max_h - sz) / 2)
+            if ty + sz + 2 > y + h - 2:
+                ty = y + h - sz - 4
+            if ty < y + 2:
+                ty = y + 2
+            d.text((x + pad, ty), text, fill=fill, font=f)
+            return
+    # due righe
+    f = font_b(max(11, min(13, int(max_h / 2) - 1)))
+    words = text.split()
+    line1, line2 = "", ""
+    for w0 in words:
+        trial = (line1 + " " + w0).strip()
+        if d.textlength(trial, font=f) <= max_w:
+            line1 = trial
+        else:
+            line2 = (line2 + " " + w0).strip()
+    d.text((x + pad, y + pad), line1, fill=fill, font=f)
+    if line2 and y + pad + f.size + 4 < y + h - 2:
+        d.text((x + pad, y + pad + f.size + 2), line2, fill=fill, font=f)
 
 
 def draw_hook_detail(d, bx1, by1, bx2, by2):
     """Dettaglio capsula + uncino — TUTTO dentro il riquadro."""
-    pad = 12
-    inner_r = bx2 - pad
+    pad = 14
+    hdr_h = 36
     d.rectangle([bx1, by1, bx2, by2], fill=(255, 250, 240), outline=BLACK, width=2)
-    d.rectangle([bx1, by1, bx2, by1 + 30], fill=(255, 210, 150), outline=BLACK, width=2)
-    d.text((bx1 + pad, by1 + 5), "DETTAGLIO GANCIO", fill=WARN, font=F13)
+    d.rectangle([bx1, by1, bx2, by1 + hdr_h], fill=(255, 210, 150), outline=BLACK, width=2)
+    text_in_box(d, bx1, by1, bx2 - bx1, hdr_h, "DETTAGLIO GANCIO", F13, WARN, pad=8)
 
-    # Disegno compatto centrato nel box
+    # Fascia testi in basso (riservata, non tagliata)
+    foot_h = 72
+    foot_top = by2 - foot_h
+    d.rectangle([bx1 + 2, foot_top, bx2 - 2, by2 - 2], fill=(255, 248, 235), outline=None)
+
     avail_w = bx2 - bx1 - 2 * pad
-    cx = bx1 + pad + avail_w * 0.38
-    neck_w = min(48, avail_w * 0.28)
-    neck_top = by1 + 70
-    bottom = by2 - 70
+    cx = bx1 + pad + avail_w * 0.36
+    neck_w = min(44, avail_w * 0.26)
+    neck_top = by1 + hdr_h + 28
+    bottom = foot_top - 10
 
-    d.rectangle([cx - neck_w / 2, neck_top + 30, cx + neck_w / 2, bottom], fill=GLASS, outline=(40, 90, 120), width=2)
+    d.rectangle([cx - neck_w / 2, neck_top + 28, cx + neck_w / 2, bottom], fill=GLASS, outline=(40, 90, 120), width=2)
 
-    cap_l, cap_r = cx - neck_w / 2 - 16, cx + neck_w / 2 + 16
-    # non uscire dal box
-    cap_l = max(cap_l, bx1 + pad)
-    cap_r = min(cap_r, bx2 - pad - 70)
+    cap_l = max(cx - neck_w / 2 - 14, bx1 + pad)
+    cap_r = min(cx + neck_w / 2 + 14, bx2 - pad - 90)
     cap_top = neck_top
-    d.ellipse([cap_l + 4, cap_top - 10, cap_r - 4, cap_top + 14], fill=CAP_GOLD, outline=BLACK, width=2)
-    d.rectangle([cap_l, cap_top + 2, cap_r, cap_top + 30], fill=CAP_GOLD, outline=BLACK, width=2)
-    # labbro DX
+    d.ellipse([cap_l + 4, cap_top - 8, cap_r - 4, cap_top + 14], fill=CAP_GOLD, outline=BLACK, width=2)
+    d.rectangle([cap_l, cap_top + 2, cap_r, cap_top + 28], fill=CAP_GOLD, outline=BLACK, width=2)
     d.polygon(
-        [(cap_r, cap_top + 30), (cap_r + 2, cap_top + 30), (cap_r - 4, cap_top + 44), (cap_r - 14, cap_top + 44), (cap_r - 14, cap_top + 30)],
+        [
+            (cap_r, cap_top + 28),
+            (cap_r + 2, cap_top + 28),
+            (cap_r - 4, cap_top + 42),
+            (cap_r - 14, cap_top + 42),
+            (cap_r - 14, cap_top + 28),
+        ],
         fill=(180, 140, 40),
         outline=BLACK,
     )
 
-    # uncino (resta a sinistra del bordo destro del box)
-    hx2 = min(cap_r + 58, bx2 - pad)
+    hx2 = min(cap_r + 70, bx2 - pad - 8)
     hook = [
-        (cap_r + 4, cap_top + 18),
-        (hx2, cap_top + 24),
+        (cap_r + 4, cap_top + 16),
+        (hx2, cap_top + 22),
         (hx2 - 4, cap_top + 40),
         (cap_r - 6, cap_top + 42),
-        (cap_r - 6, cap_top + 36),
-        (hx2 - 18, cap_top + 34),
-        (hx2 - 20, cap_top + 26),
-        (cap_r + 6, cap_top + 22),
+        (cap_r - 6, cap_top + 34),
+        (hx2 - 20, cap_top + 32),
+        (hx2 - 22, cap_top + 24),
+        (cap_r + 6, cap_top + 20),
     ]
     d.polygon(hook, fill=ORANGE, outline=BLACK)
 
-    # Testi DENTRO il box, in basso
-    max_tw = bx2 - bx1 - 2 * pad
-    t1 = text_fit(d, "1. uncino SOTTO il bordo", F12, max_tw)
-    t2 = text_fit(d, "2. leva sulla capsula → apre", F12, max_tw)
-    d.text((bx1 + pad, by2 - 48), t1, fill=ORANGE, font=F12)
-    d.text((bx1 + pad, by2 - 26), t2, fill=CAP_RED, font=F12)
+    # Due righe legenda completamente dentro la fascia inferiore
+    tw = bx2 - bx1 - 2 * pad
+    text_in_box(d, bx1 + pad, foot_top + 4, tw, 30, "1. uncino SOTTO il bordo", F12, ORANGE, pad=4)
+    text_in_box(d, bx1 + pad, foot_top + 36, tw, 30, "2. leva sulla capsula → apre", F12, CAP_RED, pad=4)
 
 
 def ext_tick(d, x, y1, y2):
@@ -280,7 +314,11 @@ def make_2a():
     LEFT, RIGHT = 36, W - 36
 
     y = panel(d, 24, 96, W - 48, 64, "OBIETTIVO")
-    d.text((LEFT, y + 4), text_fit(d, "Tornitura + limatura del gancio. Grezzo → L=80 (avanzo ≈20 mm).", F12, RIGHT - LEFT), fill=BLACK, font=F12)
+    text_in_box(
+        d, LEFT - 4, y, RIGHT - LEFT + 8, 28,
+        "Tornitura + limatura del gancio. Grezzo → L=80 (avanzo ≈20 mm).",
+        F12, BLACK, pad=4,
+    )
 
     # ——— PANNELLO DISEGNO (solo profilo + quote + etichette) ———
     draw_top = 176
@@ -341,32 +379,45 @@ def make_2a():
     # Diametri DENTRO l’area disegno
     d.text((x0 + 8, mid - 12), "Ø16", fill=DIM_COL, font=F15)
     d.text((x1 + 20, ty0 - 26), "Ø18", fill=DIM_COL, font=F15)
-    d.text((hx - 55, ty1 + 10), "Ø6 passante", fill=DIM_COL, font=F14)
+    # Ø6 in riquadro sotto il foro (testo intero)
+    o6 = "Ø6 passante"
+    o6w = d.textlength(o6, font=F14) + 16
+    o6x = max(x1 + 4, min(hx - o6w / 2, x2 - o6w - 4))
+    o6y = ty1 + 8
+    d.rectangle([o6x, o6y, o6x + o6w, o6y + 28], fill=WHITE, outline=DIM_COL, width=1)
+    d.text((o6x + 8, o6y + 4), o6, fill=DIM_COL, font=F14)
 
-    # Freccia BOCCA sotto il gancio (dentro il pannello)
-    d.line([x2 + g * 0.5, mid + 28, x2 + g * 0.5, ty1 + 55], fill=CAP_RED, width=2)
-    d.polygon([(x2 + g * 0.5, mid + 26), (x2 + g * 0.5 - 7, mid + 38), (x2 + g * 0.5 + 7, mid + 38)], fill=CAP_RED)
-    # riquadro dicitura BOCCA — testo dentro
-    bx_l, bx_t = x2 - 10, ty1 + 58
-    bx_r, bx_b = min(end_x + 40, RIGHT - 8), bx_t + 52
+    # Freccia + riquadro BOCCA (larghezza calcolata sul testo intero)
+    mx = x2 + g * 0.5
+    d.line([mx, mid + 28, mx, ty1 + 48], fill=CAP_RED, width=2)
+    d.polygon([(mx, mid + 26), (mx - 7, mid + 38), (mx + 7, mid + 38)], fill=CAP_RED)
+    t_b1, t_b2 = "BOCCA del gancio", "(entra la capsula)"
+    need_w = max(d.textlength(t_b1, font=F14), d.textlength(t_b2, font=F12)) + 28
+    bx_t = ty1 + 52
+    bx_b = bx_t + 56
+    bx_l = max(LEFT + 4, mx - need_w / 2)
+    bx_r = bx_l + need_w
+    if bx_r > RIGHT - 4:
+        bx_r = RIGHT - 4
+        bx_l = bx_r - need_w
     d.rectangle([bx_l, bx_t, bx_r, bx_b], fill=(255, 235, 230), outline=CAP_RED, width=2)
-    d.text((bx_l + 8, bx_t + 6), text_fit(d, "BOCCA del gancio", F14, bx_r - bx_l - 16), fill=CAP_RED, font=F14)
-    d.text((bx_l + 8, bx_t + 28), text_fit(d, "(entra la capsula)", F12, bx_r - bx_l - 16), fill=CAP_RED, font=F12)
+    text_in_box(d, bx_l, bx_t, bx_r - bx_l, 28, t_b1, F14, CAP_RED, pad=10)
+    text_in_box(d, bx_l, bx_t + 28, bx_r - bx_l, 26, t_b2, F12, CAP_RED, pad=10)
 
-    # Etichette pezzi — testo CENTRATO e tagliato se non entra
-    def tag(x_a, x_b, y_t, text, fill, tcol=WHITE):
-        x_a2, x_b2 = max(x_a, LEFT), min(x_b, RIGHT)
-        if x_b2 - x_a2 < 40:
-            return
-        d.rounded_rectangle([x_a2, y_t, x_b2, y_t + 34], radius=6, fill=fill, outline=BLACK)
-        tt = text_fit(d, text, F13, x_b2 - x_a2 - 12)
-        tw = d.textlength(tt, font=F13)
-        d.text((x_a2 + (x_b2 - x_a2 - tw) / 2, y_t + 7), tt, fill=tcol, font=F13)
-
-    tag_y = panel_bottom - 50
-    tag(x0, x1, tag_y, "1 CORPO", STEEL, BLACK)
-    tag(x1, x2, tag_y, "2 TESTA", STEEL_D, WHITE)
-    tag(x2, end_x, tag_y, "3 GANCIO", ORANGE, WHITE)
+    # Legenda pezzi: tre chip LARGHI UGUALI (testo sempre intero)
+    legend = [
+        ("1 CORPO", STEEL, BLACK),
+        ("2 TESTA", STEEL_D, WHITE),
+        ("3 GANCIO", ORANGE, WHITE),
+    ]
+    tag_y = panel_bottom - 52
+    gap = 12
+    chip_w = (RIGHT - LEFT - 2 * gap) / 3
+    for i, (lab, fill, tcol) in enumerate(legend):
+        xa = LEFT + i * (chip_w + gap)
+        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 36], radius=6, fill=fill, outline=BLACK)
+        tw = d.textlength(lab, font=F13)
+        d.text((xa + (chip_w - tw) / 2, tag_y + 8), lab, fill=tcol, font=F13)
 
     # ——— RIGA SOTTO: PRIMA/DOPO | DETTAGLIO ———
     row_y = panel_bottom + 10
@@ -386,8 +437,8 @@ def make_2a():
         fill=ORANGE, outline=BLACK,
     )
     d.text((320, row_y + 175), "dopo lima (uncino)", fill=ORANGE, font=F12)
-    d.text((36, row_y + 220), text_fit(d, "Smusso 1×45° · materiale S235 oppure C40", F12, 540), fill=GRAY, font=F12)
-    d.text((36, row_y + 248), text_fit(d, "La bocca bianca prende il bordo della capsula.", F12, 540), fill=BLACK, font=F12)
+    text_in_box(d, 36, row_y + 214, 540, 24, "Smusso 1×45° · materiale S235 oppure C40", F12, GRAY, pad=2)
+    text_in_box(d, 36, row_y + 242, 540, 24, "La bocca bianca prende il bordo della capsula.", F12, BLACK, pad=2)
 
     # Dettaglio gancio (testi interni al box)
     draw_hook_detail(d, 620, row_y, W - 24, row_y + row_h)
@@ -407,7 +458,7 @@ def make_2a():
             "7. Prova bottiglia (con docente)",
         ]
     ):
-        d.text((36, y + 2 + i * 24), text_fit(d, ln, F12, 370), fill=BLACK, font=F12)
+        text_in_box(d, 36, y + 2 + i * 24, 370, 22, ln, F12, BLACK, pad=2)
 
     y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
     for i, ln in enumerate(
@@ -421,12 +472,12 @@ def make_2a():
             "□ Superficie satinata",
         ]
     ):
-        d.text((452, y2 + 2 + i * 24), text_fit(d, ln, F12, 350), fill=BLACK, font=F12)
+        text_in_box(d, 452, y2 + 2 + i * 24, 350, 22, ln, F12, BLACK, pad=2)
 
     y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
     d.text((848, y3 + 4), "Alunno/a:", fill=BLACK, font=F12)
     d.line([848, y3 + 28, 1185, y3 + 28], fill=BLACK, width=1)
-    d.text((848, y3 + 40), text_fit(d, "Classe: ______  Data: __/__/____", F12, 320), fill=BLACK, font=F12)
+    text_in_box(d, 848, y3 + 40, 340, 24, "Classe: ______  Data: __/__/____", F12, BLACK, pad=2)
     d.text((848, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
     d.text((848, y3 + 104), "Firma docente:", fill=BLACK, font=F12)
     d.line([848, y3 + 130, 1185, y3 + 130], fill=BLACK, width=1)
@@ -524,9 +575,10 @@ def make_3a():
     d.ellipse([cx - r2, cy - r2, cx + r2, cy + r2], fill=WHITE, outline=BLACK, width=2)
     d.text((cx - 36, cy + R + 12), "Ø20  ·  M8", fill=BLACK, font=F12)
 
-    # Zigrinatura breve
+    # Zigrinatura breve — testi sempre dentro il riquadro
+    zg_box_w = 1185 - bx1
     d.rectangle([bx1, 520, 1185, draw_top + draw_h - 16], fill=WARN_BG, outline=WARN, width=2)
-    d.text((bx1 + 12, 532), "ZIGRINATURA — base", fill=WARN, font=F13)
+    text_in_box(d, bx1, 524, zg_box_w, 28, "ZIGRINATURA — base", F13, WARN, pad=10)
     for i, ln in enumerate(
         [
             "• Rulli a rombi (2 rulli)",
@@ -535,11 +587,10 @@ def make_3a():
             "• Pressione a piccoli passi",
             "• Avanza sui 18 mm",
             "• Non tornire dopo",
-            "",
             "Dettaglio → scheda 4ª",
         ]
     ):
-        d.text((bx1 + 12, 564 + i * 26), ln, fill=BLACK, font=F12)
+        text_in_box(d, bx1 + 4, 558 + i * 28, zg_box_w - 8, 26, ln, F12, BLACK, pad=8)
 
     bot = draw_top + draw_h + 12
     bh = FOOT - bot - 8
@@ -802,11 +853,19 @@ def make_5a():
     label_note(d, ox, ny + 56, "Punta: a scelta bombata (non segna il pezzo) oppure piana")
     label_note(d, ox, ny + 84, "L tot. 100 = 22 (pomolo) + 8 (sottotesta) + 70 (gambo filettato)")
 
-    # Nota zigrinatura
+    # Nota zigrinatura — testo intero dentro il riquadro
     zb = draw_top + draw_h - 90
     d.rectangle([40, zb, W - 40, zb + 70], fill=WARN_BG, outline=WARN, width=2)
-    d.text((52, zb + 12), "ZIGRINATURA: giri bassi (60–120) · olio · pressione progressiva · non tornire dopo.", fill=WARN, font=F12)
-    d.text((52, zb + 40), "Dettaglio completo sulla scheda 4ª classe (cacciavite).", fill=GRAY, font=F12)
+    text_in_box(
+        d, 40, zb + 6, W - 80, 30,
+        "ZIGRINATURA: giri bassi (60–120) · olio · pressione progressiva · non tornire dopo.",
+        F12, WARN, pad=12,
+    )
+    text_in_box(
+        d, 40, zb + 36, W - 80, 28,
+        "Dettaglio completo sulla scheda 4ª classe (cacciavite).",
+        F12, GRAY, pad=12,
+    )
 
     bot = draw_top + draw_h + 12
     bh = FOOT - bot - 8
