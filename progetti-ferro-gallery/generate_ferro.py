@@ -707,9 +707,10 @@ def make_3a():
         tw = d.textlength(num, font=F13)
         d.text((info_x1 + 32 - tw / 2, yy + 24), num, fill=WHITE, font=F13)
         tx = info_x1 + 58
-        d.text((tx, yy + 8), f"{num}  {title}", fill=BLACK, font=F13)
-        d.text((tx, yy + 32), line1, fill=GRAY, font=F12)
-        d.text((tx, yy + 50), line2, fill=ORANGE if "INTACCH" in line2 else GRAY, font=F12)
+        d.text((tx, yy + 6), f"{num}  {title}", fill=BLACK, font=F13)
+        d.text((tx, yy + 28), line1, fill=GRAY, font=F12)
+        # testo dentro il box (niente overflow sul bordo)
+        text_in_box(d, tx, yy + 46, info_x2 - 16 - tx, 20, line2, F12, ORANGE if "INTACCH" in line2 else GRAY, pad=0)
 
     warn_y = draw_top + 84 + 4 * 78 + 8
     d.rectangle([info_x1 + 8, warn_y, info_x2 - 8, warn_y + 90], fill=WARN_BG, outline=WARN, width=2)
@@ -779,17 +780,15 @@ def make_3a():
     for i, s in enumerate(xs):
         badge(s[0] + s[1] / 2, badge_y, str(i + 1), s[5])
 
-    # etichetta INTACCHI a destra del corpo Ø16 (niente overlap coi badge)
+    # etichetta INTACCHI sotto il solo corpo Ø16 (non sopra Ø14)
     sx = xs[1][0] + xs[1][1] / 2
-    int_lab = "INTACCHI →"
+    int_lab = "↑ INTACCHI"
     tw = d.textlength(int_lab, font=F13)
-    ix = xs[1][0] + xs[1][1] + 12
-    iy = mid - 14
-    d.rectangle([ix, iy, ix + tw + 12, iy + 24], fill=WHITE, outline=ORANGE, width=2)
-    d.text((ix + 6, iy + 3), int_lab, fill=ORANGE, font=F13)
-    d.line([ix, mid, xs[1][0] + xs[1][1], mid], fill=ORANGE, width=2)
+    iy = badge_y + 22
+    d.rectangle([sx - tw / 2 - 6, iy, sx + tw / 2 + 6, iy + 24], fill=WHITE, outline=ORANGE, width=2)
+    d.text((sx - tw / 2, iy + 3), int_lab, fill=ORANGE, font=F13)
 
-    note_y = badge_y + 36
+    note_y = iy + 34
     text_in_box(d, ox, note_y, info_x1 - ox - 20, 24, "4 spallamenti: Ø18 → Ø16 (con intacchi) → Ø14 → Ø10", F13, BLACK, pad=2)
     text_in_box(d, ox, note_y + 26, info_x1 - ox - 20, 24, "Intacchi: scanalature anulari col utensile · regolari · stessa profondità.", F12, GRAY, pad=2)
 
