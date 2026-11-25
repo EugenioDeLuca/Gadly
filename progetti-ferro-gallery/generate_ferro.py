@@ -238,6 +238,7 @@ def _clip_diag(x0, y0, x1, y1, left, top, right, bottom):
 
 
 def knurl_box(d, x, y, w, h):
+    """Zigrinatura a rombi (solo 5ª)."""
     d.rectangle([x, y, x + w, y + h], fill=STEEL, outline=BLACK, width=2)
     left, top, right, bottom = x + 2, y + 2, x + w - 2, y + h - 2
     step = 8
@@ -248,6 +249,24 @@ def knurl_box(d, x, y, w, h):
         seg = _clip_diag(x + i, y + h, x + i + h, y, left, top, right, bottom)
         if seg:
             d.line([seg[0], seg[1], seg[2], seg[3]], fill=SOFT, width=1)
+    d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
+
+
+def intacchi_box(d, x, y, w, h, n=6):
+    """Intacchi anulari (scanalature) in vista laterale — NON zigrinatura."""
+    d.rectangle([x, y, x + w, y + h], fill=STEEL, outline=BLACK, width=2)
+    # scanalature verticali = intacchi circolari visti di lato
+    groove = max(3, int(w / (n * 2.2)))
+    gap = (w - n * groove) / (n + 1)
+    for i in range(n):
+        gx = x + gap + i * (groove + gap)
+        # intaglio: più scuro, rientra un po’ dal bordo
+        d.rectangle(
+            [gx, y + 3, gx + groove, y + h - 3],
+            fill=(230, 238, 245), outline=SOFT, width=1,
+        )
+        # linea di fondo intaglio
+        d.line([gx + groove / 2, y + 3, gx + groove / 2, y + h - 3], fill=(40, 70, 100), width=1)
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
 
 
@@ -531,9 +550,11 @@ def make_2a():
         d.rectangle([cx - tw / 2 - 4, yy - 2, cx + tw / 2 + 4, yy + 20], fill=WHITE, outline=col, width=1)
         d.text((cx - tw / 2, yy), text, fill=col, font=F13)
 
-    lab_box((x0 + x1) / 2, mid - 14, "Ø20", DIM_COL)
-    lab_box(hx - 50, mid - he - 24, "foro Ø10", CAP_RED)
-    lab_box(peen_mid, mid - hp0 - 26, "penna", (40, 100, 50))
+    # Quote Ø / foro FUORI dal pezzo (niente overlap)
+    lab_box((x0 + x1) / 2, mid - he - 28, "Ø20", DIM_COL)
+    cx_f = (x0 + x1) / 2
+    d.line([cx_f, mid - he - 6, cx_f, mid - he + 2], fill=DIM_COL, width=1)
+    lab_box(peen_mid, mid - hp0 - 28, "penna", (40, 100, 50))
 
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=bg, outline=BLACK, width=2)
@@ -545,7 +566,7 @@ def make_2a():
     badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
 
-    ftxt = "SOLO TESTA — manico DOPO"
+    ftxt = "SOLO TESTA — manico DOPO · foro Ø10"
     ftw = d.textlength(ftxt, font=F13) + 14
     fy = badge_y + 22
     d.rectangle([hx - ftw / 2, fy, hx + ftw / 2, fy + 26], fill=(255, 235, 230), outline=CAP_RED, width=2)
@@ -599,12 +620,12 @@ def make_2a():
         d.text((48, tip_y + 6 + i * tip_step), ln, fill=fill, font=f)
 
     right_y = draw_top + 418
-    checks = ["□ Solo testa (no manico)", "□ Faccia Ø20 × 20", "□ Occhio Ø10", "□ Penna L = 16", "□ L = 60 ± 0,3"]
+    checks = ["□ Solo testa", "□ Faccia Ø20×20", "□ Occhio Ø10", "□ Penna L=16", "□ L=60 ±0,3"]
     rh = 36 + len(checks) * 26 + 10
     d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
     d.text((info_x1 + 16, right_y + 8), "CHECK RAPIDO", fill=ACCENT, font=F13)
     for i, ln in enumerate(checks):
-        d.text((info_x1 + 16, right_y + 36 + i * 26), ln, fill=BLACK, font=F12)
+        text_in_box(d, info_x1 + 12, right_y + 34 + i * 26, info_x2 - info_x1 - 28, 24, ln, F12, BLACK, pad=2)
 
     y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
@@ -626,20 +647,20 @@ def make_2a():
 
 
 # ═══════════════════════════════════════════
-# 3ª PERNO A SPALLAMENTI + SCALINATURE
+# 3ª PERNO A SPALLAMENTI + INTACCHI (non zigrinatura)
 # ═══════════════════════════════════════════
 def make_3a():
     img, d = new_sheet(
         "3ª CLASSE",
         "PERNO A SPALLAMENTI",
-        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 70 mm  ·  con scalinature",
+        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 70 mm  ·  con intacchi",
     )
 
     draw_top = write_obiettivo(
         d,
         [
-            "Perno a 4 diametri (spallamenti) + scalinatura (zigrinatura) sul corpo Ø16.",
-            ("Più preciso della 2ª: un diametro in più e presa zigrinata.", GRAY),
+            "Perno a 4 diametri (spallamenti) + INTACCHI (scanalature) sul corpo Ø16.",
+            ("Intacchi = tacche anulari per la presa. NON è zigrinatura a rombi.", GRAY),
         ],
     )
 
@@ -647,14 +668,14 @@ def make_3a():
         "1. Sfacciatura → L = 70",
         "2. Tornitura Ø18 × 15",
         "3. Tornitura Ø16 × 15",
-        "4. Scalinatura sul Ø16",
+        "4. Intacchi sul Ø16",
         "5. Tornitura Ø14 e Ø10",
         "6. Smussi + satinatura",
     ]
     ctrl = [
         "□ L = 70 ± 0,3",
         "□ Ø18/16/14/10 ± 0,2",
-        "□ Scalinatura regolare",
+        "□ Intacchi regolari",
         "□ Spallamenti netti",
         "□ Smussi + satinatura",
     ]
@@ -662,17 +683,19 @@ def make_3a():
     bh = 40 + max(len(fasi), len(ctrl)) * step + 20
     bot = FOOT - bh - 8
     draw_h = bot - draw_top - 8
-    panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — 4 diametri + scalinatura (scala 10:1)")
+    panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — 4 diametri + intacchi (scala 10:1)")
     panel_bottom = draw_top + draw_h
 
     info_x1, info_x2 = 930, W - 36
-    d.rectangle([info_x1, draw_top + 44, info_x2, panel_bottom - 16], fill=(248, 250, 252), outline=BLACK, width=2)
+    # LEGGI QUI alto quanto il contenuto (niente box vuoto enorme)
+    leggi_h = 84 + 4 * 78 + 100
+    d.rectangle([info_x1, draw_top + 44, info_x2, draw_top + 44 + leggi_h], fill=(248, 250, 252), outline=BLACK, width=2)
     d.rectangle([info_x1, draw_top + 44, info_x2, draw_top + 76], fill=LIGHT, outline=BLACK, width=2)
     d.text((info_x1 + 10, draw_top + 50), "LEGGI QUI", fill=ACCENT, font=F14)
 
     blocks = [
         (STEEL_D, "TESTA", "Ø18 × 15", "Parte grossa"),
-        (STEEL, "CORPO", "Ø16 × 15", "SCALINATO"),
+        (STEEL, "CORPO", "Ø16 × 15", "CON INTACCHI"),
         ((100, 160, 190), "COLLO", "Ø14 × 20", "Diametro medio"),
         ((90, 150, 100), "GAMBO", "Ø10 × 20", "Parte sottile"),
     ]
@@ -686,30 +709,31 @@ def make_3a():
         tx = info_x1 + 58
         d.text((tx, yy + 8), f"{num}  {title}", fill=BLACK, font=F13)
         d.text((tx, yy + 32), line1, fill=GRAY, font=F12)
-        d.text((tx, yy + 50), line2, fill=ORANGE if "SCALIN" in line2 else GRAY, font=F12)
+        d.text((tx, yy + 50), line2, fill=ORANGE if "INTACCH" in line2 else GRAY, font=F12)
 
-    d.rectangle([info_x1 + 8, draw_top + 410, info_x2 - 8, draw_top + 500], fill=WARN_BG, outline=WARN, width=2)
-    text_in_box(d, info_x1 + 8, draw_top + 416, info_x2 - info_x1 - 16, 28, "SCALINATURA = zigrinatura", F13, WARN, pad=4)
-    text_in_box(d, info_x1 + 8, draw_top + 450, info_x2 - info_x1 - 16, 40, "sul Ø16 (rombi) · olio · giri bassi", F12, WARN, pad=4)
+    warn_y = draw_top + 84 + 4 * 78 + 8
+    d.rectangle([info_x1 + 8, warn_y, info_x2 - 8, warn_y + 90], fill=WARN_BG, outline=WARN, width=2)
+    text_in_box(d, info_x1 + 8, warn_y + 6, info_x2 - info_x1 - 16, 28, "INTACCHI ≠ zigrinatura", F13, WARN, pad=4)
+    text_in_box(d, info_x1 + 8, warn_y + 40, info_x2 - info_x1 - 16, 42, "Tacche anulari sul Ø16 (utensile da taglio)", F12, WARN, pad=4)
 
     sc = 10.0
-    mid = draw_top + int(draw_h * 0.30)
+    mid = draw_top + 280
     ox = 70
     segs = [
         (15, 18, STEEL_D, False),
-        (15, 16, STEEL, True),
+        (15, 16, STEEL, True),   # intacchi
         (20, 14, (100, 160, 190), False),
         (20, 10, (90, 150, 100), False),
     ]
     x = ox
     xs = []
-    for L, Dia, col, kn in segs:
+    for L, Dia, col, has_int in segs:
         ww, hh = L * sc, Dia * sc
-        if kn:
-            knurl_box(d, x, mid - hh / 2, ww, hh)
+        if has_int:
+            intacchi_box(d, x, mid - hh / 2, ww, hh, n=6)
         else:
             d.rectangle([x, mid - hh / 2, x + ww, mid + hh / 2], fill=col, outline=BLACK, width=3)
-        xs.append((x, ww, hh, L, Dia, col, kn))
+        xs.append((x, ww, hh, L, Dia, col, has_int))
         x += ww
     end_x = x
 
@@ -720,9 +744,10 @@ def make_3a():
 
     centerline(d, ox - 16, end_x + 16, mid)
 
+    # Quote lunghezze SOPRA — compatte, senza overlap
     top_r = mid - 18 * sc / 2
-    q1 = top_r - 34
-    q0 = q1 - 32
+    q1 = top_r - 32
+    q0 = q1 - 30
     ticks = [ox] + [s[0] for s in xs[1:]] + [end_x]
     for xx in ticks:
         ext_tick(d, xx, top_r, q0 - 2)
@@ -732,33 +757,45 @@ def make_3a():
     dim_h(d, xs[3][0], xs[3][0] + xs[3][1], q1, "20")
     dim_h(d, ox, end_x, q0, "70")
 
-    for (x0s, ww, hh, L, Dia, col, kn), lab in zip(xs, ["Ø18", "Ø16", "Ø14", "Ø10"]):
-        tw = d.textlength(lab, font=F15)
-        cx = x0s + ww / 2
-        ty = mid - 24
-        d.rectangle([cx - tw / 2 - 4, ty - 2, cx + tw / 2 + 4, ty + 20], fill=WHITE, outline=DIM_COL, width=1)
-        d.text((cx - tw / 2, ty), lab, fill=DIM_COL, font=F15)
+    # Diametri SOTTO il pezzo (niente testo sopra il metallo)
+    bot_r = mid + 18 * sc / 2
+    y_dia = bot_r + 36
+
+    def dia_lab(cx, y_from, lab):
+        d.line([cx, y_from, cx, y_dia], fill=DIM_COL, width=2)
+        tw = d.textlength(lab, font=F14)
+        d.rectangle([cx - tw / 2 - 4, y_dia + 2, cx + tw / 2 + 4, y_dia + 22], fill=WHITE, outline=DIM_COL, width=1)
+        d.text((cx - tw / 2, y_dia + 4), lab, fill=DIM_COL, font=F14)
+
+    for s, lab in zip(xs, ["Ø18", "Ø16", "Ø14", "Ø10"]):
+        dia_lab(s[0] + s[1] / 2, mid + s[2] / 2, lab)
 
     def badge(cx, cy, n, bg):
-        d.ellipse([cx - 14, cy - 14, cx + 14, cy + 14], fill=bg, outline=BLACK, width=2)
+        d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=bg, outline=BLACK, width=2)
         tw = d.textlength(n, font=F13)
         d.text((cx - tw / 2, cy - 9), n, fill=WHITE, font=F13)
 
-    badge_y = mid + 18 * sc / 2 + 30
+    badge_y = y_dia + 52
     for i, s in enumerate(xs):
         badge(s[0] + s[1] / 2, badge_y, str(i + 1), s[5])
 
+    # etichetta INTACCHI a destra del corpo Ø16 (niente overlap coi badge)
     sx = xs[1][0] + xs[1][1] / 2
-    d.line([sx, mid + xs[1][2] / 2, sx, badge_y - 18], fill=ORANGE, width=2)
-    text_in_box(d, sx - 90, badge_y + 22, 200, 24, "← SCALINATURA", F13, ORANGE, pad=2)
+    int_lab = "INTACCHI →"
+    tw = d.textlength(int_lab, font=F13)
+    ix = xs[1][0] + xs[1][1] + 12
+    iy = mid - 14
+    d.rectangle([ix, iy, ix + tw + 12, iy + 24], fill=WHITE, outline=ORANGE, width=2)
+    d.text((ix + 6, iy + 3), int_lab, fill=ORANGE, font=F13)
+    d.line([ix, mid, xs[1][0] + xs[1][1], mid], fill=ORANGE, width=2)
 
-    note_y = badge_y + 50
-    text_in_box(d, ox, note_y, info_x1 - ox - 20, 24, "4 spallamenti: Ø18 → Ø16 (scalinato) → Ø14 → Ø10", F13, BLACK, pad=2)
-    text_in_box(d, ox, note_y + 26, info_x1 - ox - 20, 24, "Scalinatura: rulli a rombi · 60–100 giri/min · olio · non tornire dopo.", F12, GRAY, pad=2)
+    note_y = badge_y + 36
+    text_in_box(d, ox, note_y, info_x1 - ox - 20, 24, "4 spallamenti: Ø18 → Ø16 (con intacchi) → Ø14 → Ø10", F13, BLACK, pad=2)
+    text_in_box(d, ox, note_y + 26, info_x1 - ox - 20, 24, "Intacchi: scanalature anulari col utensile · regolari · stessa profondità.", F12, GRAY, pad=2)
 
     legend = [
         ("1 Ø18", STEEL_D, WHITE),
-        ("2 Ø16 scal.", STEEL, BLACK),
+        ("2 Ø16 intacchi", STEEL, BLACK),
         ("3 Ø14", (100, 160, 190), BLACK),
         ("4 Ø10", (90, 150, 100), WHITE),
     ]
@@ -767,27 +804,26 @@ def make_3a():
     chip_w = (info_x1 - 40 - 3 * gap) / 4
     for i, (lab, fill, tcol) in enumerate(legend):
         xa = 36 + i * (chip_w + gap)
-        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 30], radius=6, fill=fill, outline=BLACK, width=2)
-        text_in_box(d, xa, tag_y, chip_w, 30, lab, F12, tcol, pad=3)
+        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 28], radius=6, fill=fill, outline=BLACK, width=2)
+        text_in_box(d, xa, tag_y, chip_w, 28, lab, F12, tcol, pad=3)
 
-    tip_y = tag_y + 40
+    tip_y = tag_y + 38
     tips = [
         "ATTENZIONE IN OFFICINA",
-        "• Occhiali · pezzo stretto nel mandrino · giri giusti per Ø",
-        "• Scalinatura: solo sul Ø16 · olio · non tornire dopo i rombi",
-        "• Controlla ogni spallamento col calibro prima di passare al successivo",
-        "• Spallamenti netti a 90° (senza raggio di raccordo involontario)",
+        "• Occhiali · pezzo stretto · giri giusti per Ø",
+        "• Intacchi solo sul Ø16 · stessa profondità · NON zigrinatura",
+        "• Controlla ogni spallamento col calibro prima del successivo",
     ]
-    tip_step = 24
-    tip_h = 12 + len(tips) * tip_step + 8
+    tip_step = 22
+    tip_h = 10 + len(tips) * tip_step + 6
     d.rectangle([36, tip_y, info_x1 - 20, tip_y + tip_h], fill=(245, 250, 255), outline=ACCENT, width=2)
     for i, ln in enumerate(tips):
         fill = ACCENT if i == 0 else BLACK
         f = F13 if i == 0 else F12
-        d.text((48, tip_y + 8 + i * tip_step), ln, fill=fill, font=f)
+        d.text((48, tip_y + 6 + i * tip_step), ln, fill=fill, font=f)
 
-    right_y = draw_top + 518
-    checks3 = ["□ L = 70", "□ Ø18/16/14/10", "□ Scalinatura", "□ Spallamenti", "□ Satinatura"]
+    right_y = warn_y + 100
+    checks3 = ["□ L = 70", "□ Ø18/16/14/10", "□ Intacchi", "□ Spallamenti", "□ Satinatura"]
     rh = 36 + len(checks3) * 26 + 10
     if right_y + rh < panel_bottom - 16:
         d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
@@ -1028,7 +1064,7 @@ def make_5a():
     )
     text_in_box(
         d, 40, zb + 30, W - 80, 24,
-        "Solo in 5ª: zigrinatura sul pomolo (3ª e 4ª sono lisce).",
+        "Solo in 5ª: zigrinatura a rombi sul pomolo (3ª = intacchi, 4ª liscia).",
         F12, GRAY, pad=8,
     )
 
