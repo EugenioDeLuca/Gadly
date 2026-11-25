@@ -458,14 +458,14 @@ def make_2a():
         d,
         [
             "Martello ≈ 100 g: BARRA 16×16 (non cilindro). Solo la testa in ferro.",
-            ("Faccia piatta · occhio Ø8 · penna a cuneo. Manico di legno = DOPO.", GRAY),
+            ("Faccia piatta · foro 8 (in sezione, non cerchio) · penna a cuneo. Manico = DOPO.", GRAY),
         ],
     )
 
     fasi = [
         "1. Taglio barra → L = 60",
         "2. Squadro facce (16×16)",
-        "3. Foratura occhio Ø8",
+        "3. Foratura occhio (foro 8)",
         "4. Penna a cuneo (lima/sega)",
         "5. Smusso sulla faccia",
         "6. Satinatura + controllo",
@@ -473,7 +473,7 @@ def make_2a():
     ctrl = [
         "□ L = 60 ± 0,3",
         "□ Sezione 16 × 16",
-        "□ Occhio Ø8 passante",
+        "□ Foro 8 passante",
         "□ Penna a cuneo L = 16",
         "□ Massa ≈ 100 g",
         "□ Solo ferro (no manico)",
@@ -499,7 +499,7 @@ def make_2a():
 
     blocks = [
         (FACE_C, "FACCIA", "16 × 16", "Piatta"),
-        (IRON, "OCCHIO", "foro Ø8", "tratteggio"),
+        (IRON, "OCCHIO", "foro 8", "sezione"),
         (PEEN_C, "PENNA", "cuneo 16", "A taglio"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
@@ -566,7 +566,9 @@ def make_2a():
     d.polygon(penna, outline=BLACK, width=2)
     d.rectangle([hole_l, mid - h, hole_r, mid + h], outline=CAP_RED, width=3)
 
-    centerline(d, x0 - 10, end_x + 12, mid)
+    # Asse solo su faccia e penna (NON attraverso il foro — evita effetto “cerchio”)
+    centerline(d, x0 - 10, hole_l - 4, mid)
+    centerline(d, hole_r + 4, end_x + 12, mid)
 
     # Quote LUNGHEZZE — SOPRA (più in alto per lasciare posto al foro)
     top = mid - h
@@ -620,7 +622,7 @@ def make_2a():
     d.text((peen_mid - 24, badge_y + 20), "penna", fill=GRAY, font=F12)
 
     fy = badge_y + 44
-    ftxt = "≈100 g · //// rosso = materiale tagliato · quote in mm"
+    ftxt = "≈100 g · foro = rettangolo in sezione (NON un cerchio) · //// = taglio"
     ftw = d.textlength(ftxt, font=F13) + 14
     d.rectangle([ox, fy, ox + ftw, fy + 28], fill=(255, 235, 230), outline=CAP_RED, width=2)
     d.text((ox + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
@@ -628,16 +630,16 @@ def make_2a():
     note_y = fy + 36
     text_in_box(
         d, ox, note_y, info_x1 - ox - 20, 26,
-        "BARRA 16×16 · faccia 20 · occhio 24 · penna 16 → L=60 · foro Ø8 passante",
+        "BARRA 16×16 · faccia 20 · occhio 24 · penna 16 → L=60 · foro 8 passante",
         F13, BLACK, pad=3,
     )
 
     tip_y = note_y + 34
     d.rectangle([36, tip_y, info_x1 - 16, tip_y + 32], fill=(255, 245, 245), outline=CAP_RED, width=2)
-    d.text((48, tip_y + 6), "Occhiali · morsa · foratura Ø8 · L=60 · sez. 16×16 · ≈100 g", fill=BLACK, font=F13)
+    d.text((48, tip_y + 6), "Occhiali · morsa · foratura foro 8 · L=60 · sez. 16×16 · ≈100 g", fill=BLACK, font=F13)
 
     right_y = draw_top + 350
-    checks = ["□ Solo testa", "□ Sez. 16×16", "□ Occhio Ø8", "□ ≈100 g", "□ L=60 ±0,3"]
+    checks = ["□ Solo testa", "□ Sez. 16×16", "□ Foro 8", "□ ≈100 g", "□ L=60 ±0,3"]
     rh = 30 + len(checks) * 24 + 6
     d.rectangle([info_x1 + 6, right_y, info_x2 - 6, right_y + rh], fill=WHITE, outline=BLACK, width=2)
     d.text((info_x1 + 12, right_y + 6), "CHECK", fill=ACCENT, font=F13)
