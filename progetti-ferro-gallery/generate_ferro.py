@@ -441,14 +441,15 @@ def make_2a():
     dim_h(d, xs[2][0], xs[2][0] + xs[2][1], q1, "20")
     dim_h(d, ox, end_x, q0, "70")
 
-    # diametri dentro
+    # diametri DENTRO, SOPRA la linea d’asse (niente overlap)
     for (x0s, ww, hh, L, Dia, col), lab in zip(xs, ["Ø18", "Ø14", "Ø10"]):
         tw = d.textlength(lab, font=F16)
         cx = x0s + ww / 2
-        bg = WHITE if Dia < 18 else col
-        fc = DIM_COL if Dia < 18 else WHITE
-        d.rectangle([cx - tw / 2 - 6, mid - 16, cx + tw / 2 + 6, mid + 16], fill=bg)
-        d.text((cx - tw / 2, mid - 12), lab, fill=fc, font=F16)
+        ty = mid - 28  # sopra l’asse
+        bg = WHITE
+        fc = DIM_COL
+        d.rectangle([cx - tw / 2 - 6, ty - 4, cx + tw / 2 + 6, ty + 24], fill=bg, outline=DIM_COL, width=1)
+        d.text((cx - tw / 2, ty), lab, fill=fc, font=F16)
 
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 18, cy - 18, cx + 18, cy + 18], fill=bg, outline=BLACK, width=3)
@@ -753,58 +754,60 @@ def make_4a():
     text_in_box(d, ox, min(ny + 30, max_note_y - 60), W - 80 - ox, 28, "Gola Ø10 · lama a taglio limata a mano", F13, BLACK, pad=2)
     text_in_box(d, ox, min(ny + 60, max_note_y - 30), W - 80 - ox, 28, "L tot. 100 = 42 + 5 + 18 + 35", F13, GRAY, pad=2)
 
-    # Limatura taglio
+    # Limatura taglio — altezza calcolata così NON taglia i pannelli sotto
     zg = draw_top + draw_h + 10
-    zg_h = 280
+    bot_reserve = 220  # spazio per CONTROLLO + DISTINTA + footer
+    zg_h = max(240, FOOT - zg - bot_reserve - 12)
     y = panel(d, 24, zg, W - 48, zg_h, "COME SI FA LA LAMA A TAGLIO (a mano)")
     col1 = [
         "COSA SERVE",
         "• Lima piatta fina",
         "• Morsa da banco",
         "• Occhiali",
-        "• Vite M4 o M5 di prova",
-        "",
+        "• Vite M4/M5 di prova",
         "ATTENZIONE",
         "• Lima poco per volta",
         "• Controlla la simmetria",
-        "• Niente spigoli vivi taglienti",
     ]
     col2 = [
         "SEQUENZA",
-        "1. Blocca il manico in morsa",
-        "2. Segna la zona punta (≈ 5 mm)",
-        "3. Lima un lato a piano inclinato",
-        "4. Gira e lima l’altro lato uguale",
-        "5. Controlla: spessore al centro sottile",
-        "6. Prova su vite M4 / M5",
+        "1. Blocca manico in morsa",
+        "2. Segna punta ≈ 5 mm",
+        "3. Lima un lato inclinato",
+        "4. Lima l’altro lato uguale",
+        "5. Controlla simmetria",
+        "6. Prova su vite M4/M5",
         "7. Sbava e satina",
-        "",
-        "La lama deve entrare dritta nella fessura.",
     ]
+    lh = max(22, (zg_h - 55) // max(len(col1), len(col2)))
     for i, ln in enumerate(col1):
-        if ln in ("COSA SERVE", "ATTENZIONE"):
-            d.text((40, y + 4 + i * 26), ln, fill=ACCENT, font=F14)
-        else:
-            d.text((40, y + 4 + i * 26), ln, fill=BLACK, font=F13)
+        yy = y + 4 + i * lh
+        if yy + 20 > zg + zg_h - 8:
+            break
+        fill = ACCENT if ln in ("COSA SERVE", "ATTENZIONE") else BLACK
+        f = F14 if ln in ("COSA SERVE", "ATTENZIONE") else F13
+        d.text((40, yy), ln, fill=fill, font=f)
     for i, ln in enumerate(col2):
-        if ln == "SEQUENZA":
-            d.text((640, y + 4 + i * 26), ln, fill=ACCENT, font=F14)
-        else:
-            d.text((640, y + 4 + i * 26), ln, fill=BLACK, font=F13)
+        yy = y + 4 + i * lh
+        if yy + 20 > zg + zg_h - 8:
+            break
+        fill = ACCENT if ln == "SEQUENZA" else BLACK
+        f = F14 if ln == "SEQUENZA" else F13
+        d.text((640, yy), ln, fill=fill, font=f)
 
-    bot = zg + zg_h + 10
+    bot = zg + zg_h + 12
     bh = FOOT - bot - 8
     y = panel(d, 24, bot, 560, bh, "CONTROLLO / DATI")
-    text_in_box(d, 32, y + 4, 540, 28, "□ L=100±0,5  □ Ø18 / Ø12 / Ø8  □ Gola Ø10", F13, BLACK, pad=4)
-    text_in_box(d, 32, y + 36, 540, 28, "□ Lama simmetrica  □ Prova su vite M4 o M5", F13, BLACK, pad=4)
-    text_in_box(d, 32, y + 70, 540, 28, "Alunno/a: ______________  Classe: ______", F13, BLACK, pad=4)
-    text_in_box(d, 32, y + 104, 540, 28, "Data: __/__/____  Voto: ____  Firma: ________", F13, BLACK, pad=4)
+    text_in_box(d, 32, y + 8, 540, 30, "□ L=100±0,5  □ Ø18 / Ø12 / Ø8  □ Gola Ø10", F13, BLACK, pad=4)
+    text_in_box(d, 32, y + 44, 540, 30, "□ Lama simmetrica  □ Prova su vite M4 o M5", F13, BLACK, pad=4)
+    text_in_box(d, 32, y + 80, 540, 30, "Alunno/a: ______________  Classe: ______", F13, BLACK, pad=4)
+    text_in_box(d, 32, y + 116, 540, 30, "Data: __/__/____  Voto: ____  Firma: ________", F13, BLACK, pad=4)
 
     y2 = panel(d, 600, bot, W - 24 - 600, bh, "DISTINTA")
-    text_in_box(d, 608, y2 + 8, 580, 28, "1 × barra Ø20 × 100 — C40", F13, BLACK, pad=4)
-    text_in_box(d, 608, y2 + 42, 580, 28, "Olio da taglio", F13, BLACK, pad=4)
-    text_in_box(d, 608, y2 + 76, 580, 28, "Lima fina (per il taglio)", F13, BLACK, pad=4)
-    text_in_box(d, 608, y2 + 110, 580, 28, "Vite M4/M5 di prova", F13, BLACK, pad=4)
+    text_in_box(d, 608, y2 + 10, 560, 30, "1 × barra Ø20 × 100 — C40", F13, BLACK, pad=4)
+    text_in_box(d, 608, y2 + 48, 560, 30, "Olio da taglio", F13, BLACK, pad=4)
+    text_in_box(d, 608, y2 + 86, 560, 30, "Lima fina (per il taglio)", F13, BLACK, pad=4)
+    text_in_box(d, 608, y2 + 124, 560, 30, "Vite M4/M5 di prova", F13, BLACK, pad=4)
 
     save(img, "03-4a-cacciavite.png", "STAMPA-4a-cacciavite.png")
 
