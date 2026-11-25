@@ -125,7 +125,6 @@ def draw_lathe_color(d, ox=30, oy=150):
     d.rectangle([bed_x2 - 150, bed_y + 75, bed_x2 - 20, bed_y + 185], fill=C_BASE, outline=BLACK, width=2)
     # vasca trucioli
     d.rectangle([bed_x1, bed_y + 160, bed_x2, bed_y + 200], fill=(100, 110, 120), outline=BLACK, width=2)
-    d.text((bed_x1 + 280, bed_y + 172), "vasca trucioli", fill=WHITE, font=F12)
 
     # —— Bancale (letto) con guide a V ——
     d.rectangle([bed_x1, bed_y, bed_x2, bed_y + 80], fill=C_BED, outline=BLACK, width=3)
@@ -146,13 +145,11 @@ def draw_lathe_color(d, ox=30, oy=150):
     # carter / finestre
     d.rectangle([hx1 + 18, hy1 + 25, hx1 + 130, hy1 + 130], fill=C_HEAD_L, outline=BLACK, width=2)
     d.rectangle([hx1 + 145, hy1 + 25, hx1 + 275, hy1 + 95], fill=(30, 70, 120), outline=BLACK, width=2)
-    d.text((hx1 + 155, hy1 + 50), "ingranaggi", fill=WHITE, font=F11)
     # leve velocità colorate
     for i, (lx, col) in enumerate([(hx1 + 35, (220, 80, 60)), (hx1 + 95, (240, 180, 40)), (hx1 + 155, (60, 180, 90))]):
         d.rectangle([lx, hy1 + 155, lx + 36, hy1 + 182], fill=col, outline=BLACK, width=2)
         d.line([lx + 18, hy1 + 182, lx + 18, hy1 + 225], fill=BLACK, width=4)
         d.ellipse([lx + 6, hy1 + 218, lx + 30, hy1 + 242], fill=col, outline=BLACK, width=2)
-    d.text((hx1 + 30, hy1 + 250), "leve velocità", fill=WHITE, font=F11)
 
     # —— Mandrino a 3 griffe ——
     chuck_cx, chuck_cy = hx2 + 48, oy + 230
@@ -192,7 +189,6 @@ def draw_lathe_color(d, ox=30, oy=150):
     d.ellipse([tx2 + 18, chuck_cy - 22, tx2 + 58, chuck_cy + 22], fill=WHITE, outline=BLACK, width=2)
     # leve blocco
     d.rectangle([tx1 + 35, oy + 150, tx1 + 115, oy + 178], fill=(230, 90, 50), outline=BLACK, width=2)
-    d.text((tx1 + 42, oy + 155), "blocco", fill=WHITE, font=F11)
     d.rectangle([tx1 + 25, bed_y - 40, tx1 + 120, bed_y - 12], fill=(230, 90, 50), outline=BLACK, width=2)
 
     # —— Carrello ——
@@ -235,19 +231,7 @@ def draw_lathe_color(d, ox=30, oy=150):
     # —— Barra di comando ——
     d.rectangle([hx2 + 10, bed_y + 40, tx1 - 10, bed_y + 54], fill=C_FEED, outline=BLACK, width=2)
 
-    # etichette colorate piccole sui pezzi principali (non sovrapposte)
-    d.rectangle([hx1 + 8, hy1 + 8, hx1 + 150, hy1 + 32], fill=(0, 0, 0, ), outline=None)
-    # use solid labels with bg
-    def tag(x, y, text, bg):
-        tw = d.textlength(text, font=F11) + 12
-        d.rectangle([x, y, x + tw, y + 24], fill=bg, outline=BLACK, width=1)
-        d.text((x + 6, y + 3), text, fill=WHITE, font=F11)
-
-    tag(hx1 + 10, hy1 + 8, "TESTA MOTRICE", C_HEAD)
-    tag(cx1 + 8, oy + 260, "CARRELLO", C_CARR)
-    tag(tx1 + 8, oy + 135, "CONTROPUNTA", C_TAIL)
-    tag(bed_x1 + 200, bed_y + 48, "BANCALE", C_BED)
-    tag(pz1 + 40, chuck_cy - 42, "PEZZO", (160, 110, 40))
+    # (nomi solo in legenda — niente etichette sul disegno)
 
     pts = {
         1: (hx1 + 150, hy1 + 70),
