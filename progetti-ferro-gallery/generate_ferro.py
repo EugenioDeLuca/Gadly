@@ -2,6 +2,7 @@
 """Schede A4 ferro al tornio — disegni grandi, quote precise, diciture chiare."""
 from __future__ import annotations
 
+import math
 import os
 from PIL import Image, ImageDraw, ImageFont
 
@@ -489,7 +490,7 @@ def make_2a():
             draw_h += min(slack, 60)
             bot = draw_top + draw_h + 8
             bh = FOOT - bot - 8
-    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — testa da BARRA con SEZIONE sull’occhio (scala 8:1)")
+    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE (di fianco) — NON dall’alto  ·  sezione sull’occhio (scala 8:1)")
     panel_bottom = draw_top + draw_h
 
     FACE_C = (70, 110, 150)
@@ -497,6 +498,7 @@ def make_2a():
     PEEN_C = (70, 130, 90)
     IRON_L = (120, 125, 132)
     IRON_D = (35, 38, 42)
+    TOP_C = (90, 95, 100)   # faccia superiore (spessore)
 
     info_x1, info_x2 = 930, W - 36
     leggi_bottom = draw_top + 418 + 36 + 5 * 26 + 10 + 8
@@ -506,7 +508,7 @@ def make_2a():
 
     blocks = [
         (FACE_C, "FACCIA", "20 × 20", "Piatta (da barra)"),
-        (IRON, "OCCHIO", "foro Ø10", "Visto in SEZIONE"),
+        (IRON, "OCCHIO", "foro Ø10", "Di fianco + TAGLIO"),
         (PEEN_C, "PENNA", "cuneo L = 16", "A taglio"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
@@ -525,15 +527,16 @@ def make_2a():
     text_in_box(d, info_x1 + 8, draw_top + 316, info_x2 - info_x1 - 16, 28, "È UNA BARRA", F14, WARN, pad=4)
     text_in_box(d, info_x1 + 8, draw_top + 348, info_x2 - info_x1 - 16, 44, "Non un cilindro. Manico = DOPO", F13, WARN, pad=4)
 
-    # ── VISTA LATERALE (profilo) + SEZIONE sull’occhio ──
-    # Niente foro tondo “da sopra”: di lato il buco si vede solo col TAGLIO.
-    sc = 8.0
-    mid = draw_top + 210
-    ox = 90
-    Lf, Lo, Lp = 20, 24, 16   # mm
-    h = 10 * sc               # metà altezza barra 20 mm
+    # ── VISTA LATERALE 3/4 (di fianco) con spessore visibile + SEZIONE sull’occhio ──
+    # Non è la pianta dall’alto: si vede la guancia + lo spessore sopra + il manico che esce sotto.
+    sc = 7.5
+    mid = draw_top + 230
+    ox = 100
+    Lf, Lo, Lp = 20, 24, 16
+    h = 10 * sc                 # metà altezza (20 mm)
     tip_h = 2.0 * sc
-    hole_half = 5 * sc        # Ø10 / 2
+    depth = 14                  # px di spessore in obliquo (suggerisce 3D)
+    hole_r = 5 * sc             # Ø10
 
     x0 = ox
     x1 = ox + Lf * sc
@@ -541,64 +544,103 @@ def make_2a():
     end_x = x2 + Lp * sc
     peen_mid = x2 + Lp * sc * 0.5
     hx = (x1 + x2) / 2
-    hole_l, hole_r = hx - hole_half, hx + hole_half
 
     def P(xm, ym):
         return (xm, mid + ym)
 
-    # Corpo barra (faccia + zone occhio ai lati del foro)
+    # --- Faccia superiore (spessore) — parallelogramma: prova che NON è vista dall’alto ---
+    top_face = [
+        (x0, mid - h), (x2, mid - h),
+        (x2 + depth, mid - h - depth), (x0 + depth, mid - h - depth),
+    ]
+    d.polygon(top_face, fill=TOP_C, outline=BLACK, width=2)
+    # spessore penna (cima)
+    peen_top = [
+        (x2, mid - h), (end_x, mid - tip_h),
+        (end_x + depth * 0.6, mid - tip_h - depth * 0.6),
+        (x2 + depth, mid - h - depth),
+    ]
+    d.polygon(peen_top, fill=(55, 90, 65), outline=BLACK, width=2)
+
+    # --- Guancia (vista laterale vera) ---
     d.rectangle([x0, mid - h, x2, mid + h], fill=IRON, outline=BLACK, width=3)
     d.rectangle([x0, mid - h, x1, mid + h], fill=FACE_C, outline=BLACK, width=2)
-    d.rectangle([x0, mid - h + 4, x0 + 6, mid + h - 4], fill=IRON_L, outline=BLACK, width=2)
+    d.rectangle([x0, mid - h + 4, x0 + 5, mid + h - 4], fill=IRON_L, outline=BLACK, width=2)
 
-    # PENNA a cuneo (profilo laterale)
     penna = [
-        P(x2, -h), P(x2 + 8, -h + 4),
-        P(end_x - 4, -tip_h), P(end_x, -tip_h),
-        P(end_x, tip_h), P(end_x - 4, tip_h),
-        P(x2 + 8, h - 4), P(x2, h),
+        P(x2, -h), P(x2 + 6, -h + 3),
+        P(end_x - 3, -tip_h), P(end_x, -tip_h),
+        P(end_x, tip_h), P(end_x - 3, tip_h),
+        P(x2 + 6, h - 3), P(x2, h),
     ]
     d.polygon(penna, fill=PEEN_C, outline=BLACK, width=2)
-    d.line([x2 + 4, mid - h + 6, end_x - 6, mid - tip_h], fill=IRON_D, width=2)
-    d.line([x2 + 4, mid + h - 6, end_x - 6, mid + tip_h], fill=IRON_D, width=2)
+    d.line([x2 + 3, mid - h + 5, end_x - 5, mid - tip_h], fill=IRON_D, width=2)
+    d.line([x2 + 3, mid + h - 5, end_x - 5, mid + tip_h], fill=IRON_D, width=2)
 
-    # ── TAGLIO sull’occhio: buco passante + tratteggio rosso (NO cerchio da sopra) ──
-    # Metallo tagliato a sinistra e a destra del foro
-    hatch_rect(d, x1 + 2, mid - h + 2, hole_l - 1, mid + h - 2, CAP_RED, step=7, width=2)
-    hatch_rect(d, hole_r + 1, mid - h + 2, x2 - 2, mid + h - 2, CAP_RED, step=7, width=2)
-    # Foro = rettangolo vuoto dall’alto al basso (passante), visto di lato
-    d.rectangle([hole_l, mid - h + 1, hole_r, mid + h - 1], fill=WHITE, outline=CAP_RED, width=3)
-    # Linee di taglio rosse in alto e in basso sul foro
-    d.line([hole_l, mid - h, hole_r, mid - h], fill=CAP_RED, width=3)
-    d.line([hole_l, mid + h, hole_r, mid + h], fill=CAP_RED, width=3)
-    # Ricontorno pezzo
+    # Occhio = cerchio sulla GUANCIA (si guarda di fianco, manico verso di noi / sotto)
+    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], fill=(40, 42, 45), outline=BLACK, width=3)
+    d.ellipse(
+        [hx - hole_r + 6, mid - hole_r + 5, hx + hole_r - 6, mid + hole_r - 5],
+        fill=(25, 26, 28), outline=IRON_D, width=1,
+    )
+
+    # ── TAGLIO / SEZIONE locale sull’occhio (metà inferiore) con tratteggio ROSSO ──
+    # Rimuove la metà sotto del metallo intorno al foro e mostra il materiale tagliato
+    sec_y = mid  # piano di taglio orizzontale
+    # zona sezionata: sotto il centro, tra x1 e x2, fuori dal foro
+    hatch_rect(d, x1 + 2, sec_y + 2, hx - hole_r - 1, mid + h - 2, CAP_RED, step=6, width=2)
+    hatch_rect(d, hx + hole_r + 1, sec_y + 2, x2 - 2, mid + h - 2, CAP_RED, step=6, width=2)
+    # bordo del taglio
+    d.line([x1, sec_y, hx - hole_r, sec_y], fill=CAP_RED, width=3)
+    d.line([hx + hole_r, sec_y, x2, sec_y], fill=CAP_RED, width=3)
+    # semicirconferenza inferiore del foro evidenziata in rosso
+    # (arco approssimato con lineette)
+    for a0 in range(0, 180, 8):
+        a1 = a0 + 8
+        r = hole_r
+        x_a = hx + r * math.cos(math.radians(a0 + 180))
+        y_a = mid + r * math.sin(math.radians(a0 + 180))
+        x_b = hx + r * math.cos(math.radians(a1 + 180))
+        y_b = mid + r * math.sin(math.radians(a1 + 180))
+        d.line([x_a, y_a, x_b, y_b], fill=CAP_RED, width=3)
+
+    # ricontorno
     d.rectangle([x0, mid - h, x2, mid + h], outline=BLACK, width=3)
     d.line([x1, mid - h, x1, mid + h], fill=BLACK, width=1)
     d.line([x2, mid - h, x2, mid + h], fill=BLACK, width=2)
     d.polygon(penna, outline=BLACK, width=2)
+    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], outline=BLACK, width=3)
 
-    # Quota Ø10 sul buco (orizzontale = diametro visto in sezione)
-    d.line([hole_l, mid, hole_r, mid], fill=DIM_COL, width=2)
-    arrow_h(d, hole_l, mid, left=True)
-    arrow_h(d, hole_r, mid, left=False)
+    # Quota Ø10
+    d.line([hx - hole_r, mid - hole_r - 18, hx + hole_r, mid - hole_r - 18], fill=DIM_COL, width=2)
+    arrow_h(d, hx - hole_r, mid - hole_r - 18, left=True)
+    arrow_h(d, hx + hole_r, mid - hole_r - 18, left=False)
     otw = d.textlength("Ø10", font=F15)
-    d.rectangle([hx - otw / 2 - 4, mid - 36, hx + otw / 2 + 4, mid - 10], fill=WHITE, outline=CAP_RED, width=1)
-    d.text((hx - otw / 2, mid - 34), "Ø10", fill=CAP_RED, font=F15)
+    d.rectangle([hx - otw / 2 - 4, mid - hole_r - 44, hx + otw / 2 + 4, mid - hole_r - 20], fill=WHITE)
+    d.text((hx - otw / 2, mid - hole_r - 42), "Ø10", fill=CAP_RED, font=F15)
 
-    # Freccia “manico” che entra dall’alto nel buco (passante)
-    d.line([hx, mid - h - 48, hx, mid - h - 4], fill=CAP_RED, width=2)
-    arrow_v(d, hx, mid - h - 4, up=False)
-    mtw = d.textlength("manico ↓", font=F12)
-    d.text((hx - mtw / 2, mid - h - 70), "manico ↓", fill=CAP_RED, font=F12)
-    d.text((hx - mtw / 2 - 10, mid + h + 8), "(passante)", fill=GRAY, font=F12)
+    # Manico che ESCE SOTTO (prova: si guarda di fianco, non dall’alto)
+    stem_w = 10
+    d.rectangle([hx - stem_w, mid + hole_r, hx + stem_w, mid + h + 55], fill=(160, 120, 70), outline=BLACK, width=2)
+    d.polygon(
+        [(hx - stem_w, mid + hole_r), (hx + stem_w, mid + hole_r),
+         (hx + stem_w - 2, mid + hole_r + 14), (hx - stem_w + 2, mid + hole_r + 14)],
+        fill=(120, 90, 50),
+    )
+    d.text((hx + stem_w + 8, mid + h + 20), "manico", fill=(120, 70, 20), font=F12)
+    d.text((hx + stem_w + 8, mid + h + 40), "(dopo)", fill=GRAY, font=F12)
+
+    # Etichetta freccia “SI GUARDA DI FIANCO”
+    d.text((x0, mid - h - depth - 48), "⟵ si guarda DI FIANCO (guancia)", fill=ACCENT, font=F13)
+    d.text((x0 + 400, mid - h - depth - 48), "//// rosso = TAGLIO", fill=CAP_RED, font=F13)
 
     centerline(d, x0 - 12, end_x + 14, mid)
 
-    top_r = mid - h
-    q1 = top_r - 36
+    top_r = mid - h - depth - 8
+    q1 = top_r - 8
     q0 = q1 - 28
     for xx in (x0, x1, x2, end_x):
-        ext_tick(d, xx, top_r, q0 - 2)
+        ext_tick(d, xx, mid - h, q0 - 2)
     dim_h(d, x0, x1, q1, "20")
     dim_h(d, x1, x2, q1, "24")
     dim_h(d, x2, end_x, q1, "16")
@@ -609,30 +651,28 @@ def make_2a():
         d.rectangle([cx - tw / 2 - 4, yy - 2, cx + tw / 2 + 4, yy + 20], fill=WHITE, outline=col, width=1)
         d.text((cx - tw / 2, yy), text, fill=col, font=F13)
 
-    lab_box((x0 + x1) / 2, mid - h - 28, "20 × 20", DIM_COL)
-    lab_box(peen_mid, mid - h - 28, "penna", (40, 100, 50))
+    lab_box((x0 + x1) / 2, mid - h - depth - 22, "20 × 20", DIM_COL)
 
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=bg, outline=BLACK, width=2)
         tw = d.textlength(n, font=F13)
         d.text((cx - tw / 2, cy - 9), n, fill=WHITE, font=F13)
 
-    badge_y = mid + h + 36
+    badge_y = mid + h + 70
     badge((x0 + x1) / 2, badge_y, "1", FACE_C)
     badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
 
-    ftxt = "VISTA LATERALE + TAGLIO — //// rosso = materiale sezionato"
+    ftxt = "VISTA DI FIANCO — occhio tondo sulla guancia · sotto = TAGLIO rosso"
     ftw = d.textlength(ftxt, font=F13) + 14
     fy = badge_y + 24
-    d.rectangle([hx - ftw / 2, fy, hx + ftw / 2, fy + 26], fill=(255, 235, 230), outline=CAP_RED, width=2)
-    d.text((hx - ftw / 2 + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
+    d.rectangle([max(ox, hx - ftw / 2), fy, max(ox, hx - ftw / 2) + ftw, fy + 26], fill=(255, 235, 230), outline=CAP_RED, width=2)
+    d.text((max(ox, hx - ftw / 2) + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
 
-    # Nota sotto: niente vista da sopra
     note_y = fy + 40
     text_in_box(
         d, ox, note_y, info_x1 - ox - 24, 44,
-        "Di lato NON si vede il cerchio: il buco si apre col TAGLIO (tratteggio rosso a sinistra e destra del foro).",
+        "NON è la pianta dall’alto: si vede lo spessore sopra e il manico che esce sotto. Tratteggio rosso = materiale tagliato.",
         F13, BLACK, pad=4,
     )
     text_in_box(
@@ -641,7 +681,6 @@ def make_2a():
         F13, BLACK, pad=2,
     )
 
-    # Mini barra di partenza
     bx, by = ox, note_y + 84
     d.text((bx, by), "BARRA DI PARTENZA 20×20×100 → taglio L=60", fill=ACCENT, font=F13)
     d.rectangle([bx, by + 26, bx + 160, by + 52], fill=IRON_L, outline=BLACK, width=2)
@@ -653,7 +692,7 @@ def make_2a():
 
     legend = [
         ("1 FACCIA", FACE_C, WHITE),
-        ("2 OCCHIO (sezione)", CAP_RED, WHITE),
+        ("2 OCCHIO + TAGLIO", CAP_RED, WHITE),
         ("3 PENNA", PEEN_C, WHITE),
     ]
     tag_y = by + 66
@@ -666,7 +705,7 @@ def make_2a():
 
     tip_y = tag_y + 40
     tips = [
-        "VISTA LATERALE: profilo della barra. Occhio = TAGLIO con linee rosse oblique.",
+        "DI FIANCO = guancia del martello (occhio tondo). Dall’alto sarebbe la pianta della barra.",
         "• Occhiali · morsa · foratura Ø10 · controlla L=60 e sez. 20×20 · manico dopo",
     ]
     tip_step = 22
