@@ -510,12 +510,12 @@ def make_2a():
         text_in_box(d, 448, y2 + 4 + i * step_c, 364, step_c - 4, ln, F13, BLACK, pad=4)
 
     y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    d.text((848, y3 + 8), "Alunno/a:", fill=BLACK, font=F13)
-    d.line([848, y3 + 36, 1185, y3 + 36], fill=BLACK, width=1)
-    d.text((848, y3 + 52), "Classe: ______  Data: __/__/____", fill=BLACK, font=F13)
-    d.text((848, y3 + 90), "Voto /10: ______", fill=BLACK, font=F13)
-    d.text((848, y3 + 128), "Firma docente:", fill=BLACK, font=F13)
-    d.line([848, y3 + 158, 1185, y3 + 158], fill=BLACK, width=1)
+    text_in_box(d, 848, y3 + 8, 340, 28, "Alunno/a:", F13, BLACK, pad=2)
+    d.line([848, y3 + 38, 1190, y3 + 38], fill=BLACK, width=1)
+    text_in_box(d, 848, y3 + 48, 340, 28, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
+    text_in_box(d, 848, y3 + 86, 340, 28, "Voto /10: ______", F13, BLACK, pad=2)
+    text_in_box(d, 848, y3 + 124, 340, 28, "Firma docente:", F13, BLACK, pad=2)
+    d.line([848, y3 + 156, 1190, y3 + 156], fill=BLACK, width=1)
 
     save(img, "01-2a-perno-spallamenti.png", "STAMPA-2a-perno-spallamenti.png")
 
