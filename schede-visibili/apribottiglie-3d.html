@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Apribottiglie 3D — come è fatto</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #1a2330; color: #fff; font-family: system-ui, sans-serif; }
+    #c { display: block; width: 100%; height: 100%; touch-action: none; }
+    .hud {
+      position: fixed; left: 12px; right: 12px; top: 12px; z-index: 2;
+      background: rgba(10, 20, 35, .82); border: 1px solid #3a5168; border-radius: 12px;
+      padding: 12px 14px; backdrop-filter: blur(6px);
+    }
+    .hud h1 { margin: 0 0 6px; font-size: 1.05rem; }
+    .hud p { margin: 0; font-size: .88rem; opacity: .9; line-height: 1.35; }
+    .legend {
+      position: fixed; left: 12px; bottom: 12px; z-index: 2;
+      background: rgba(10, 20, 35, .88); border: 1px solid #3a5168; border-radius: 12px;
+      padding: 10px 12px; font-size: .86rem; line-height: 1.55;
+    }
+    .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid #000; }
+    .btns { position: fixed; right: 12px; bottom: 12px; z-index: 2; display: flex; flex-direction: column; gap: 8px; }
+    .btns button {
+      border: 0; border-radius: 10px; padding: 12px 14px; font-weight: 700; font-size: .9rem;
+      background: #2b7bbf; color: #fff;
+    }
+    .btns a {
+      border-radius: 10px; padding: 12px 14px; font-weight: 700; font-size: .9rem; text-align: center;
+      background: #234; color: #dfefff; text-decoration: none; border: 1px solid #3a5168;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <h1>Apribottiglie in 3D</h1>
+    <p>Trascina per girare · pizzica per zoom. Pezzo L=80 mm da barra Ø20.</p>
+  </div>
+  <div class="legend">
+    <div><span class="sw" style="background:#78a8d2"></span><b>1 CORPO</b> — manico Ø16 × 50</div>
+    <div><span class="sw" style="background:#3770a5"></span><b>2 TESTA</b> — Ø18 × 18 + foro Ø6</div>
+    <div><span class="sw" style="background:#dc7830"></span><b>3 GANCIO</b> — uncino limato 12 mm</div>
+    <div><span class="sw" style="background:#fff;border-color:#c00"></span><b>BOCCA</b> — ci entra la capsula</div>
+  </div>
+  <div class="btns">
+    <button id="reset" type="button">Vista di partenza</button>
+    <button id="spin" type="button">Gira da solo: ON</button>
+    <a href="index.html">← Tutte le schede</a>
+  </div>
+  <canvas id="c"></canvas>
+
+  <script type="module">
+    import * as THREE from './vendor/three.module.js';
+    import { OrbitControls } from './vendor/OrbitControls.js';
+
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x1a2330);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 500);
+    camera.position.set(55, 35, 70);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.target.set(40, 0, 0);
+    let autoSpin = true;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 0.95);
+    key.position.set(40, 60, 40);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0x9ec7ff, 0.35);
+    fill.position.set(-30, 20, -40);
+    scene.add(fill);
+
+    // Grid / ground hint
+    const grid = new THREE.GridHelper(120, 24, 0x3a5168, 0x2a3848);
+    grid.position.set(40, -14, 0);
+    scene.add(grid);
+
+    const MAT = {
+      corpo: new THREE.MeshStandardMaterial({ color: 0x78a8d2, metalness: 0.55, roughness: 0.35 }),
+      testa: new THREE.MeshStandardMaterial({ color: 0x3770a5, metalness: 0.55, roughness: 0.35 }),
+      gancio: new THREE.MeshStandardMaterial({ color: 0xdc7830, metalness: 0.45, roughness: 0.4 }),
+      hole: new THREE.MeshStandardMaterial({ color: 0x111820, metalness: 0.2, roughness: 0.8 }),
+    };
+
+    const root = new THREE.Group();
+    scene.add(root);
+
+    // Axis along +X. Center of piece roughly at x=40
+    // 1 CORPO: Ø16 × 50 → r=8, from x=0..50
+    {
+      const g = new THREE.CylinderGeometry(8, 8, 50, 48);
+      g.rotateZ(Math.PI / 2);
+      const m = new THREE.Mesh(g, MAT.corpo);
+      m.position.set(25, 0, 0);
+      root.add(m);
+      // smusso visuale (anello chiaro)
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(8.05, 0.35, 10, 48),
+        new THREE.MeshStandardMaterial({ color: 0xd8e8f5, metalness: 0.3, roughness: 0.5 })
+      );
+      ring.rotation.y = Math.PI / 2;
+      ring.position.set(0.4, 0, 0);
+      root.add(ring);
+    }
+
+    // 2 TESTA: Ø18 × 18 → r=9, x=50..68
+    {
+      const g = new THREE.CylinderGeometry(9, 9, 18, 48);
+      g.rotateZ(Math.PI / 2);
+      const m = new THREE.Mesh(g, MAT.testa);
+      m.position.set(59, 0, 0);
+      root.add(m);
+    }
+
+    // Foro Ø6 passante (r=3) — cilindro scuro che “buca” la testa
+    {
+      const g = new THREE.CylinderGeometry(3, 3, 20, 32);
+      // default cylinder along Y = through the testa vertically (as in 2D side view hole is circle = axis Z toward viewer)
+      // In the 2D sheet the hole is seen as a circle in side view → axis is Z (out of page) or Y.
+      // For a bottle opener keyring hole, through the thickness (Z) or vertical? Side view shows circle → hole axis is Z.
+      g.rotateX(Math.PI / 2);
+      const m = new THREE.Mesh(g, MAT.hole);
+      m.position.set(58, 0, 0);
+      root.add(m);
+    }
+
+    // 3 GANCIO with BOCCA cutout — build from lathe blank then carve mouth
+    function makeHook() {
+      const group = new THREE.Group();
+      // blank: roughly Ø18 × 12 extruded, then shaped
+      const outer = new THREE.Mesh(
+        new THREE.CylinderGeometry(9, 8.2, 12, 32, 1, false, 0, Math.PI * 1.55),
+        MAT.gancio
+      );
+      outer.rotation.z = Math.PI / 2;
+      outer.position.set(74, 0, 0);
+      group.add(outer);
+
+      // bottom lip / uncino
+      const lipShape = new THREE.Shape();
+      lipShape.moveTo(0, 0);
+      lipShape.lineTo(10, -2);
+      lipShape.lineTo(11, 2);
+      lipShape.lineTo(4, 6);
+      lipShape.lineTo(0, 4);
+      lipShape.closePath();
+      const lipGeo = new THREE.ExtrudeGeometry(lipShape, { depth: 10, bevelEnabled: false });
+      const lip = new THREE.Mesh(lipGeo, MAT.gancio);
+      lip.position.set(68.5, -6, -5);
+      lip.rotation.y = 0;
+      group.add(lip);
+
+      // tip mass
+      const tip = new THREE.Mesh(new THREE.BoxGeometry(7, 10, 12), MAT.gancio);
+      tip.position.set(77.5, -1, 0);
+      tip.rotation.z = -0.25;
+      group.add(tip);
+
+      // BOCCA marker (white “capsule seat”) — floating plate in the cutout zone
+      const mouth = new THREE.Mesh(
+        new THREE.BoxGeometry(7.5, 3.2, 11),
+        new THREE.MeshStandardMaterial({ color: 0xfff4e8, emissive: 0x331100, emissiveIntensity: 0.15, metalness: 0.1, roughness: 0.7 })
+      );
+      mouth.position.set(73.5, -2.2, 0);
+      mouth.rotation.z = -0.15;
+      group.add(mouth);
+
+      // red ring highlighting bocca
+      const highlight = new THREE.Mesh(
+        new THREE.TorusGeometry(5.5, 0.35, 8, 40),
+        new THREE.MeshStandardMaterial({ color: 0xc62828, emissive: 0x661111, metalness: 0.2, roughness: 0.5 })
+      );
+      highlight.position.set(73.5, -2.2, 0);
+      highlight.rotation.y = Math.PI / 2;
+      group.add(highlight);
+
+      return group;
+    }
+    root.add(makeHook());
+
+    // Floating labels (sprites)
+    function makeLabel(text, color) {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, 512, 128);
+      ctx.fillStyle = 'rgba(10,20,35,0.85)';
+      roundRect(ctx, 8, 16, 496, 96, 18);
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 6;
+      roundRect(ctx, 8, 16, 496, 96, 18);
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 44px system-ui,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 256, 68);
+      const tex = new THREE.CanvasTexture(c);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+      const s = new THREE.Sprite(mat);
+      s.scale.set(22, 5.5, 1);
+      return s;
+    }
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    const l1 = makeLabel('1 CORPO Ø16×50', '#78a8d2'); l1.position.set(25, 18, 0); root.add(l1);
+    const l2 = makeLabel('2 TESTA + foro Ø6', '#9ec7ff'); l2.position.set(59, 20, 0); root.add(l2);
+    const l3 = makeLabel('3 GANCIO + BOCCA', '#ffb074'); l3.position.set(74, 18, 0); root.add(l3);
+
+    // Capsule ghost near bocca (to explain)
+    {
+      const cap = new THREE.Group();
+      const top = new THREE.Mesh(
+        new THREE.CylinderGeometry(7, 7.4, 2.2, 32),
+        new THREE.MeshStandardMaterial({ color: 0xd4a84a, metalness: 0.7, roughness: 0.3, transparent: true, opacity: 0.85 })
+      );
+      const skirt = new THREE.Mesh(
+        new THREE.CylinderGeometry(7.4, 7.1, 4, 32),
+        new THREE.MeshStandardMaterial({ color: 0xc8963a, metalness: 0.65, roughness: 0.35, transparent: true, opacity: 0.85 })
+      );
+      skirt.position.y = -3;
+      cap.add(top); cap.add(skirt);
+      cap.position.set(73.5, -9.5, 14);
+      cap.rotation.x = 0.2;
+      root.add(cap);
+      const lc = makeLabel('capsula (esempio)', '#d4a84a');
+      lc.position.set(73.5, -16, 14);
+      lc.scale.set(18, 4.5, 1);
+      root.add(lc);
+    }
+
+    function resize() {
+      const w = innerWidth, h = innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    addEventListener('resize', resize);
+    resize();
+
+    document.getElementById('reset').onclick = () => {
+      camera.position.set(55, 35, 70);
+      controls.target.set(40, 0, 0);
+      controls.update();
+    };
+    const spinBtn = document.getElementById('spin');
+    spinBtn.onclick = () => {
+      autoSpin = !autoSpin;
+      spinBtn.textContent = 'Gira da solo: ' + (autoSpin ? 'ON' : 'OFF');
+    };
+
+    // expose for screenshot mode
+    const params = new URLSearchParams(location.search);
+    if (params.get('shot') === '1') {
+      autoSpin = false;
+      document.querySelector('.hud').style.display = 'none';
+      document.querySelector('.legend').style.display = 'none';
+      document.querySelector('.btns').style.display = 'none';
+      root.rotation.y = -0.55;
+      camera.position.set(95, 42, 95);
+      controls.target.set(42, -2, 0);
+      controls.update();
+      // forza un render “fermo” utile allo screenshot
+      setTimeout(() => {
+        controls.update();
+        renderer.render(scene, camera);
+      }, 200);
+    }
+
+    function tick() {
+      if (autoSpin) root.rotation.y += 0.006;
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>
