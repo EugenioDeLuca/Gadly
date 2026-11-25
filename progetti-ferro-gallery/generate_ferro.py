@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Schede A4 — progetti FERRO al tornio (2ª–5ª), grezzo Ø20×100 mm.
-Pezzi utili e stimolanti + guida zigrinatura."""
+"""Schede A4 ferro al tornio — disegni grandi, quote precise, diciture chiare."""
 from __future__ import annotations
 
 import os
@@ -8,24 +7,23 @@ from PIL import Image, ImageDraw, ImageFont
 
 OUT = "/opt/cursor/artifacts/progetti-ferro"
 GAL = "/workspace/progetti-ferro-gallery"
+ART = "/opt/cursor/artifacts"
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(GAL, exist_ok=True)
 
 W, H = 1240, 1754
 BLACK = (0, 0, 0)
-GRAY = (50, 50, 50)
-LIGHT = (226, 226, 226)
-STEEL = (165, 173, 182)
-STEEL_D = (115, 124, 134)
-BRASS = (196, 164, 90)
+GRAY = (45, 45, 45)
+LIGHT = (224, 224, 224)
+STEEL = (168, 176, 184)
+STEEL_D = (118, 126, 136)
 ACCENT = (0, 55, 100)
 WHITE = (255, 255, 255)
-SOFT = (195, 195, 195)
-WARN_BG = (255, 244, 230)
-WARN = (120, 50, 10)
-OK_BG = (230, 242, 235)
-
-FOOT_TOP = H - 52
+SOFT = (90, 90, 90)
+CL = (110, 110, 110)
+WARN_BG = (255, 245, 230)
+WARN = (110, 45, 10)
+FOOT = H - 48
 
 
 def font(size):
@@ -48,563 +46,705 @@ def font_b(size):
     return font(size)
 
 
-F11, F12, F13, F14 = font_b(19), font_b(20), font_b(21), font_b(22)
-F15b, F16b, F18b, F22b = font_b(23), font_b(24), font_b(27), font_b(32)
-Fm = font_b(18)
-Fsmall = font(16)
+F11 = font_b(17)
+F12 = font_b(18)
+F13 = font_b(20)
+F14 = font_b(22)
+F15 = font_b(23)
+F18 = font_b(26)
+F22 = font_b(30)
+Fm = font_b(16)
+Fs = font(15)
 
 
 def new_sheet(classe, titolo, sub):
     img = Image.new("RGB", (W, H), WHITE)
     d = ImageDraw.Draw(img)
-    d.rectangle([12, 12, W - 12, H - 12], outline=BLACK, width=2)
-    d.rectangle([12, 12, W - 12, 104], fill=(246, 246, 246), outline=BLACK, width=2)
-    d.text((28, 26), f"{classe}  ·  {titolo}", fill=BLACK, font=F22b)
-    d.text((28, 64), sub, fill=GRAY, font=F12)
-    d.rectangle([W - 230, 24, W - 28, 88], outline=ACCENT, width=2)
-    d.text((W - 216, 32), "TORNIO · FERRO", fill=ACCENT, font=F13)
-    d.text((W - 216, 56), "barra Ø20 × 100", fill=ACCENT, font=F11)
-    d.rectangle([12, FOOT_TOP, W - 12, H - 12], fill=(246, 246, 246), outline=BLACK, width=2)
-    d.text(
-        (28, FOOT_TOP + 14),
-        "Quote in mm · tolleranza ±0,2 mm (tornitura) · laboratorio meccanico",
-        fill=GRAY,
-        font=Fm,
-    )
+    d.rectangle([10, 10, W - 10, H - 10], outline=BLACK, width=2)
+    d.rectangle([10, 10, W - 10, 84], fill=(245, 245, 245), outline=BLACK, width=2)
+    d.text((24, 18), f"{classe}  ·  {titolo}", fill=BLACK, font=F22)
+    d.text((24, 52), sub, fill=GRAY, font=F12)
+    d.rectangle([W - 210, 18, W - 24, 70], outline=ACCENT, width=2)
+    d.text((W - 198, 26), "TORNIO · FERRO", fill=ACCENT, font=F12)
+    d.text((W - 198, 48), "grezzo Ø20 × 100", fill=ACCENT, font=F11)
+    d.rectangle([10, FOOT, W - 10, H - 10], fill=(245, 245, 245), outline=BLACK, width=2)
+    d.text((24, FOOT + 12), "Quote in mm · tolleranze: Ø ±0,2 · lunghezze ±0,3 (salvo diversa indicazione)", fill=GRAY, font=Fm)
     return img, d
 
 
-def panel(d, x, y, w, h, title, fill=LIGHT):
+def panel(d, x, y, w, h, title):
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
-    d.rectangle([x, y, x + w, y + 30], fill=fill, outline=BLACK, width=2)
-    d.text((x + 10, y + 5), title, fill=BLACK, font=F15b)
-    return y + 36
+    d.rectangle([x, y, x + w, y + 28], fill=LIGHT, outline=BLACK, width=2)
+    d.text((x + 10, y + 5), title, fill=BLACK, font=F14)
+    return y + 34
 
 
-def dim_h(d, x1, x2, y, label):
+def arrow_h(d, x, y, left=True):
+    if left:
+        d.polygon([(x, y), (x + 9, y - 4), (x + 9, y + 4)], fill=BLACK)
+    else:
+        d.polygon([(x, y), (x - 9, y - 4), (x - 9, y + 4)], fill=BLACK)
+
+
+def arrow_v(d, x, y, up=True):
+    if up:
+        d.polygon([(x, y), (x - 4, y + 9), (x + 4, y + 9)], fill=BLACK)
+    else:
+        d.polygon([(x, y), (x - 4, y - 9), (x + 4, y - 9)], fill=BLACK)
+
+
+def dim_h(d, x1, x2, y, label, above=True):
+    """Quota orizzontale con frecce e testo pulito."""
+    if x2 < x1:
+        x1, x2 = x2, x1
     d.line([x1, y, x2, y], fill=BLACK, width=2)
-    d.line([x1, y - 5, x1, y + 5], fill=BLACK, width=2)
-    d.line([x2, y - 5, x2, y + 5], fill=BLACK, width=2)
+    arrow_h(d, x1, y, left=True)
+    arrow_h(d, x2, y, left=False)
     tw = d.textlength(label, font=F13)
     lx = (x1 + x2) / 2 - tw / 2
-    d.rectangle([lx - 2, y - 17, lx + tw + 2, y - 2], fill=WHITE)
-    d.text((lx, y - 16), label, fill=BLACK, font=F13)
+    ty = y - 20 if above else y + 5
+    # se troppo stretto, sposta il testo sopra/sotto con linea
+    if tw + 8 > (x2 - x1):
+        lx = (x1 + x2) / 2 - tw / 2
+        ty = y - 22 if above else y + 6
+    d.rectangle([lx - 3, ty - 1, lx + tw + 3, ty + 17], fill=WHITE)
+    d.text((lx, ty), label, fill=BLACK, font=F13)
 
 
-def dim_v(d, y1, y2, x, label):
-    d.line([x, y1, x, y2], fill=BLACK, width=2)
-    d.line([x - 5, y1, x + 5, y1], fill=BLACK, width=2)
-    d.line([x - 5, y2, x + 5, y2], fill=BLACK, width=2)
-    tw = d.textlength(label, font=F13)
-    d.rectangle([x + 6, (y1 + y2) / 2 - 9, x + 10 + tw, (y1 + y2) / 2 + 7], fill=WHITE)
-    d.text((x + 8, (y1 + y2) / 2 - 9), label, fill=BLACK, font=F13)
+def dim_dia_below(d, cx, y_top, y_bot, y_label, label):
+    """Quota diametro sotto il pezzo: lineette verticali + quota orizzontale sotto."""
+    # extension lines down from diameters
+    d.line([cx - (y_bot - y_top) / 2, y_bot, cx - (y_bot - y_top) / 2, y_label], fill=BLACK, width=1)
+    d.line([cx + (y_bot - y_top) / 2, y_bot, cx + (y_bot - y_top) / 2, y_label], fill=BLACK, width=1)
+    x1 = cx - (y_bot - y_top) / 2
+    x2 = cx + (y_bot - y_top) / 2
+    dim_h(d, x1, x2, y_label, label, above=False)
 
 
-def table(d, x, y, headers, rows, col_w, rh=26):
-    cx = x
-    for i, hdg in enumerate(headers):
-        d.rectangle([cx, y, cx + col_w[i], y + rh], fill=LIGHT, outline=BLACK, width=1)
-        d.text((cx + 4, y + 5), hdg, fill=BLACK, font=Fm)
-        cx += col_w[i]
-    for r, row in enumerate(rows):
-        cy = y + (r + 1) * rh
-        cx = x
-        bg = (250, 250, 250) if r % 2 else WHITE
-        for i, cell in enumerate(row):
-            d.rectangle([cx, cy, cx + col_w[i], cy + rh], fill=bg, outline=BLACK, width=1)
-            d.text((cx + 4, cy + 5), str(cell), fill=BLACK, font=Fm)
-            cx += col_w[i]
-    return y + (len(rows) + 1) * rh
+def label_dia(d, x, y, text, side="left"):
+    """Dicitura Ø a lato del pezzo (fuori dal profilo), con trattino di richiamo."""
+    tw = d.textlength(text, font=F13)
+    if side == "left":
+        d.line([x, y, x - 14, y], fill=BLACK, width=1)
+        d.rectangle([x - 18 - tw, y - 9, x - 14, y + 9], fill=WHITE)
+        d.text((x - 16 - tw, y - 8), text, fill=BLACK, font=F13)
+    else:
+        d.line([x, y, x + 14, y], fill=BLACK, width=1)
+        d.rectangle([x + 14, y - 9, x + 18 + tw, y + 9], fill=WHITE)
+        d.text((x + 16, y - 8), text, fill=BLACK, font=F13)
 
 
-def bullets(d, x, y, lines, fnt=F12, step=24):
-    for i, ln in enumerate(lines):
-        d.text((x, y + i * step), "•  " + ln, fill=BLACK, font=fnt)
-    return y + len(lines) * step
+def label_note(d, x, y, text):
+    d.text((x, y), text, fill=BLACK, font=F12)
 
 
-def student_block(d, x, y, y_max):
-    fields = [
-        "Alunno/a: ________________________________",
-        "Classe: ________    Data: ____ / ____ / ______",
-        "Voto /10: ______    Firma docente: _______________",
-        "Note sicurezza / osservazioni: _______________________________",
-    ]
-    yy = y
-    for ln in fields:
-        if yy > y_max - 22:
-            break
-        d.text((x, yy), ln, fill=BLACK, font=F12)
-        yy += 28
+def centerline(d, x1, x2, y):
+    x = x1
+    while x < x2:
+        d.line([x, y, min(x + 12, x2), y], fill=CL, width=1)
+        x += 20
 
 
-def knurl_pattern(d, x, y, w, h, step=9):
-    """Draw diamond knurl hatch inside a rectangle."""
+def _clip_diag(x0, y0, x1, y1, left, top, right, bottom):
+    dx, dy = x1 - x0, y1 - y0
+    p = [-dx, dx, -dy, dy]
+    q = [x0 - left, right - x0, y0 - top, bottom - y0]
+    u1, u2 = 0.0, 1.0
+    for pi, qi in zip(p, q):
+        if pi == 0:
+            if qi < 0:
+                return None
+            continue
+        t = qi / pi
+        if pi < 0:
+            if t > u2:
+                return None
+            if t > u1:
+                u1 = t
+        else:
+            if t < u1:
+                return None
+            if t < u2:
+                u2 = t
+    return (x0 + u1 * dx, y0 + u1 * dy, x0 + u2 * dx, y0 + u2 * dy)
+
+
+def knurl_box(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=STEEL, outline=BLACK, width=2)
-    # clip-like: only draw lines inside by intersecting conceptually with short segments
-    for i in range(-int(h), int(w + h), step):
-        x1 = x + max(i, 0)
-        y1 = y + max(-i, 0)
-        x2 = x + min(i + h, w)
-        y2 = y + min(h, w - i) if i < w else y + h
-        # diagonal \
-        xa, ya = x + max(i, 0), y + max(0, -i) if False else None
-    # simpler cross-hatch
-    for i in range(0, int(w + h), step):
-        # \
-        p1 = (x + i, y)
-        p2 = (x + i - h, y + h)
-        if i < w:
-            d.line([x + i, y + 2, x + i - (h - 4), y + h - 2], fill=SOFT, width=1)
-        # /
-        d.line([x + i - h + 4, y + 2, x + i, y + h - 2], fill=SOFT, width=1)
+    left, top, right, bottom = x + 2, y + 2, x + w - 2, y + h - 2
+    step = 8
+    for i in range(-int(h), int(w + h) + step, step):
+        seg = _clip_diag(x + i, y, x + i + h, y + h, left, top, right, bottom)
+        if seg:
+            d.line([seg[0], seg[1], seg[2], seg[3]], fill=SOFT, width=1)
+        seg = _clip_diag(x + i, y + h, x + i + h, y, left, top, right, bottom)
+        if seg:
+            d.line([seg[0], seg[1], seg[2], seg[3]], fill=SOFT, width=1)
+    d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
 
 
-def save(img, name):
+def ext_tick(d, x, y1, y2):
+    """Linea di richiamo verticale da pezzo a quota."""
+    d.line([x, y1, x, y2], fill=BLACK, width=1)
+
+
+def save(img, name, stampa=None):
     img.save(os.path.join(OUT, name), "PNG", optimize=True)
     img.save(os.path.join(GAL, name), "PNG", optimize=True)
-    # stampa copies
-    short = name.replace("01-", "").replace("02-", "").replace("03-", "").replace("04-", "")
-    img.save(os.path.join("/opt/cursor/artifacts", f"STAMPA-{short}"), "PNG", optimize=True)
+    if stampa:
+        img.save(os.path.join(ART, stampa), "PNG", optimize=True)
     print("saved", name)
 
 
-# ═══════════════════════════════════════════════════════════
-# 2ª — APRIBOTTIGLIE
-# ═══════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════
+# 2ª APRIBOTTIGLIE
+# ═══════════════════════════════════════════
 def make_2a():
     img, d = new_sheet(
         "2ª CLASSE",
         "APRIBOTTIGLIE",
-        "Grezzo Ø20 × 100 mm  ·  pezzo figo da portare a casa e usare subito",
-    )
-    y = panel(d, 28, 118, W - 56, 100, "PERCHÉ QUESTO PEZZO")
-    bullets(
-        d,
-        40,
-        y,
-        [
-            "Utile davvero: apre bottiglie, lo tieni nel cassetto o nel mazzo chiavi.",
-            "Al tornio: sfacciatura, tornitura, foro, smussi — poi lima per il gancio.",
-            "Dal grezzo Ø20×100 ricavi il corpo L=80 (avanzo ≈20 mm per prove).",
-        ],
+        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 80 mm",
     )
 
-    y = panel(d, 28, 234, W - 56, 480, "DISEGNO TECNICO — vista laterale (scala ~3,5:1)")
-    # Body Ø16×55 + head Ø18×15 with hole + hook tip 10 → ~80
-    sc = 3.5
-    ox, mid = 90, 400
-    # shaft
-    d.rectangle([ox, mid - 8 * sc, ox + 55 * sc, mid + 8 * sc], fill=STEEL, outline=BLACK, width=2)
-    # head thicker
-    d.rectangle([ox + 55 * sc, mid - 9 * sc, ox + 70 * sc, mid + 9 * sc], fill=STEEL_D, outline=BLACK, width=2)
-    # hole in head
-    hc = ox + 62 * sc
-    d.ellipse([hc - 3 * sc, mid - 3 * sc, hc + 3 * sc, mid + 3 * sc], outline=BLACK, width=2)
-    d.text((hc - 14, mid - 9 * sc - 22), "Ø6", fill=BLACK, font=F12)
-    # hook / lever tip (bottle opener lip) — triangular beak under head
-    tip_x = ox + 70 * sc
-    d.polygon(
-        [
-            (tip_x, mid - 4 * sc),
-            (tip_x + 12 * sc, mid + 2 * sc),
-            (tip_x, mid + 9 * sc),
-        ],
-        fill=STEEL_D,
-        outline=BLACK,
+    y = panel(d, 24, 96, W - 48, 86, "OBIETTIVO")
+    d.text((36, y + 4), "Tornitura di base + limatura del gancio. Pezzo utile da portare a casa.", fill=BLACK, font=F12)
+    d.text((36, y + 30), "Dal grezzo Ø20×100 si ricava L=80 (avanzo ≈20 mm per prove di tornitura).", fill=GRAY, font=F12)
+
+    # Disegno grande (pannello alto quanto serve al pezzo + quote + note)
+    draw_top = 198
+    draw_h = 700
+    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 8:1)")
+
+    sc = 8.0
+    mid = draw_top + 320
+    ox = 120
+
+    L_corpo, D_corpo = 50, 16
+    L_testa, D_testa = 18, 18
+    L_gancio = 12
+
+    x0 = ox
+    d.rectangle(
+        [x0, mid - D_corpo * sc / 2, x0 + L_corpo * sc, mid + D_corpo * sc / 2],
+        fill=STEEL, outline=BLACK, width=2,
     )
-    d.line([ox - 12, mid, tip_x + 14 * sc, mid], fill=SOFT, width=1)
-
-    dim_h(d, ox, ox + 55 * sc, mid - 9 * sc - 28, "55")
-    dim_h(d, ox + 55 * sc, tip_x + 12 * sc, mid - 9 * sc - 28, "25")
-    dim_h(d, ox, tip_x + 12 * sc, mid + 9 * sc + 36, "80")
-    dim_v(d, mid - 8 * sc, mid + 8 * sc, ox - 36, "Ø16")
-    dim_v(d, mid - 9 * sc, mid + 9 * sc, tip_x + 12 * sc + 28, "Ø18")
-
-    d.text((ox, mid + 9 * sc + 68), "Gancio a leva: dopo la tornitura, limare a forma di uncino (vedi schema).", fill=GRAY, font=F12)
-    # small hook detail sketch
-    d.text((720, 280), "Dettaglio gancio (vista)", fill=BLACK, font=F13)
-    gx, gy = 760, 340
-    d.rectangle([gx, gy, gx + 70, gy + 50], fill=STEEL, outline=BLACK, width=2)
-    d.arc([gx + 40, gy + 15, gx + 95, gy + 70], 200, 40, fill=BLACK, width=3)
-    d.text((gx, gy + 60), "uncino sotto il", fill=GRAY, font=Fsmall)
-    d.text((gx, gy + 78), "bordo della capsula", fill=GRAY, font=Fsmall)
-
-    y = panel(d, 28, 730, 580, 300, "GREZZO · FASI · DISTINTA")
-    table(
-        d,
-        40,
-        y,
-        ["Pezzo", "Materiale", "Grezzo", "Q.tà"],
-        [
-            ["Corpo apribottiglie", "Acciaio S235/C40", "Ø20 × 100", "1"],
-            ["Anello (opzionale)", "Acciaio zincato", "Ø25", "1"],
-        ],
-        [170, 160, 130, 60],
+    x1 = x0 + L_corpo * sc
+    d.rectangle(
+        [x1, mid - D_testa * sc / 2, x1 + L_testa * sc, mid + D_testa * sc / 2],
+        fill=STEEL_D, outline=BLACK, width=2,
     )
-    bullets(
-        d,
-        40,
-        y + 100,
-        [
-            "1) Sfacciatura → L=80",
-            "2) Corpo Ø16 e testa Ø18",
-            "3) Foro Ø6 sulla testa",
-            "4) Smussi 1×45°",
-            "5) Limatura uncino + carteggio",
-            "6) Prova su bottiglia (con docente)",
-        ],
-        F12,
-        26,
-    )
+    hole_r = 3 * sc
+    hx = x1 + L_testa * sc * 0.48
+    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], outline=BLACK, width=2)
+    d.line([hx - hole_r - 6, mid, hx + hole_r + 6, mid], fill=CL, width=1)
+    d.line([hx, mid - hole_r - 6, hx, mid + hole_r + 6], fill=CL, width=1)
 
-    y2 = panel(d, 628, 730, W - 28 - 628, 300, "CONTROLLO QUALITÀ")
+    x2 = x1 + L_testa * sc
+    tip = [
+        (x2, mid - 3 * sc),
+        (x2 + L_gancio * sc, mid + 1 * sc),
+        (x2 + 4 * sc, mid + 5 * sc),
+        (x2, mid + D_testa * sc / 2),
+    ]
+    d.polygon(tip, fill=STEEL_D, outline=BLACK)
+    # smussi
+    d.line([x0, mid - D_corpo * sc / 2, x0 + 6, mid - D_corpo * sc / 2 + 6], fill=BLACK, width=2)
+    d.line([x0, mid + D_corpo * sc / 2, x0 + 6, mid + D_corpo * sc / 2 - 6], fill=BLACK, width=2)
+
+    end_x = x2 + L_gancio * sc
+    centerline(d, x0 - 40, end_x + 50, mid)
+
+    # Quote lunghezze (sopra, due livelli)
+    q1 = mid - D_testa * sc / 2 - 40
+    q0 = q1 - 42
+    for xx in (x0, x1, x2, end_x):
+        ext_tick(d, xx, mid - D_testa * sc / 2, q0 - 4)
+    dim_h(d, x0, x1, q1, "50")
+    dim_h(d, x1, x2, q1, "18")
+    dim_h(d, x2, end_x, q1, "12")
+    dim_h(d, x0, end_x, q0, "80")
+
+    # Diametri a lato (fuori dal pezzo)
+    label_dia(d, x0, mid, "Ø16", side="left")
+    label_dia(d, end_x, mid, "Ø18", side="right")
+
+    # Foro
+    d.line([hx, mid + hole_r, hx, mid + D_testa * sc / 2 + 28], fill=BLACK, width=1)
+    d.text((hx + 6, mid + D_testa * sc / 2 + 18), "Ø6 passante", fill=BLACK, font=F13)
+
+    # Note
+    ny = mid + D_testa * sc / 2 + 70
+    label_note(d, x0, ny, "Smusso 1 × 45° alle estremità del corpo")
+    label_note(d, x0, ny + 28, "Gancio: limare dopo la tornitura (profilo sotto la capsula)")
+    label_note(d, x0, ny + 56, "Materiale: acciaio S235 oppure C40")
+
+    # Dettaglio gancio
+    bx1, by1, bx2, by2 = 920, 220, 1185, 430
+    d.rectangle([bx1, by1, bx2, by2], outline=BLACK, width=2)
+    d.rectangle([bx1, by1, bx2, by1 + 28], fill=LIGHT, outline=BLACK, width=2)
+    d.text((bx1 + 10, by1 + 5), "DETTAGLIO GANCIO", fill=BLACK, font=F12)
+    gx, gy = 980, 290
+    d.rectangle([gx, gy, gx + 100, gy + 60], fill=STEEL, outline=BLACK, width=2)
+    d.arc([gx + 55, gy + 25, gx + 145, gy + 110], 200, 40, fill=BLACK, width=3)
+    d.text((bx1 + 14, by2 - 50), "uncino sotto il", fill=GRAY, font=Fs)
+    d.text((bx1 + 14, by2 - 32), "bordo della capsula", fill=GRAY, font=Fs)
+
+    # Bottom
+    bot = draw_top + draw_h + 12
+    bh = FOOT - bot - 8
+    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     for i, ln in enumerate(
         [
-            "□ L = 80 ±0,5",
-            "□ Ø corpo 16 ±0,2",
-            "□ Foro Ø6 pulito",
-            "□ Uncino senza bave",
-            "□ Apre davvero la capsula",
-            "□ Superficie satinata",
-            "□ Sicuro da impugnare",
+            "1. Sfacciatura → L = 80",
+            "2. Tornitura corpo Ø16",
+            "3. Tornitura testa Ø18",
+            "4. Foratura Ø6 sulla testa",
+            "5. Smussi 1×45°",
+            "6. Limatura gancio + carteggio",
+            "7. Prova bottiglia (con docente)",
         ]
     ):
-        d.text((642, y2 + 8 + i * 30), ln, fill=BLACK, font=F13)
+        d.text((36, y + 4 + i * 28), ln, fill=BLACK, font=F12)
 
-    y = panel(d, 28, 1050, W - 56, FOOT_TOP - 1050 - 8, "DATI ALUNNO")
-    student_block(d, 40, y + 6, FOOT_TOP - 16)
-    save(img, "01-2a-apribottiglie.png")
+    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    for i, ln in enumerate(
+        [
+            "□ L = 80 ± 0,5",
+            "□ Ø corpo 16 ± 0,2",
+            "□ Ø testa 18 ± 0,2",
+            "□ Foro Ø6 pulito",
+            "□ Gancio senza bave",
+            "□ Apre la capsula",
+            "□ Superficie satinata",
+        ]
+    ):
+        d.text((452, y2 + 4 + i * 28), ln, fill=BLACK, font=F12)
+
+    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
+    d.text((848, y3 + 8), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([848, y3 + 36, 1185, y3 + 36], fill=BLACK, width=1)
+    d.text((848, y3 + 50), "Classe: ________  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((848, y3 + 88), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((848, y3 + 126), "Firma docente:", fill=BLACK, font=F12)
+    d.line([848, y3 + 156, 1185, y3 + 156], fill=BLACK, width=1)
+    d.text((848, y3 + 176), "Note:", fill=BLACK, font=F12)
+    d.line([848, y3 + 206, 1185, y3 + 206], fill=BLACK, width=1)
+
+    save(img, "01-2a-apribottiglie.png", "STAMPA-2a-apribottiglie.png")
 
 
-# ═══════════════════════════════════════════════════════════
-# 3ª — POMOLO MANIGLIA (con intro zigrinatura)
-# ═══════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════
+# 3ª POMOLO
+# ═══════════════════════════════════════════
 def make_3a():
     img, d = new_sheet(
         "3ª CLASSE",
         "POMOLO MANIGLIA M8",
-        "Grezzo Ø20 × 100 mm  ·  pomolo zigrinato per cassetto / anta — regalo utile",
-    )
-    y = panel(d, 28, 118, W - 56, 100, "PERCHÉ QUESTO PEZZO")
-    bullets(
-        d,
-        40,
-        y,
-        [
-            "Si monta su cassetto o anta (filetto M8): pezzo che si vede e si usa ogni giorno.",
-            "Introduzione alla zigrinatura (presa antiscivolo) + filettatura interna o vite prigioniera.",
-            "Finitura bella = pezzo da mostrare a casa.",
-        ],
+        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 36 mm  ·  filetto M8 × 1,25",
     )
 
-    y = panel(d, 28, 234, W - 56, 400, "DISEGNO TECNICO — pomolo (scala ~4:1)")
-    sc = 4.0
-    ox, mid = 120, 380
-    # knob: Ø20×18 knurled + neck Ø12×8 + boss Ø14×10 with M8 = 36 total from one end of bar
-    # Use L=36 finished from 100 stock
-    knurl_pattern(d, ox, mid - 10 * sc, 18 * sc, 20 * sc, step=8)
-    d.rectangle([ox + 18 * sc, mid - 6 * sc, ox + 26 * sc, mid + 6 * sc], fill=STEEL_D, outline=BLACK, width=2)
-    d.rectangle([ox + 26 * sc, mid - 7 * sc, ox + 36 * sc, mid + 7 * sc], fill=STEEL, outline=BLACK, width=2)
-    # M8 hole dashed on boss end
-    d.line([ox + 28 * sc, mid, ox + 36 * sc + 8, mid], fill=BLACK, width=1)
-    d.text((ox + 36 * sc + 12, mid - 10), "M8×1,25", fill=BLACK, font=F13)
-    d.text((ox + 36 * sc + 12, mid + 12), "(foro cieco 12 mm)", fill=GRAY, font=Fsmall)
-    d.line([ox - 15, mid, ox + 36 * sc + 5, mid], fill=SOFT, width=1)
+    y = panel(d, 24, 96, W - 48, 86, "OBIETTIVO")
+    d.text((36, y + 4), "Pomolo zigrinato per cassetto/anta. Prima zigrinatura + foro cieco filettato M8.", fill=BLACK, font=F12)
+    d.text((36, y + 30), "Dal grezzo si ricava L=36; l’avanzo serve per prove di zigrinatura.", fill=GRAY, font=F12)
 
-    dim_h(d, ox, ox + 18 * sc, mid - 10 * sc - 28, "18")
-    dim_h(d, ox + 18 * sc, ox + 26 * sc, mid - 10 * sc - 28, "8")
-    dim_h(d, ox + 26 * sc, ox + 36 * sc, mid - 10 * sc - 28, "10")
-    dim_h(d, ox, ox + 36 * sc, mid + 10 * sc + 34, "36")
-    dim_v(d, mid - 10 * sc, mid + 10 * sc, ox - 40, "Ø20")
-    dim_v(d, mid - 6 * sc, mid + 6 * sc, ox + 22 * sc, "Ø12")
+    draw_top = 198
+    draw_h = 700
+    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 12:1)")
 
-    d.text((ox, mid + 10 * sc + 62), "Zigrinatura a rombi (doppia) sul Ø20  ·  smusso 1×45° sul bordo pomolo", fill=GRAY, font=F12)
+    sc = 12.0
+    mid = draw_top + 290
+    ox = 140
 
-    # Mini knurl tip box
-    d.rectangle([700, 270, 1180, 520], fill=WARN_BG, outline=WARN, width=2)
-    d.text((715, 280), "PRIMA ZIGRINATURA — idea base", fill=WARN, font=F14)
+    L1, D1 = 18, 20
+    L2, D2 = 8, 12
+    L3, D3 = 10, 14
+
+    knurl_box(d, ox, mid - D1 * sc / 2, L1 * sc, D1 * sc)
+    x2 = ox + L1 * sc
+    d.rectangle([x2, mid - D2 * sc / 2, x2 + L2 * sc, mid + D2 * sc / 2], fill=STEEL_D, outline=BLACK, width=2)
+    x3 = x2 + L2 * sc
+    d.rectangle([x3, mid - D3 * sc / 2, x3 + L3 * sc, mid + D3 * sc / 2], fill=STEEL, outline=BLACK, width=2)
+
+    d.line([ox, mid - D1 * sc / 2, ox + 8, mid - D1 * sc / 2 + 8], fill=BLACK, width=2)
+    d.line([ox, mid + D1 * sc / 2, ox + 8, mid + D1 * sc / 2 - 8], fill=BLACK, width=2)
+
+    hole_d = 6.8 * sc
+    hole_depth = 12 * sc
+    hx0 = x3 + L3 * sc - hole_depth
+    end = x3 + L3 * sc
+    d.rectangle([hx0, mid - hole_d / 2, end, mid + hole_d / 2], fill=WHITE, outline=BLACK, width=2)
+    for i in range(5):
+        xx = hx0 + 10 + i * 18
+        if xx < end - 6:
+            d.line([xx, mid - hole_d / 2, xx + 5, mid + hole_d / 2], fill=SOFT, width=1)
+
+    centerline(d, ox - 35, end + 55, mid)
+
+    q1 = mid - D1 * sc / 2 - 36
+    q0 = q1 - 42
+    for xx in (ox, x2, x3, end):
+        ext_tick(d, xx, mid - D1 * sc / 2, q0 - 4)
+    dim_h(d, ox, x2, q1, "18")
+    dim_h(d, x2, x3, q1, "8")
+    dim_h(d, x3, end, q1, "10")
+    dim_h(d, ox, end, q0, "36")
+
+    # Diametri fuori profilo
+    label_dia(d, ox, mid, "Ø20", side="left")
+    # Ø12 sotto il collo, con richiamo
+    cy12 = mid + D1 * sc / 2 + 36
+    d.line([x2 + L2 * sc / 2, mid + D2 * sc / 2, x2 + L2 * sc / 2, cy12], fill=BLACK, width=1)
+    tw = d.textlength("Ø12", font=F13)
+    d.rectangle([x2 + L2 * sc / 2 - tw / 2 - 2, cy12 + 2, x2 + L2 * sc / 2 + tw / 2 + 2, cy12 + 20], fill=WHITE)
+    d.text((x2 + L2 * sc / 2 - tw / 2, cy12 + 3), "Ø12", fill=BLACK, font=F13)
+
+    label_dia(d, end, mid, "Ø14", side="right")
+
+    # Quota profondità foro sotto
+    qf = mid + D1 * sc / 2 + 70
+    ext_tick(d, hx0, mid + hole_d / 2, qf)
+    ext_tick(d, end, mid + hole_d / 2, qf)
+    dim_h(d, hx0, end, qf, "12", above=False)
+    d.text((hx0, qf + 22), "foro cieco Ø6,8  →  maschio M8 × 1,25", fill=BLACK, font=F13)
+
+    ny = qf + 55
+    label_note(d, ox, ny, "Zigrinatura a rombi (doppia) su tutta la lunghezza del Ø20")
+    label_note(d, ox, ny + 26, "Smusso 1 × 45° sul bordo anteriore del pomolo")
+
+    # Vista frontale
+    bx1, by1 = 940, 230
+    d.rectangle([bx1, by1, 1185, 500], outline=BLACK, width=2)
+    d.rectangle([bx1, by1, 1185, by1 + 28], fill=LIGHT, outline=BLACK, width=2)
+    d.text((bx1 + 10, by1 + 5), "VISTA FRONTALE", fill=BLACK, font=F12)
+    cx, cy, R = 1062, 375, 90
+    d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=STEEL, outline=BLACK, width=2)
+    d.ellipse([cx - R + 12, cy - R + 12, cx + R - 12, cy + R - 12], outline=SOFT, width=1)
+    r2 = 22
+    d.ellipse([cx - r2, cy - r2, cx + r2, cy + r2], fill=WHITE, outline=BLACK, width=2)
+    d.text((cx - 36, cy + R + 12), "Ø20  ·  M8", fill=BLACK, font=F12)
+
+    # Zigrinatura breve
+    d.rectangle([bx1, 520, 1185, draw_top + draw_h - 16], fill=WARN_BG, outline=WARN, width=2)
+    d.text((bx1 + 12, 532), "ZIGRINATURA — base", fill=WARN, font=F13)
     for i, ln in enumerate(
         [
-            "1. Utensile a rullare a 2 rulli (rombi).",
-            "2. Giri bassi: circa 60–100 giri/min.",
-            "3. Abbondante olio da taglio.",
-            "4. Avvicina i rulli al pezzo in moto,",
-            "   poni pressione finché “mordono”.",
-            "5. Avanza piano lungo i 18 mm.",
-            "6. Il diametro cresce un po’: normale!",
-            "   (non tornire dopo, se possibile)",
-            "Dettaglio completo → scheda 4ª classe.",
+            "• Rulli a rombi (2 rulli)",
+            "• 60–100 giri/min",
+            "• Olio abbondante",
+            "• Pressione a piccoli passi",
+            "• Avanza sui 18 mm",
+            "• Non tornire dopo",
+            "",
+            "Dettaglio → scheda 4ª",
         ]
     ):
-        d.text((715, 312 + i * 22), ln, fill=BLACK, font=F12)
+        d.text((bx1 + 12, 564 + i * 26), ln, fill=BLACK, font=F12)
 
-    y = panel(d, 28, 650, 580, 320, "GREZZO · FASI · DISTINTA")
-    table(
-        d,
-        40,
-        y,
-        ["Pezzo", "Materiale", "Grezzo", "Q.tà"],
-        [
-            ["Pomolo", "Acciaio C40", "Ø20 × 100", "1"],
-            ["Vite M8 (opz.)", "Acciaio 8.8", "M8 × 30", "1"],
-        ],
-        [120, 140, 140, 60],
-    )
-    bullets(
-        d,
-        40,
-        y + 100,
-        [
-            "1) Sfacciatura → L=36",
-            "2) Pomolo Ø20 + zigrinatura",
-            "3) Collo Ø12 e boccola Ø14",
-            "4) Foro Ø6,8 + maschio M8 cieco",
-            "5) Smussi e satinatura",
-            "6) Montaggio su anta/cassetto",
-        ],
-        F12,
-        26,
-    )
-
-    y2 = panel(d, 628, 650, W - 28 - 628, 320, "CONTROLLO QUALITÀ")
+    bot = draw_top + draw_h + 12
+    bh = FOOT - bot - 8
+    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     for i, ln in enumerate(
         [
-            "□ L = 36 ±0,3",
+            "1. Sfacciatura → L = 36",
+            "2. Pomolo Ø20 + zigrinatura",
+            "3. Collo Ø12 e boccola Ø14",
+            "4. Foro Ø6,8 × 12 (cieco)",
+            "5. Maschio M8 × 1,25",
+            "6. Smusso + satinatura",
+        ]
+    ):
+        d.text((36, y + 6 + i * 30), ln, fill=BLACK, font=F12)
+
+    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    for i, ln in enumerate(
+        [
+            "□ L = 36 ± 0,3",
             "□ Zigrinatura regolare",
-            "□ Nessun dente “saltato”",
-            "□ Filetto M8 ok (vite entra)",
-            "□ Presa comoda a mano",
-            "□ Finitura da “oggetto bello”",
+            "□ Nessun dente saltato",
+            "□ Vite M8 entra bene",
+            "□ Presa comoda",
+            "□ Finitura curata",
         ]
     ):
-        d.text((642, y2 + 10 + i * 32), ln, fill=BLACK, font=F13)
+        d.text((452, y2 + 6 + i * 30), ln, fill=BLACK, font=F12)
 
-    y = panel(d, 28, 990, W - 56, FOOT_TOP - 990 - 8, "DATI ALUNNO")
-    student_block(d, 40, y + 6, FOOT_TOP - 16)
-    save(img, "02-3a-pomolo-maniglia.png")
+    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
+    d.text((848, y3 + 8), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([848, y3 + 36, 1185, y3 + 36], fill=BLACK, width=1)
+    d.text((848, y3 + 52), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((848, y3 + 90), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((848, y3 + 128), "Firma docente:", fill=BLACK, font=F12)
+    d.line([848, y3 + 158, 1185, y3 + 158], fill=BLACK, width=1)
+    d.text((848, y3 + 178), "Note: ________________________", fill=BLACK, font=F12)
+
+    save(img, "02-3a-pomolo-maniglia.png", "STAMPA-3a-pomolo-maniglia.png")
 
 
-# ═══════════════════════════════════════════════════════════
-# 4ª — CACCIAVITE + GUIDA ZIGRINATURA COMPLETA
-# ═══════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════
+# 4ª CACCIAVITE
+# ═══════════════════════════════════════════
 def make_4a():
     img, d = new_sheet(
         "4ª CLASSE",
         "CACCIAVITE A TAGLIO",
-        "Grezzo Ø20 × 100 mm  ·  utensile monopezzo + zigrinatura spiegata passo-passo",
-    )
-    y = panel(d, 28, 118, W - 56, 78, "PERCHÉ QUESTO PEZZO")
-    bullets(
-        d,
-        40,
-        y,
-        [
-            "Utensile vero: lo usi in officina e a casa. Manico zigrinato = non scivola.",
-            "Qui impari bene la zigrinatura (vedi riquadro sotto) e la lama a taglio.",
-        ],
-        F12,
-        24,
+        "Barra tonda acciaio C40 Ø20 × 100 mm  ·  utensile monopezzo L = 100 mm",
     )
 
-    y = panel(d, 28, 212, W - 56, 300, "DISEGNO TECNICO — vista laterale (scala ~3,2:1)")
-    sc = 3.2
-    ox, mid = 70, 320
-    # 42 knurl + 5 gola + 18 collo + 35 lama = 100
-    knurl_pattern(d, ox, mid - 9 * sc, 42 * sc, 18 * sc, step=7)
-    d.rectangle([ox + 42 * sc, mid - 5 * sc, ox + 47 * sc, mid + 5 * sc], fill=STEEL_D, outline=BLACK, width=2)
-    d.rectangle([ox + 47 * sc, mid - 6 * sc, ox + 65 * sc, mid + 6 * sc], fill=STEEL, outline=BLACK, width=2)
-    d.rectangle([ox + 65 * sc, mid - 4 * sc, ox + 95 * sc, mid + 4 * sc], fill=STEEL_D, outline=BLACK, width=2)
-    tip = ox + 95 * sc
-    d.polygon([(tip, mid - 4 * sc), (tip + 10 * sc, mid), (tip, mid + 4 * sc)], fill=STEEL_D, outline=BLACK)
-    d.line([ox - 10, mid, tip + 12 * sc, mid], fill=SOFT, width=1)
+    y = panel(d, 24, 96, W - 48, 62, "OBIETTIVO")
+    d.text((36, y + 6), "Cacciavite monopezzo: zigrinatura del manico, gola di scarico, lama a taglio.", fill=BLACK, font=F12)
 
-    dim_h(d, ox, ox + 42 * sc, mid - 9 * sc - 24, "42")
-    dim_h(d, ox + 42 * sc, ox + 47 * sc, mid - 9 * sc - 24, "5")
-    dim_h(d, ox + 47 * sc, ox + 65 * sc, mid - 9 * sc - 24, "18")
-    dim_h(d, ox + 65 * sc, tip + 10 * sc, mid - 9 * sc - 24, "35")
-    dim_h(d, ox, tip + 10 * sc, mid + 9 * sc + 28, "100")
-    dim_v(d, mid - 9 * sc, mid + 9 * sc, ox - 34, "Ø18")
-    dim_v(d, mid - 6 * sc, mid + 6 * sc, ox + 56 * sc, "Ø12")
-    dim_v(d, mid - 4 * sc, mid + 4 * sc, ox + 80 * sc, "Ø8")
-    d.text((ox + 42 * sc - 6, mid + 9 * sc + 8), "gola Ø10", fill=GRAY, font=Fsmall)
+    draw_top = 174
+    draw_h = 620
+    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 6,5:1)")
 
-    # ===== ZIGRINATURA HOW-TO (big panel) =====
-    y = panel(d, 28, 528, W - 56, 520, "COME SI FA LA ZIGRINATURA (passo-passo)", fill=(220, 230, 240))
+    sc = 6.5
+    mid = draw_top + 280
+    ox = 70
+    # 42+5+18+30+5 = 100
+    segs = [
+        (42, 18, True),
+        (5, 10, False),
+        (18, 12, False),
+        (30, 8, False),
+    ]
+    x = ox
+    xs = []
+    for L, Dia, kn in segs:
+        ww, hh = L * sc, Dia * sc
+        if kn:
+            knurl_box(d, x, mid - hh / 2, ww, hh)
+        else:
+            fill = STEEL_D if Dia <= 10 else STEEL
+            d.rectangle([x, mid - hh / 2, x + ww, mid + hh / 2], fill=fill, outline=BLACK, width=2)
+        xs.append((x, ww, hh, L, Dia))
+        x += ww
 
-    # two columns
-    left = [
+    tip_l = 5 * sc
+    lx, lw, lh, _, _ = xs[3]
+    tip_x = lx + lw
+    d.polygon(
+        [(tip_x, mid - lh / 2), (tip_x + tip_l, mid), (tip_x, mid + lh / 2)],
+        fill=STEEL_D, outline=BLACK,
+    )
+    end_x = tip_x + tip_l
+    centerline(d, ox - 30, end_x + 40, mid)
+
+    # Quote lunghezze
+    top_r = mid - 18 * sc / 2
+    q1 = top_r - 36
+    q0 = q1 - 42
+    for xx in (ox, xs[1][0], xs[2][0], xs[3][0], end_x):
+        ext_tick(d, xx, top_r, q0 - 4)
+    dim_h(d, xs[0][0], xs[0][0] + xs[0][1], q1, "42")
+    dim_h(d, xs[1][0], xs[1][0] + xs[1][1], q1, "5")
+    dim_h(d, xs[2][0], xs[2][0] + xs[2][1], q1, "18")
+    dim_h(d, xs[3][0], end_x, q1, "35")
+    dim_h(d, ox, end_x, q0, "100")
+
+    # Diametri — tutti sotto, in posizioni sfalsate per non sovrapporsi
+    bot_r = mid + 18 * sc / 2
+    # Ø18 sotto manico
+    c0 = xs[0][0] + xs[0][1] / 2
+    y_d = bot_r + 40
+    d.line([c0, bot_r, c0, y_d], fill=BLACK, width=1)
+    tw = d.textlength("Ø18", font=F13)
+    d.rectangle([c0 - tw / 2 - 2, y_d + 2, c0 + tw / 2 + 2, y_d + 20], fill=WHITE)
+    d.text((c0 - tw / 2, y_d + 3), "Ø18", fill=BLACK, font=F13)
+
+    # Ø10 sotto gola (spostato a sinistra rispetto al centro gola se serve)
+    c1 = xs[1][0] + xs[1][1] / 2
+    y_d1 = bot_r + 70
+    d.line([c1, mid + 10 * sc / 2, c1, y_d1], fill=BLACK, width=1)
+    tw = d.textlength("Ø10", font=F13)
+    d.rectangle([c1 - tw / 2 - 2, y_d1 + 2, c1 + tw / 2 + 2, y_d1 + 20], fill=WHITE)
+    d.text((c1 - tw / 2, y_d1 + 3), "Ø10", fill=BLACK, font=F13)
+
+    # Ø12 sotto collo
+    c2 = xs[2][0] + xs[2][1] / 2
+    y_d2 = bot_r + 40
+    d.line([c2, mid + 12 * sc / 2, c2, y_d2], fill=BLACK, width=1)
+    tw = d.textlength("Ø12", font=F13)
+    d.rectangle([c2 - tw / 2 - 2, y_d2 + 2, c2 + tw / 2 + 2, y_d2 + 20], fill=WHITE)
+    d.text((c2 - tw / 2, y_d2 + 3), "Ø12", fill=BLACK, font=F13)
+
+    # Ø8 a destra punta
+    label_dia(d, end_x, mid, "Ø8", side="right")
+
+    ny = bot_r + 105
+    label_note(d, ox, ny, "Manico: zigrinatura a rombi (doppia) su Ø18")
+    label_note(d, ox, ny + 26, "Gola di scarico Ø10 tra manico e collo  ·  lama a taglio limata a mano (simmetrica)")
+    label_note(d, ox, ny + 52, "L tot. 100 = 42 + 5 + 18 + 35  (gambo 30 + taglio 5)", )
+
+    # Zigrinatura
+    zg = draw_top + draw_h + 10
+    zg_h = 300
+    y = panel(d, 24, zg, W - 48, zg_h, "COME SI FA LA ZIGRINATURA")
+    col1 = [
         "COSA SERVE",
-        "• Utensile zigrinatore a 2 rulli (rombi)",
-        "• Olio da taglio / fluido abbondante",
-        "• Pezzo già al diametro finito (Ø18)",
-        "• Giri bassi, pezzo ben serrato",
+        "• Zigrinatore a 2 rulli (rombi)",
+        "• Olio da taglio abbondante",
+        "• Pezzo già a Ø18 finito",
+        "• Pezzo corto e ben serrato",
         "",
-        "PARAMETRI CONSIGLIATI (acciaio)",
+        "PARAMETRI (acciaio)",
         "• Velocità: 60–120 giri/min",
-        "• Avanzamento: lento e costante",
-        "• Pressione: aumenta a piccoli passi",
-        "• Tipo: zigrinatura a rombi (doppia)",
+        "• Avanzamento: lento, costante",
+        "• Pressione: a piccoli passi",
     ]
-    right = [
-        "SEQUENZA OPERATIVA",
-        "1. Monta lo zigrinatore sul carrello",
-        "   (rulli allineati all’asse del pezzo).",
-        "2. Metti in moto a giri bassi + olio.",
-        "3. Avvicina i rulli finché toccano.",
-        "4. Dai pressione: devono “entrare”",
-        "   e creare il disegno a rombi.",
-        "5. Avanza lungo tutto il manico (42 mm)",
-        "   senza fermarti a metà.",
-        "6. Controlla: rombi regolari, niente",
-        "   doppie tracce / denti saltati.",
-        "7. Non tornire dopo: rovinerebbe",
-        "   la zigrinatura. Solo sbavatura leggera.",
+    col2 = [
+        "SEQUENZA",
+        "1. Allinea i rulli all’asse del pezzo",
+        "2. Moto a giri bassi + olio",
+        "3. Avvicina i rulli fino al contatto",
+        "4. Aumenta pressione: nascono i rombi",
+        "5. Avanza sui 42 mm senza fermarti",
+        "6. Controlla: rombi regolari, no doppie tracce",
+        "7. Non tornire dopo (solo sbavatura)",
+        "",
+        "SICUREZZA: occhiali · non toccare rulli in moto",
     ]
-    for i, ln in enumerate(left):
-        f = F13 if ln and not ln.startswith("•") and not ln.startswith("PARAM") and ln == ln.upper() and len(ln) < 30 else F12
-        if ln in ("COSA SERVE", "PARAMETRI CONSIGLIATI (acciaio)"):
-            d.text((44, y + 4 + i * 22), ln, fill=ACCENT, font=F13)
+    for i, ln in enumerate(col1):
+        if ln in ("COSA SERVE", "PARAMETRI (acciaio)"):
+            d.text((40, y + 2 + i * 24), ln, fill=ACCENT, font=F13)
         else:
-            d.text((44, y + 4 + i * 22), ln, fill=BLACK, font=F12)
-    for i, ln in enumerate(right):
-        if ln == "SEQUENZA OPERATIVA":
-            d.text((640, y + 4 + i * 22), ln, fill=ACCENT, font=F13)
+            d.text((40, y + 2 + i * 24), ln, fill=BLACK, font=F12)
+    for i, ln in enumerate(col2):
+        if ln == "SEQUENZA":
+            d.text((640, y + 2 + i * 24), ln, fill=ACCENT, font=F13)
         else:
-            d.text((640, y + 4 + i * 22), ln, fill=BLACK, font=F12)
+            d.text((640, y + 2 + i * 24), ln, fill=BLACK, font=F12)
 
-    # safety strip
-    d.rectangle([40, y + 310, W - 40, y + 372], fill=WARN_BG, outline=WARN, width=2)
-    d.text((52, y + 318), "SICUREZZA", fill=WARN, font=F13)
-    d.text((52, y + 344), "Occhiali sempre · pezzo corto e ben bloccato · mai toccare i rulli in moto · se vibra: stop, riprendi con meno pressione.", fill=BLACK, font=F12)
+    bot = zg + zg_h + 10
+    bh = FOOT - bot - 8
+    y = panel(d, 24, bot, 560, bh, "CONTROLLO / DATI")
+    d.text((36, y + 4), "□ Zigrinatura ok   □ L=100±0,5   □ Ø18 / Ø12 / Ø8", fill=BLACK, font=F12)
+    d.text((36, y + 32), "□ Lama simmetrica   □ Prova su vite M4 o M5", fill=BLACK, font=F12)
+    d.text((36, y + 64), "Alunno/a: ________________  Classe: ______", fill=BLACK, font=F12)
+    d.text((36, y + 94), "Data: __/__/____   Voto: ______   Firma: __________", fill=BLACK, font=F12)
 
-    # checklist + student compact
-    y = panel(d, 28, 1064, 700, FOOT_TOP - 1064 - 8, "CONTROLLO + DATI")
-    d.text((40, y + 4), "□ Zigrinatura ok   □ L=100   □ Lama simmetrica   □ Prova vite M4/M5", fill=BLACK, font=F12)
-    d.text((40, y + 36), "Alunno/a: _____________________  Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
-    d.text((40, y + 66), "Voto /10: ______  Firma docente: ________________", fill=BLACK, font=F12)
-    d.text((40, y + 96), "Note: _______________________________________________", fill=BLACK, font=F12)
+    y2 = panel(d, 600, bot, W - 24 - 600, bh, "DISTINTA")
+    d.text((612, y2 + 8), "1 × barra Ø20 × 100 — acciaio C40", fill=BLACK, font=F12)
+    d.text((612, y2 + 36), "Olio da taglio", fill=BLACK, font=F12)
+    d.text((612, y2 + 64), "Zigrinatore a rombi", fill=BLACK, font=F12)
+    d.text((612, y2 + 92), "Lima fina (per il taglio)", fill=BLACK, font=F12)
 
-    y2 = panel(d, 748, 1064, W - 28 - 748, FOOT_TOP - 1064 - 8, "DISTINTA")
-    d.text((760, y2 + 8), "1× barra Ø20×100 C40", fill=BLACK, font=F12)
-    d.text((760, y2 + 36), "Olio da taglio", fill=BLACK, font=F12)
-    d.text((760, y2 + 64), "Zigrinatore a rombi", fill=BLACK, font=F12)
-    d.text((760, y2 + 92), "Lima fina (lama)", fill=BLACK, font=F12)
-
-    save(img, "03-4a-cacciavite.png")
+    save(img, "03-4a-cacciavite.png", "STAMPA-4a-cacciavite.png")
 
 
-# ═══════════════════════════════════════════════════════════
-# 5ª — MORSETTO A VITE (C-clamp mini) / vite di bloccaggio bella
-# Actually: TIMBRINO PERSONALE or MORSETTO
-# 5ª — VITE DI PRESSIONE CON POMOLO (clamp screw) useful in school
-# Better liked: SET DA SCRIVANIA - fermacarte was boring
-# 5ª MARTELLO migliorato estetico OR "CHIUDIPORTO / fermaporte elegante"
-# I'll do: PUNZONE DI CENTRO + MANICO ZIGRINATO as precision tool
-# OR: APPOGGIO / SUPPORTO UTENSILE
-# Most stimulating: **Mini morsa a vite da banco** (body from bar + screw)
-# ═══════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════
+# 5ª VITE BLOCCAGGIO
+# ═══════════════════════════════════════════
 def make_5a():
     img, d = new_sheet(
         "5ª CLASSE",
         "VITE DI BLOCCAGGIO M10",
-        "Grezzo Ø20 × 100 mm  ·  vite a pomolo per fissare pezzi — resta in officina o a casa",
-    )
-    y = panel(d, 28, 118, W - 56, 100, "PERCHÉ QUESTO PEZZO")
-    bullets(
-        d,
-        40,
-        y,
-        [
-            "Serve davvero: stringe pezzi su dima, guida o morsa artigianale.",
-            "Unisce zigrinatura + filettatura esterna M10 + spallamento di precisione.",
-            "Progetto da 5ª: quote strette, finitura professionale, pezzo “da meccanico”.",
-        ],
+        "Barra tonda acciaio C40 Ø20 × 100 mm  ·  pezzo finito L = 100 mm  ·  filetto M10 × 1,5",
     )
 
-    y = panel(d, 28, 234, W - 56, 420, "DISEGNO TECNICO — vista laterale (scala ~3,5:1)")
-    sc = 3.5
-    ox, mid = 80, 380
-    # Pomolo zigrinato Ø20×22 + sottotesta Ø16×8 + gambo filettato M10×70 = 100
-    knurl_pattern(d, ox, mid - 10 * sc, 22 * sc, 20 * sc, step=7)
-    d.rectangle([ox + 22 * sc, mid - 8 * sc, ox + 30 * sc, mid + 8 * sc], fill=STEEL, outline=BLACK, width=2)
-    # threaded shaft as rectangle with pitch marks
-    sx = ox + 30 * sc
-    d.rectangle([sx, mid - 5 * sc, sx + 70 * sc, mid + 5 * sc], fill=STEEL_D, outline=BLACK, width=2)
-    for i in range(14):
-        xx = sx + 4 + i * 5 * sc / 1.1
-        if xx < sx + 68 * sc:
-            d.line([xx, mid - 5 * sc, xx + 2, mid + 5 * sc], fill=SOFT, width=1)
-    # tip chamfer
+    y = panel(d, 24, 96, W - 48, 62, "OBIETTIVO")
+    d.text((36, y + 6), "Vite a pomolo per fissare pezzi su dima/guida. Zigrinatura + filettatura esterna M10×1,5.", fill=BLACK, font=F12)
+
+    draw_top = 174
+    draw_h = 740
+    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 7:1)")
+
+    sc = 7.0
+    mid = draw_top + 290
+    ox = 90
+
+    knurl_box(d, ox, mid - 10 * sc, 22 * sc, 20 * sc)
+    x2 = ox + 22 * sc
+    d.rectangle([x2, mid - 8 * sc, x2 + 8 * sc, mid + 8 * sc], fill=STEEL, outline=BLACK, width=2)
+    x3 = x2 + 8 * sc
+    gambo_l = 70 * sc
+    tip = x3 + gambo_l
+    chamfer = 5 * sc
+    d.rectangle([x3, mid - 5 * sc, tip - chamfer, mid + 5 * sc], fill=STEEL_D, outline=BLACK, width=2)
     d.polygon(
-        [
-            (sx + 70 * sc, mid - 5 * sc),
-            (sx + 74 * sc, mid),
-            (sx + 70 * sc, mid + 5 * sc),
-        ],
-        fill=STEEL_D,
-        outline=BLACK,
+        [(tip - chamfer, mid - 5 * sc), (tip, mid), (tip - chamfer, mid + 5 * sc)],
+        fill=STEEL_D, outline=BLACK,
     )
-    d.line([ox - 12, mid, sx + 76 * sc, mid], fill=SOFT, width=1)
+    usable = gambo_l - chamfer - 12
+    for i in range(18):
+        xx = x3 + 10 + i * usable / 17
+        d.line([xx, mid - 5 * sc, xx + 4, mid + 5 * sc], fill=SOFT, width=1)
 
-    dim_h(d, ox, ox + 22 * sc, mid - 10 * sc - 28, "22")
-    dim_h(d, ox + 22 * sc, ox + 30 * sc, mid - 10 * sc - 28, "8")
-    dim_h(d, sx, sx + 70 * sc, mid - 10 * sc - 28, "70")
-    dim_h(d, ox, sx + 70 * sc, mid + 10 * sc + 34, "100")
-    dim_v(d, mid - 10 * sc, mid + 10 * sc, ox - 38, "Ø20")
-    dim_v(d, mid - 5 * sc, mid + 5 * sc, sx + 35 * sc, "M10")
+    centerline(d, ox - 30, tip + 45, mid)
 
-    d.text((ox, mid + 10 * sc + 62), "Filetto M10 × 1,5  ·  zigrinatura a rombi sul pomolo  ·  smusso all’inizio filetto", fill=GRAY, font=F12)
-    d.text((ox, mid + 10 * sc + 86), "Opzionale: punta bombata (per non segnare il pezzo) o punta piana.", fill=GRAY, font=F12)
+    top_r = mid - 10 * sc
+    q1 = top_r - 36
+    q0 = q1 - 42
+    for xx in (ox, x2, x3, tip):
+        ext_tick(d, xx, top_r, q0 - 4)
+    dim_h(d, ox, x2, q1, "22")
+    dim_h(d, x2, x3, q1, "8")
+    dim_h(d, x3, tip, q1, "70")
+    dim_h(d, ox, tip, q0, "100")
 
-    y = panel(d, 28, 670, 580, 300, "GREZZO · FASI · DISTINTA")
-    table(
-        d,
-        40,
-        y,
-        ["Pezzo", "Materiale", "Grezzo", "Q.tà"],
-        [["Vite di bloccaggio", "Acciaio C40", "Ø20 × 100", "1"]],
-        [180, 140, 140, 60],
-    )
-    bullets(
-        d,
-        40,
-        y + 80,
-        [
-            "1) Sfacciatura a L=100",
-            "2) Pomolo Ø20 + zigrinatura",
-            "3) Sottotesta Ø16",
-            "4) Gambo Ø10 per 70 mm",
-            "5) Filettatura M10×1,5 (filiera o tornio)",
-            "6) Smusso ingresso filetto + finitura",
-        ],
-        F12,
-        26,
-    )
+    # Diametri fuori
+    label_dia(d, ox, mid, "Ø20", side="left")
 
-    y2 = panel(d, 628, 670, W - 28 - 628, 300, "CONTROLLO QUALITÀ")
+    # Ø16 sotto sottotesta
+    c16 = x2 + 4 * sc
+    y16 = mid + 10 * sc + 40
+    d.line([c16, mid + 8 * sc, c16, y16], fill=BLACK, width=1)
+    tw = d.textlength("Ø16", font=F13)
+    d.rectangle([c16 - tw / 2 - 2, y16 + 2, c16 + tw / 2 + 2, y16 + 20], fill=WHITE)
+    d.text((c16 - tw / 2, y16 + 3), "Ø16", fill=BLACK, font=F13)
+
+    # M10 a destra
+    label_dia(d, tip, mid, "M10×1,5", side="right")
+
+    ny = mid + 10 * sc + 80
+    label_note(d, ox, ny, "Zigrinatura a rombi (doppia) sul pomolo Ø20")
+    label_note(d, ox, ny + 28, "Filetto metrico ISO M10 × 1,5 per 70 mm  ·  smusso di entrata sul filetto 1 × 45°")
+    label_note(d, ox, ny + 56, "Punta: a scelta bombata (non segna il pezzo) oppure piana")
+    label_note(d, ox, ny + 84, "L tot. 100 = 22 (pomolo) + 8 (sottotesta) + 70 (gambo filettato)")
+
+    # Nota zigrinatura
+    zb = draw_top + draw_h - 90
+    d.rectangle([40, zb, W - 40, zb + 70], fill=WARN_BG, outline=WARN, width=2)
+    d.text((52, zb + 12), "ZIGRINATURA: giri bassi (60–120) · olio · pressione progressiva · non tornire dopo.", fill=WARN, font=F12)
+    d.text((52, zb + 40), "Dettaglio completo sulla scheda 4ª classe (cacciavite).", fill=GRAY, font=F12)
+
+    bot = draw_top + draw_h + 12
+    bh = FOOT - bot - 8
+    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     for i, ln in enumerate(
         [
-            "□ L = 100 ±0,3",
-            "□ Zigrinatura regolare",
-            "□ Filetto entra in madrevite M10",
-            "□ Nessuna sbavatura sul filetto",
-            "□ Pomolo comodo da stringere",
-            "□ Allineamento asse ok",
-            "□ Aspetto “da banco”",
+            "1. Sfacciatura → L = 100",
+            "2. Pomolo Ø20 + zigrinatura",
+            "3. Sottotesta Ø16",
+            "4. Gambo Ø9,8–10 × 70",
+            "5. Filettatura M10×1,5",
+            "6. Smusso ingresso + finitura",
         ]
     ):
-        d.text((642, y2 + 8 + i * 30), ln, fill=BLACK, font=F13)
+        d.text((36, y + 6 + i * 30), ln, fill=BLACK, font=F12)
 
-    # quick knurl reminder
-    d.rectangle([28, 990, W - 28, 1088], fill=OK_BG, outline=ACCENT, width=2)
-    d.text((42, 1000), "RICORDA LA ZIGRINATURA (vedi scheda 4ª per i dettagli)", fill=ACCENT, font=F13)
-    d.text((42, 1030), "Giri bassi · olio · pressione progressiva · non tornire dopo. Se i rombi “ballano”: riparti con pezzo più", fill=BLACK, font=F12)
-    d.text((42, 1056), "rigido (contropunta) e meno avanzamento.", fill=BLACK, font=F12)
+    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    for i, ln in enumerate(
+        [
+            "□ L = 100 ± 0,3",
+            "□ Zigrinatura regolare",
+            "□ Entra in madrevite M10",
+            "□ Filetto senza bave",
+            "□ Pomolo comodo",
+            "□ Asse allineato",
+        ]
+    ):
+        d.text((452, y2 + 6 + i * 30), ln, fill=BLACK, font=F12)
 
-    y = panel(d, 28, 1100, W - 56, FOOT_TOP - 1100 - 8, "DATI ALUNNO")
-    student_block(d, 40, y + 4, FOOT_TOP - 16)
-    save(img, "04-5a-vite-bloccaggio.png")
+    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
+    d.text((848, y3 + 8), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([848, y3 + 36, 1185, y3 + 36], fill=BLACK, width=1)
+    d.text((848, y3 + 52), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((848, y3 + 90), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((848, y3 + 128), "Firma docente:", fill=BLACK, font=F12)
+    d.line([848, y3 + 158, 1185, y3 + 158], fill=BLACK, width=1)
+    d.text((848, y3 + 178), "Note: ________________________", fill=BLACK, font=F12)
+
+    save(img, "04-5a-vite-bloccaggio.png", "STAMPA-5a-vite-bloccaggio.png")
 
 
 if __name__ == "__main__":
