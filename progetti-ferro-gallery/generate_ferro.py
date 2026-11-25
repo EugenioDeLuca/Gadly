@@ -14,15 +14,21 @@ os.makedirs(GAL, exist_ok=True)
 W, H = 1240, 1754
 BLACK = (0, 0, 0)
 GRAY = (45, 45, 45)
-LIGHT = (224, 224, 224)
-STEEL = (168, 176, 184)
-STEEL_D = (118, 126, 136)
-ACCENT = (0, 55, 100)
+LIGHT = (210, 225, 240)
+STEEL = (120, 168, 210)       # azzurro metallo
+STEEL_D = (55, 110, 165)      # blu più scuro (gradini)
+STEEL_L = (180, 210, 235)     # azzurro chiaro
+ACCENT = (0, 70, 130)
 WHITE = (255, 255, 255)
-SOFT = (90, 90, 90)
-CL = (110, 110, 110)
-WARN_BG = (255, 245, 230)
-WARN = (110, 45, 10)
+SOFT = (40, 70, 100)
+CL = (80, 120, 160)
+WARN_BG = (255, 236, 200)
+WARN = (140, 60, 10)
+ORANGE = (220, 120, 40)
+CAP_GOLD = (210, 170, 60)
+CAP_RED = (190, 55, 50)
+GLASS = (150, 200, 220)
+DIM_COL = (0, 50, 100)        # quote blu scuro
 FOOT = H - 48
 
 
@@ -47,14 +53,16 @@ def font_b(size):
 
 
 F11 = font_b(17)
-F12 = font_b(18)
-F13 = font_b(20)
-F14 = font_b(22)
-F15 = font_b(23)
-F18 = font_b(26)
+F12 = font_b(19)
+F13 = font_b(22)   # diciture quote — più grandi
+F14 = font_b(23)
+F15 = font_b(25)
+F16 = font_b(26)   # diametri / quote principali
+F18 = font_b(28)
 F22 = font_b(30)
 Fm = font_b(16)
-Fs = font(15)
+Fs = font(16)
+FDIM = font_b(24)  # font quote
 
 
 def new_sheet(classe, titolo, sub):
@@ -94,21 +102,17 @@ def arrow_v(d, x, y, up=True):
 
 
 def dim_h(d, x1, x2, y, label, above=True):
-    """Quota orizzontale con frecce e testo pulito."""
+    """Quota orizzontale con frecce e testo grande."""
     if x2 < x1:
         x1, x2 = x2, x1
-    d.line([x1, y, x2, y], fill=BLACK, width=2)
+    d.line([x1, y, x2, y], fill=DIM_COL, width=2)
     arrow_h(d, x1, y, left=True)
     arrow_h(d, x2, y, left=False)
-    tw = d.textlength(label, font=F13)
+    tw = d.textlength(label, font=FDIM)
     lx = (x1 + x2) / 2 - tw / 2
-    ty = y - 20 if above else y + 5
-    # se troppo stretto, sposta il testo sopra/sotto con linea
-    if tw + 8 > (x2 - x1):
-        lx = (x1 + x2) / 2 - tw / 2
-        ty = y - 22 if above else y + 6
-    d.rectangle([lx - 3, ty - 1, lx + tw + 3, ty + 17], fill=WHITE)
-    d.text((lx, ty), label, fill=BLACK, font=F13)
+    ty = y - 26 if above else y + 6
+    d.rectangle([lx - 4, ty - 2, lx + tw + 4, ty + 22], fill=WHITE)
+    d.text((lx, ty), label, fill=DIM_COL, font=FDIM)
 
 
 def dim_dia_below(d, cx, y_top, y_bot, y_label, label):
@@ -122,20 +126,20 @@ def dim_dia_below(d, cx, y_top, y_bot, y_label, label):
 
 
 def label_dia(d, x, y, text, side="left"):
-    """Dicitura Ø a lato del pezzo (fuori dal profilo), con trattino di richiamo."""
-    tw = d.textlength(text, font=F13)
+    """Dicitura Ø grande a lato del pezzo."""
+    tw = d.textlength(text, font=F16)
     if side == "left":
-        d.line([x, y, x - 14, y], fill=BLACK, width=1)
-        d.rectangle([x - 18 - tw, y - 9, x - 14, y + 9], fill=WHITE)
-        d.text((x - 16 - tw, y - 8), text, fill=BLACK, font=F13)
+        d.line([x, y, x - 16, y], fill=DIM_COL, width=2)
+        d.rectangle([x - 22 - tw, y - 12, x - 14, y + 14], fill=WHITE)
+        d.text((x - 18 - tw, y - 10), text, fill=DIM_COL, font=F16)
     else:
-        d.line([x, y, x + 14, y], fill=BLACK, width=1)
-        d.rectangle([x + 14, y - 9, x + 18 + tw, y + 9], fill=WHITE)
-        d.text((x + 16, y - 8), text, fill=BLACK, font=F13)
+        d.line([x, y, x + 16, y], fill=DIM_COL, width=2)
+        d.rectangle([x + 14, y - 12, x + 22 + tw, y + 14], fill=WHITE)
+        d.text((x + 18, y - 10), text, fill=DIM_COL, font=F16)
 
 
 def label_note(d, x, y, text):
-    d.text((x, y), text, fill=BLACK, font=F12)
+    d.text((x, y), text, fill=GRAY, font=F13)
 
 
 def centerline(d, x1, x2, y):
@@ -181,6 +185,85 @@ def knurl_box(d, x, y, w, h):
         if seg:
             d.line([seg[0], seg[1], seg[2], seg[3]], fill=SOFT, width=1)
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
+
+
+def draw_hook_detail(d, bx1, by1, bx2, by2):
+    """Sezione: collo + capsula + uncino sotto il labbro (molto chiaro)."""
+    d.rectangle([bx1, by1, bx2, by2], fill=(255, 250, 240), outline=BLACK, width=2)
+    d.rectangle([bx1, by1, bx2, by1 + 32], fill=(255, 210, 150), outline=BLACK, width=2)
+    d.text((bx1 + 10, by1 + 6), "DETTAGLIO GANCIO", fill=WARN, font=F14)
+
+    # —— Bottiglia (collo) centrata ——
+    cx = (bx1 + bx2) / 2 - 20
+    neck_w, neck_top = 56, by1 + 95
+    # collo vetro
+    d.rectangle([cx - neck_w / 2, neck_top + 35, cx + neck_w / 2, by2 - 55], fill=GLASS, outline=(40, 90, 120), width=2)
+    # spalla
+    d.polygon(
+        [
+            (cx - neck_w / 2, neck_top + 35),
+            (cx - neck_w / 2 - 18, by2 - 55),
+            (cx + neck_w / 2 + 18, by2 - 55),
+            (cx + neck_w / 2, neck_top + 35),
+        ],
+        fill=GLASS,
+        outline=(40, 90, 120),
+    )
+
+    # —— Capsula a corona (oro) ——
+    cap_l, cap_r = cx - neck_w / 2 - 22, cx + neck_w / 2 + 22
+    cap_top = neck_top
+    # cima
+    d.ellipse([cap_l + 6, cap_top - 14, cap_r - 6, cap_top + 18], fill=CAP_GOLD, outline=BLACK, width=2)
+    # cilindro
+    d.rectangle([cap_l, cap_top + 4, cap_r, cap_top + 38], fill=CAP_GOLD, outline=BLACK, width=2)
+    # labbro ripiegato DX (dove entra l’uncino)
+    lip = [
+        (cap_r, cap_top + 38),
+        (cap_r + 4, cap_top + 38),
+        (cap_r - 2, cap_top + 54),
+        (cap_r - 16, cap_top + 54),
+        (cap_r - 16, cap_top + 38),
+    ]
+    d.polygon(lip, fill=(180, 140, 40), outline=BLACK)
+    # labbro SX
+    d.polygon(
+        [
+            (cap_l, cap_top + 38),
+            (cap_l - 4, cap_top + 38),
+            (cap_l + 2, cap_top + 54),
+            (cap_l + 16, cap_top + 54),
+            (cap_l + 16, cap_top + 38),
+        ],
+        fill=(180, 140, 40),
+        outline=BLACK,
+    )
+    # dentelli
+    for i in range(7):
+        xx = cap_l + 10 + i * ((cap_r - cap_l - 20) / 6)
+        d.line([xx, cap_top + 4, xx + 4, cap_top - 6], fill=BLACK, width=2)
+
+    # —— Uncino (arancio) che entra SOTTO il labbro destro ——
+    hook = [
+        (cap_r + 8, cap_top + 22),
+        (cap_r + 70, cap_top + 28),
+        (cap_r + 72, cap_top + 48),
+        (cap_r - 8, cap_top + 50),   # punta sotto il labbro
+        (cap_r - 8, cap_top + 44),
+        (cap_r + 50, cap_top + 42),
+        (cap_r + 48, cap_top + 34),
+        (cap_r + 10, cap_top + 30),
+    ]
+    d.polygon(hook, fill=ORANGE, outline=BLACK)
+    # freccia verso il punto di presa
+    d.line([cap_r + 30, cap_top + 70, cap_r - 2, cap_top + 52], fill=CAP_RED, width=3)
+    d.polygon(
+        [(cap_r - 2, cap_top + 52), (cap_r + 10, cap_top + 58), (cap_r + 6, cap_top + 48)],
+        fill=CAP_RED,
+    )
+
+    d.text((bx1 + 12, by2 - 48), "1. uncino SOTTO il bordo", fill=ORANGE, font=F13)
+    d.text((bx1 + 12, by2 - 24), "2. leva sulla capsula → apre", fill=CAP_RED, font=F13)
 
 
 def ext_tick(d, x, y1, y2):
@@ -240,13 +323,16 @@ def make_2a():
     d.line([hx, mid - hole_r - 6, hx, mid + hole_r + 6], fill=CL, width=1)
 
     x2 = x1 + L_testa * sc
+    # Gancio: profilo a uncino (non semplice punta) — da limare
     tip = [
-        (x2, mid - 3 * sc),
+        (x2, mid - D_testa * sc / 2 + 4),
+        (x2 + L_gancio * sc * 0.55, mid - 2 * sc),
         (x2 + L_gancio * sc, mid + 1 * sc),
-        (x2 + 4 * sc, mid + 5 * sc),
+        (x2 + L_gancio * sc * 0.7, mid + 4 * sc),
+        (x2 + 3 * sc, mid + 5.5 * sc),
         (x2, mid + D_testa * sc / 2),
     ]
-    d.polygon(tip, fill=STEEL_D, outline=BLACK)
+    d.polygon(tip, fill=ORANGE, outline=BLACK)
     # smussi
     d.line([x0, mid - D_corpo * sc / 2, x0 + 6, mid - D_corpo * sc / 2 + 6], fill=BLACK, width=2)
     d.line([x0, mid + D_corpo * sc / 2, x0 + 6, mid + D_corpo * sc / 2 - 6], fill=BLACK, width=2)
@@ -255,8 +341,8 @@ def make_2a():
     centerline(d, x0 - 40, end_x + 50, mid)
 
     # Quote lunghezze (sopra, due livelli)
-    q1 = mid - D_testa * sc / 2 - 40
-    q0 = q1 - 42
+    q1 = mid - D_testa * sc / 2 - 48
+    q0 = q1 - 48
     for xx in (x0, x1, x2, end_x):
         ext_tick(d, xx, mid - D_testa * sc / 2, q0 - 4)
     dim_h(d, x0, x1, q1, "50")
@@ -269,25 +355,17 @@ def make_2a():
     label_dia(d, end_x, mid, "Ø18", side="right")
 
     # Foro
-    d.line([hx, mid + hole_r, hx, mid + D_testa * sc / 2 + 28], fill=BLACK, width=1)
-    d.text((hx + 6, mid + D_testa * sc / 2 + 18), "Ø6 passante", fill=BLACK, font=F13)
+    d.line([hx, mid + hole_r, hx, mid + D_testa * sc / 2 + 32], fill=DIM_COL, width=2)
+    d.text((hx + 8, mid + D_testa * sc / 2 + 20), "Ø6 passante", fill=DIM_COL, font=F16)
 
     # Note
-    ny = mid + D_testa * sc / 2 + 70
+    ny = mid + D_testa * sc / 2 + 78
     label_note(d, x0, ny, "Smusso 1 × 45° alle estremità del corpo")
-    label_note(d, x0, ny + 28, "Gancio: limare dopo la tornitura (profilo sotto la capsula)")
-    label_note(d, x0, ny + 56, "Materiale: acciaio S235 oppure C40")
+    label_note(d, x0, ny + 30, "Gancio (arancio): limare dopo la tornitura — entra sotto la capsula")
+    label_note(d, x0, ny + 60, "Materiale: acciaio S235 oppure C40")
 
-    # Dettaglio gancio
-    bx1, by1, bx2, by2 = 920, 220, 1185, 430
-    d.rectangle([bx1, by1, bx2, by2], outline=BLACK, width=2)
-    d.rectangle([bx1, by1, bx2, by1 + 28], fill=LIGHT, outline=BLACK, width=2)
-    d.text((bx1 + 10, by1 + 5), "DETTAGLIO GANCIO", fill=BLACK, font=F12)
-    gx, gy = 980, 290
-    d.rectangle([gx, gy, gx + 100, gy + 60], fill=STEEL, outline=BLACK, width=2)
-    d.arc([gx + 55, gy + 25, gx + 145, gy + 110], 200, 40, fill=BLACK, width=3)
-    d.text((bx1 + 14, by2 - 50), "uncino sotto il", fill=GRAY, font=Fs)
-    d.text((bx1 + 14, by2 - 32), "bordo della capsula", fill=GRAY, font=Fs)
+    # Dettaglio gancio — schema capsula + uncino (più grande)
+    draw_hook_detail(d, 880, 220, 1190, 560)
 
     # Bottom
     bot = draw_top + draw_h + 12
@@ -394,9 +472,9 @@ def make_3a():
     # Ø12 sotto il collo, con richiamo
     cy12 = mid + D1 * sc / 2 + 36
     d.line([x2 + L2 * sc / 2, mid + D2 * sc / 2, x2 + L2 * sc / 2, cy12], fill=BLACK, width=1)
-    tw = d.textlength("Ø12", font=F13)
-    d.rectangle([x2 + L2 * sc / 2 - tw / 2 - 2, cy12 + 2, x2 + L2 * sc / 2 + tw / 2 + 2, cy12 + 20], fill=WHITE)
-    d.text((x2 + L2 * sc / 2 - tw / 2, cy12 + 3), "Ø12", fill=BLACK, font=F13)
+    tw = d.textlength("Ø12", font=F16)
+    d.rectangle([x2 + L2 * sc / 2 - tw / 2 - 3, cy12 + 2, x2 + L2 * sc / 2 + tw / 2 + 3, cy12 + 26], fill=WHITE)
+    d.text((x2 + L2 * sc / 2 - tw / 2, cy12 + 4), "Ø12", fill=DIM_COL, font=F16)
 
     label_dia(d, end, mid, "Ø14", side="right")
 
@@ -405,7 +483,7 @@ def make_3a():
     ext_tick(d, hx0, mid + hole_d / 2, qf)
     ext_tick(d, end, mid + hole_d / 2, qf)
     dim_h(d, hx0, end, qf, "12", above=False)
-    d.text((hx0, qf + 22), "foro cieco Ø6,8  →  maschio M8 × 1,25", fill=BLACK, font=F13)
+    d.text((hx0, qf + 28), "foro cieco Ø6,8  →  maschio M8 × 1,25", fill=DIM_COL, font=F15)
 
     ny = qf + 55
     label_note(d, ox, ny, "Zigrinatura a rombi (doppia) su tutta la lunghezza del Ø20")
@@ -547,25 +625,25 @@ def make_4a():
     c0 = xs[0][0] + xs[0][1] / 2
     y_d = bot_r + 40
     d.line([c0, bot_r, c0, y_d], fill=BLACK, width=1)
-    tw = d.textlength("Ø18", font=F13)
-    d.rectangle([c0 - tw / 2 - 2, y_d + 2, c0 + tw / 2 + 2, y_d + 20], fill=WHITE)
-    d.text((c0 - tw / 2, y_d + 3), "Ø18", fill=BLACK, font=F13)
+    tw = d.textlength("Ø18", font=F16)
+    d.rectangle([c0 - tw / 2 - 3, y_d + 2, c0 + tw / 2 + 3, y_d + 26], fill=WHITE)
+    d.text((c0 - tw / 2, y_d + 4), "Ø18", fill=DIM_COL, font=F16)
 
-    # Ø10 sotto gola (spostato a sinistra rispetto al centro gola se serve)
+    # Ø10 sotto gola
     c1 = xs[1][0] + xs[1][1] / 2
-    y_d1 = bot_r + 70
-    d.line([c1, mid + 10 * sc / 2, c1, y_d1], fill=BLACK, width=1)
-    tw = d.textlength("Ø10", font=F13)
-    d.rectangle([c1 - tw / 2 - 2, y_d1 + 2, c1 + tw / 2 + 2, y_d1 + 20], fill=WHITE)
-    d.text((c1 - tw / 2, y_d1 + 3), "Ø10", fill=BLACK, font=F13)
+    y_d1 = bot_r + 75
+    d.line([c1, mid + 10 * sc / 2, c1, y_d1], fill=DIM_COL, width=2)
+    tw = d.textlength("Ø10", font=F16)
+    d.rectangle([c1 - tw / 2 - 3, y_d1 + 2, c1 + tw / 2 + 3, y_d1 + 26], fill=WHITE)
+    d.text((c1 - tw / 2, y_d1 + 4), "Ø10", fill=DIM_COL, font=F16)
 
     # Ø12 sotto collo
     c2 = xs[2][0] + xs[2][1] / 2
     y_d2 = bot_r + 40
-    d.line([c2, mid + 12 * sc / 2, c2, y_d2], fill=BLACK, width=1)
-    tw = d.textlength("Ø12", font=F13)
-    d.rectangle([c2 - tw / 2 - 2, y_d2 + 2, c2 + tw / 2 + 2, y_d2 + 20], fill=WHITE)
-    d.text((c2 - tw / 2, y_d2 + 3), "Ø12", fill=BLACK, font=F13)
+    d.line([c2, mid + 12 * sc / 2, c2, y_d2], fill=DIM_COL, width=2)
+    tw = d.textlength("Ø12", font=F16)
+    d.rectangle([c2 - tw / 2 - 3, y_d2 + 2, c2 + tw / 2 + 3, y_d2 + 26], fill=WHITE)
+    d.text((c2 - tw / 2, y_d2 + 4), "Ø12", fill=DIM_COL, font=F16)
 
     # Ø8 a destra punta
     label_dia(d, end_x, mid, "Ø8", side="right")
@@ -688,9 +766,9 @@ def make_5a():
     c16 = x2 + 4 * sc
     y16 = mid + 10 * sc + 40
     d.line([c16, mid + 8 * sc, c16, y16], fill=BLACK, width=1)
-    tw = d.textlength("Ø16", font=F13)
-    d.rectangle([c16 - tw / 2 - 2, y16 + 2, c16 + tw / 2 + 2, y16 + 20], fill=WHITE)
-    d.text((c16 - tw / 2, y16 + 3), "Ø16", fill=BLACK, font=F13)
+    tw = d.textlength("Ø16", font=F16)
+    d.rectangle([c16 - tw / 2 - 3, y16 + 2, c16 + tw / 2 + 3, y16 + 26], fill=WHITE)
+    d.text((c16 - tw / 2, y16 + 4), "Ø16", fill=DIM_COL, font=F16)
 
     # M10 a destra
     label_dia(d, tip, mid, "M10×1,5", side="right")
