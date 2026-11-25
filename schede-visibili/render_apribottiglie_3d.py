@@ -164,12 +164,12 @@ def render(path, title, yaw_shift=0):
     draw_hole(d, 58, r=3)
     draw_hook(d)
 
-    # capsula fantasma vicino alla bocca
+    # tappo fantasma vicino alla bocca
     cx, cy = 74, -14
     for rr, col in ((7.2, CAP), (6.2, shade(CAP, 0.85))):
         pts = [iso(cx, cy + 2 + rr * math.sin(a), rr * math.cos(a)) for a in [i * 2 * math.pi / 24 for i in range(25)]]
         d.polygon(pts, fill=col, outline=(120, 90, 30))
-    d.text((iso(cx, cy - 4, 0)[0] - 40, iso(cx, cy - 4, 0)[1] + 40), "capsula", fill=CAP, font=F14)
+    d.text((iso(cx, cy - 4, 0)[0] - 40, iso(cx, cy - 4, 0)[1] + 40), "tappo", fill=CAP, font=F14)
 
     label(d, 25, 10, 0, "1 CORPO Ø16×50", STEEL, dy=-40)
     label(d, 59, 12, 0, "2 TESTA + foro Ø6", (150, 200, 240), dy=-50)
@@ -186,7 +186,7 @@ def render(path, title, yaw_shift=0):
         (STEEL, "1 CORPO — manico"),
         (STEEL_D, "2 TESTA — con foro"),
         (ORANGE, "3 GANCIO — apre bottiglia"),
-        (WHITE, "BOCCA bianca — entra la capsula"),
+        (WHITE, "BOCCA bianca — entra il tappo"),
     ]
     for i, (c, t) in enumerate(rows):
         yy = H - 108 + i * 22

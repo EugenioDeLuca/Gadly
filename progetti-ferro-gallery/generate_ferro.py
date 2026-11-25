@@ -271,7 +271,7 @@ def text_in_box(d, x, y, w, h, text, font, fill, pad=8):
 
 
 def draw_hook_detail(d, bx1, by1, bx2, by2):
-    """Dettaglio capsula + uncino — TUTTO dentro il riquadro."""
+    """Dettaglio tappo + uncino — TUTTO dentro il riquadro."""
     pad = 14
     hdr_h = 36
     d.rectangle([bx1, by1, bx2, by2], fill=(255, 250, 240), outline=BLACK, width=2)
@@ -323,8 +323,8 @@ def draw_hook_detail(d, bx1, by1, bx2, by2):
 
     # Due righe legenda completamente dentro la fascia inferiore
     tw = bx2 - bx1 - 2 * pad
-    text_in_box(d, bx1 + pad, foot_top + 4, tw, 30, "1. uncino SOTTO il bordo", F12, ORANGE, pad=4)
-    text_in_box(d, bx1 + pad, foot_top + 36, tw, 30, "2. leva sulla capsula → apre", F12, CAP_RED, pad=4)
+    text_in_box(d, bx1 + pad, foot_top + 4, tw, 30, "1. uncino SOTTO il bordo del tappo", F12, ORANGE, pad=4)
+    text_in_box(d, bx1 + pad, foot_top + 36, tw, 30, "2. alzi la leva → il tappo salta", F12, CAP_RED, pad=4)
 
 
 def ext_tick(d, x, y1, y2):
@@ -383,7 +383,7 @@ def make_2a():
 
     d.rectangle([info_x1 + 12, draw_top + 380, info_x2 - 12, draw_top + 490], fill=(255, 235, 230), outline=CAP_RED, width=2)
     text_in_box(d, info_x1 + 12, draw_top + 388, info_x2 - info_x1 - 24, 40, "BOCCA = zona bianca", F13, CAP_RED, pad=8)
-    text_in_box(d, info_x1 + 12, draw_top + 432, info_x2 - info_x1 - 24, 48, "prende il bordo capsula", F12, CAP_RED, pad=8)
+    text_in_box(d, info_x1 + 12, draw_top + 432, info_x2 - info_x1 - 24, 48, "prende il bordo del tappo", F12, CAP_RED, pad=8)
 
     # Profilo a sinistra (spazio ampio)
     sc = 9.0
@@ -411,28 +411,35 @@ def make_2a():
     hx = x1 + L_testa * sc * 0.48
     d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], fill=WHITE, outline=BLACK, width=3)
 
-    # GANCIO — forma a uncino leggibile (bocca GRANDE e vuota)
+    # GANCIO — profilo a C (dorso sopra, uncino sotto, bocca verso il basso)
     hook_outer = [
         (x2, ty0),
-        (x2 + g * 0.95, ty0 + 4),
-        (x2 + g, mid - 18),
-        (x2 + g, mid + 22),
-        (x2 + g * 0.35, ty1 + 38),
-        (x2 + g * 0.05, ty1 + 8),
-        (x2, ty1),
+        (x2 + g * 0.92, ty0 + 2),
+        (x2 + g, mid - 20),
+        (x2 + g * 0.95, mid + 30),
+        (x2 + g * 0.25, ty1 + 48),   # punta uncino
+        (x2 + g * 0.08, ty1 + 22),
+        (x2 + g * 0.35, mid + 18),   # risalita dentro la bocca
+        (x2 + g * 0.55, mid + 8),
+        (x2 + g * 0.50, mid - 6),
+        (x2 + g * 0.15, mid - 10),   # dorso che appoggia sul tappo
+        (x2, mid - 14),
     ]
     d.polygon(hook_outer, fill=ORANGE, outline=BLACK, width=3)
-    # Bocca = intaglio bianco a C (molto evidente)
+    # Bocca = vuoto bianco dove entra il TAPPO
     mouth = [
-        (x2 + g * 0.12, mid - 4),
-        (x2 + g * 0.72, mid - 10),
-        (x2 + g * 0.82, mid + 4),
-        (x2 + g * 0.55, mid + 28),
-        (x2 + g * 0.22, mid + 22),
-        (x2 + g * 0.18, mid + 8),
+        (x2 + g * 0.18, mid - 6),
+        (x2 + g * 0.58, mid - 4),
+        (x2 + g * 0.62, mid + 10),
+        (x2 + g * 0.38, mid + 20),
+        (x2 + g * 0.15, mid + 16),
+        (x2 + g * 0.12, mid + 2),
     ]
     d.polygon(mouth, fill=WHITE, outline=CAP_RED, width=3)
     d.line([(x2, ty0), (x2, ty1)], fill=BLACK, width=3)
+    # mini etichette sul pezzo
+    d.text((x2 + g * 0.55, ty0 - 22), "dorso", fill=ACCENT, font=F12)
+    d.text((x2 + g * 0.05, ty1 + 52), "uncino", fill=ORANGE, font=F12)
 
     centerline(d, x0 - 16, end_x + 20, mid)
 
@@ -484,7 +491,7 @@ def make_2a():
     if boc_t + boc_h > panel_bottom - 56:
         boc_t = panel_bottom - 56 - boc_h
     d.rectangle([boc_l, boc_t, boc_l + boc_w, boc_t + boc_h], fill=(255, 235, 230), outline=CAP_RED, width=3)
-    text_in_box(d, boc_l, boc_t, boc_w, boc_h, "BOCCA — ci entra la capsula", F14, CAP_RED, pad=8)
+    text_in_box(d, boc_l, boc_t, boc_w, boc_h, "BOCCA — ci entra il TAPPO", F14, CAP_RED, pad=8)
 
     # Barra legenda in basso (testi corti, chip larghi)
     legend = [
@@ -519,7 +526,7 @@ def make_2a():
     )
     d.text((320, row_y + 175), "dopo lima (uncino)", fill=ORANGE, font=F12)
     text_in_box(d, 36, row_y + 214, 540, 24, "Smusso 1×45° · materiale S235 oppure C40", F12, GRAY, pad=2)
-    text_in_box(d, 36, row_y + 242, 540, 24, "La bocca bianca prende il bordo della capsula.", F12, BLACK, pad=2)
+    text_in_box(d, 36, row_y + 242, 540, 24, "La bocca bianca prende il bordo del tappo.", F12, BLACK, pad=2)
 
     # Dettaglio gancio (testi interni al box)
     draw_hook_detail(d, 620, row_y, W - 24, row_y + row_h)
@@ -549,7 +556,7 @@ def make_2a():
             "□ Ø testa 18 ± 0,2",
             "□ Foro Ø6 pulito",
             "□ Gancio senza bave",
-            "□ Apre la capsula",
+            "□ Apre il tappo",
             "□ Superficie satinata",
         ]
     ):
