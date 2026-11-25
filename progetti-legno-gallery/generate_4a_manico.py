@@ -7,10 +7,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1240, 1754
 M = 36
-INK = (28, 28, 28)
-MUTED = (90, 90, 90)
-ACC = (30, 90, 168)
-LINE = (40, 40, 40)
+INK = (0, 0, 0)
+MUTED = (0, 0, 0)
+ACC = (0, 40, 90)
+LINE = (0, 0, 0)
 PANEL = (255, 255, 255)
 BG = (246, 246, 246)
 QC = (236, 244, 252)
@@ -32,14 +32,14 @@ def font(size, bold=False):
     return ImageFont.load_default()
 
 
-FT = font(28, True)
-FS = font(16)
-FH = font(18, True)
-FB = font(14, True)
-FN = font(13)
-FSm = font(12)
-FX = font(11)
-FD = font(12, True)
+FT = font(34, True)
+FS = font(19)
+FH = font(21, True)
+FB = font(17, True)
+FN = font(16)
+FSm = font(15)
+FX = font(14)
+FD = font(15, True)
 
 
 def tw(d, t, f):
@@ -63,7 +63,7 @@ def panel(d, box, title):
 
 
 def dim_h(d, x0, x1, y, label, tick=7):
-    d.line((x0, y, x1, y), fill=INK, width=1)
+    d.line((x0, y, x1, y), fill=INK, width=2)
     d.line((x0, y - tick, x0, y + tick), fill=INK, width=1)
     d.line((x1, y - tick, x1, y + tick), fill=INK, width=1)
     w = tw(d, label, FD)
@@ -73,7 +73,7 @@ def dim_h(d, x0, x1, y, label, tick=7):
 
 
 def dim_v(d, x, y0, y1, label, tick=7):
-    d.line((x, y0, x, y1), fill=INK, width=1)
+    d.line((x, y0, x, y1), fill=INK, width=2)
     d.line((x - tick, y0, x + tick, y0), fill=INK, width=1)
     d.line((x - tick, y1, x + tick, y1), fill=INK, width=1)
     w = tw(d, label, FD)
@@ -87,7 +87,7 @@ def label(d, x, y, text, f=FB):
     w = tw(d, text, f)
     hh = th(d, text, f)
     d.rectangle((x - 3, y - 2, x + w + 3, y + hh + 2), fill=PANEL)
-    d.text((x, y), text, fill=ACC, font=f)
+    d.text((x, y), text, fill=INK, font=f)
 
 
 def wrap(d, text, f, max_w):
