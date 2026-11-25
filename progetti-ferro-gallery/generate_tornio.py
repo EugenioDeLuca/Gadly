@@ -76,10 +76,11 @@ def new_sheet(titolo, sub):
 
 
 def panel(d, x, y, w, h, title, fill=LIGHT):
+    hdr = 34
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
-    d.rectangle([x, y, x + w, y + 28], fill=fill, outline=BLACK, width=2)
-    d.text((x + 10, y + 5), title, fill=BLACK, font=F14)
-    return y + 34
+    d.rectangle([x, y, x + w, y + hdr], fill=fill, outline=BLACK, width=2)
+    d.text((x + 12, y + 7), title, fill=BLACK, font=F13)
+    return y + hdr + 10
 
 
 def callout(d, n, tx, ty, lx, ly):
@@ -305,12 +306,13 @@ def make_leve_full():
         "A cosa serve ogni leva / volantino (imparale prima di accendere)",
     )
 
-    y = panel(d, 24, 100, W - 48, 72, "REGOLA D’ORO", fill=WARN_BG)
+    regola_y, regola_h = 100, 110
+    y = panel(d, 24, regola_y, W - 48, regola_h, "REGOLA D’ORO", fill=WARN_BG)
     d.text((36, y + 4), "Macchina FERMA per: cambiare velocità · invertire senso · spostare contropunta.", fill=WARN, font=F13)
     d.text((36, y + 32), "Occhiali sempre. Capelli/maniche raccolti. Non toccare pezzo o mandrino in moto.", fill=WARN, font=F13)
 
     # Mini lathe strip
-    y = panel(d, 24, 188, W - 48, 260, "POSIZIONE DEI COMANDI (schema semplificato)")
+    y = panel(d, 24, regola_y + regola_h + 12, W - 48, 260, "POSIZIONE DEI COMANDI (schema semplificato)")
     my = 320
     # bed
     d.rectangle([60, my + 80, 1160, my + 120], fill=BED, outline=BLACK, width=2)
@@ -371,7 +373,8 @@ def make_leve_full():
         ("N", "Bloccaggio utensile", "Serraggio sulla torretta. Utensile a centro pezzo."),
     ]
 
-    y = panel(d, 24, 464, 580, FOOT - 464 - 8, "COMANDI A – G")
+    com_y = regola_y + regola_h + 12 + 260 + 14
+    y = panel(d, 24, com_y, 580, FOOT - com_y - 8, "COMANDI A – G")
     yy = y + 2
     for n, title, desc in left:
         d.rectangle([36, yy, 62, yy + 24], fill=ACCENT, outline=BLACK)
@@ -393,7 +396,7 @@ def make_leve_full():
             ly += 16
         yy = ly + 8
 
-    y = panel(d, 620, 464, W - 24 - 620, FOOT - 464 - 8, "COMANDI H – N")
+    y = panel(d, 620, com_y, W - 24 - 620, FOOT - com_y - 8, "COMANDI H – N")
     yy = y + 2
     for n, title, desc in right:
         d.rectangle([632, yy, 658, yy + 24], fill=ACCENT, outline=BLACK)

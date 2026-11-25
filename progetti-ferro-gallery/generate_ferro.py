@@ -81,12 +81,44 @@ def new_sheet(classe, titolo, sub):
 
 
 def panel(d, x, y, w, h, title):
-    hdr = 32
+    """Disegna pannello. Ritorna y del contenuto (sotto l’header)."""
+    hdr = 36
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
     d.rectangle([x, y, x + w, y + hdr], fill=LIGHT, outline=BLACK, width=2)
-    # titolo sempre dentro l’intestazione del pannello
-    text_in_box(d, x, y, w, hdr, title, F14, BLACK, pad=8)
-    return y + hdr + 6
+    # titolo centrato verticalmente nell’header, aria sopra e sotto
+    f = F13
+    tw = d.textlength(title, font=f)
+    th = 22
+    d.text((x + 12, y + (hdr - th) / 2), title, fill=BLACK, font=f)
+    return y + hdr + 10
+
+
+def write_obiettivo(d, lines, y0=96):
+    """Riquadro OBIETTIVO: testo intero, padding sotto/sopra, mai sulla linea."""
+    x, w = 24, W - 48
+    hdr = 36
+    pad_top, pad_bot = 14, 18
+    line_h = 30
+    h = hdr + pad_top + len(lines) * line_h + pad_bot
+    # disegna box (stesso stile di panel, senza riuso per altezza header coerente)
+    d.rectangle([x, y0, x + w, y0 + h], outline=BLACK, width=2)
+    d.rectangle([x, y0, x + w, y0 + hdr], fill=LIGHT, outline=BLACK, width=2)
+    d.text((x + 12, y0 + 8), "OBIETTIVO", fill=BLACK, font=F13)
+    cy = y0 + hdr + pad_top
+    max_w = w - 28
+    for i, item in enumerate(lines):
+        if isinstance(item, tuple):
+            text, fill = item
+        else:
+            text, fill = item, BLACK
+        # riduci font se troppo largo — una sola riga, mai wrap che esce
+        f = F12
+        for sz in range(19, 13, -1):
+            f = font_b(sz)
+            if d.textlength(text, font=f) <= max_w:
+                break
+        d.text((x + 14, cy + i * line_h), text, fill=fill, font=f)
+    return y0 + h + 12
 
 
 def arrow_h(d, x, y, left=True):
@@ -200,34 +232,43 @@ def text_fit(d, text, font, max_w):
 
 
 def text_in_box(d, x, y, w, h, text, font, fill, pad=8):
-    """Scrive testo DENTRO il box: riduce il font se serve, mai fuori dai bordi."""
+    """Scrive testo DENTRO il box: preferisce font più piccolo al wrap; mai fuori."""
     max_w = max(20, w - 2 * pad)
     max_h = max(12, h - 2 * pad)
     start = font.size if hasattr(font, "size") else 19
+    # Una sola riga se l’altezza non regge due righe
     for sz in range(min(start, int(max_h)), 10, -1):
         f = font_b(sz)
         if d.textlength(text, font=f) <= max_w:
-            # ancora 2px di aria sotto la baseline
             ty = y + pad + max(0, (max_h - sz) / 2)
-            if ty + sz + 2 > y + h - 2:
-                ty = y + h - sz - 4
+            # lascia almeno 4px sopra il bordo inferiore (descender)
+            if ty + sz + 4 > y + h - 2:
+                ty = y + h - sz - 6
             if ty < y + 2:
                 ty = y + 2
             d.text((x + pad, ty), text, fill=fill, font=f)
             return
-    # due righe
-    f = font_b(max(11, min(13, int(max_h / 2) - 1)))
-    words = text.split()
-    line1, line2 = "", ""
-    for w0 in words:
-        trial = (line1 + " " + w0).strip()
-        if d.textlength(trial, font=f) <= max_w:
-            line1 = trial
-        else:
-            line2 = (line2 + " " + w0).strip()
-    d.text((x + pad, y + pad), line1, fill=fill, font=f)
-    if line2 and y + pad + f.size + 4 < y + h - 2:
-        d.text((x + pad, y + pad + f.size + 2), line2, fill=fill, font=f)
+    # wrap solo se c’è spazio verticale per 2 righe
+    if max_h >= 28:
+        f = font_b(max(11, min(13, int(max_h / 2) - 2)))
+        words = text.split()
+        line1, line2 = "", ""
+        for w0 in words:
+            trial = (line1 + " " + w0).strip()
+            if d.textlength(trial, font=f) <= max_w:
+                line1 = trial
+            else:
+                line2 = (line2 + " " + w0).strip()
+        d.text((x + pad, y + pad), line1, fill=fill, font=f)
+        if line2 and y + pad + f.size + 6 < y + h - 4:
+            d.text((x + pad, y + pad + f.size + 2), line2, fill=fill, font=f)
+        return
+    # ultima spiaggia: testo tagliato in larghezza con font piccolo
+    f = font_b(11)
+    t = text
+    while len(t) > 1 and d.textlength(t, font=f) > max_w:
+        t = t[:-1]
+    d.text((x + pad, y + pad), t, fill=fill, font=f)
 
 
 def draw_hook_detail(d, bx1, by1, bx2, by2):
@@ -313,16 +354,13 @@ def make_2a():
     # Margini interni del foglio
     LEFT, RIGHT = 36, W - 36
 
-    y = panel(d, 24, 96, W - 48, 64, "OBIETTIVO")
-    text_in_box(
-        d, LEFT - 4, y, RIGHT - LEFT + 8, 28,
-        "Tornitura + limatura del gancio. Grezzo → L=80 (avanzo ≈20 mm).",
-        F12, BLACK, pad=4,
+    draw_top = write_obiettivo(
+        d,
+        ["Tornitura + limatura del gancio. Grezzo → L=80 (avanzo ≈20 mm)."],
     )
 
     # ——— PANNELLO DISEGNO: profilo CHIARO + legenda numerata ———
-    draw_top = 176
-    draw_h = 560
+    draw_h = 540
     panel(d, 24, draw_top, W - 48, draw_h, "COME È FATTO — vista laterale (scala 9:1)")
     panel_bottom = draw_top + draw_h
 
@@ -539,12 +577,14 @@ def make_3a():
         "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 36 mm  ·  filetto M8 × 1,25",
     )
 
-    y = panel(d, 24, 96, W - 48, 86, "OBIETTIVO")
-    d.text((36, y + 4), "Pomolo zigrinato per cassetto/anta. Prima zigrinatura + foro cieco filettato M8.", fill=BLACK, font=F12)
-    d.text((36, y + 30), "Dal grezzo si ricava L=36; l’avanzo serve per prove di zigrinatura.", fill=GRAY, font=F12)
-
-    draw_top = 198
-    draw_h = 700
+    draw_top = write_obiettivo(
+        d,
+        [
+            "Pomolo zigrinato per cassetto/anta. Prima zigrinatura + foro cieco filettato M8.",
+            ("Dal grezzo si ricava L=36; l’avanzo serve per prove di zigrinatura.", GRAY),
+        ],
+    )
+    draw_h = 680
     y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 12:1)")
 
     sc = 12.0
@@ -686,11 +726,11 @@ def make_4a():
         "Barra tonda acciaio C40 Ø20 × 100 mm  ·  utensile monopezzo L = 100 mm",
     )
 
-    y = panel(d, 24, 96, W - 48, 62, "OBIETTIVO")
-    d.text((36, y + 6), "Cacciavite monopezzo: zigrinatura del manico, gola di scarico, lama a taglio.", fill=BLACK, font=F12)
-
-    draw_top = 174
-    draw_h = 620
+    draw_top = write_obiettivo(
+        d,
+        ["Cacciavite monopezzo: zigrinatura del manico, gola di scarico, lama a taglio."],
+    )
+    draw_h = 600
     y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 6,5:1)")
 
     sc = 6.5
@@ -837,11 +877,11 @@ def make_5a():
         "Barra tonda acciaio C40 Ø20 × 100 mm  ·  pezzo finito L = 100 mm  ·  filetto M10 × 1,5",
     )
 
-    y = panel(d, 24, 96, W - 48, 62, "OBIETTIVO")
-    d.text((36, y + 6), "Vite a pomolo per fissare pezzi su dima/guida. Zigrinatura + filettatura esterna M10×1,5.", fill=BLACK, font=F12)
-
-    draw_top = 174
-    draw_h = 740
+    draw_top = write_obiettivo(
+        d,
+        ["Vite a pomolo per fissare pezzi su dima/guida. Zigrinatura + filettatura esterna M10×1,5."],
+    )
+    draw_h = 720
     y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 7:1)")
 
     sc = 7.0

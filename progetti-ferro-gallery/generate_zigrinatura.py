@@ -55,10 +55,11 @@ Fm, Fs = font_b(16), font(15)
 
 
 def panel(d, x, y, w, h, title, fill=LIGHT):
+    hdr = 34
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
-    d.rectangle([x, y, x + w, y + 28], fill=fill, outline=BLACK, width=2)
-    d.text((x + 10, y + 5), title, fill=BLACK, font=F14)
-    return y + 34
+    d.rectangle([x, y, x + w, y + hdr], fill=fill, outline=BLACK, width=2)
+    d.text((x + 12, y + 7), title, fill=BLACK, font=F13)
+    return y + hdr + 10
 
 
 def _clip(x0, y0, x1, y1, left, top, right, bottom):
@@ -112,14 +113,16 @@ def make():
     d.rectangle([10, FOOT, W - 10, H - 10], fill=(245, 245, 245), outline=BLACK, width=2)
     d.text((24, FOOT + 12), "Tieni questa scheda vicino al tornio  ·  zigrinatura = impronta a freddo, non asportazione", fill=GRAY, font=Fm)
 
-    # COS'È
-    y = panel(d, 24, 100, W - 48, 100, "COS’È")
+    # COS'È — padding generoso sopra il bordo inferiore
+    cose_y, cose_h = 100, 140
+    y = panel(d, 24, cose_y, W - 48, cose_h, "COS’È")
     d.text((36, y + 2), "La zigrinatura crea una superficie a rombi (o a linee) premendo due rulli sul pezzo che gira.", fill=BLACK, font=F12)
     d.text((36, y + 28), "Non toglie truciolo: deforma il metallo. Per questo dopo NON si torna a tornire sul tratto zigrinato.", fill=BLACK, font=F12)
     d.text((36, y + 54), "Serve per manici, pomoli, viti a mano: presa antiscivolo.", fill=GRAY, font=F12)
 
     # DISEGNO ATTREZZO + PEZZO
-    y = panel(d, 24, 216, W - 48, 420, "SCHEMA — zigrinatore a 2 rulli sul pezzo")
+    schema_y = cose_y + cose_h + 12
+    y = panel(d, 24, schema_y, W - 48, 420, "SCHEMA — zigrinatore a 2 rulli sul pezzo")
 
     # Pezzo orizzontale
     mid = 400
@@ -168,8 +171,9 @@ def make():
     d.text((972, 318), "• NON tornire", fill=BLACK, font=F12)
     d.text((972, 344), "• Controlla rombi", fill=BLACK, font=F12)
 
-    # PARAMETRI
-    y = panel(d, 24, 652, 580, 200, "PARAMETRI (acciaio)")
+    # PARAMETRI (sotto lo schema, con margine)
+    par_y = schema_y + 420 + 14
+    y = panel(d, 24, par_y, 580, 200, "PARAMETRI (acciaio)")
     for i, ln in enumerate(
         [
             "• Velocità: 60 – 120 giri/min  (bassi!)",
@@ -180,9 +184,9 @@ def make():
             "• Pezzo: già tornito al Ø finale della zona",
         ]
     ):
-        d.text((36, y + 4 + i * 26), ln, fill=BLACK, font=F12)
+        d.text((36, y + 6 + i * 26), ln, fill=BLACK, font=F12)
 
-    y2 = panel(d, 620, 652, W - 24 - 620, 200, "ERRORI TIPICI", fill=WARN_BG)
+    y2 = panel(d, 620, par_y, W - 24 - 620, 200, "ERRORI TIPICI", fill=WARN_BG)
     for i, ln in enumerate(
         [
             "✗ Giri troppo alti → denti saltati",
@@ -193,10 +197,11 @@ def make():
             "✗ Pezzo lungo e non sostenuto",
         ]
     ):
-        d.text((632, y2 + 4 + i * 26), ln, fill=WARN, font=F12)
+        d.text((632, y2 + 6 + i * 26), ln, fill=WARN, font=F12)
 
     # SEQUENZA
-    y = panel(d, 24, 868, W - 48, 420, "SEQUENZA PASSO-PASSO")
+    seq_y = par_y + 200 + 14
+    y = panel(d, 24, seq_y, W - 48, 400, "SEQUENZA PASSO-PASSO")
     steps = [
         ("1", "Prepara il pezzo", "Porta a misura il Ø della zona da zigrinare. Smussa i bordi. Serraggio saldo."),
         ("2", "Monta lo zigrinatore", "Sulla torretta, rulli paralleli all’asse del pezzo. Controlla l’allineamento."),
@@ -207,7 +212,7 @@ def make():
         ("7", "Finitura", "Solo lima fina / carta per sbavare i bordi. Non tornire sulla zigrinatura."),
     ]
     for i, (n, t, desc) in enumerate(steps):
-        yy = y + 4 + i * 52
+        yy = y + 4 + i * 50
         d.ellipse([40, yy, 68, yy + 28], fill=ACCENT, outline=BLACK)
         tw = d.textlength(n, font=F13)
         d.text((54 - tw / 2, yy + 5), n, fill=WHITE, font=F13)
@@ -215,9 +220,10 @@ def make():
         d.text((80, yy + 26), desc, fill=GRAY, font=F12)
 
     # Footer student
-    y = panel(d, 24, 1304, W - 48, FOOT - 1304 - 8, "DATI ALUNNO")
+    dati_y = seq_y + 400 + 12
+    y = panel(d, 24, dati_y, W - 48, FOOT - dati_y - 8, "DATI ALUNNO")
     d.text((36, y + 8), "Alunno/a: _____________________  Classe: ______  Data: __/__/____", fill=BLACK, font=F13)
-    d.text((36, y + 44), "Ho eseguito una zigrinatura regolare:  SÌ □    NO □     Firma docente: _______________", fill=BLACK, font=F13)
+    d.text((36, y + 40), "Ho eseguito una zigrinatura regolare:  SÌ □    NO □     Firma docente: _______________", fill=BLACK, font=F13)
 
     name = "08-zigrinatura.png"
     img.save(os.path.join(OUT, name), "PNG", optimize=True)
