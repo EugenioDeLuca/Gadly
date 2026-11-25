@@ -399,43 +399,40 @@ def make_2a():
     tag(x1, x2, tag_y, "2 · TESTA + foro", STEEL_D, WHITE)
     tag(x2, end_x + 20, tag_y, "3 · GANCIO", ORANGE, WHITE)
 
-    # Note operative
+    # Note operative (colonna sinistra, sotto le etichette)
     ny = tag_y + 50
-    d.text((x0, ny), "Come si legge il disegno:", fill=ACCENT, font=F15)
-    d.text((x0, ny + 32), "• A sinistra tieni il CORPO (Ø16). Al centro la TESTA più grossa (Ø18) col foro per il dito.", fill=BLACK, font=F13)
-    d.text((x0, ny + 60), "• A destra il GANCIO arancio: è la parte che limi. La “bocca” aperta va sotto il bordo della capsula.", fill=BLACK, font=F13)
-    d.text((x0, ny + 88), "• Smusso 1×45° a sinistra sul corpo. Materiale: S235 oppure C40.", fill=GRAY, font=F13)
+    d.text((x0, ny), "Come si legge:", fill=ACCENT, font=F15)
+    d.text((x0, ny + 30), "1. Sinistra = CORPO Ø16 (manico)", fill=BLACK, font=F13)
+    d.text((x0, ny + 56), "2. Centro = TESTA Ø18 + foro Ø6", fill=BLACK, font=F13)
+    d.text((x0, ny + 82), "3. Destra = GANCIO (limatura)", fill=BLACK, font=F13)
+    d.text((x0, ny + 108), "   Bocca bianca = presa capsula", fill=CAP_RED, font=F13)
+    d.text((x0, ny + 134), "Smusso 1×45° · materiale S235/C40", fill=GRAY, font=F13)
 
-    # Mini “prima / dopo limatura” a destra in basso nel pannello
-    mx1, my1 = 860, draw_top + 200
-    d.rectangle([mx1, my1, 1188, my1 + 200], fill=WHITE, outline=BLACK, width=2)
-    d.rectangle([mx1, my1, 1188, my1 + 30], fill=LIGHT, outline=BLACK, width=2)
-    d.text((mx1 + 10, my1 + 5), "PRIMA → DOPO la limatura", fill=ACCENT, font=F13)
-    # prima: cilindro
-    d.rectangle([mx1 + 30, my1 + 70, mx1 + 130, my1 + 130], fill=STEEL_D, outline=BLACK, width=2)
-    d.text((mx1 + 40, my1 + 145), "dopo tornitura", fill=GRAY, font=Fs)
-    d.text((mx1 + 45, my1 + 165), "(cilindro)", fill=GRAY, font=Fs)
-    # freccia
-    d.polygon([(mx1 + 150, my1 + 100), (mx1 + 180, my1 + 90), (mx1 + 180, my1 + 110)], fill=ACCENT)
-    # dopo: gancio
+    # Mini “prima / dopo limatura” a destra delle note
+    mx1, my1 = 520, tag_y + 50
+    d.rectangle([mx1, my1, 1188, my1 + 160], fill=WHITE, outline=BLACK, width=2)
+    d.rectangle([mx1, my1, 1188, my1 + 28], fill=LIGHT, outline=BLACK, width=2)
+    d.text((mx1 + 10, my1 + 4), "PRIMA → DOPO la limatura del gancio", fill=ACCENT, font=F13)
+    d.rectangle([mx1 + 40, my1 + 55, mx1 + 150, my1 + 115], fill=STEEL_D, outline=BLACK, width=2)
+    d.text((mx1 + 50, my1 + 125), "dopo tornio", fill=GRAY, font=Fs)
+    d.polygon([(mx1 + 175, my1 + 85), (mx1 + 205, my1 + 75), (mx1 + 205, my1 + 95)], fill=ACCENT)
     d.polygon(
         [
-            (mx1 + 200, my1 + 70),
-            (mx1 + 280, my1 + 75),
+            (mx1 + 230, my1 + 55),
+            (mx1 + 320, my1 + 60),
+            (mx1 + 335, my1 + 85),
             (mx1 + 290, my1 + 100),
-            (mx1 + 250, my1 + 115),
-            (mx1 + 285, my1 + 135),
-            (mx1 + 230, my1 + 145),
-            (mx1 + 200, my1 + 130),
+            (mx1 + 330, my1 + 120),
+            (mx1 + 270, my1 + 130),
+            (mx1 + 230, my1 + 115),
         ],
         fill=ORANGE,
         outline=BLACK,
     )
-    d.text((mx1 + 210, my1 + 155), "dopo limatura", fill=ORANGE, font=Fs)
-    d.text((mx1 + 220, my1 + 175), "(uncino)", fill=ORANGE, font=Fs)
+    d.text((mx1 + 250, my1 + 135), "dopo lima (uncino)", fill=ORANGE, font=Fs)
 
-    # Dettaglio uso capsula — sotto, a tutta larghezza piccola
-    draw_hook_detail(d, 860, my1 + 220, 1188, draw_top + draw_h - 20)
+    # Dettaglio uso capsula — a destra del disegno principale, in alto
+    draw_hook_detail(d, 960, draw_top + 40, 1188, draw_top + 320)
 
     # Bottom
     bot = draw_top + draw_h + 10
