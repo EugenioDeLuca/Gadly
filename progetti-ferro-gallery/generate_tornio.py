@@ -1,30 +1,32 @@
 #!/usr/bin/env python3
-"""Schede A4 — parti del tornio manuale + leve/comandi spiegati."""
+"""Schede A4 — parti del tornio manuale + leve/comandi (disegno preciso)."""
 from __future__ import annotations
 
+import math
 import os
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = "/opt/cursor/artifacts/progetti-ferro"
 GAL = "/workspace/progetti-ferro-gallery"
+ART = "/opt/cursor/artifacts"
 os.makedirs(OUT, exist_ok=True)
 os.makedirs(GAL, exist_ok=True)
 
 W, H = 1240, 1754
 BLACK = (0, 0, 0)
-GRAY = (55, 55, 55)
-LIGHT = (226, 226, 226)
+GRAY = (45, 45, 45)
+LIGHT = (224, 224, 224)
 ACCENT = (0, 55, 100)
 WHITE = (255, 255, 255)
-SOFT = (190, 190, 190)
-BED = (120, 128, 138)
-HEAD = (90, 98, 110)
-CAST = (145, 152, 160)
-CAST_D = (100, 108, 118)
+SOFT = (170, 170, 170)
+BED = (108, 116, 126)
+HEAD = (78, 86, 98)
+CAST = (148, 154, 162)
+CAST_D = (105, 112, 122)
 WARN_BG = (255, 244, 230)
 WARN = (120, 50, 10)
 BLUE_BG = (232, 240, 248)
-FOOT_TOP = H - 52
+FOOT = H - 48
 
 
 def font(size):
@@ -47,317 +49,425 @@ def font_b(size):
     return font(size)
 
 
-F11, F12, F13, F14 = font_b(18), font_b(19), font_b(20), font_b(21)
-F15b, F16b, F18b, F22b = font_b(22), font_b(23), font_b(26), font_b(30)
-Fm = font_b(17)
+F11 = font_b(17)
+F12 = font_b(18)
+F13 = font_b(20)
+F14 = font_b(22)
+F15 = font_b(23)
+F18 = font_b(26)
+F22 = font_b(30)
+Fm = font_b(16)
 Fs = font(15)
 
 
 def new_sheet(titolo, sub):
     img = Image.new("RGB", (W, H), WHITE)
     d = ImageDraw.Draw(img)
-    d.rectangle([12, 12, W - 12, H - 12], outline=BLACK, width=2)
-    d.rectangle([12, 12, W - 12, 100], fill=(246, 246, 246), outline=BLACK, width=2)
-    d.text((28, 24), titolo, fill=BLACK, font=F22b)
-    d.text((28, 60), sub, fill=GRAY, font=F12)
-    d.rectangle([W - 210, 24, W - 28, 82], outline=ACCENT, width=2)
-    d.text((W - 196, 34), "TORNIO", fill=ACCENT, font=F14)
-    d.text((W - 196, 56), "MANUALE", fill=ACCENT, font=F14)
-    d.rectangle([12, FOOT_TOP, W - 12, H - 12], fill=(246, 246, 246), outline=BLACK, width=2)
-    d.text(
-        (28, FOOT_TOP + 14),
-        "Laboratorio meccanico · scheda didattica · tenere vicino al tornio",
-        fill=GRAY,
-        font=Fm,
-    )
+    d.rectangle([10, 10, W - 10, H - 10], outline=BLACK, width=2)
+    d.rectangle([10, 10, W - 10, 88], fill=(245, 245, 245), outline=BLACK, width=2)
+    d.text((24, 20), titolo, fill=BLACK, font=F22)
+    d.text((24, 54), sub, fill=GRAY, font=F12)
+    d.rectangle([W - 210, 20, W - 24, 74], outline=ACCENT, width=2)
+    d.text((W - 198, 28), "TORNIO", fill=ACCENT, font=F13)
+    d.text((W - 198, 50), "MANUALE", fill=ACCENT, font=F13)
+    d.rectangle([10, FOOT, W - 10, H - 10], fill=(245, 245, 245), outline=BLACK, width=2)
+    d.text((24, FOOT + 12), "Laboratorio meccanico · scheda didattica · tenere vicino al tornio", fill=GRAY, font=Fm)
     return img, d
 
 
 def panel(d, x, y, w, h, title, fill=LIGHT):
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
     d.rectangle([x, y, x + w, y + 28], fill=fill, outline=BLACK, width=2)
-    d.text((x + 10, y + 4), title, fill=BLACK, font=F15b)
+    d.text((x + 10, y + 5), title, fill=BLACK, font=F14)
     return y + 34
 
 
-def callout(d, n, tx, ty, lx, ly, text_right=True):
-    """Numbered circle + line to (lx,ly) point on machine."""
-    r = 12
+def callout(d, n, tx, ty, lx, ly):
+    r = 14
+    d.line([tx, ty, lx, ly], fill=ACCENT, width=2)
+    d.ellipse([lx - 4, ly - 4, lx + 4, ly + 4], fill=BLACK)
     d.ellipse([tx - r, ty - r, tx + r, ty + r], fill=ACCENT, outline=BLACK, width=1)
     tw = d.textlength(str(n), font=F13)
     d.text((tx - tw / 2, ty - 9), str(n), fill=WHITE, font=F13)
-    d.line([tx, ty, lx, ly], fill=ACCENT, width=2)
-    d.ellipse([lx - 3, ly - 3, lx + 3, ly + 3], fill=BLACK)
 
 
-def save(img, name):
+def save(img, name, stampa=None):
     img.save(os.path.join(OUT, name), "PNG", optimize=True)
     img.save(os.path.join(GAL, name), "PNG", optimize=True)
-    img.save(os.path.join("/opt/cursor/artifacts", name), "PNG", optimize=True)
+    img.save(os.path.join(ART, name), "PNG", optimize=True)
+    if stampa:
+        img.save(os.path.join(ART, stampa), "PNG", optimize=True)
     print("saved", name)
 
 
-# ─────────────────────────────────────────────
-# PAGINA 1 — PARTI PRINCIPALI
-# ─────────────────────────────────────────────
+def draw_lathe(d, ox=40, oy=200):
+    """Disegno laterale più dettagliato e grande del tornio parallelo.
+    Ritorna dict di punti chiave per i callout.
+    """
+    # Coordinate relative
+    bed_y = oy + 340
+    bed_x1, bed_x2 = ox + 40, ox + 1120
+
+    # —— Bancale (letto) con guide a V stilizzate ——
+    d.rectangle([bed_x1, bed_y, bed_x2, bed_y + 70], fill=BED, outline=BLACK, width=2)
+    # guide superiori
+    d.line([bed_x1 + 20, bed_y + 8, bed_x2 - 20, bed_y + 8], fill=SOFT, width=2)
+    d.line([bed_x1 + 20, bed_y + 18, bed_x2 - 20, bed_y + 18], fill=SOFT, width=1)
+    # piedi
+    d.rectangle([bed_x1 + 30, bed_y + 70, bed_x1 + 130, bed_y + 170], fill=CAST_D, outline=BLACK, width=2)
+    d.rectangle([bed_x2 - 130, bed_y + 70, bed_x2 - 30, bed_y + 170], fill=CAST_D, outline=BLACK, width=2)
+    # vasca
+    d.rectangle([bed_x1 + 10, bed_y + 155, bed_x2 - 10, bed_y + 185], fill=CAST, outline=BLACK, width=1)
+
+    # —— Testa motrice ——
+    hx1, hx2 = bed_x1, bed_x1 + 280
+    hy1 = oy + 40
+    d.rectangle([hx1, hy1, hx2, bed_y], fill=HEAD, outline=BLACK, width=2)
+    # finestrella / carter
+    d.rectangle([hx1 + 20, hy1 + 30, hx1 + 120, hy1 + 120], fill=CAST_D, outline=BLACK, width=1)
+    d.rectangle([hx1 + 140, hy1 + 30, hx1 + 250, hy1 + 90], fill=CAST, outline=BLACK, width=1)
+    # leve velocità (3)
+    for i, lx in enumerate([hx1 + 40, hx1 + 90, hx1 + 140]):
+        d.rectangle([lx, hy1 + 150, lx + 28, hy1 + 175], fill=CAST_D, outline=BLACK, width=1)
+        d.line([lx + 14, hy1 + 175, lx + 14, hy1 + 210], fill=BLACK, width=3)
+        d.ellipse([lx + 6, hy1 + 205, lx + 22, hy1 + 221], fill=ACCENT, outline=BLACK)
+    # mandrino / griffe
+    chuck_cx, chuck_cy = hx2 + 40, oy + 220
+    d.ellipse([chuck_cx - 55, chuck_cy - 55, chuck_cx + 55, chuck_cy + 55], fill=CAST, outline=BLACK, width=2)
+    d.ellipse([chuck_cx - 35, chuck_cy - 35, chuck_cx + 35, chuck_cy + 35], fill=CAST_D, outline=BLACK, width=2)
+    d.ellipse([chuck_cx - 12, chuck_cy - 12, chuck_cx + 12, chuck_cy + 12], fill=WHITE, outline=BLACK, width=1)
+    # 3 griffe hint
+    for ang in (90, 210, 330):
+        a = math.radians(ang)
+        d.line(
+            [
+                chuck_cx + 14 * math.cos(a),
+                chuck_cy - 14 * math.sin(a),
+                chuck_cx + 48 * math.cos(a),
+                chuck_cy - 48 * math.sin(a),
+            ],
+            fill=BLACK,
+            width=3,
+        )
+
+    # —— Pezzo ——
+    pz1 = chuck_cx + 50
+    pz2 = ox + 820
+    d.rectangle([pz1, chuck_cy - 14, pz2, chuck_cy + 14], fill=(195, 175, 140), outline=BLACK, width=2)
+    # asse
+    d.line([hx1 + 10, chuck_cy, ox + 1080, chuck_cy], fill=(120, 120, 120), width=1)
+
+    # —— Contropunta ——
+    tx1, tx2 = ox + 880, ox + 1080
+    d.rectangle([tx1, oy + 140, tx2, bed_y], fill=CAST, outline=BLACK, width=2)
+    # canotto
+    d.rectangle([tx1 - 70, chuck_cy - 18, tx1 + 10, chuck_cy + 18], fill=CAST_D, outline=BLACK, width=2)
+    # punta
+    d.polygon(
+        [
+            (tx1 - 70, chuck_cy - 10),
+            (tx1 - 95, chuck_cy),
+            (tx1 - 70, chuck_cy + 10),
+        ],
+        fill=SOFT,
+        outline=BLACK,
+    )
+    # volantino contropunta
+    d.ellipse([tx2 - 10, chuck_cy - 40, tx2 + 70, chuck_cy + 40], fill=CAST_D, outline=BLACK, width=2)
+    d.ellipse([tx2 + 15, chuck_cy - 18, tx2 + 50, chuck_cy + 18], fill=WHITE, outline=BLACK, width=1)
+    # leva blocco canotto
+    d.rectangle([tx1 + 40, oy + 155, tx1 + 100, oy + 175], fill=ACCENT, outline=BLACK, width=1)
+    # leva blocco contropunta sul letto
+    d.rectangle([tx1 + 20, bed_y - 35, tx1 + 90, bed_y - 10], fill=ACCENT, outline=BLACK, width=1)
+
+    # —— Carrello ——
+    cx1, cx2 = ox + 480, ox + 720
+    d.rectangle([cx1, oy + 250, cx2, bed_y], fill=CAST, outline=BLACK, width=2)
+    # grembiule
+    d.rectangle([cx1, oy + 300, cx2, bed_y], fill=CAST_D, outline=BLACK, width=2)
+    # slitta trasversale
+    d.rectangle([cx1 + 30, oy + 175, cx2 - 30, oy + 250], fill=CAST, outline=BLACK, width=2)
+    # slitta superiore / torretta
+    d.rectangle([cx1 + 70, oy + 100, cx2 - 70, oy + 175], fill=HEAD, outline=BLACK, width=2)
+    # utensile
+    d.polygon(
+        [
+            (cx1 + 95, oy + 115),
+            (cx1 + 160, oy + 115),
+            (cx1 + 175, oy + 140),
+            (cx1 + 95, oy + 140),
+        ],
+        fill=(40, 40, 40),
+        outline=BLACK,
+    )
+    d.line([cx1 + 175, oy + 128, pz1 + 200, chuck_cy - 14], fill=BLACK, width=2)
+
+    # volantino longitudinale (grande, grembiule)
+    d.ellipse([cx1 + 25, oy + 320, cx1 + 95, oy + 390], fill=CAST, outline=BLACK, width=2)
+    d.ellipse([cx1 + 45, oy + 340, cx1 + 75, oy + 370], fill=WHITE, outline=BLACK, width=1)
+    # volantino trasversale
+    d.ellipse([cx1 + 120, oy + 200, cx1 + 175, oy + 255], fill=CAST_D, outline=BLACK, width=2)
+    d.ellipse([cx1 + 135, oy + 215, cx1 + 160, oy + 240], fill=WHITE, outline=BLACK, width=1)
+    # volantino slitta superiore
+    d.ellipse([cx2 - 55, oy + 110, cx2 - 15, oy + 150], fill=CAST_D, outline=BLACK, width=2)
+    # leve avanzamento sul grembiule
+    d.rectangle([cx1 + 160, oy + 330, cx1 + 200, oy + 355], fill=ACCENT, outline=BLACK, width=1)
+    d.rectangle([cx1 + 210, oy + 330, cx1 + 250, oy + 355], fill=ACCENT, outline=BLACK, width=1)
+
+    # —— Vite madre ——
+    d.rectangle([hx2, bed_y + 12, tx1, bed_y + 28], fill=(55, 55, 55), outline=BLACK, width=1)
+    for i in range(20):
+        x = hx2 + 15 + i * 28
+        if x < tx1 - 10:
+            d.line([x, bed_y + 12, x + 10, bed_y + 28], fill=SOFT, width=1)
+    # —— Barra di comando ——
+    d.rectangle([hx2, bed_y + 36, tx1, bed_y + 48], fill=(40, 40, 40), outline=BLACK, width=1)
+
+    pts = {
+        1: (hx1 + 140, hy1 + 60),           # testa motrice
+        2: (chuck_cx, chuck_cy),             # mandrino
+        3: ((bed_x1 + bed_x2) / 2, bed_y + 35),  # bancale
+        4: ((cx1 + cx2) / 2, oy + 280),      # carrello
+        5: ((cx1 + cx2) / 2, oy + 210),      # slitta trasversale
+        6: ((cx1 + cx2) / 2 - 20, oy + 130), # torretta
+        7: ((tx1 + tx2) / 2, oy + 200),      # contropunta
+        8: (tx1 - 30, chuck_cy),             # canotto
+        9: ((hx2 + tx1) / 2, bed_y + 20),    # vite madre
+        10: ((hx2 + tx1) / 2, bed_y + 42),   # barra
+        11: (cx1 + 60, oy + 355),            # volantino long.
+        12: (bed_x1 + 80, bed_y + 120),      # piede
+    }
+    return pts
+
+
 def make_parti():
     img, d = new_sheet(
         "TORNIO MANUALE — LE PARTI",
-        "Conosci la macchina: nomi delle parti principali (tornio parallelo)",
+        "Schema laterale dettagliato · nomi e funzione (tornio parallelo)",
     )
 
-    y = panel(d, 28, 114, W - 56, 620, "SCHEMA LATERALE (semplificato)")
+    draw_h = 640
+    y = panel(d, 24, 100, W - 48, draw_h, "SCHEMA LATERALE — tornio parallelo")
+    pts = draw_lathe(d, ox=30, oy=130)
 
-    # --- Draw simplified lathe side view ---
-    # Bed
-    bed_y = 520
-    d.rectangle([80, bed_y, 1100, bed_y + 55], fill=BED, outline=BLACK, width=2)
-    # legs
-    d.rectangle([100, bed_y + 55, 180, bed_y + 140], fill=CAST_D, outline=BLACK, width=2)
-    d.rectangle([980, bed_y + 55, 1060, bed_y + 140], fill=CAST_D, outline=BLACK, width=2)
-    # drip pan
-    d.rectangle([90, bed_y + 130, 1070, bed_y + 155], fill=CAST, outline=BLACK, width=1)
+    # Callout positions (around the drawing, no overlap)
+    callouts = [
+        (1, 55, 150),
+        (2, 380, 145),
+        (3, 640, 700),
+        (4, 430, 600),
+        (5, 780, 190),
+        (6, 560, 120),
+        (7, 1180, 190),
+        (8, 820, 145),
+        (9, 900, 690),
+        (10, 400, 710),
+        (11, 430, 660),
+        (12, 160, 720),
+    ]
+    for n, tx, ty in callouts:
+        lx, ly = pts[n]
+        callout(d, n, tx, ty, lx, ly)
 
-    # Headstock (left)
-    d.rectangle([80, 280, 320, bed_y], fill=HEAD, outline=BLACK, width=2)
-    # spindle/chuck
-    d.ellipse([280, 360, 380, 460], fill=CAST, outline=BLACK, width=2)
-    d.ellipse([300, 380, 360, 440], fill=WHITE, outline=BLACK, width=2)
-    # speed levers on headstock
-    d.rectangle([100, 300, 160, 330], fill=CAST_D, outline=BLACK, width=1)
-    d.line([130, 330, 130, 355], fill=BLACK, width=3)
-    d.ellipse([122, 350, 138, 366], fill=ACCENT, outline=BLACK)
-
-    # Tailstock (right)
-    d.rectangle([860, 340, 1040, bed_y], fill=CAST, outline=BLACK, width=2)
-    d.rectangle([820, 390, 900, 430], fill=CAST_D, outline=BLACK, width=2)  # quill
-    d.ellipse([800, 395, 830, 425], fill=SOFT, outline=BLACK, width=2)  # center
-    # tailstock handwheel
-    d.ellipse([1000, 380, 1060, 440], fill=CAST_D, outline=BLACK, width=2)
-    d.ellipse([1015, 395, 1045, 425], fill=WHITE, outline=BLACK, width=1)
-
-    # Carriage
-    d.rectangle([480, 400, 700, bed_y], fill=CAST, outline=BLACK, width=2)
-    # cross slide
-    d.rectangle([500, 340, 680, 400], fill=CAST_D, outline=BLACK, width=2)
-    # compound / tool post
-    d.rectangle([540, 280, 640, 340], fill=HEAD, outline=BLACK, width=2)
-    d.rectangle([560, 250, 620, 290], fill=BLACK, outline=BLACK, width=1)  # tool bit hint
-    # apron handwheels
-    d.ellipse([500, 450, 560, 510], fill=CAST_D, outline=BLACK, width=2)  # long feed HW
-    d.ellipse([580, 430, 630, 480], fill=CAST_D, outline=BLACK, width=2)  # cross HW
-    # lead screw
-    d.rectangle([320, bed_y + 8, 860, bed_y + 22], fill=(80, 80, 80), outline=BLACK, width=1)
-    for i in range(12):
-        x = 340 + i * 40
-        d.line([x, bed_y + 8, x + 8, bed_y + 22], fill=SOFT, width=1)
-    # feed rod
-    d.rectangle([320, bed_y + 28, 860, bed_y + 38], fill=(60, 60, 60), outline=BLACK, width=1)
-
-    # workpiece between chuck and center
-    d.rectangle([380, 400, 800, 420], fill=(200, 180, 140), outline=BLACK, width=1)
-
-    # Callouts (number positions around drawing)
-    # 1 headstock, 2 chuck, 3 bed, 4 carriage, 5 cross slide, 6 toolpost,
-    # 7 tailstock, 8 quill, 9 lead screw, 10 feed rod, 11 handwheels, 12 legs/base
-    callout(d, 1, 60, 250, 200, 300)
-    callout(d, 2, 400, 320, 340, 410)
-    callout(d, 3, 600, 700, 600, bed_y + 20)
-    callout(d, 4, 440, 560, 520, 480)
-    callout(d, 5, 720, 300, 640, 360)
-    callout(d, 6, 580, 200, 590, 260)
-    callout(d, 7, 1120, 300, 960, 380)
-    callout(d, 8, 780, 320, 850, 410)
-    callout(d, 9, 750, 640, 700, bed_y + 15)
-    callout(d, 10, 400, 640, 450, bed_y + 33)
-    callout(d, 11, 460, 560, 530, 480)
-    callout(d, 12, 200, 700, 140, bed_y + 100)
-
-    # Legend
-    y = panel(d, 28, 760, W - 56, 520, "LEGENDA — PARTI PRINCIPALI")
+    # Legenda compatta a 2 colonne
+    y = panel(d, 24, 760, W - 48, FOOT - 760 - 8, "LEGENDA — PARTI PRINCIPALI")
     parts = [
-        ("1", "Testa motrice (testa fissa)", "Contiene il mandrino, gli ingranaggi e i comandi di velocità. Trasmette il moto al pezzo."),
-        ("2", "Mandrino (a griffe)", "Serraggio del pezzo. Di solito a 3 griffe (autocentrante) o 4 griffe (indipendenti)."),
-        ("3", "Bancale (letto)", "Struttura di guida a “V”/piane. Su di esso scorrono carrello e contropunta."),
-        ("4", "Carrello (carro)", "Si muove lungo il bancale (avanzamento longitudinale). Porta la grembiule e le slitte."),
-        ("5", "Slitta trasversale", "Movimento perpendicolare all’asse: regola la profondità di passata."),
-        ("6", "Torretta / slitta portautensili", "Fissa l’utensile. Può essere orientata (slitta superiore) per conicità/smussi."),
-        ("7", "Contropunta (coda mobile)", "Sostiene pezzi lunghi, serve per forare con punta o per tornire tra centri."),
-        ("8", "Canotto della contropunta", "Parte estraibile: avanza la punta/centri o la punta da forare."),
-        ("9", "Vite madre", "Vite lunga usata soprattutto per la filettatura (innesto dedicato)."),
-        ("10", "Barra di comando (barra scanalata)", "Trasmette l’avanzamento automatico longitudinale/trasversale (non filettatura)."),
-        ("11", "Volantini del carrello", "Movimento manuale: longitudinale (carrello) e trasversale (slitta)."),
-        ("12", "Basamento / piedi", "Sostiene la macchina; spesso con vasca raccogli-trucioli e liquido lubrorefrigerante."),
+        ("1", "Testa motrice", "Mandrino, ingranaggi, comandi velocità."),
+        ("2", "Mandrino a griffe", "Serraggio pezzo (3 o 4 griffe)."),
+        ("3", "Bancale (letto)", "Guide per carrello e contropunta."),
+        ("4", "Carrello (carro)", "Avanzamento longitudinale + grembiule."),
+        ("5", "Slitta trasversale", "Profondità di passata (asse X)."),
+        ("6", "Torretta / utensile", "Fissa l’utensile; slitta orientabile."),
+        ("7", "Contropunta", "Sostiene pezzi lunghi / foratura."),
+        ("8", "Canotto", "Avanza punta o centro."),
+        ("9", "Vite madre", "Solo per filettatura."),
+        ("10", "Barra di comando", "Avanzamento automatico (non filetto)."),
+        ("11", "Volantino longitudinale", "Movimento manuale del carrello."),
+        ("12", "Basamento / piedi", "Sostegno + vasca trucioli."),
     ]
     for i, (n, title, desc) in enumerate(parts):
-        yy = y + 4 + i * 38
-        d.ellipse([40, yy, 64, yy + 24], fill=ACCENT, outline=BLACK)
+        col = i % 2
+        row = i // 2
+        xx = 40 + col * 590
+        yy = y + 6 + row * 48
+        d.ellipse([xx, yy, xx + 26, yy + 26], fill=ACCENT, outline=BLACK)
         tw = d.textlength(n, font=F12)
-        d.text((52 - tw / 2, yy + 3), n, fill=WHITE, font=F12)
-        d.text((74, yy), title, fill=BLACK, font=F13)
-        d.text((74, yy + 18), desc, fill=GRAY, font=Fs)
+        d.text((xx + 13 - tw / 2, yy + 4), n, fill=WHITE, font=F12)
+        d.text((xx + 34, yy + 1), title, fill=BLACK, font=F13)
+        d.text((xx + 34, yy + 22), desc, fill=GRAY, font=Fs)
 
-    save(img, "05-tornio-parti.png")
+    save(img, "05-tornio-parti.png", "STAMPA-tornio-parti.png")
 
 
-# ─────────────────────────────────────────────
-# PAGINA 2 — LEVE E COMANDI
-# ─────────────────────────────────────────────
-def make_leve():
+def make_leve_full():
     img, d = new_sheet(
         "TORNIO MANUALE — LEVE E COMANDI",
-        "A cosa serve ogni leva / volantino (prima di accendere, sapile a memoria)",
+        "A cosa serve ogni leva / volantino (imparale prima di accendere)",
     )
 
-    y = panel(d, 28, 114, W - 56, 70, "REGOLA D’ORO", fill=WARN_BG)
-    d.text((40, y + 4), "Macchina ferma per cambiare velocità / invertire / spostare contropunta.", fill=WARN, font=F13)
-    d.text((40, y + 30), "Occhiali sempre. Capelli e maniche raccolti. Non toccare pezzo o mandrino in moto.", fill=WARN, font=F13)
+    y = panel(d, 24, 100, W - 48, 72, "REGOLA D’ORO", fill=WARN_BG)
+    d.text((36, y + 4), "Macchina FERMA per: cambiare velocità · invertire senso · spostare contropunta.", fill=WARN, font=F13)
+    d.text((36, y + 32), "Occhiali sempre. Capelli/maniche raccolti. Non toccare pezzo o mandrino in moto.", fill=WARN, font=F13)
 
-    # Two columns of controls
-    controls_left = [
-        ("A", "Leva / selettore velocità",
-         "Sceglie i giri/min del mandrino (o si cambia sulla puleggia a cinghia). "
-         "Giri bassi = pezzi grandi / zigrinatura / acciaio duro. Giri alti = pezzi piccoli / finitura."),
-        ("B", "Leva senso di rotazione",
-         "Orario / antiorario. Di solito: verso di taglio “sopra” l’utensile verso di te. "
-         "Inverti a macchina FERMA."),
-        ("C", "Avvio / arresto (motore o frizione)",
-         "Accende il moto del mandrino. Impara dove sta l’STOP di emergenza sul tuo tornio."),
-        ("D", "Volantino longitudinale (carrello)",
-         "Muove a mano il carrello lungo il pezzo (asse Z). Usalo per avvicinarti e per passate corte."),
-        ("E", "Volantino trasversale (slitta X)",
-         "Avvicina/allontana l’utensile al pezzo: regola la profondità di passata (quanto togli)."),
-        ("F", "Volantino slitta superiore",
-         "Muove l’utensile lungo la slitta orientabile. Serve per smussi, conicità e piccole correzioni."),
-        ("G", "Leva bloccaggio carrello",
-         "Fissa il carrello sul bancale quando non deve muoversi (es. tornitura trasversale / sfacciatura)."),
+    # Mini lathe strip
+    y = panel(d, 24, 188, W - 48, 260, "POSIZIONE DEI COMANDI (schema semplificato)")
+    my = 320
+    # bed
+    d.rectangle([60, my + 80, 1160, my + 120], fill=BED, outline=BLACK, width=2)
+    # headstock
+    d.rectangle([60, my - 40, 280, my + 80], fill=HEAD, outline=BLACK, width=2)
+    d.ellipse([250, my + 5, 330, my + 85], fill=CAST, outline=BLACK, width=2)
+    # carriage
+    d.rectangle([520, my + 10, 720, my + 80], fill=CAST, outline=BLACK, width=2)
+    d.rectangle([540, my - 40, 700, my + 10], fill=CAST_D, outline=BLACK, width=2)
+    d.rectangle([580, my - 80, 660, my - 40], fill=HEAD, outline=BLACK, width=2)
+    # handwheels
+    d.ellipse([540, my + 35, 600, my + 95], fill=CAST_D, outline=BLACK, width=2)
+    d.ellipse([620, my - 20, 665, my + 25], fill=CAST_D, outline=BLACK, width=2)
+    # tailstock
+    d.rectangle([900, my - 10, 1100, my + 80], fill=CAST, outline=BLACK, width=2)
+    d.ellipse([1080, my + 10, 1150, my + 80], fill=CAST_D, outline=BLACK, width=2)
+    # lead screw
+    d.rectangle([280, my + 90, 900, my + 102], fill=(50, 50, 50), outline=BLACK, width=1)
+    # workpiece
+    d.rectangle([330, my + 30, 900, my + 50], fill=(195, 175, 140), outline=BLACK, width=1)
+
+    def letter(x, y_, L):
+        d.rectangle([x, y_, x + 24, y_ + 24], fill=ACCENT, outline=BLACK)
+        d.text((x + 5, y_ + 3), L, fill=WHITE, font=F12)
+
+    letter(90, my - 30, "A")   # velocità
+    letter(160, my + 20, "B")  # senso
+    letter(100, my + 45, "C")  # start
+    letter(545, my + 100, "D") # vol long
+    letter(630, my - 45, "E")  # vol trasv
+    letter(670, my - 95, "F")  # slitta sup
+    letter(700, my + 40, "G")  # blocco carrello
+    letter(560, my + 55, "H")  # avv long
+    letter(650, my + 55, "I")  # avv trasv
+    letter(400, my + 105, "J") # vite madre
+    letter(1090, my - 20, "K") # vol contropunta
+    letter(940, my - 5, "L")   # blocco canotto
+    letter(960, my + 55, "M")  # blocco contropunta
+    letter(600, my - 95, "N")  # blocco utensile
+
+    # Tabelle comandi
+    left = [
+        ("A", "Selettore velocità", "Giri/min mandrino. Bassi = pezzi grandi / zigrinatura / acciaio. Alti = pezzi piccoli / finitura. Solo a macchina ferma."),
+        ("B", "Senso di rotazione", "Orario / antiorario. Inverti solo a FERMO."),
+        ("C", "Avvio / STOP", "Moto mandrino. Impara dove sta l’emergenza sul tuo tornio."),
+        ("D", "Volantino longitudinale", "Muove a mano il carrello lungo il pezzo (asse Z)."),
+        ("E", "Volantino trasversale", "Profondità di passata: avvicina/allontana l’utensile (asse X)."),
+        ("F", "Volantino slitta superiore", "Smussi, conicità, piccole correzioni."),
+        ("G", "Bloccaggio carrello", "Fissa il carrello sul bancale (es. in sfacciatura)."),
+    ]
+    right = [
+        ("H", "Avanzamento longitudinale", "Automatico lungo il pezzo (barra di comando). Per cilindri lunghi."),
+        ("I", "Avanzamento trasversale", "Automatico in profondità (sfacciatura). Mai insieme ad H."),
+        ("J", "Vite madre (filettatura)", "Innesto per filettare. Solo con rapporti giusti. Mai con H/I."),
+        ("K", "Volantino contropunta", "Fa uscire/rientrate il canotto (centro o punta)."),
+        ("L", "Bloccaggio canotto", "Blocca il canotto dopo il posizionamento."),
+        ("M", "Bloccaggio contropunta", "Fissa la contropunta sul bancale."),
+        ("N", "Bloccaggio utensile", "Serraggio sulla torretta. Utensile a centro pezzo."),
     ]
 
-    controls_right = [
-        ("H", "Leva avanzamento longitudinale",
-         "Innesta l’avanzamento automatico lungo il pezzo (via barra di comando). "
-         "Per tornitura cilindrica lunga e uniforme."),
-        ("I", "Leva avanzamento trasversale",
-         "Innesta l’avanzamento automatico in profondità (sfacciatura automatica). "
-         "Non usarla insieme alla longitudinale."),
-        ("J", "Leva vite madre (filettatura)",
-         "Collega il carrello alla vite madre per filettare. Solo con rapporto/ingranaggi giusti. "
-         "Mai insieme agli altri avanzamenti."),
-        ("K", "Volantino contropunta",
-         "Fa uscire/rientrate il canotto: punta di centraggio o avanzamento punta da forare."),
-        ("L", "Leva bloccaggio canotto",
-         "Blocca il canotto dopo averlo posizionato, così non arretra sotto carico."),
-        ("M", "Leva / vite bloccaggio contropunta",
-         "Fissa la contropunta sul bancale nella posizione scelta lungo il letto."),
-        ("N", "Vite / leva bloccaggio utensile",
-         "Serraggio dell’utensile sulla torretta. Utensile a centro pezzo, sporgente il giusto."),
-    ]
-
-    y = panel(d, 28, 200, 580, 1100, "COMANDI — COLONNA A")
+    y = panel(d, 24, 464, 580, FOOT - 464 - 8, "COMANDI A – G")
     yy = y + 2
-    for n, title, desc in controls_left:
-        d.rectangle([40, yy, 68, yy + 26], fill=ACCENT, outline=BLACK)
-        d.text((48, yy + 4), n, fill=WHITE, font=F13)
-        d.text((78, yy + 2), title, fill=BLACK, font=F13)
-        # wrap description manually in short lines
+    for n, title, desc in left:
+        d.rectangle([36, yy, 62, yy + 24], fill=ACCENT, outline=BLACK)
+        d.text((42, yy + 3), n, fill=WHITE, font=F12)
+        d.text((70, yy + 2), title, fill=BLACK, font=F13)
+        # wrap
         words = desc.split()
-        line = ""
-        ly = yy + 28
+        line, ly = "", yy + 26
+        for w_ in words:
+            test = (line + " " + w_).strip()
+            if d.textlength(test, font=Fs) > 530:
+                d.text((70, ly), line, fill=GRAY, font=Fs)
+                ly += 16
+                line = w_
+            else:
+                line = test
+        if line:
+            d.text((70, ly), line, fill=GRAY, font=Fs)
+            ly += 16
+        yy = ly + 8
+
+    y = panel(d, 620, 464, W - 24 - 620, FOOT - 464 - 8, "COMANDI H – N")
+    yy = y + 2
+    for n, title, desc in right:
+        d.rectangle([632, yy, 658, yy + 24], fill=ACCENT, outline=BLACK)
+        d.text((638, yy + 3), n, fill=WHITE, font=F12)
+        d.text((666, yy + 2), title, fill=BLACK, font=F13)
+        words = desc.split()
+        line, ly = "", yy + 26
         for w_ in words:
             test = (line + " " + w_).strip()
             if d.textlength(test, font=Fs) > 520:
-                d.text((78, ly), line, fill=GRAY, font=Fs)
-                ly += 17
+                d.text((666, ly), line, fill=GRAY, font=Fs)
+                ly += 16
                 line = w_
             else:
                 line = test
         if line:
-            d.text((78, ly), line, fill=GRAY, font=Fs)
-            ly += 17
-        yy = ly + 10
+            d.text((666, ly), line, fill=GRAY, font=Fs)
+            ly += 16
+        yy = ly + 8
 
-    y = panel(d, 628, 200, W - 28 - 628, 1100, "COMANDI — COLONNA B")
-    yy = y + 2
-    for n, title, desc in controls_right:
-        d.rectangle([640, yy, 668, yy + 26], fill=ACCENT, outline=BLACK)
-        d.text((648, yy + 4), n, fill=WHITE, font=F13)
-        d.text((678, yy + 2), title, fill=BLACK, font=F13)
-        words = desc.split()
-        line = ""
-        ly = yy + 28
-        for w_ in words:
-            test = (line + " " + w_).strip()
-            if d.textlength(test, font=Fs) > 500:
-                d.text((678, ly), line, fill=GRAY, font=Fs)
-                ly += 17
-                line = w_
-            else:
-                line = test
-        if line:
-            d.text((678, ly), line, fill=GRAY, font=Fs)
-            ly += 17
-        yy = ly + 10
-
-    # bottom tip - if space leftover within FOOT
-    # The panels already fill most space; footer is enough.
-
-    save(img, "06-tornio-leve.png")
+    save(img, "06-tornio-leve.png", "STAMPA-tornio-leve.png")
 
 
-# ─────────────────────────────────────────────
-# PAGINA 3 — COME SI USA (sequenza + sicurezza)
-# ─────────────────────────────────────────────
 def make_uso():
     img, d = new_sheet(
         "TORNIO MANUALE — SEQUENZA DI LAVORO",
         "Ordine corretto delle operazioni + errori da non fare",
     )
 
-    y = panel(d, 28, 114, W - 56, 520, "SEQUENZA TIPICA (tornitura di un cilindro)")
+    y = panel(d, 24, 100, W - 48, 560, "SEQUENZA TIPICA (tornitura di un cilindro)")
     steps = [
         ("1", "Controllo macchina", "Pulizia, protezioni, livello olio, STOP emergenza individuato."),
-        ("2", "Montaggio pezzo", "Nel mandrino (o tra centri). Serraggio forte, pezzo corto se possibile."),
+        ("2", "Montaggio pezzo", "Nel mandrino (o tra centri). Serraggio forte; pezzo corto se possibile."),
         ("3", "Montaggio utensile", "A centro pezzo, sporgenza minima, ben bloccato sulla torretta."),
         ("4", "Contropunta (se serve)", "Punta sul centro; blocca canotto e contropunta sul bancale."),
-        ("5", "Scelta giri", "A macchina FERMA. Formula indicativa: n ≈ (v×1000)/(π×Ø)  — chiedi al docente la v."),
-        ("6", "Avvicinamento", "A mano con i volantini: tocca il pezzo, azzera i tamburi/quote se presenti."),
-        ("7", "Passata", "Profondità con volantino trasversale; avanza lungo il pezzo (a mano o automatico)."),
+        ("5", "Scelta giri", "A macchina FERMA. n ≈ (v×1000)/(π×Ø) — chiedi al docente la velocità di taglio v."),
+        ("6", "Avvicinamento", "A mano coi volantini: tocca il pezzo, azzera i tamburi/quote se presenti."),
+        ("7", "Passata", "Profondità col volantino trasversale; avanza lungo il pezzo (mano o automatico)."),
         ("8", "Misura", "Ferma, misura col calibro, correggi. Ripeti fino a quota."),
-        ("9", "Finitura", "Passata leggera, giri più alti se il pezzo lo permette, buona lubrificazione."),
+        ("9", "Finitura", "Passata leggera, giri più alti se possibile, buona lubrificazione."),
         ("10", "Fine lavoro", "Arresto → togli utensile/pezzo → pulizia bancale e vasca trucioli."),
     ]
     for i, (n, t, desc) in enumerate(steps):
-        yy = y + 6 + i * 46
-        d.ellipse([42, yy, 70, yy + 28], fill=ACCENT, outline=BLACK)
+        yy = y + 4 + i * 50
+        d.ellipse([40, yy, 68, yy + 28], fill=ACCENT, outline=BLACK)
         tw = d.textlength(n, font=F12)
-        d.text((56 - tw / 2, yy + 5), n, fill=WHITE, font=F12)
-        d.text((84, yy + 2), t, fill=BLACK, font=F14)
-        d.text((84, yy + 24), desc, fill=GRAY, font=F12)
+        d.text((54 - tw / 2, yy + 5), n, fill=WHITE, font=F12)
+        d.text((80, yy + 2), t, fill=BLACK, font=F14)
+        d.text((80, yy + 26), desc, fill=GRAY, font=F12)
 
-    y = panel(d, 28, 650, W - 56, 420, "NON FARE MAI", fill=WARN_BG)
+    y = panel(d, 24, 676, W - 48, 400, "NON FARE MAI", fill=WARN_BG)
     bad = [
         "Cambiare velocità o invertire il senso con mandrino in moto.",
         "Lasciare la chiave del mandrino inserita (diventa un proiettile).",
         "Misurare il pezzo mentre gira.",
         "Innestare insieme avanzamento longitudinale + trasversale + vite madre.",
         "Zigrinare o filettare a giri troppo alti.",
-        "Allontanarsi dalla macchina con pezzo ancora in rotazione.",
+        "Allontanarsi con pezzo ancora in rotazione.",
         "Usare guanti con pezzi in rotazione (rischio trascinamento).",
         "Ignorare vibrazioni / rumori strani: STOP e chiama il docente.",
     ]
     for i, ln in enumerate(bad):
-        d.text((44, y + 8 + i * 44), f"✗  {ln}", fill=WARN, font=F13)
+        d.text((40, y + 6 + i * 44), f"✗  {ln}", fill=WARN, font=F13)
 
-    y = panel(d, 28, 1090, W - 56, FOOT_TOP - 1090 - 8, "DATI ALUNNO / VERIFICA")
-    d.text((40, y + 8), "Alunno/a: _____________________  Classe: ______  Data: __/__/____", fill=BLACK, font=F13)
-    d.text((40, y + 42), "Ho saputo indicare almeno 8 parti e 6 leve:  SÌ □    NO □", fill=BLACK, font=F13)
-    d.text((40, y + 76), "Firma docente: _______________________    Voto: ______", fill=BLACK, font=F13)
+    y = panel(d, 24, 1092, W - 48, FOOT - 1092 - 8, "DATI ALUNNO / VERIFICA")
+    d.text((36, y + 10), "Alunno/a: _____________________  Classe: ______  Data: __/__/____", fill=BLACK, font=F13)
+    d.text((36, y + 48), "Ho saputo indicare almeno 8 parti e 6 leve:  SÌ □    NO □", fill=BLACK, font=F13)
+    d.text((36, y + 86), "Firma docente: _______________________    Voto: ______", fill=BLACK, font=F13)
 
-    save(img, "07-tornio-uso-sicurezza.png")
+    save(img, "07-tornio-uso-sicurezza.png", "STAMPA-tornio-uso-sicurezza.png")
 
 
 if __name__ == "__main__":
     make_parti()
-    make_leve()
+    make_leve_full()
     make_uso()
     print("ALL DONE")
