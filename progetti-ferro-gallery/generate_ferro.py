@@ -505,10 +505,10 @@ def make_2a():
     for i, (col, title, line1, line2) in enumerate(blocks):
         yy = draw_top + 84 + i * 64
         d.rounded_rectangle([info_x1 + 6, yy, info_x2 - 6, yy + 56], radius=6, fill=WHITE, outline=col, width=3)
-        d.ellipse([info_x1 + 12, yy + 12, info_x1 + 40, yy + 40], fill=col, outline=BLACK, width=2)
+        d.rectangle([info_x1 + 12, yy + 14, info_x1 + 38, yy + 40], fill=col, outline=BLACK, width=2)
         num = str(i + 1)
         tw = d.textlength(num, font=F13)
-        d.text((info_x1 + 26 - tw / 2, yy + 18), num, fill=WHITE, font=F13)
+        d.text((info_x1 + 25 - tw / 2, yy + 18), num, fill=WHITE, font=F13)
         tx = info_x1 + 48
         d.text((tx, yy + 6), f"{num} {title}", fill=BLACK, font=F12)
         d.text((tx, yy + 24), line1, fill=GRAY, font=F12)
@@ -553,40 +553,37 @@ def make_2a():
     d.line([x2 + 4, mid - h + 6, end_x - 6, mid - tip_h], fill=IRON_D, width=2)
     d.line([x2 + 4, mid + h - 6, end_x - 6, mid + tip_h], fill=IRON_D, width=2)
 
-    # OCCHIO in SEZIONE: niente cerchio — foro passante + tratteggio rosso
+    # OCCHIO = SOLO sezione: foro rettangolare passante + tratteggio (MAI un cerchio)
     hole_l, hole_r = hx - hole_r, hx + hole_r
-    hatch_rect(d, x1 + 2, mid - h + 2, hole_l - 1, mid + h - 2, CAP_RED, step=7, width=2)
-    hatch_rect(d, hole_r + 1, mid - h + 2, x2 - 2, mid + h - 2, CAP_RED, step=7, width=2)
-    d.rectangle([hole_l, mid - h + 1, hole_r, mid + h - 1], fill=WHITE, outline=CAP_RED, width=3)
-    d.line([hole_l, mid - h, hole_r, mid - h], fill=CAP_RED, width=3)
-    d.line([hole_l, mid + h, hole_r, mid + h], fill=CAP_RED, width=3)
+    hatch_rect(d, x1 + 2, mid - h + 2, hole_l - 1, mid + h - 2, CAP_RED, step=6, width=2)
+    hatch_rect(d, hole_r + 1, mid - h + 2, x2 - 2, mid + h - 2, CAP_RED, step=6, width=2)
+    # vuoto del foro (rettangolo, non cerchio)
+    d.rectangle([hole_l, mid - h, hole_r, mid + h], fill=WHITE, outline=CAP_RED, width=3)
 
     d.rectangle([x0, mid - h, x2, mid + h], outline=BLACK, width=3)
     d.line([x1, mid - h, x1, mid + h], fill=BLACK, width=1)
     d.line([x2, mid - h, x2, mid + h], fill=BLACK, width=2)
     d.polygon(penna, outline=BLACK, width=2)
-    d.rectangle([hole_l, mid - h + 1, hole_r, mid + h - 1], outline=CAP_RED, width=3)
+    d.rectangle([hole_l, mid - h, hole_r, mid + h], outline=CAP_RED, width=3)
 
     centerline(d, x0 - 10, end_x + 12, mid)
 
-    # Quote LUNGHEZZE — SOPRA il pezzo
+    # Quote LUNGHEZZE — SOPRA (più in alto per lasciare posto al foro)
     top = mid - h
-    q1 = top - 50
+    q_foro = top - 28
+    q1 = top - 70
     q0 = q1 - 38
     for xx in (x0, x1, x2, end_x):
         ext_tick(d, xx, top, q0 - 2)
+    # larghezza foro (rettangolo di sezione) — sopra il pezzo, sotto le quote L
+    d.line([hole_l, top, hole_l, q_foro], fill=BLACK, width=1)
+    d.line([hole_r, top, hole_r, q_foro], fill=BLACK, width=1)
+    dim_h(d, hole_l, hole_r, q_foro, "8")
+    d.text((hole_r + 10, q_foro - 22), "foro", fill=CAP_RED, font=F13)
     dim_h(d, x0, x1, q1, "20")
     dim_h(d, x1, x2, q1, "24")
     dim_h(d, x2, end_x, q1, "16")
     dim_h(d, x0, end_x, q0, "60")
-
-    # Quota Ø8 DENTRO il foro (niente overlap con le lunghezze sopra)
-    d.line([hole_l, mid, hole_r, mid], fill=DIM_COL, width=3)
-    arrow_h(d, hole_l, mid, left=True)
-    arrow_h(d, hole_r, mid, left=False)
-    otw = d.textlength("Ø8", font=F22)
-    d.rectangle([hx - otw / 2 - 6, mid - 40, hx + otw / 2 + 6, mid - 10], fill=WHITE, outline=CAP_RED, width=2)
-    d.text((hx - otw / 2, mid - 36), "Ø8", fill=CAP_RED, font=F22)
 
     # Quota altezza 16 — a SINISTRA
     hx16 = x0 - 36
@@ -598,21 +595,19 @@ def make_2a():
     d.text((hx16 - tw16 / 2, mid - 14), "16", fill=DIM_COL, font=F22)
     d.text((hx16 - 28, mid + h + 10), "16×16", fill=DIM_COL, font=F13)
 
-    # Nota taglio a destra del pezzo (fuori)
-    d.text((end_x + 16, mid - 12), "////", fill=CAP_RED, font=F14)
-    d.text((end_x + 16, mid + 12), "taglio", fill=CAP_RED, font=F13)
+    # Nota tratteggio a destra
+    d.text((end_x + 14, mid - 14), "////", fill=CAP_RED, font=F14)
+    d.text((end_x + 14, mid + 10), "sezione", fill=CAP_RED, font=F13)
 
-    # Freccia manico dall’alto nel foro (passante) — niente cerchio
-    d.line([hx, mid - h - 8, hx, mid - h + 4], fill=(120, 70, 20), width=2)
-    # stub manico sotto il pezzo
+    # Manico sotto (solo rettangolo)
     stem_w = 10
-    stem_bot = mid + h + 40
+    stem_bot = mid + h + 44
     d.rectangle([hx - stem_w, mid + h, hx + stem_w, stem_bot], fill=(160, 120, 70), outline=BLACK, width=2)
-    d.text((hx + stem_w + 10, mid + h + 8), "manico", fill=(120, 70, 20), font=F13)
-    d.text((hx + stem_w + 10, mid + h + 28), "(dopo)", fill=GRAY, font=F12)
+    d.text((hx + stem_w + 10, mid + h + 10), "manico (dopo)", fill=(120, 70, 20), font=F13)
 
     def badge(cx, cy, n, bg):
-        d.ellipse([cx - 15, cy - 15, cx + 15, cy + 15], fill=bg, outline=BLACK, width=2)
+        # quadrato, mai cerchio
+        d.rectangle([cx - 14, cy - 14, cx + 14, cy + 14], fill=bg, outline=BLACK, width=2)
         tw = d.textlength(n, font=F14)
         d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
