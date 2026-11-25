@@ -370,7 +370,7 @@ def save(img, name, stampa=None):
 
 # ═══════════════════════════════════════════
 # 2ª TESTA DI MARTELLO (solo ferro — manico dopo)
-# Forma vera: FACCIA + OCCHIO + PENNA A PALLA
+# Forma vera: FACCIA + OCCHIO + PENNA A TAGLIO (cuneo)
 # ═══════════════════════════════════════════
 def make_2a():
     img, d = new_sheet(
@@ -382,17 +382,16 @@ def make_2a():
     draw_top = write_obiettivo(
         d,
         [
-            "Testa di martello vera: FACCIA piatta + OCCHIO (foro manico) + PENNA a palla.",
+            "Testa di martello da officina: FACCIA piatta + OCCHIO + PENNA a taglio (cuneo).",
             ("Solo il ferro. Il manico di legno si infila DOPO nell’occhio Ø10.", GRAY),
         ],
     )
 
-    # Pannelli bassi compatti → disegno occupa il resto (niente vuoti enormi)
     fasi = [
         "1. Sfacciatura → L = 70",
         "2. Tornitura faccia Ø20 × 24",
         "3. Tornitura corpo occhio Ø16 × 28",
-        "4. Tornitura penna a palla Ø16",
+        "4. Penna a taglio (cuneo) L = 18",
         "5. Foratura occhio Ø10 passante",
         "6. Smusso faccia + satinatura",
     ]
@@ -400,12 +399,11 @@ def make_2a():
         "□ L = 70 ± 0,3",
         "□ Faccia Ø20 ± 0,2",
         "□ Occhio Ø10 passante",
-        "□ Penna a palla Ø16",
+        "□ Penna a taglio (cuneo)",
         "□ Faccia piatta + smusso",
         "□ Superficie satinata",
     ]
     step = 26
-    # Fondi compatti (~220); il disegno prende tutto il resto e lo riempie
     bh = 40 + max(len(fasi), len(ctrl)) * step + 20
     bot = FOOT - bh - 8
     draw_h = bot - draw_top - 8
@@ -413,7 +411,6 @@ def make_2a():
     panel_bottom = draw_top + draw_h
 
     info_x1, info_x2 = 930, W - 36
-    # LEGGI QUI alto quanto il contenuto (+ check sotto)
     leggi_bottom = draw_top + 418 + 36 + 5 * 26 + 10 + 8
     d.rectangle([info_x1, draw_top + 44, info_x2, leggi_bottom], fill=(248, 250, 252), outline=BLACK, width=2)
     d.rectangle([info_x1, draw_top + 44, info_x2, draw_top + 76], fill=LIGHT, outline=BLACK, width=2)
@@ -422,7 +419,7 @@ def make_2a():
     blocks = [
         (STEEL_D, "FACCIA", "Ø20 × 24 mm", "Dove si batte"),
         (STEEL, "OCCHIO", "foro Ø10", "Per il manico"),
-        ((90, 150, 100), "PENNA", "palla Ø16", "Lato opposto"),
+        ((90, 150, 100), "PENNA", "a taglio / cuneo", "Non è una palla"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
         yy = draw_top + 86 + i * 72
@@ -440,36 +437,33 @@ def make_2a():
     text_in_box(d, info_x1 + 8, draw_top + 316, info_x2 - info_x1 - 16, 28, "MANICO = DOPO", F14, WARN, pad=4)
     text_in_box(d, info_x1 + 8, draw_top + 348, info_x2 - info_x1 - 16, 44, "Si infila nell’occhio Ø10 (legno)", F13, WARN, pad=4)
 
-    # ── Martello da officina: profilo continuo, scala grande ──
+    # ── Martello da officina: faccia + occhio + PENNA A TAGLIO (cuneo) ──
     sc = 12.0
     mid = draw_top + int(draw_h * 0.32)
     ox = 55
     Lf, Lo, Lp = 24, 28, 18
-    hf, hw, hp = 10 * sc, 8 * sc, 8 * sc
+    hf, hw = 10 * sc, 8 * sc  # Ø20 / Ø16
+    hp0 = 8 * sc              # altezza alla base della penna
 
     x0 = ox
     x1 = ox + Lf * sc
     x2 = ox + (Lf + Lo) * sc
-    peen_cx = x2 + Lp * sc * 0.58
-    peen_r = hp
-    end_x = peen_cx + peen_r
+    end_x = x2 + Lp * sc      # punta del cuneo
+    peen_mid = x2 + Lp * sc * 0.45
 
     def P(xm, ym):
         return (xm, mid + ym)
 
+    # Profilo continuo: faccia → vita → cuneo che va a punta (non palla!)
     outline = [
         P(x0, -hf),
         P(x0 + Lf * sc * 0.75, -hf),
         P(x1 + 18, -hw),
-        P(x2 - 10, -hw),
-        P(x2 + 8, -peen_r * 0.85),
-        P(peen_cx - peen_r * 0.2, -peen_r),
-        P(peen_cx + peen_r * 0.55, -peen_r * 0.75),
-        P(peen_cx + peen_r, 0),
-        P(peen_cx + peen_r * 0.55, peen_r * 0.75),
-        P(peen_cx - peen_r * 0.2, peen_r),
-        P(x2 + 8, peen_r * 0.85),
-        P(x2 - 10, hw),
+        P(x2 - 6, -hw),
+        P(x2 + 4, -hp0),          # inizio penna (ancora alta)
+        P(end_x, 0),              # punta del cuneo sull’asse
+        P(x2 + 4, hp0),
+        P(x2 - 6, hw),
         P(x1 + 18, hw),
         P(x0 + Lf * sc * 0.75, hf),
         P(x0, hf),
@@ -484,10 +478,18 @@ def make_2a():
     d.polygon([P(x0, -hf), P(x0 + 14, -hf), P(x0, -hf + 14)], fill=WHITE, outline=BLACK)
     d.polygon([P(x0, hf), P(x0 + 14, hf), P(x0, hf - 14)], fill=WHITE, outline=BLACK)
 
-    d.ellipse(
-        [peen_cx - peen_r, mid - peen_r, peen_cx + peen_r, mid + peen_r],
-        fill=(90, 150, 100), outline=BLACK, width=3,
-    )
+    # PENNA a taglio = cuneo verde (non sfera centrata)
+    penna = [
+        P(x2 - 4, -hw),
+        P(x2 + 6, -hp0),
+        P(end_x, 0),
+        P(x2 + 6, hp0),
+        P(x2 - 4, hw),
+    ]
+    d.polygon(penna, fill=(90, 150, 100), outline=BLACK, width=3)
+    # linea di taglio (filo della penna) — vista laterale del cuneo
+    d.line([x2 + 6, mid - hp0 * 0.35, end_x - 4, mid], fill=SOFT, width=2)
+    d.line([x2 + 6, mid + hp0 * 0.35, end_x - 4, mid], fill=SOFT, width=2)
 
     hx = (x1 + x2) / 2
     hole_rx, hole_ry = 4.5 * sc, 5.2 * sc
@@ -512,11 +514,16 @@ def make_2a():
     for cx, lab, yy in (
         ((x0 + x1) / 2, "Ø20", mid - 16),
         (hx - 62, "Ø16", mid - hw - 26),
-        (peen_cx, "Ø16", mid - peen_r - 26),
     ):
         tw = d.textlength(lab, font=F15)
         d.rectangle([cx - tw / 2 - 4, yy - 2, cx + tw / 2 + 4, yy + 22], fill=WHITE, outline=DIM_COL, width=1)
         d.text((cx - tw / 2, yy), lab, fill=DIM_COL, font=F15)
+
+    # etichetta penna a taglio
+    ptxt = "penna a taglio"
+    ptw = d.textlength(ptxt, font=F14)
+    d.rectangle([peen_mid - ptw / 2 - 4, mid - hp0 - 36, peen_mid + ptw / 2 + 4, mid - hp0 - 10], fill=WHITE, outline=(90, 150, 100), width=1)
+    d.text((peen_mid - ptw / 2, mid - hp0 - 32), ptxt, fill=(40, 100, 50), font=F14)
 
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 15, cy - 15, cx + 15, cy + 15], fill=bg, outline=BLACK, width=2)
@@ -526,7 +533,7 @@ def make_2a():
     badge_y = mid + hf + 34
     badge((x0 + x1) / 2, badge_y, "1", STEEL_D)
     badge(hx, badge_y, "2", STEEL)
-    badge(peen_cx, badge_y, "3", (90, 150, 100))
+    badge(peen_mid, badge_y, "3", (90, 150, 100))
 
     ftxt = "occhio Ø10 → manico DOPO"
     ftw = d.textlength(ftxt, font=F13) + 16
@@ -534,7 +541,6 @@ def make_2a():
     d.rectangle([hx - ftw / 2, fy, hx + ftw / 2, fy + 28], fill=(255, 235, 230), outline=CAP_RED, width=2)
     d.text((hx - ftw / 2 + 8, fy + 4), ftxt, fill=CAP_RED, font=F13)
 
-    # Blocco inferiore del pannello: vista + note + legenda (riempie senza vuoti)
     block_y = fy + 50
     vx, vy = ox + 90, block_y + 40
     d.ellipse([vx - 55, vy - 36, vx + 55, vy + 36], fill=STEEL, outline=BLACK, width=3)
@@ -544,10 +550,19 @@ def make_2a():
     d.text((vx + 70, vy - 16), "VISTA DALL’ALTO", fill=BLACK, font=F14)
     d.text((vx + 70, vy + 12), "occhio + manico (dopo)", fill=GRAY, font=F13)
 
+    # Mini vista penna dall’alto (filo del cuneo)
+    px, py = vx + 280, vy
+    d.polygon(
+        [(px, py - 28), (px + 70, py), (px, py + 28), (px + 18, py)],
+        fill=(90, 150, 100), outline=BLACK,
+    )
+    d.text((px - 10, py + 40), "PENNA vista dall’alto", fill=(40, 100, 50), font=F12)
+    d.text((px - 4, py + 60), "(filo a taglio)", fill=GRAY, font=F12)
+
     note_y = vy + 70
     text_in_box(
         d, ox, note_y, info_x1 - ox - 24, 26,
-        "Martello da officina: faccia piatta · occhio · penna a palla.",
+        "Martello da officina: faccia piatta · occhio · penna a TAGLIO (non a palla).",
         F14, BLACK, pad=2,
     )
     text_in_box(
@@ -556,25 +571,26 @@ def make_2a():
         F13, GRAY, pad=2,
     )
 
-    # Schemino uso (manico tratteggiato sotto la testa)
     sketch_y = note_y + 70
     d.text((ox, sketch_y), "COME SI USA (manico dopo):", fill=ACCENT, font=F13)
-    # mini testa
     sx0, sy = ox + 40, sketch_y + 70
     d.rectangle([sx0, sy - 22, sx0 + 50, sy + 22], fill=STEEL_D, outline=BLACK, width=2)
     d.rectangle([sx0 + 50, sy - 14, sx0 + 100, sy + 14], fill=STEEL, outline=BLACK, width=2)
-    d.ellipse([sx0 + 95, sy - 16, sx0 + 130, sy + 16], fill=(90, 150, 100), outline=BLACK, width=2)
+    # mini penna a cuneo (non palla)
+    d.polygon(
+        [(sx0 + 100, sy - 14), (sx0 + 135, sy), (sx0 + 100, sy + 14)],
+        fill=(90, 150, 100), outline=BLACK,
+    )
     d.ellipse([sx0 + 68, sy - 10, sx0 + 88, sy + 10], fill=WHITE, outline=BLACK, width=2)
-    # manico verso il basso (tratteggio)
     for i in range(0, 70, 8):
         d.line([sx0 + 70, sy + 14 + i, sx0 + 86, sy + 18 + i], fill=(160, 110, 60), width=2)
-    d.text((sx0 + 145, sy - 10), "testa in ferro (questo pezzo)", fill=BLACK, font=F12)
-    d.text((sx0 + 145, sy + 18), "manico legno = DOPO", fill=WARN, font=F12)
+    d.text((sx0 + 150, sy - 10), "testa in ferro (questo pezzo)", fill=BLACK, font=F12)
+    d.text((sx0 + 150, sy + 18), "manico legno = DOPO", fill=WARN, font=F12)
 
     legend = [
         ("1 FACCIA Ø20", STEEL_D, WHITE),
         ("2 OCCHIO Ø10", STEEL, BLACK),
-        ("3 PENNA Ø16", (90, 150, 100), WHITE),
+        ("3 PENNA a taglio", (90, 150, 100), WHITE),
     ]
     tag_y = sketch_y + 110
     gap = 8
@@ -584,7 +600,6 @@ def make_2a():
         d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 32], radius=6, fill=fill, outline=BLACK, width=2)
         text_in_box(d, xa, tag_y, chip_w, 32, lab, F12, tcol, pad=3)
 
-    # Avvisi: box alto quanto il testo (niente vuoto sotto)
     tip_y = tag_y + 40
     tips = [
         "ATTENZIONE IN OFFICINA",
@@ -601,9 +616,8 @@ def make_2a():
         f = F13 if i == 0 else F12
         d.text((48, tip_y + 8 + i * tip_step), ln, fill=fill, font=f)
 
-    # Check rapido a destra: compatto sotto MANICO
     right_y = draw_top + 418
-    checks = ["□ Faccia piatta", "□ Occhio passante", "□ Penna rotonda", "□ L = 70 mm", "□ Satinatura"]
+    checks = ["□ Faccia piatta", "□ Occhio passante", "□ Penna a taglio", "□ L = 70 mm", "□ Satinatura"]
     rh = 36 + len(checks) * 26 + 10
     d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
     d.text((info_x1 + 16, right_y + 8), "CHECK RAPIDO", fill=ACCENT, font=F13)
