@@ -135,9 +135,6 @@ def draw_cap_engage(d, bx, by):
         fill=CAP_D,
         outline=BLACK,
     )
-    # freccia "bordo"
-    d.text((bx + 145, by + 100), "bordo", fill=CAP_D, font=F12)
-
     # uncino arancione SOTTO il labbro
     hook = [
         (bx + 125, by + 78),
@@ -152,8 +149,11 @@ def draw_cap_engage(d, bx, by):
     d.polygon(hook, fill=ORANGE, outline=BLACK)
     # evidenzia punto di presa
     d.ellipse([bx + 118, by + 108, bx + 138, by + 128], outline=RED, width=3)
-    d.text((bx + 145, by + 140), "1. uncino SOTTO", fill=ORANGE, font=F13)
-    d.text((bx + 145, by + 168), "2. alzi la leva → apre", fill=RED, font=F13)
+    # etichette a destra, fuori dal disegno
+    d.rounded_rectangle([bx + 230, by + 70, bx + 420, by + 130], radius=8, fill=(255, 248, 230), outline=CAP_D, width=2)
+    d.text((bx + 242, by + 88), "bordo capsula", fill=CAP_D, font=F13)
+    d.text((bx + 145, by + 145), "1. uncino SOTTO", fill=ORANGE, font=F13)
+    d.text((bx + 145, by + 173), "2. alzi la leva → apre", fill=RED, font=F13)
 
 
 def draw_file_steps(d, x, y):
