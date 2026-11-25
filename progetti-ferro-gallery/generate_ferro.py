@@ -94,16 +94,16 @@ def panel(d, x, y, w, h, title):
 
 
 def write_obiettivo(d, lines, y0=96):
-    """Riquadro OBIETTIVO: testo intero, padding sotto/sopra, mai sulla linea."""
+    """Riquadro OBIETTIVO: titolo e testo lontani da tutte le linee del box."""
     x, w = 24, W - 48
-    hdr = 36
-    pad_top, pad_bot = 14, 18
+    hdr = 40
+    pad_top, pad_bot = 16, 22
     line_h = 30
     h = hdr + pad_top + len(lines) * line_h + pad_bot
-    # disegna box (stesso stile di panel, senza riuso per altezza header coerente)
     d.rectangle([x, y0, x + w, y0 + h], outline=BLACK, width=2)
     d.rectangle([x, y0, x + w, y0 + hdr], fill=LIGHT, outline=BLACK, width=2)
-    d.text((x + 12, y0 + 8), "OBIETTIVO", fill=BLACK, font=F13)
+    # titolo centrato nell’header (aria sopra e sotto la linea)
+    d.text((x + 12, y0 + 10), "OBIETTIVO", fill=BLACK, font=F13)
     cy = y0 + hdr + pad_top
     max_w = w - 28
     for i, item in enumerate(lines):
@@ -111,7 +111,6 @@ def write_obiettivo(d, lines, y0=96):
             text, fill = item
         else:
             text, fill = item, BLACK
-        # riduci font se troppo largo — una sola riga, mai wrap che esce
         f = F12
         for sz in range(19, 13, -1):
             f = font_b(sz)
