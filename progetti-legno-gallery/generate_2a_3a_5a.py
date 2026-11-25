@@ -198,7 +198,7 @@ d.text((450, ct + 430), "Viti 3,5×25  ·  passo ≈ 50 mm  ·  foro punta Ø 2�
 
 # Distinta — taller to fit ferramenta inside
 y0 = 620
-ct2 = panel(d, 20, y0, 1200, 220, "DISTINTA PEZZI  (L × W × S in mm)")
+ct2 = panel(d, 20, y0, 1200, 245, "DISTINTA PEZZI  (L × W × S in mm)")
 rows = [
     ["A", "Fronte / Retro", "2", "200", "90", "10", "Sui bordi lunghi della base F"],
     ["B", "Fianco sx / dx", "2", "100", "90", "10", "Inseriti tra i pezzi A"],
@@ -206,10 +206,11 @@ rows = [
     ["F", "Fondo / base", "1", "200", "120", "10", "Pezzo di riferimento"],
 ]
 ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 30)
-d.text((40, ty + 12), "Ferramenta: viti 3,5×25 (×16)  ·  carta abrasiva 120/180  ·  olio/vernice opzionale", fill=BLACK, font=F12)
+d.rectangle([40, ty + 6, 1180, ty + 34], fill=(255,255,255))
+d.text((40, ty + 10), "Ferramenta: viti 3,5×25 (×16)  ·  carta abrasiva 120/180  ·  olio/vernice opzionale", fill=BLACK, font=F12)
 
 # Bottom columns
-y1 = 860
+y1 = 880
 h1 = FOOT_TOP - y1
 ct3 = panel(d, 20, y1, 590, h1, "SEQUENZA DI MONTAGGIO")
 steps = [
@@ -315,7 +316,7 @@ d.text((860, ct + 404), "T1 = 230×50×18 (×2)", fill=GRAY, font=F12)
 d.text((860, ct + 426), "T2 = 160×50×18 (×2)", fill=GRAY, font=F12)
 
 y0 = 620
-ct2 = panel(d, 20, y0, 1200, 220, "DISTINTA PEZZI  (L × W × S in mm)")
+ct2 = panel(d, 20, y0, 1200, 245, "DISTINTA PEZZI  (L × W × S in mm)")
 rows = [
     ["P", "Piano di seduta", "1", "300", "300", "18", "Fori svasati per gambe"],
     ["G", "Gamba", "4", "400", "70", "18", "Altezza totale ≈ 418 mm"],
@@ -323,9 +324,10 @@ rows = [
     ["T2", "Traversa corta", "2", "160", "50", "18", "Chiude il telaio basso"],
 ]
 ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 30)
-d.text((40, ty + 12), "Ferramenta: viti 4×50 (×8) piano–gambe  ·  viti 4×40 (×16) traverse  ·  carta 80/120/180", fill=BLACK, font=F12)
+d.rectangle([40, ty + 6, 1180, ty + 34], fill=(255,255,255))
+d.text((40, ty + 10), "Ferramenta: viti 4×50 (×8) piano–gambe  ·  viti 4×40 (×16) traverse  ·  carta 80/120/180", fill=BLACK, font=F12)
 
-y1 = 860
+y1 = 880
 h1 = FOOT_TOP - y1
 ct3 = panel(d, 20, y1, 590, h1, "SEQUENZA DI MONTAGGIO")
 steps = [
@@ -442,7 +444,8 @@ rows = [
     ["L", "Listello posteriore", "1", "700", "50", "18", "Fissaggio a muro + livello"],
 ]
 ty = table(d, 40, ct2 + 12, HDR, rows, [65, 260, 55, 60, 60, 45, 490], 26)
-d.text((40, ty + 12), "Ferramenta: viti 4×40 (×20)  ·  tasselli Ø6–8 + viti a muro (×4)  ·  livella a bolla", fill=BLACK, font=F12)
+d.rectangle([40, ty + 6, 1180, ty + 34], fill=(255,255,255))
+d.text((40, ty + 10), "Ferramenta: viti 4×40 (×20)  ·  tasselli Ø6–8 + viti a muro (×4)  ·  livella a bolla", fill=BLACK, font=F12)
 
 y1 = 860
 h1 = FOOT_TOP - y1
@@ -557,7 +560,7 @@ d.text((780, ct + 400), "B: fori Ø12 passo 40 mm", fill=GRAY, font=F12)
 d.text((780, ct + 422), "Ganci a vite ×6 · tasselli Ø8 ×4", fill=GRAY, font=F12)
 
 y0 = 620
-ct2 = panel(d, 20, y0, 1200, 250, "DISTINTA PEZZI  (L × W × S in mm)")
+ct2 = panel(d, 20, y0, 1200, 265, "DISTINTA PEZZI  (L × W × S in mm)")
 rows = [
     ["P", "Pannello posteriore", "1", "800", "500", "15", "Fissaggio a muro"],
     ["M", "Mensola superiore", "1", "800", "160", "18", "Su P + supporti S"],
@@ -569,9 +572,10 @@ rows = [
     ["C3", "Fronte/retro cassetta", "4", "180", "90", "10", "Tra i fianchi"],
 ]
 ty = table(d, 40, ct2 + 8, HDR, rows, [55, 230, 50, 60, 60, 40, 540], 26)
+d.rectangle([40, ty + 6, 1180, ty + 36], fill=(255,255,255))
 d.text((40, ty + 10), "Ferramenta: viti 4×40 (×30)  ·  3,5×25 (×24)  ·  ganci a vite (×6)  ·  tasselli Ø8 (×4)", fill=BLACK, font=F12)
 
-y1 = 890
+y1 = 900
 h1 = FOOT_TOP - y1
 ct3 = panel(d, 20, y1, 590, h1, "SEQUENZA DI MONTAGGIO")
 steps = [

@@ -269,8 +269,8 @@ def main():
 
     gap = 14
     col_w = (W - 2 * M - gap) // 2
-    lx0, ly0, lx1, ly1 = M, 870, M + col_w, H - 40
-    rx0, ry0, rx1, ry1 = lx1 + gap, 870, W - M, H - 40
+    lx0, ly0, lx1, ly1 = M, 870, M + col_w, H - 34
+    rx0, ry0, rx1, ry1 = lx1 + gap, 870, W - M, H - 34
 
     cy = panel(d, (lx0, ly0, lx1, ly1), "SEQUENZA AL TORNIO")
     steps = [
@@ -360,6 +360,7 @@ def main():
         d.text((rx0 + 16, fy), f, fill=INK, font=FB if f.startswith('Alunno') or f.startswith('Voto') or f.startswith('Classe') else FSm)
         fy += fh
 
+    d.rectangle((12, H - 32, W - 12, H - 12), fill=(235, 235, 235), outline=INK, width=2)
     d.text(
         (M + 4, H - 28),
         "Quote in mm · Ø ±0,5 · laboratorio · 4ª tornitura plastica — nylon (non legno, non plexiglass)",
