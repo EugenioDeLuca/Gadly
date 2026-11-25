@@ -252,6 +252,20 @@ def knurl_box(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
 
 
+def hatch_rect(d, x1, y1, x2, y2, color=CAP_RED, step=7, width=2):
+    """Tratteggio obliquo di sezione (linee a 45°) — materiale tagliato."""
+    if x2 <= x1 or y2 <= y1:
+        return
+    left, top, right, bottom = x1 + 1, y1 + 1, x2 - 1, y2 - 1
+    if right <= left or bottom <= top:
+        return
+    h = bottom - top
+    for i in range(-int(h) - step, int(right - left + h) + step * 2, step):
+        seg = _clip_diag(left + i, top, left + i + h, bottom, left, top, right, bottom)
+        if seg:
+            d.line([seg[0], seg[1], seg[2], seg[3]], fill=color, width=width)
+
+
 def intacchi_box(d, x, y, w, h, n=6):
     """Intacchi anulari (scanalature) in vista laterale — NON zigrinatura."""
     d.rectangle([x, y, x + w, y + h], fill=STEEL, outline=BLACK, width=2)
@@ -566,28 +580,81 @@ def make_2a():
     d.rectangle([hx - ftw / 2, fy, hx + ftw / 2, fy + 26], fill=(255, 235, 230), outline=CAP_RED, width=2)
     d.text((hx - ftw / 2 + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
 
-    # Barra di partenza (prima del pezzo)
-    bx, by = ox, fy + 55
-    d.text((bx, by), "BARRA DI PARTENZA (non cilindro):", fill=ACCENT, font=F13)
-    d.rectangle([bx, by + 28, bx + 160, by + 56], fill=IRON_L, outline=BLACK, width=2)
-    d.line([bx + 160, by + 28, bx + 172, by + 20], fill=BLACK, width=2)
-    d.line([bx + 160, by + 56, bx + 172, by + 48], fill=BLACK, width=2)
-    d.line([bx + 172, by + 20, bx + 172, by + 48], fill=BLACK, width=2)
-    d.line([bx, by + 28, bx + 12, by + 20], fill=BLACK, width=2)
-    d.line([bx + 12, by + 20, bx + 172, by + 20], fill=BLACK, width=2)
-    d.text((bx + 180, by + 30), "20 × 20 × 100", fill=BLACK, font=F13)
-    d.text((bx + 180, by + 50), "→ taglio L=60 → testa", fill=GRAY, font=F12)
+    # Piano di sezione A-A sull’occhio (frecce rosse)
+    aa_y1, aa_y2 = mid - h - 18, mid + h + 18
+    d.line([hx - 22, aa_y1, hx + 22, aa_y1], fill=CAP_RED, width=3)
+    d.line([hx - 22, aa_y2, hx + 22, aa_y2], fill=CAP_RED, width=3)
+    d.polygon([(hx, aa_y1 - 10), (hx - 7, aa_y1), (hx + 7, aa_y1)], fill=CAP_RED)
+    d.polygon([(hx, aa_y2 + 10), (hx - 7, aa_y2), (hx + 7, aa_y2)], fill=CAP_RED)
+    d.text((hx + 28, aa_y1 - 14), "A", fill=CAP_RED, font=F14)
+    d.text((hx + 28, aa_y2 - 4), "A", fill=CAP_RED, font=F14)
 
-    note_y = by + 70
-    text_in_box(
-        d, ox, note_y, info_x1 - ox - 24, 24,
-        "Da BARRA 20×20: faccia 20 · occhio 24 · penna 16 → L = 60. Foro Ø10.",
-        F13, BLACK, pad=2,
+    # ── VISTA LATERALE — SEZIONE A-A (tratteggio rosso = materiale tagliato) ──
+    sec_y0 = fy + 42
+    d.text((ox, sec_y0), "VISTA LATERALE — SEZIONE A-A (taglio sull’occhio)", fill=ACCENT, font=F13)
+    d.text(
+        (ox + 520, sec_y0),
+        "linee rosse = materiale tagliato",
+        fill=CAP_RED, font=F12,
     )
+
+    # scala sezione (più bassa del disegno principale)
+    ss = 5.5
+    sh = 10 * ss          # metà altezza barra 20
+    hole_w = 5 * ss       # Ø10 / 2 → metà larghezza foro in sezione
+    sx0 = ox
+    sx1 = sx0 + Lf * ss
+    sx2 = sx0 + (Lf + Lo) * ss
+    sx_end = sx2 + Lp * ss
+    smid = sec_y0 + 28 + sh
+    # contorno testa in sezione
+    d.rectangle([sx0, smid - sh, sx_end, smid + sh], fill=(245, 245, 248), outline=BLACK, width=3)
+    # zona foro: rettangolo vuoto passante (occhio)
+    hole_cx = (sx1 + sx2) / 2
+    hole_l, hole_r = hole_cx - hole_w, hole_cx + hole_w
+    # tratteggio rosso: metallo a sinistra del foro (faccia + inizio occhio)
+    hatch_rect(d, sx0 + 2, smid - sh + 2, hole_l - 1, smid + sh - 2, CAP_RED, step=6, width=2)
+    # tratteggio rosso: metallo a destra del foro (resto occhio + penna)
+    hatch_rect(d, hole_r + 1, smid - sh + 2, sx_end - 2, smid + sh - 2, CAP_RED, step=6, width=2)
+    # foro vuoto (bianco) — buco passante
+    d.rectangle([hole_l, smid - sh + 1, hole_r, smid + sh - 1], fill=WHITE, outline=CAP_RED, width=2)
+    # linee di separazione zone
+    d.line([sx1, smid - sh, sx1, smid + sh], fill=BLACK, width=1)
+    d.line([sx2, smid - sh, sx2, smid + sh], fill=BLACK, width=1)
+    # ricontorno esterno
+    d.rectangle([sx0, smid - sh, sx_end, smid + sh], outline=BLACK, width=3)
+    # freccia Ø10 sul foro
+    d.line([hole_l, smid, hole_r, smid], fill=DIM_COL, width=2)
+    arrow_h(d, hole_l, smid, left=True)
+    arrow_h(d, hole_r, smid, left=False)
+    otw = d.textlength("Ø10", font=F13)
+    d.rectangle([((hole_l + hole_r) / 2) - otw / 2 - 3, smid - 28, ((hole_l + hole_r) / 2) + otw / 2 + 3, smid - 6], fill=WHITE)
+    d.text((((hole_l + hole_r) / 2) - otw / 2, smid - 26), "Ø10", fill=DIM_COL, font=F13)
+    # etichette sotto
+    lab_y = smid + sh + 8
+    for cx, lab in (((sx0 + sx1) / 2, "faccia"), ((sx1 + sx2) / 2, "OCCHIO (buco)"), ((sx2 + sx_end) / 2, "penna")):
+        tw = d.textlength(lab, font=F12)
+        d.text((cx - tw / 2, lab_y), lab, fill=GRAY, font=F12)
+    d.text((sx_end + 14, smid - 10), "A — A", fill=CAP_RED, font=F14)
+    d.text((sx_end + 14, smid + 12), "20 × 20", fill=DIM_COL, font=F12)
+
+    # mini barra di partenza a destra della sezione
+    bx = sx_end + 110
+    by = smid - sh - 8
+    d.text((bx, by - 22), "BARRA 20×20×100", fill=ACCENT, font=F12)
+    d.rectangle([bx, by, bx + 100, by + 28], fill=IRON_L, outline=BLACK, width=2)
+    d.line([bx + 100, by, bx + 110, by - 8], fill=BLACK, width=2)
+    d.line([bx + 100, by + 28, bx + 110, by + 20], fill=BLACK, width=2)
+    d.line([bx + 110, by - 8, bx + 110, by + 20], fill=BLACK, width=2)
+    d.line([bx, by, bx + 10, by - 8], fill=BLACK, width=2)
+    d.line([bx + 10, by - 8, bx + 110, by - 8], fill=BLACK, width=2)
+    d.text((bx, by + 36), "→ taglio L=60", fill=GRAY, font=F12)
+
+    note_y = lab_y + 28
     text_in_box(
-        d, ox, note_y + 26, info_x1 - ox - 24, 24,
-        "S235/C40 · spigoli da barra · smusso faccia · satinatura. Manico = dopo.",
-        F12, GRAY, pad=2,
+        d, ox, note_y, info_x1 - ox - 24, 22,
+        "Da BARRA 20×20: faccia 20 · occhio 24 · penna 16 → L = 60. Foro Ø10 passante.",
+        F13, BLACK, pad=2,
     )
 
     legend = [
@@ -595,25 +662,24 @@ def make_2a():
         ("2 OCCHIO Ø10", IRON, WHITE),
         ("3 PENNA L=16", PEEN_C, WHITE),
     ]
-    tag_y = note_y + 58
+    tag_y = note_y + 28
     gap = 8
     chip_w = (info_x1 - 40 - 2 * gap) / 3
     for i, (lab, fill, tcol) in enumerate(legend):
         xa = 36 + i * (chip_w + gap)
-        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 28], radius=6, fill=fill, outline=BLACK, width=2)
-        text_in_box(d, xa, tag_y, chip_w, 28, lab, F12, tcol, pad=3)
+        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 26], radius=6, fill=fill, outline=BLACK, width=2)
+        text_in_box(d, xa, tag_y, chip_w, 26, lab, F12, tcol, pad=3)
 
-    tip_y = tag_y + 38
+    tip_y = tag_y + 34
     tips = [
-        "ATTENZIONE: si parte dalla BARRA 20×20, non da un cilindro.",
-        "• Occhiali · pezzo stretto in morsa · foratura occhio con punta Ø10",
-        "• Controlla L=60 e sezione 20×20 · manico dopo",
+        "Tratteggio rosso = dove il pezzo è tagliato in sezione (si vede il buco).",
+        "• Occhiali · morsa · foratura occhio Ø10 · controlla L=60 e sez. 20×20",
     ]
     tip_step = 22
-    tip_h_box = 10 + len(tips) * tip_step + 6
-    d.rectangle([36, tip_y, info_x1 - 20, tip_y + tip_h_box], fill=(245, 250, 255), outline=ACCENT, width=2)
+    tip_h_box = 10 + len(tips) * tip_step + 4
+    d.rectangle([36, tip_y, info_x1 - 20, tip_y + tip_h_box], fill=(255, 245, 245), outline=CAP_RED, width=2)
     for i, ln in enumerate(tips):
-        fill = ACCENT if i == 0 else BLACK
+        fill = CAP_RED if i == 0 else BLACK
         f = F13 if i == 0 else F12
         d.text((48, tip_y + 6 + i * tip_step), ln, fill=fill, font=f)
 
