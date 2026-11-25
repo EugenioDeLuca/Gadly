@@ -364,34 +364,33 @@ def save(img, name, stampa=None):
 
 
 # ═══════════════════════════════════════════
-# 2ª PERNO A SPALLAMENTI (semplice)
+# 2ª MARTELLO CON MANICO
 # ═══════════════════════════════════════════
 def make_2a():
     img, d = new_sheet(
         "2ª CLASSE",
-        "PERNO A SPALLAMENTI",
-        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 70 mm",
+        "MARTELLO CON MANICO",
+        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo monopezzo L = 90 mm",
     )
 
     draw_top = write_obiettivo(
         d,
-        ["Solo tornitura: tre diametri (spallamenti). Niente foratura, niente limatura, niente filetto."],
+        ["Martello monopezzo: testa + manico. Solo tornitura e smussi (niente filetto, niente foratura)."],
     )
 
     draw_h = 700
-    panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — 3 diametri colorati (scala 10:1)")
+    panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — testa e manico (scala 8:1)")
     panel_bottom = draw_top + draw_h
 
-    # Legenda destra
     info_x1, info_x2 = 900, W - 36
     d.rectangle([info_x1, draw_top + 48, info_x2, panel_bottom - 58], fill=(248, 250, 252), outline=BLACK, width=2)
     d.rectangle([info_x1, draw_top + 48, info_x2, draw_top + 88], fill=LIGHT, outline=BLACK, width=2)
     d.text((info_x1 + 12, draw_top + 56), "LEGGI QUI", fill=ACCENT, font=F14)
 
     blocks = [
-        (STEEL_D, "TESTA", "Ø18 × 20 mm", "Parte più grossa"),
-        (STEEL, "CORPO", "Ø14 × 30 mm", "Diametro medio"),
-        ((90, 150, 100), "GAMBO", "Ø10 × 20 mm", "Parte più sottile"),
+        (STEEL_D, "TESTA", "Ø20 × 28 mm", "Colpisce"),
+        (STEEL, "COLLO", "Ø14 × 10 mm", "Passaggio"),
+        ((90, 150, 100), "MANICO", "Ø12 × 52 mm", "Si tiene in mano"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
         yy = draw_top + 110 + i * 110
@@ -400,21 +399,20 @@ def make_2a():
         num = str(i + 1)
         tw = d.textlength(num, font=F15)
         d.text((info_x1 + 40 - tw / 2, yy + 36), num, fill=WHITE, font=F15)
-        # testo a DESTRA del pallino — niente overlap
         tx = info_x1 + 72
         d.text((tx, yy + 12), f"{num}  {title}", fill=BLACK, font=F14)
         d.text((tx, yy + 44), line1, fill=GRAY, font=F13)
         d.text((tx, yy + 70), line2, fill=GRAY, font=F12)
 
-    d.rectangle([info_x1 + 12, draw_top + 450, info_x2 - 12, draw_top + 560], fill=OK_BG if False else (232, 245, 232), outline=(20, 90, 40), width=2)
+    d.rectangle([info_x1 + 12, draw_top + 450, info_x2 - 12, draw_top + 560], fill=(232, 245, 232), outline=(20, 90, 40), width=2)
     text_in_box(d, info_x1 + 12, draw_top + 458, info_x2 - info_x1 - 24, 40, "FACILE: solo tornio", F14, (20, 90, 40), pad=8)
-    text_in_box(d, info_x1 + 12, draw_top + 502, info_x2 - info_x1 - 24, 48, "Smussi 1×45° agli spigoli", F13, (20, 90, 40), pad=8)
+    text_in_box(d, info_x1 + 12, draw_top + 502, info_x2 - info_x1 - 24, 48, "Smussi 1×45° · faccia piatta", F13, (20, 90, 40), pad=8)
 
-    # Disegno
-    sc = 10.0
+    sc = 8.0
     mid = draw_top + 320
-    ox = 80
-    segs = [(20, 18, STEEL_D), (30, 14, STEEL), (20, 10, (90, 150, 100))]
+    ox = 70
+    # L: 28+10+52 = 90
+    segs = [(28, 20, STEEL_D), (10, 14, STEEL), (52, 12, (90, 150, 100))]
     x = ox
     xs = []
     for L, Dia, col in segs:
@@ -423,56 +421,51 @@ def make_2a():
         xs.append((x, ww, hh, L, Dia, col))
         x += ww
     end_x = x
-    # smussi stilizzati
+    # faccia testa (smusso stilizzato a sinistra)
     d.polygon([(ox, mid - xs[0][2] / 2), (ox + 10, mid - xs[0][2] / 2), (ox, mid - xs[0][2] / 2 + 10)], fill=WHITE, outline=BLACK)
     d.polygon([(ox, mid + xs[0][2] / 2), (ox + 10, mid + xs[0][2] / 2), (ox, mid + xs[0][2] / 2 - 10)], fill=WHITE, outline=BLACK)
+    # pomello fine manico
     d.polygon([(end_x, mid - xs[2][2] / 2), (end_x - 8, mid - xs[2][2] / 2), (end_x, mid - xs[2][2] / 2 + 8)], fill=WHITE, outline=BLACK)
     d.polygon([(end_x, mid + xs[2][2] / 2), (end_x - 8, mid + xs[2][2] / 2), (end_x, mid + xs[2][2] / 2 - 8)], fill=WHITE, outline=BLACK)
 
-    centerline(d, ox - 20, end_x + 20, mid)
+    centerline(d, ox - 16, end_x + 16, mid)
 
-    top_r = mid - 18 * sc / 2
+    top_r = mid - 20 * sc / 2
     q1 = top_r - 48
     q0 = q1 - 48
     for xx in (ox, xs[1][0], xs[2][0], end_x):
         ext_tick(d, xx, top_r, q0 - 2)
-    dim_h(d, xs[0][0], xs[0][0] + xs[0][1], q1, "20")
-    dim_h(d, xs[1][0], xs[1][0] + xs[1][1], q1, "30")
-    dim_h(d, xs[2][0], xs[2][0] + xs[2][1], q1, "20")
-    dim_h(d, ox, end_x, q0, "70")
+    dim_h(d, xs[0][0], xs[0][0] + xs[0][1], q1, "28")
+    dim_h(d, xs[1][0], xs[1][0] + xs[1][1], q1, "10")
+    dim_h(d, xs[2][0], xs[2][0] + xs[2][1], q1, "52")
+    dim_h(d, ox, end_x, q0, "90")
 
-    # diametri DENTRO, SOPRA la linea d’asse (niente overlap)
-    for (x0s, ww, hh, L, Dia, col), lab in zip(xs, ["Ø18", "Ø14", "Ø10"]):
+    for (x0s, ww, hh, L, Dia, col), lab in zip(xs, ["Ø20", "Ø14", "Ø12"]):
         tw = d.textlength(lab, font=F16)
         cx = x0s + ww / 2
-        ty = mid - 28  # sopra l’asse
-        bg = WHITE
-        fc = DIM_COL
-        d.rectangle([cx - tw / 2 - 6, ty - 4, cx + tw / 2 + 6, ty + 24], fill=bg, outline=DIM_COL, width=1)
-        d.text((cx - tw / 2, ty), lab, fill=fc, font=F16)
+        ty = mid - 28
+        d.rectangle([cx - tw / 2 - 6, ty - 4, cx + tw / 2 + 6, ty + 24], fill=WHITE, outline=DIM_COL, width=1)
+        d.text((cx - tw / 2, ty), lab, fill=DIM_COL, font=F16)
 
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 18, cy - 18, cx + 18, cy + 18], fill=bg, outline=BLACK, width=3)
         tw = d.textlength(n, font=F15)
         d.text((cx - tw / 2, cy - 12), n, fill=WHITE, font=F15)
 
-    # Pallini SOTTO il pezzo (mai sopra le quote)
-    badge_y = mid + 18 * sc / 2 + 40
+    badge_y = mid + 20 * sc / 2 + 40
     badge(xs[0][0] + xs[0][1] / 2, badge_y, "1", STEEL_D)
     badge(xs[1][0] + xs[1][1] / 2, badge_y, "2", STEEL)
     badge(xs[2][0] + xs[2][1] / 2, badge_y, "3", (90, 150, 100))
 
-    # note sotto i pallini, sopra i chip — niente overlap
     note_y = badge_y + 36
-    text_in_box(d, ox, note_y, info_x1 - ox - 20, 28, "Spallamento = cambio di diametro (scalino).", F14, BLACK, pad=2)
-    text_in_box(d, ox, note_y + 30, info_x1 - ox - 20, 28, "Materiale: S235 o C40  ·  smussi 1×45° agli spigoli.", F13, GRAY, pad=2)
+    text_in_box(d, ox, note_y, info_x1 - ox - 20, 28, "Testa a sinistra · manico a destra (tutto da un pezzo).", F14, BLACK, pad=2)
+    text_in_box(d, ox, note_y + 30, info_x1 - ox - 20, 28, "Materiale S235 o C40 · smussi 1×45° · faccia testa piatta.", F13, GRAY, pad=2)
 
     legend = [
-        ("1 TESTA Ø18", STEEL_D, WHITE),
-        ("2 CORPO Ø14", STEEL, BLACK),
-        ("3 GAMBO Ø10", (90, 150, 100), WHITE),
+        ("1 TESTA Ø20", STEEL_D, WHITE),
+        ("2 COLLO Ø14", STEEL, BLACK),
+        ("3 MANICO Ø12", (90, 150, 100), WHITE),
     ]
-    # chip DENTRO il pannello, 12px sopra il bordo inferiore
     tag_y = panel_bottom - 52
     gap = 10
     chip_w = (info_x1 - 40 - 2 * gap) / 3
@@ -481,16 +474,15 @@ def make_2a():
         d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 36], radius=8, fill=fill, outline=BLACK, width=2)
         text_in_box(d, xa, tag_y, chip_w, 36, lab, F13, tcol, pad=6)
 
-    # Fondo
     bot = panel_bottom + 12
     bh = FOOT - bot - 8
     y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
     fasi = [
-        "1. Sfacciatura → L = 70",
-        "2. Tornitura testa Ø18 × 20",
-        "3. Tornitura corpo Ø14 × 30",
-        "4. Tornitura gambo Ø10 × 20",
-        "5. Smussi 1×45°",
+        "1. Sfacciatura → L = 90",
+        "2. Tornitura testa Ø20 × 28",
+        "3. Tornitura collo Ø14 × 10",
+        "4. Tornitura manico Ø12 × 52",
+        "5. Smussi 1×45° + faccia piatta",
         "6. Controllo quote + satinatura",
     ]
     step = max(28, (bh - 55) // len(fasi))
@@ -499,9 +491,9 @@ def make_2a():
 
     y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
     ctrl = [
-        "□ L = 70 ± 0,3",
-        "□ Ø18 / Ø14 / Ø10 ± 0,2",
-        "□ Spallamenti netti",
+        "□ L = 90 ± 0,3",
+        "□ Ø20 / Ø14 / Ø12 ± 0,2",
+        "□ Faccia testa piatta",
         "□ Smussi 1×45°",
         "□ Superficie satinata",
     ]
@@ -517,162 +509,174 @@ def make_2a():
     text_in_box(d, 848, y3 + 124, 340, 28, "Firma docente:", F13, BLACK, pad=2)
     d.line([848, y3 + 156, 1190, y3 + 156], fill=BLACK, width=1)
 
-    save(img, "01-2a-perno-spallamenti.png", "STAMPA-2a-perno-spallamenti.png")
+    save(img, "01-2a-martello-manico.png", "STAMPA-2a-martello-manico.png")
 
 
 # ═══════════════════════════════════════════
-# 3ª POMOLO (senza zigrinatura)
+# 3ª PERNO A SPALLAMENTI + SCALINATURE
 # ═══════════════════════════════════════════
 def make_3a():
     img, d = new_sheet(
         "3ª CLASSE",
-        "POMOLO MANIGLIA M8",
-        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 36 mm  ·  filetto M8 × 1,25",
+        "PERNO A SPALLAMENTI",
+        "Barra tonda acciaio Ø20 × 100 mm  ·  pezzo finito L = 70 mm  ·  con scalinature",
     )
 
     draw_top = write_obiettivo(
         d,
         [
-            "Pomolo liscio per cassetto/anta. Tornitura + foro cieco + maschio M8 (niente zigrinatura).",
-            ("Dal grezzo si ricava L=36; l’avanzo resta come scarto/prova.", GRAY),
+            "Perno a 4 diametri (spallamenti) + scalinatura (zigrinatura) sul corpo Ø16.",
+            ("Più preciso della 2ª: un diametro in più e presa zigrinata.", GRAY),
         ],
     )
-    draw_h = 700
-    y = panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO TECNICO — vista laterale  (scala 12:1)")
 
-    sc = 12.0
-    mid = draw_top + 300
-    ox = 140
+    draw_h = 720
+    panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — 4 diametri + scalinatura (scala 10:1)")
+    panel_bottom = draw_top + draw_h
 
-    L1, D1 = 18, 20
-    L2, D2 = 8, 12
-    L3, D3 = 10, 14
+    info_x1, info_x2 = 900, W - 36
+    d.rectangle([info_x1, draw_top + 48, info_x2, panel_bottom - 58], fill=(248, 250, 252), outline=BLACK, width=2)
+    d.rectangle([info_x1, draw_top + 48, info_x2, draw_top + 88], fill=LIGHT, outline=BLACK, width=2)
+    d.text((info_x1 + 12, draw_top + 56), "LEGGI QUI", fill=ACCENT, font=F14)
 
-    d.rectangle([ox, mid - D1 * sc / 2, ox + L1 * sc, mid + D1 * sc / 2], fill=STEEL, outline=BLACK, width=3)
-    x2 = ox + L1 * sc
-    d.rectangle([x2, mid - D2 * sc / 2, x2 + L2 * sc, mid + D2 * sc / 2], fill=STEEL_D, outline=BLACK, width=3)
-    x3 = x2 + L2 * sc
-    d.rectangle([x3, mid - D3 * sc / 2, x3 + L3 * sc, mid + D3 * sc / 2], fill=STEEL_L, outline=BLACK, width=3)
+    blocks = [
+        (STEEL_D, "TESTA", "Ø18 × 15", "Parte grossa"),
+        (STEEL, "CORPO", "Ø16 × 15", "SCALINATO"),
+        ((100, 160, 190), "COLLO", "Ø14 × 20", "Diametro medio"),
+        ((90, 150, 100), "GAMBO", "Ø10 × 20", "Parte sottile"),
+    ]
+    for i, (col, title, line1, line2) in enumerate(blocks):
+        yy = draw_top + 100 + i * 95
+        d.rounded_rectangle([info_x1 + 12, yy, info_x2 - 12, yy + 86], radius=8, fill=WHITE, outline=col, width=3)
+        d.ellipse([info_x1 + 22, yy + 24, info_x1 + 56, yy + 58], fill=col, outline=BLACK, width=2)
+        num = str(i + 1)
+        tw = d.textlength(num, font=F15)
+        d.text((info_x1 + 39 - tw / 2, yy + 32), num, fill=WHITE, font=F15)
+        tx = info_x1 + 68
+        d.text((tx, yy + 10), f"{num}  {title}", fill=BLACK, font=F14)
+        d.text((tx, yy + 38), line1, fill=GRAY, font=F13)
+        d.text((tx, yy + 60), line2, fill=ORANGE if "SCALIN" in line2 else GRAY, font=F12)
 
-    d.line([ox, mid - D1 * sc / 2, ox + 8, mid - D1 * sc / 2 + 8], fill=BLACK, width=2)
-    d.line([ox, mid + D1 * sc / 2, ox + 8, mid + D1 * sc / 2 - 8], fill=BLACK, width=2)
+    d.rectangle([info_x1 + 12, draw_top + 490, info_x2 - 12, draw_top + 580], fill=WARN_BG, outline=WARN, width=2)
+    text_in_box(d, info_x1 + 12, draw_top + 498, info_x2 - info_x1 - 24, 36, "SCALINATURA = zigrinatura", F13, WARN, pad=6)
+    text_in_box(d, info_x1 + 12, draw_top + 536, info_x2 - info_x1 - 24, 36, "sul Ø16 (rombi) · olio · giri bassi", F12, WARN, pad=6)
 
-    hole_d = 6.8 * sc
-    hole_depth = 12 * sc
-    hx0 = x3 + L3 * sc - hole_depth
-    end = x3 + L3 * sc
-    d.rectangle([hx0, mid - hole_d / 2, end, mid + hole_d / 2], fill=WHITE, outline=BLACK, width=2)
-    for i in range(5):
-        xx = hx0 + 10 + i * 18
-        if xx < end - 6:
-            d.line([xx, mid - hole_d / 2, xx + 5, mid + hole_d / 2], fill=SOFT, width=1)
+    sc = 10.0
+    mid = draw_top + 310
+    ox = 70
+    # 15+15+20+20 = 70
+    segs = [
+        (15, 18, STEEL_D, False),
+        (15, 16, STEEL, True),   # scalinato
+        (20, 14, (100, 160, 190), False),
+        (20, 10, (90, 150, 100), False),
+    ]
+    x = ox
+    xs = []
+    for L, Dia, col, kn in segs:
+        ww, hh = L * sc, Dia * sc
+        if kn:
+            knurl_box(d, x, mid - hh / 2, ww, hh)
+        else:
+            d.rectangle([x, mid - hh / 2, x + ww, mid + hh / 2], fill=col, outline=BLACK, width=3)
+        xs.append((x, ww, hh, L, Dia, col, kn))
+        x += ww
+    end_x = x
 
-    centerline(d, ox - 35, end + 55, mid)
+    d.polygon([(ox, mid - xs[0][2] / 2), (ox + 10, mid - xs[0][2] / 2), (ox, mid - xs[0][2] / 2 + 10)], fill=WHITE, outline=BLACK)
+    d.polygon([(ox, mid + xs[0][2] / 2), (ox + 10, mid + xs[0][2] / 2), (ox, mid + xs[0][2] / 2 - 10)], fill=WHITE, outline=BLACK)
+    d.polygon([(end_x, mid - xs[3][2] / 2), (end_x - 8, mid - xs[3][2] / 2), (end_x, mid - xs[3][2] / 2 + 8)], fill=WHITE, outline=BLACK)
+    d.polygon([(end_x, mid + xs[3][2] / 2), (end_x - 8, mid + xs[3][2] / 2), (end_x, mid + xs[3][2] / 2 - 8)], fill=WHITE, outline=BLACK)
 
-    q1 = mid - D1 * sc / 2 - 40
-    q0 = q1 - 44
-    for xx in (ox, x2, x3, end):
-        ext_tick(d, xx, mid - D1 * sc / 2, q0 - 4)
-    dim_h(d, ox, x2, q1, "18")
-    dim_h(d, x2, x3, q1, "8")
-    dim_h(d, x3, end, q1, "10")
-    dim_h(d, ox, end, q0, "36")
+    centerline(d, ox - 16, end_x + 16, mid)
 
-    label_dia(d, ox, mid, "Ø20", side="left")
-    cy12 = mid + D1 * sc / 2 + 45
-    d.line([x2 + L2 * sc / 2, mid + D2 * sc / 2, x2 + L2 * sc / 2, cy12], fill=DIM_COL, width=2)
-    tw = d.textlength("Ø12", font=F16)
-    d.rectangle([x2 + L2 * sc / 2 - tw / 2 - 6, cy12 + 4, x2 + L2 * sc / 2 + tw / 2 + 6, cy12 + 34], fill=WHITE, outline=DIM_COL, width=1)
-    d.text((x2 + L2 * sc / 2 - tw / 2, cy12 + 8), "Ø12", fill=DIM_COL, font=F16)
+    top_r = mid - 18 * sc / 2
+    q1 = top_r - 48
+    q0 = q1 - 48
+    ticks = [ox] + [s[0] for s in xs[1:]] + [end_x]
+    for xx in ticks:
+        ext_tick(d, xx, top_r, q0 - 2)
+    dim_h(d, xs[0][0], xs[0][0] + xs[0][1], q1, "15")
+    dim_h(d, xs[1][0], xs[1][0] + xs[1][1], q1, "15")
+    dim_h(d, xs[2][0], xs[2][0] + xs[2][1], q1, "20")
+    dim_h(d, xs[3][0], xs[3][0] + xs[3][1], q1, "20")
+    dim_h(d, ox, end_x, q0, "70")
 
-    # Ø14 SOTTO (non a destra sul foro)
-    c14 = x3 + L3 * sc / 2
-    y14 = cy12
-    d.line([c14, mid + D3 * sc / 2, c14, y14], fill=DIM_COL, width=2)
-    tw14 = d.textlength("Ø14", font=F16)
-    d.rectangle([c14 - tw14 / 2 - 6, y14 + 4, c14 + tw14 / 2 + 6, y14 + 34], fill=WHITE, outline=DIM_COL, width=1)
-    d.text((c14 - tw14 / 2, y14 + 8), "Ø14", fill=DIM_COL, font=F16)
+    for (x0s, ww, hh, L, Dia, col, kn), lab in zip(xs, ["Ø18", "Ø16", "Ø14", "Ø10"]):
+        tw = d.textlength(lab, font=F16)
+        cx = x0s + ww / 2
+        ty = mid - 28
+        d.rectangle([cx - tw / 2 - 6, ty - 4, cx + tw / 2 + 6, ty + 24], fill=WHITE, outline=DIM_COL, width=1)
+        d.text((cx - tw / 2, ty), lab, fill=DIM_COL, font=F16)
 
-    # Vista frontale (a destra) — definita prima delle note sotto
-    bx1, by1 = 940, draw_top + 50
-    d.rectangle([bx1, by1, 1185, by1 + 36], fill=LIGHT, outline=BLACK, width=2)
-    d.text((bx1 + 10, by1 + 7), "VISTA FRONTALE", fill=BLACK, font=F13)
-    cx, cy, R = 1062, by1 + 155, 85
-    d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=STEEL, outline=BLACK, width=3)
-    r2 = 24
-    d.ellipse([cx - r2, cy - r2, cx + r2, cy + r2], fill=WHITE, outline=BLACK, width=2)
-    d.text((cx - 55, cy + R + 10), "Ø20  ·  M8", fill=BLACK, font=F14)
+    def badge(cx, cy, n, bg):
+        d.ellipse([cx - 16, cy - 16, cx + 16, cy + 16], fill=bg, outline=BLACK, width=2)
+        tw = d.textlength(n, font=F14)
+        d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
-    # Quota profondità foro: sotto Ø12, lontano dal pezzo e dalla vista
-    qf = cy12 + 55
-    ext_tick(d, hx0, mid + hole_d / 2, qf)
-    ext_tick(d, end, mid + hole_d / 2, qf)
-    dim_h(d, hx0, end, qf, "12", above=False)
-    foro_txt = "foro cieco Ø6,8 → maschio M8 × 1,25"
-    ftw = min(d.textlength(foro_txt, font=F14) + 16, bx1 - hx0 - 16)
-    fy = qf + 34
-    d.rectangle([hx0, fy, hx0 + ftw, fy + 32], fill=WHITE, outline=DIM_COL, width=2)
-    text_in_box(d, hx0, fy, ftw, 32, foro_txt, F14, DIM_COL, pad=6)
+    badge_y = mid + 18 * sc / 2 + 38
+    for i, s in enumerate(xs):
+        badge(s[0] + s[1] / 2, badge_y, str(i + 1), s[5])
 
-    note_max_w = bx1 - ox - 24
-    text_in_box(d, ox, fy + 44, note_max_w, 28, "Pomolo LISCIO (niente zigrinatura) · smusso 1×45°", F13, BLACK, pad=2)
-    text_in_box(d, ox, fy + 76, note_max_w, 28, "Maschiatura: olio · maschio M8 × 1,25 · pezzo fermo", F13, GRAY, pad=2)
+    # freccia scalinatura sotto il corpo zigrinato
+    sx = xs[1][0] + xs[1][1] / 2
+    d.line([sx, mid + xs[1][2] / 2, sx, badge_y - 22], fill=ORANGE, width=2)
+    text_in_box(d, sx - 90, badge_y + 28, 200, 28, "← SCALINATURA", F13, ORANGE, pad=2)
 
-    # Box maschiatura sotto la vista frontale
-    zg_top = by1 + 300
-    zg_bot = draw_top + draw_h - 16
-    zg_box_w = 1185 - bx1
-    d.rectangle([bx1, zg_top, 1185, zg_bot], fill=(232, 245, 232), outline=(20, 90, 40), width=2)
-    text_in_box(d, bx1, zg_top + 6, zg_box_w, 32, "MASCHIATURA M8", F14, (20, 90, 40), pad=10)
-    for i, ln in enumerate(
-        [
-            "1. Foro Ø6,8 × 12",
-            "2. Smusso ingresso",
-            "3. Maschio M8 × 1,25",
-            "4. Olio + a mano",
-            "5. Non forzare",
-            "6. Prova vite M8",
-        ]
-    ):
-        text_in_box(d, bx1 + 6, zg_top + 44 + i * 36, zg_box_w - 12, 32, ln, F13, BLACK, pad=6)
+    note_y = badge_y + 60
+    text_in_box(d, ox, note_y, info_x1 - ox - 20, 28, "4 spallamenti: Ø18 → Ø16 (scalinato) → Ø14 → Ø10", F13, BLACK, pad=2)
+    text_in_box(d, ox, note_y + 30, info_x1 - ox - 20, 28, "Scalinatura: rulli a rombi · 60–100 giri/min · olio · non tornire dopo.", F12, GRAY, pad=2)
 
-    bot = draw_top + draw_h + 12
+    legend = [
+        ("1 Ø18", STEEL_D, WHITE),
+        ("2 Ø16 scal.", STEEL, BLACK),
+        ("3 Ø14", (100, 160, 190), BLACK),
+        ("4 Ø10", (90, 150, 100), WHITE),
+    ]
+    tag_y = panel_bottom - 52
+    gap = 8
+    chip_w = (info_x1 - 40 - 3 * gap) / 4
+    for i, (lab, fill, tcol) in enumerate(legend):
+        xa = 36 + i * (chip_w + gap)
+        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 36], radius=8, fill=fill, outline=BLACK, width=2)
+        text_in_box(d, xa, tag_y, chip_w, 36, lab, F12, tcol, pad=4)
+
+    bot = panel_bottom + 12
     bh = FOOT - bot - 8
     y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
-    for i, ln in enumerate(
-        [
-            "1. Sfacciatura → L = 36",
-            "2. Pomolo Ø20 (liscio)",
-            "3. Collo Ø12 e boccola Ø14",
-            "4. Foro Ø6,8 × 12 (cieco)",
-            "5. Maschio M8 × 1,25",
-            "6. Smusso + satinatura",
-        ]
-    ):
-        d.text((36, y + 6 + i * 32), ln, fill=BLACK, font=F13)
+    fasi = [
+        "1. Sfacciatura → L = 70",
+        "2. Tornitura Ø18 × 15",
+        "3. Tornitura Ø16 × 15",
+        "4. Scalinatura sul Ø16",
+        "5. Tornitura Ø14 e Ø10",
+        "6. Smussi + satinatura",
+    ]
+    step = max(26, (bh - 55) // len(fasi))
+    for i, ln in enumerate(fasi):
+        text_in_box(d, 32, y + 4 + i * step, 384, step - 6, ln, F13, BLACK, pad=4)
 
     y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
-    for i, ln in enumerate(
-        [
-            "□ L = 36 ± 0,3",
-            "□ Ø20 / Ø12 / Ø14 ok",
-            "□ Foro Ø6,8 a misura",
-            "□ Vite M8 entra bene",
-            "□ Presa comoda",
-            "□ Finitura curata",
-        ]
-    ):
-        d.text((452, y2 + 6 + i * 32), ln, fill=BLACK, font=F13)
+    ctrl = [
+        "□ L = 70 ± 0,3",
+        "□ Ø18/16/14/10 ± 0,2",
+        "□ Scalinatura regolare",
+        "□ Spallamenti netti",
+        "□ Smussi + satinatura",
+    ]
+    step_c = max(26, (bh - 55) // len(ctrl))
+    for i, ln in enumerate(ctrl):
+        text_in_box(d, 448, y2 + 4 + i * step_c, 364, step_c - 4, ln, F13, BLACK, pad=4)
 
     y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    text_in_box(d, 848, y3 + 6, 340, 28, "Alunno/a:", F13, BLACK, pad=2)
-    d.line([848, y3 + 36, 1190, y3 + 36], fill=BLACK, width=1)
-    text_in_box(d, 848, y3 + 48, 340, 28, "Classe: ______  Data: __/__/____", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 84, 340, 28, "Voto /10: ______", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 120, 340, 28, "Firma docente:", F13, BLACK, pad=2)
-    d.line([848, y3 + 152, 1190, y3 + 152], fill=BLACK, width=1)
+    text_in_box(d, 848, y3 + 8, 340, 28, "Alunno/a:", F13, BLACK, pad=2)
+    d.line([848, y3 + 38, 1190, y3 + 38], fill=BLACK, width=1)
+    text_in_box(d, 848, y3 + 48, 340, 28, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
+    text_in_box(d, 848, y3 + 86, 340, 28, "Voto /10: ______", F13, BLACK, pad=2)
+    text_in_box(d, 848, y3 + 124, 340, 28, "Firma docente:", F13, BLACK, pad=2)
+    d.line([848, y3 + 156, 1190, y3 + 156], fill=BLACK, width=1)
 
-    save(img, "02-3a-pomolo-maniglia.png", "STAMPA-3a-pomolo-maniglia.png")
+    save(img, "02-3a-perno-spallamenti.png", "STAMPA-3a-perno-spallamenti.png")
 
 
 # ═══════════════════════════════════════════
