@@ -266,6 +266,43 @@ def hatch_rect(d, x1, y1, x2, y2, color=CAP_RED, step=7, width=2):
             d.line([seg[0], seg[1], seg[2], seg[3]], fill=color, width=width)
 
 
+def hatch_square_minus_hole(d, x1, y1, x2, y2, cx, cy, r, color=CAP_RED, step=6, width=2):
+    """Tratteggio in un quadrato, escludendo il foro circolare (sezione occhio)."""
+    left, top, right, bottom = x1 + 1, y1 + 1, x2 - 1, y2 - 1
+    if right <= left or bottom <= top:
+        return
+    h = bottom - top
+    r2 = r * r
+
+    def outside_hole(x, y):
+        dx, dy = x - cx, y - cy
+        return dx * dx + dy * dy >= r2
+
+    for i in range(-int(h) - step, int(right - left + h) + step * 2, step):
+        seg = _clip_diag(left + i, top, left + i + h, bottom, left, top, right, bottom)
+        if not seg:
+            continue
+        x0, y0, x1s, y1s = seg
+        # campiona la diagonale e spezza i tratti fuori dal foro
+        n = max(8, int(((x1s - x0) ** 2 + (y1s - y0) ** 2) ** 0.5 / 2))
+        pts = []
+        for k in range(n + 1):
+            t = k / n
+            px = x0 + (x1s - x0) * t
+            py = y0 + (y1s - y0) * t
+            pts.append((px, py, outside_hole(px, py)))
+        run = None
+        for px, py, ok in pts:
+            if ok:
+                if run is None:
+                    run = (px, py)
+                else:
+                    d.line([run[0], run[1], px, py], fill=color, width=width)
+                    run = (px, py)
+            else:
+                run = None
+
+
 def intacchi_box(d, x, y, w, h, n=6):
     """Intacchi anulari (scanalature) in vista laterale — NON zigrinatura."""
     d.rectangle([x, y, x + w, y + h], fill=STEEL, outline=BLACK, width=2)
@@ -580,77 +617,80 @@ def make_2a():
     d.rectangle([hx - ftw / 2, fy, hx + ftw / 2, fy + 26], fill=(255, 235, 230), outline=CAP_RED, width=2)
     d.text((hx - ftw / 2 + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
 
-    # Piano di sezione A-A sull’occhio (frecce rosse)
-    aa_y1, aa_y2 = mid - h - 18, mid + h + 18
-    d.line([hx - 22, aa_y1, hx + 22, aa_y1], fill=CAP_RED, width=3)
-    d.line([hx - 22, aa_y2, hx + 22, aa_y2], fill=CAP_RED, width=3)
-    d.polygon([(hx, aa_y1 - 10), (hx - 7, aa_y1), (hx + 7, aa_y1)], fill=CAP_RED)
-    d.polygon([(hx, aa_y2 + 10), (hx - 7, aa_y2), (hx + 7, aa_y2)], fill=CAP_RED)
-    d.text((hx + 28, aa_y1 - 14), "A", fill=CAP_RED, font=F14)
-    d.text((hx + 28, aa_y2 - 4), "A", fill=CAP_RED, font=F14)
+    # Piano di sezione A-A sull’occhio (taglio trasversale — frecce dai lati)
+    aa_x1, aa_x2 = hx - 38, hx + 38
+    d.line([aa_x1, mid - h - 6, aa_x1, mid + h + 6], fill=CAP_RED, width=3)
+    d.line([aa_x2, mid - h - 6, aa_x2, mid + h + 6], fill=CAP_RED, width=3)
+    d.polygon([(aa_x1 - 10, mid), (aa_x1, mid - 7), (aa_x1, mid + 7)], fill=CAP_RED)
+    d.polygon([(aa_x2 + 10, mid), (aa_x2, mid - 7), (aa_x2, mid + 7)], fill=CAP_RED)
+    d.text((aa_x1 - 22, mid - h - 28), "A", fill=CAP_RED, font=F14)
+    d.text((aa_x2 + 8, mid - h - 28), "A", fill=CAP_RED, font=F14)
 
-    # ── VISTA LATERALE — SEZIONE A-A (tratteggio rosso = materiale tagliato) ──
-    sec_y0 = fy + 42
-    d.text((ox, sec_y0), "VISTA LATERALE — SEZIONE A-A (taglio sull’occhio)", fill=ACCENT, font=F13)
-    d.text(
-        (ox + 520, sec_y0),
-        "linee rosse = materiale tagliato",
-        fill=CAP_RED, font=F12,
-    )
+    # ── SEZIONE A-A: vista del TAGLIO (quadro 20×20 + buco Ø10 + tratteggio rosso) ──
+    # Non è un altro disegno lungo: è il taglio trasversale sull’occhio.
+    sec_y0 = fy + 38
+    d.text((ox, sec_y0), "SEZIONE A-A — taglio sull’occhio (si vede il buco)", fill=ACCENT, font=F13)
+    d.text((ox + 560, sec_y0), "//// rosso = materiale tagliato", fill=CAP_RED, font=F12)
 
-    # scala sezione (più bassa del disegno principale)
-    ss = 5.5
-    sh = 10 * ss          # metà altezza barra 20
-    hole_w = 5 * ss       # Ø10 / 2 → metà larghezza foro in sezione
-    sx0 = ox
-    sx1 = sx0 + Lf * ss
-    sx2 = sx0 + (Lf + Lo) * ss
-    sx_end = sx2 + Lp * ss
-    smid = sec_y0 + 28 + sh
-    # contorno testa in sezione
-    d.rectangle([sx0, smid - sh, sx_end, smid + sh], fill=(245, 245, 248), outline=BLACK, width=3)
-    # zona foro: rettangolo vuoto passante (occhio)
-    hole_cx = (sx1 + sx2) / 2
-    hole_l, hole_r = hole_cx - hole_w, hole_cx + hole_w
-    # tratteggio rosso: metallo a sinistra del foro (faccia + inizio occhio)
-    hatch_rect(d, sx0 + 2, smid - sh + 2, hole_l - 1, smid + sh - 2, CAP_RED, step=6, width=2)
-    # tratteggio rosso: metallo a destra del foro (resto occhio + penna)
-    hatch_rect(d, hole_r + 1, smid - sh + 2, sx_end - 2, smid + sh - 2, CAP_RED, step=6, width=2)
-    # foro vuoto (bianco) — buco passante
-    d.rectangle([hole_l, smid - sh + 1, hole_r, smid + sh - 1], fill=WHITE, outline=CAP_RED, width=2)
-    # linee di separazione zone
-    d.line([sx1, smid - sh, sx1, smid + sh], fill=BLACK, width=1)
-    d.line([sx2, smid - sh, sx2, smid + sh], fill=BLACK, width=1)
-    # ricontorno esterno
-    d.rectangle([sx0, smid - sh, sx_end, smid + sh], outline=BLACK, width=3)
-    # freccia Ø10 sul foro
-    d.line([hole_l, smid, hole_r, smid], fill=DIM_COL, width=2)
-    arrow_h(d, hole_l, smid, left=True)
-    arrow_h(d, hole_r, smid, left=False)
-    otw = d.textlength("Ø10", font=F13)
-    d.rectangle([((hole_l + hole_r) / 2) - otw / 2 - 3, smid - 28, ((hole_l + hole_r) / 2) + otw / 2 + 3, smid - 6], fill=WHITE)
-    d.text((((hole_l + hole_r) / 2) - otw / 2, smid - 26), "Ø10", fill=DIM_COL, font=F13)
-    # etichette sotto
-    lab_y = smid + sh + 8
-    for cx, lab in (((sx0 + sx1) / 2, "faccia"), ((sx1 + sx2) / 2, "OCCHIO (buco)"), ((sx2 + sx_end) / 2, "penna")):
-        tw = d.textlength(lab, font=F12)
-        d.text((cx - tw / 2, lab_y), lab, fill=GRAY, font=F12)
-    d.text((sx_end + 14, smid - 10), "A — A", fill=CAP_RED, font=F14)
-    d.text((sx_end + 14, smid + 12), "20 × 20", fill=DIM_COL, font=F12)
+    # quadro sezione: 20×20 mm, scala grande
+    sq = 7.5                    # px/mm → lato 150 px
+    side = 20 * sq
+    hole_r = 5 * sq             # Ø10 → raggio 5 mm
+    sq_x = ox + 40
+    sq_y = sec_y0 + 32
+    scx, scy = sq_x + side / 2, sq_y + side / 2
 
-    # mini barra di partenza a destra della sezione
-    bx = sx_end + 110
-    by = smid - sh - 8
-    d.text((bx, by - 22), "BARRA 20×20×100", fill=ACCENT, font=F12)
-    d.rectangle([bx, by, bx + 100, by + 28], fill=IRON_L, outline=BLACK, width=2)
-    d.line([bx + 100, by, bx + 110, by - 8], fill=BLACK, width=2)
-    d.line([bx + 100, by + 28, bx + 110, by + 20], fill=BLACK, width=2)
-    d.line([bx + 110, by - 8, bx + 110, by + 20], fill=BLACK, width=2)
-    d.line([bx, by, bx + 10, by - 8], fill=BLACK, width=2)
-    d.line([bx + 10, by - 8, bx + 110, by - 8], fill=BLACK, width=2)
-    d.text((bx, by + 36), "→ taglio L=60", fill=GRAY, font=F12)
+    d.rectangle([sq_x, sq_y, sq_x + side, sq_y + side], fill=(250, 250, 252), outline=BLACK, width=3)
+    hatch_square_minus_hole(d, sq_x, sq_y, sq_x + side, sq_y + side, scx, scy, hole_r - 1, CAP_RED, step=7, width=2)
+    # foro bianco (buco passante)
+    d.ellipse([scx - hole_r, scy - hole_r, scx + hole_r, scy + hole_r], fill=WHITE, outline=CAP_RED, width=3)
+    d.rectangle([sq_x, sq_y, sq_x + side, sq_y + side], outline=BLACK, width=3)
 
-    note_y = lab_y + 28
+    # quote sul quadro
+    dim_h(d, sq_x, sq_x + side, sq_y - 22, "20")
+    # quota verticale 20
+    d.line([sq_x - 22, sq_y, sq_x - 22, sq_y + side], fill=DIM_COL, width=2)
+    arrow_v(d, sq_x - 22, sq_y, up=True)
+    arrow_v(d, sq_x - 22, sq_y + side, up=False)
+    tw20 = d.textlength("20", font=FDIM)
+    d.rectangle([sq_x - 22 - tw20 / 2 - 4, scy - 14, sq_x - 22 + tw20 / 2 + 4, scy + 12], fill=WHITE)
+    d.text((sq_x - 22 - tw20 / 2, scy - 12), "20", fill=DIM_COL, font=FDIM)
+    # quota Ø10 sul foro
+    d.line([scx - hole_r, scy, scx + hole_r, scy], fill=DIM_COL, width=2)
+    arrow_h(d, scx - hole_r, scy, left=True)
+    arrow_h(d, scx + hole_r, scy, left=False)
+    otw = d.textlength("Ø10", font=F14)
+    d.rectangle([scx - otw / 2 - 4, scy - 32, scx + otw / 2 + 4, scy - 8], fill=WHITE)
+    d.text((scx - otw / 2, scy - 30), "Ø10", fill=DIM_COL, font=F14)
+
+    d.text((sq_x + side + 16, sq_y + 8), "A — A", fill=CAP_RED, font=F14)
+    d.text((sq_x + side + 16, sq_y + 36), "barra 20 × 20", fill=BLACK, font=F13)
+    d.text((sq_x + side + 16, sq_y + 60), "foro passante", fill=CAP_RED, font=F13)
+    d.text((sq_x + side + 16, sq_y + 84), "occhio manico", fill=GRAY, font=F12)
+
+    # freccia “vista del taglio” schematica
+    vx = sq_x + side + 200
+    vy = sq_y + 20
+    d.text((vx, vy), "come si guarda:", fill=ACCENT, font=F12)
+    # mini testa lunga
+    d.rectangle([vx, vy + 28, vx + 90, vy + 52], fill=IRON, outline=BLACK, width=2)
+    d.ellipse([vx + 35, vy + 30, vx + 55, vy + 50], fill=WHITE, outline=BLACK, width=1)
+    # piano di taglio rosso
+    d.line([vx + 45, vy + 22, vx + 45, vy + 58], fill=CAP_RED, width=3)
+    d.polygon([(vx + 45, vy + 18), (vx + 40, vy + 26), (vx + 50, vy + 26)], fill=CAP_RED)
+    d.text((vx + 98, vy + 32), "taglio A-A", fill=CAP_RED, font=F12)
+
+    # mini barra
+    bx, by = vx, vy + 78
+    d.text((bx, by), "BARRA 20×20×100 → L=60", fill=ACCENT, font=F12)
+    d.rectangle([bx, by + 24, bx + 90, by + 48], fill=IRON_L, outline=BLACK, width=2)
+    d.line([bx + 90, by + 24, bx + 100, by + 16], fill=BLACK, width=2)
+    d.line([bx + 90, by + 48, bx + 100, by + 40], fill=BLACK, width=2)
+    d.line([bx + 100, by + 16, bx + 100, by + 40], fill=BLACK, width=2)
+    d.line([bx, by + 24, bx + 10, by + 16], fill=BLACK, width=2)
+    d.line([bx + 10, by + 16, bx + 100, by + 16], fill=BLACK, width=2)
+
+    note_y = sq_y + side + 36
     text_in_box(
         d, ox, note_y, info_x1 - ox - 24, 22,
         "Da BARRA 20×20: faccia 20 · occhio 24 · penna 16 → L = 60. Foro Ø10 passante.",
@@ -672,7 +712,7 @@ def make_2a():
 
     tip_y = tag_y + 34
     tips = [
-        "Tratteggio rosso = dove il pezzo è tagliato in sezione (si vede il buco).",
+        "SEZIONE A-A = taglio trasversale: quadro 20×20 con buco Ø10 e tratteggio rosso.",
         "• Occhiali · morsa · foratura occhio Ø10 · controlla L=60 e sez. 20×20",
     ]
     tip_step = 22
