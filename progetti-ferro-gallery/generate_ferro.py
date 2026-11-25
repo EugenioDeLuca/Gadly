@@ -499,7 +499,7 @@ def make_2a():
 
     blocks = [
         (FACE_C, "FACCIA", "16 × 16", "Piatta"),
-        (IRON, "OCCHIO", "foro Ø8", "TAGLIO"),
+        (IRON, "OCCHIO", "foro Ø8", "tratteggio"),
         (PEEN_C, "PENNA", "cuneo 16", "A taglio"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
@@ -553,36 +553,23 @@ def make_2a():
     d.line([x2 + 4, mid - h + 6, end_x - 6, mid - tip_h], fill=IRON_D, width=2)
     d.line([x2 + 4, mid + h - 6, end_x - 6, mid + tip_h], fill=IRON_D, width=2)
 
-    # Occhio
-    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], fill=(40, 42, 45), outline=BLACK, width=3)
-    d.ellipse(
-        [hx - hole_r + 7, mid - hole_r + 6, hx + hole_r - 7, mid + hole_r - 6],
-        fill=(25, 26, 28), outline=IRON_D, width=1,
-    )
-
-    # Sezione metà inferiore — tratteggio rosso
-    hatch_rect(d, x1 + 2, mid + 2, hx - hole_r - 1, mid + h - 2, CAP_RED, step=7, width=2)
-    hatch_rect(d, hx + hole_r + 1, mid + 2, x2 - 2, mid + h - 2, CAP_RED, step=7, width=2)
-    d.line([x1, mid, hx - hole_r, mid], fill=CAP_RED, width=3)
-    d.line([hx + hole_r, mid, x2, mid], fill=CAP_RED, width=3)
-    for a0 in range(0, 180, 6):
-        a1 = a0 + 6
-        r = hole_r
-        xa = hx + r * math.cos(math.radians(a0 + 180))
-        ya = mid + r * math.sin(math.radians(a0 + 180))
-        xb = hx + r * math.cos(math.radians(a1 + 180))
-        yb = mid + r * math.sin(math.radians(a1 + 180))
-        d.line([xa, ya, xb, yb], fill=CAP_RED, width=3)
+    # OCCHIO in SEZIONE: niente cerchio — foro passante + tratteggio rosso
+    hole_l, hole_r = hx - hole_r, hx + hole_r
+    hatch_rect(d, x1 + 2, mid - h + 2, hole_l - 1, mid + h - 2, CAP_RED, step=7, width=2)
+    hatch_rect(d, hole_r + 1, mid - h + 2, x2 - 2, mid + h - 2, CAP_RED, step=7, width=2)
+    d.rectangle([hole_l, mid - h + 1, hole_r, mid + h - 1], fill=WHITE, outline=CAP_RED, width=3)
+    d.line([hole_l, mid - h, hole_r, mid - h], fill=CAP_RED, width=3)
+    d.line([hole_l, mid + h, hole_r, mid + h], fill=CAP_RED, width=3)
 
     d.rectangle([x0, mid - h, x2, mid + h], outline=BLACK, width=3)
     d.line([x1, mid - h, x1, mid + h], fill=BLACK, width=1)
     d.line([x2, mid - h, x2, mid + h], fill=BLACK, width=2)
     d.polygon(penna, outline=BLACK, width=2)
-    d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], outline=BLACK, width=3)
+    d.rectangle([hole_l, mid - h + 1, hole_r, mid + h - 1], outline=CAP_RED, width=3)
 
     centerline(d, x0 - 10, end_x + 12, mid)
 
-    # Quote LUNGHEZZE — tutte SOPRA il pezzo, con aria
+    # Quote LUNGHEZZE — SOPRA il pezzo
     top = mid - h
     q1 = top - 50
     q0 = q1 - 38
@@ -593,18 +580,15 @@ def make_2a():
     dim_h(d, x2, end_x, q1, "16")
     dim_h(d, x0, end_x, q0, "60")
 
-    # Quota Ø8 — a DESTRA del foro, fuori dal pezzo
-    ox8 = end_x + 36
-    d.line([hx + hole_r, mid, ox8, mid], fill=DIM_COL, width=2)
-    d.line([ox8, mid - hole_r, ox8, mid + hole_r], fill=DIM_COL, width=3)
-    arrow_v(d, ox8, mid - hole_r, up=True)
-    arrow_v(d, ox8, mid + hole_r, up=False)
+    # Quota Ø8 DENTRO il foro (niente overlap con le lunghezze sopra)
+    d.line([hole_l, mid, hole_r, mid], fill=DIM_COL, width=3)
+    arrow_h(d, hole_l, mid, left=True)
+    arrow_h(d, hole_r, mid, left=False)
     otw = d.textlength("Ø8", font=F22)
-    d.rectangle([ox8 + 10, mid - 18, ox8 + 18 + otw, mid + 18], fill=WHITE, outline=CAP_RED, width=2)
-    d.text((ox8 + 14, mid - 14), "Ø8", fill=CAP_RED, font=F22)
-    d.text((ox8 + 10, mid + 28), "//// taglio", fill=CAP_RED, font=F12)
+    d.rectangle([hx - otw / 2 - 6, mid - 40, hx + otw / 2 + 6, mid - 10], fill=WHITE, outline=CAP_RED, width=2)
+    d.text((hx - otw / 2, mid - 36), "Ø8", fill=CAP_RED, font=F22)
 
-    # Quota altezza 16 — a SINISTRA, fuori
+    # Quota altezza 16 — a SINISTRA
     hx16 = x0 - 36
     d.line([hx16, mid - h, hx16, mid + h], fill=DIM_COL, width=3)
     arrow_v(d, hx16, mid - h, up=True)
@@ -614,25 +598,30 @@ def make_2a():
     d.text((hx16 - tw16 / 2, mid - 14), "16", fill=DIM_COL, font=F22)
     d.text((hx16 - 28, mid + h + 10), "16×16", fill=DIM_COL, font=F13)
 
-    # Manico corto sotto — etichetta a destra del manico, sotto il pezzo
-    stem_w = 12
-    stem_bot = mid + h + 48
-    d.rectangle([hx - stem_w, mid + hole_r, hx + stem_w, stem_bot], fill=(160, 120, 70), outline=BLACK, width=2)
-    d.text((hx + stem_w + 12, mid + h + 18), "manico", fill=(120, 70, 20), font=F13)
-    d.text((hx + stem_w + 12, mid + h + 38), "(dopo)", fill=GRAY, font=F12)
+    # Nota taglio a destra del pezzo (fuori)
+    d.text((end_x + 16, mid - 12), "////", fill=CAP_RED, font=F14)
+    d.text((end_x + 16, mid + 12), "taglio", fill=CAP_RED, font=F13)
 
-    # Badge SOTTO, chiari dal manico
+    # Freccia manico dall’alto nel foro (passante) — niente cerchio
+    d.line([hx, mid - h - 8, hx, mid - h + 4], fill=(120, 70, 20), width=2)
+    # stub manico sotto il pezzo
+    stem_w = 10
+    stem_bot = mid + h + 40
+    d.rectangle([hx - stem_w, mid + h, hx + stem_w, stem_bot], fill=(160, 120, 70), outline=BLACK, width=2)
+    d.text((hx + stem_w + 10, mid + h + 8), "manico", fill=(120, 70, 20), font=F13)
+    d.text((hx + stem_w + 10, mid + h + 28), "(dopo)", fill=GRAY, font=F12)
+
     def badge(cx, cy, n, bg):
         d.ellipse([cx - 15, cy - 15, cx + 15, cy + 15], fill=bg, outline=BLACK, width=2)
         tw = d.textlength(n, font=F14)
         d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
-    badge_y = stem_bot + 28
+    badge_y = stem_bot + 26
     badge((x0 + x1) / 2, badge_y, "1", FACE_C)
-    badge(hx - 50, badge_y, "2", IRON)
+    badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
     d.text((((x0 + x1) / 2) - 28, badge_y + 20), "faccia", fill=GRAY, font=F12)
-    d.text((hx - 68, badge_y + 20), "occhio", fill=GRAY, font=F12)
+    d.text((hx - 30, badge_y + 20), "occhio", fill=GRAY, font=F12)
     d.text((peen_mid - 24, badge_y + 20), "penna", fill=GRAY, font=F12)
 
     fy = badge_y + 44
