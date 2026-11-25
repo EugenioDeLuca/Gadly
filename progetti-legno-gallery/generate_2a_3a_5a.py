@@ -498,14 +498,14 @@ yy = ct4 + 14
 for n in notes:
     d.text((650, yy), n, fill=BLACK, font=F13)
     yy += 24
-# skip mensola — 4ª is manico nylon
+# skip mensola — 4ª is porta-attrezzi
 # save(img, "03-4a-mensola.png")
 
 # =========================================================
-# 5ª PORTA-ATTREZZI — labels clear of holes/hooks
+# 4ª PORTA-ATTREZZI — labels clear of holes/hooks
 # =========================================================
-img, d = new_sheet("5ª", "Porta-attrezzi da muro",
-                   "Difficoltà media-alta · 15–18 mm · pannello 800×500 · officina")
+img, d = new_sheet("4ª", "Porta-attrezzi da muro",
+                   "Difficoltà media · 15–18 mm · pannello 800×500 · officina")
 
 ct = panel(d, 20, 108, 1200, 500, "VISTE QUOTATE")
 d.text((40, ct + 8), "PROSPETTO FRONTE", fill=ACCENT, font=F14)
@@ -629,10 +629,10 @@ for i, c in enumerate(checks):
     d.text((48, cy0 + i * ch), c, fill=BLACK, font=F14)
 yy = fill_lines(d, 650, ct4 + 10, FOOT_TOP - 195, notes, F14)
 student_block(d, 650, FOOT_TOP - 188, FOOT_TOP - 8, F13, F14)
-save(img, "04-5a-porta-attrezzi.png")
+save(img, "03-4a-porta-attrezzi.png")
 
 with zipfile.ZipFile(f"{OUT}/progetti-legno-schede.zip", "w") as z:
-    for n in ["01-2a-portapenne.png", "02-3a-sgabello.png", "03-4a-manico-cacciaviti.png", "04-5a-porta-attrezzi.png"]:
+    for n in ["01-2a-portapenne.png", "02-3a-sgabello.png", "03-4a-porta-attrezzi.png", "04-5a-manico-cacciaviti.png"]:
         z.write(f"{OUT}/{n}", n)
 
 print("all done")
@@ -642,7 +642,7 @@ import shutil
 for src, dst in [
     ("01-2a-portapenne.png", "2a-portapenne.png"),
     ("02-3a-sgabello.png", "3a-sgabello.png"),
-    ("04-5a-porta-attrezzi.png", "5a-porta-attrezzi.png"),
+    ("03-4a-porta-attrezzi.png", "4a-porta-attrezzi.png"),
 ]:
     shutil.copy(f"{OUT}/{src}", f"/opt/cursor/artifacts/{dst}")
 print("copied friendly names")

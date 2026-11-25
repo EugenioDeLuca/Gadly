@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A4 scheda: 4ª Manico cacciaviti al tornio — barra di NYLON (1240×1754)."""
+"""A4 scheda: 5ª Manico cacciaviti al tornio — barra di NYLON (1240×1754)."""
 
 from pathlib import Path
 
@@ -143,10 +143,10 @@ def main():
     d = ImageDraw.Draw(img)
     d.rectangle((10, 10, W - 10, H - 10), outline=INK, width=3)
 
-    d.text((M + 8, M + 4), "4ª · Manico per cacciaviti (tornio)", fill=INK, font=FT)
+    d.text((M + 8, M + 4), "5ª · Manico per cacciaviti (tornio)", fill=INK, font=FT)
     d.text(
         (M + 8, M + 40),
-        "Difficoltà media · NYLON (barra tonda) · L 110 · Ø max 32 · tempo 3–5 h · non è legno",
+        "Difficoltà media-alta · NYLON (barra tonda) · L 110 · Ø max 32 · tempo 3–5 h · non è legno",
         fill=MUTED,
         font=FS,
     )
@@ -363,16 +363,16 @@ def main():
     d.rectangle((12, H - 32, W - 12, H - 12), fill=(235, 235, 235), outline=INK, width=2)
     d.text(
         (M + 4, H - 28),
-        "Quote in mm · Ø ±0,5 · laboratorio · 4ª tornitura plastica — nylon (non legno, non plexiglass)",
+        "Quote in mm · Ø ±0,5 · laboratorio · 5ª tornitura plastica — nylon (non legno, non plexiglass)",
         fill=INK,
         font=FX,
     )
 
     outs = [
-        Path("/workspace/progetti-legno-gallery/03-4a-manico-cacciaviti.png"),
-        Path("/opt/cursor/artifacts/progetti-legno/03-4a-manico-cacciaviti.png"),
-        Path("/opt/cursor/artifacts/03-4a-manico-cacciaviti.png"),
-        Path("/opt/cursor/artifacts/4a-manico-cacciaviti.png"),
+        Path("/workspace/progetti-legno-gallery/04-5a-manico-cacciaviti.png"),
+        Path("/opt/cursor/artifacts/progetti-legno/04-5a-manico-cacciaviti.png"),
+        Path("/opt/cursor/artifacts/04-5a-manico-cacciaviti.png"),
+        Path("/opt/cursor/artifacts/5a-manico-cacciaviti.png"),
     ]
     for p in outs:
         p.parent.mkdir(parents=True, exist_ok=True)
