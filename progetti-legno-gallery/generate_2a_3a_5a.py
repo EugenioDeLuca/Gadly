@@ -35,49 +35,49 @@ def font_b(size):
             return ImageFont.truetype(p, size)
     return font(size)
 
-F11, F12, F13, F14 = font_b(15), font_b(16), font_b(17), font_b(18)
-F15b, F16b, F18b, F22b = font_b(19), font_b(20), font_b(22), font_b(28)
-Fm = font_b(14)
+F11, F12, F13, F14 = font_b(20), font_b(21), font_b(22), font_b(23)
+F15b, F16b, F18b, F22b = font_b(24), font_b(25), font_b(28), font_b(34)
+Fm = font_b(19)
 
-FOOT_TOP = H - 48
+FOOT_TOP = H - 52
 
 def new_sheet(classe, titolo, sub):
     img = Image.new("RGB", (W, H), WHITE)
     d = ImageDraw.Draw(img)
     d.rectangle([12, 12, W - 12, H - 12], outline=BLACK, width=2)
-    d.rectangle([12, 12, W - 12, 96], fill=(246, 246, 246), outline=BLACK, width=2)
+    d.rectangle([12, 12, W - 12, 104], fill=(246, 246, 246), outline=BLACK, width=2)
     d.text((28, 28), f"{classe}  ·  {titolo}", fill=BLACK, font=F22b)
     d.text((28, 64), sub, fill=GRAY, font=F12)
     d.rectangle([W - 210, 28, W - 28, 82], outline=ACCENT, width=2)
     d.text((W - 196, 38), "SOLO", fill=ACCENT, font=F11)
     d.text((W - 196, 56), "CHIODI E VITI", fill=ACCENT, font=F13)
     d.rectangle([12, FOOT_TOP, W - 12, H - 12], fill=(246, 246, 246), outline=BLACK, width=2)
-    d.text((28, FOOT_TOP + 12), "Quote in mm · tolleranza ±1 mm · laboratorio legno professionale", fill=GRAY, font=Fm)
+    d.text((28, FOOT_TOP + 14), "Quote in mm · tolleranza ±1 mm · laboratorio legno professionale", fill=GRAY, font=Fm)
     return img, d
 
 def panel(d, x, y, w, h, title):
     d.rectangle([x, y, x + w, y + h], outline=BLACK, width=2)
-    d.rectangle([x, y, x + w, y + 26], fill=LIGHT, outline=BLACK, width=2)
-    d.text((x + 10, y + 5), title, fill=BLACK, font=F13)
-    return y + 26  # content top
+    d.rectangle([x, y, x + w, y + 32], fill=LIGHT, outline=BLACK, width=2)
+    d.text((x + 10, y + 6), title, fill=BLACK, font=F15b)
+    return y + 32  # content top
 
 def dim_h(d, x1, x2, y, label):
     d.line([x1, y, x2, y], fill=BLACK, width=2)
     d.line([x1, y - 4, x1, y + 4], fill=BLACK, width=2)
     d.line([x2, y - 4, x2, y + 4], fill=BLACK, width=2)
-    tw = d.textlength(label, font=Fm)
+    tw = d.textlength(label, font=F13)
     # clear background behind label to avoid clash
     lx = (x1 + x2) / 2 - tw / 2
     d.rectangle([lx - 2, y - 15, lx + tw + 2, y - 2], fill=WHITE)
-    d.text((lx, y - 14), label, fill=BLACK, font=Fm)
+    d.text((lx, y - 16), label, fill=BLACK, font=F13)
 
 def dim_v(d, y1, y2, x, label):
     d.line([x, y1, x, y2], fill=BLACK, width=2)
     d.line([x - 4, y1, x + 4, y1], fill=BLACK, width=2)
     d.line([x - 4, y2, x + 4, y2], fill=BLACK, width=2)
-    tw = d.textlength(label, font=Fm)
+    tw = d.textlength(label, font=F13)
     d.rectangle([x + 5, (y1 + y2) / 2 - 8, x + 8 + tw, (y1 + y2) / 2 + 6], fill=WHITE)
-    d.text((x + 7, (y1 + y2) / 2 - 6), label, fill=BLACK, font=Fm)
+    d.text((x + 7, (y1 + y2) / 2 - 8), label, fill=BLACK, font=F13)
 
 def table(d, x, y, headers, rows, col_w, rh=25):
     cx = x
@@ -94,6 +94,43 @@ def table(d, x, y, headers, rows, col_w, rh=25):
             d.text((cx + 4, cy + 5), str(cell), fill=BLACK, font=Fm)
             cx += col_w[i]
     return y + (len(rows) + 1) * rh
+
+
+def fill_lines(d, x, y0, y1, lines, fnt):
+    """Draw lines filling vertical space from y0 to y1 (no huge empty bottom)."""
+    usable = [ln for ln in lines]
+    n = max(len(usable), 1)
+    # leave 8px padding at bottom
+    avail = max(y1 - y0 - 8, n * 18)
+    step = avail / n
+    # clamp step so text doesn't overlap too much
+    step = max(step, 18)
+    # if still short of bottom, we'll pad with blank score lines after
+    yy = y0
+    for ln in usable:
+        d.text((x, yy), ln, fill=BLACK, font=fnt)
+        yy += step
+    return yy
+
+def student_block(d, x, y, y_max, fnt, fntb):
+    """Fill remaining space with nome/classe/voto fields."""
+    fields = [
+        "Alunno/a: ________________________________",
+        "Classe: ________    Data: ____ / ____ / ______",
+        "Voto /10: ______    Firma docente: _______________",
+        "Osservazioni docente:",
+        "______________________________________________",
+        "______________________________________________",
+    ]
+    d.rectangle([x - 8, y - 4, x + 548, y_max - 2], outline=BLACK, width=3)
+    n = len(fields)
+    step = max(24, (y_max - 8 - y) / n)
+    yy = y + 2
+    for i, f in enumerate(fields):
+        d.text((x, yy), f, fill=BLACK, font=fntb if i < 3 else fnt)
+        yy += step
+    return yy
+
 
 HDR = ["Cod.", "Pezzo", "Q.tà", "L", "W", "S", "Note"]
 
@@ -168,7 +205,7 @@ rows = [
     ["C", "Divisore centrale", "1", "100", "85", "10", "Altezza –5 mm rispetto ai lati"],
     ["F", "Fondo / base", "1", "200", "120", "10", "Pezzo di riferimento"],
 ]
-ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 26)
+ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 30)
 d.text((40, ty + 12), "Ferramenta: viti 3,5×25 (×16)  ·  carta abrasiva 120/180  ·  olio/vernice opzionale", fill=BLACK, font=F12)
 
 # Bottom columns
@@ -187,16 +224,6 @@ steps = [
     "9. Carteggiare spigoli (180).",
     "10. Marchiare nome/classe sotto.",
 ]
-yy = ct3 + 14
-for s in steps:
-    d.text((36, yy), s, fill=BLACK, font=F13)
-    yy += 28
-d.rectangle([36, yy + 8, 590, FOOT_TOP - 16], fill=BLUEBOX, outline=ACCENT, width=2)
-d.text((48, yy + 18), "CONTROLLO QUALITÀ", fill=ACCENT, font=F14)
-checks = ["□ Quote ±1 mm", "□ Angoli 90°", "□ Viti allineate", "□ Superfici carteggiate", "□ Non zoppica sul banco", "□ Niente schegge"]
-for i, c in enumerate(checks):
-    d.text((48, yy + 48 + i * 26), c, fill=BLACK, font=F13)
-
 ct4 = panel(d, 630, y1, 590, h1, "NOTE DIDATTICHE / SICUREZZA")
 notes = [
     "Obiettivo: taglio diritto, foratura,",
@@ -219,11 +246,28 @@ notes = [
     "• montaggio/squadra …… 3",
     "• finitura ……………… 2",
     "• ordine/sicurezza ……… 2",
+    "",
+    "Materiale: abete/multistrato sp. 10 mm.",
+    "Controllare squadra dopo ogni pezzo.",
+    "Non forzare i pezzi B: ritagliare 1 mm.",
 ]
-yy = ct4 + 14
-for n in notes:
-    d.text((650, yy), n, fill=BLACK, font=F13)
-    yy += 24
+# LEFT: steps + QC filling column
+yy = ct3 + 10
+steps_end = ct3 + int((FOOT_TOP - ct3) * 0.45)
+sh = max(26, (steps_end - yy) / len(steps))
+for s in steps:
+    d.text((36, yy), s, fill=BLACK, font=F14)
+    yy += sh
+d.rectangle([36, int(yy) + 4, 590, FOOT_TOP - 8], fill=BLUEBOX, outline=BLACK, width=3)
+d.text((48, int(yy) + 14), "CONTROLLO QUALITÀ", fill=BLACK, font=F15b)
+checks = ["□ Quote ±1 mm", "□ Angoli 90°", "□ Viti allineate", "□ Superfici carteggiate", "□ Non zoppica sul banco", "□ Niente schegge", "□ Nome sotto il pezzo"]
+cy0 = int(yy) + 48
+ch = max(28, (FOOT_TOP - 30 - cy0) / len(checks))
+for i, c in enumerate(checks):
+    d.text((48, cy0 + i * ch), c, fill=BLACK, font=F14)
+# RIGHT: notes fill + student
+yy = fill_lines(d, 650, ct4 + 10, FOOT_TOP - 195, notes, F14)
+student_block(d, 650, FOOT_TOP - 188, FOOT_TOP - 8, F13, F14)
 save(img, "01-2a-portapenne.png")
 
 # =========================================================
@@ -278,7 +322,7 @@ rows = [
     ["T1", "Traversa lunga", "2", "230", "50", "18", "Lati lunghi, a 80 mm da terra"],
     ["T2", "Traversa corta", "2", "160", "50", "18", "Chiude il telaio basso"],
 ]
-ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 26)
+ty = table(d, 40, ct2 + 12, HDR, rows, [65, 230, 55, 60, 60, 45, 520], 30)
 d.text((40, ty + 12), "Ferramenta: viti 4×50 (×8) piano–gambe  ·  viti 4×40 (×16) traverse  ·  carta 80/120/180", fill=BLACK, font=F12)
 
 y1 = 860
@@ -296,15 +340,6 @@ steps = [
     "9. Verificare stabilità a 4 piedi.",
     "10. Carteggiare e rifinire.",
 ]
-yy = ct3 + 14
-for s in steps:
-    d.text((36, yy), s, fill=BLACK, font=F13)
-    yy += 28
-d.rectangle([36, yy + 8, 590, FOOT_TOP - 16], fill=BLUEBOX, outline=ACCENT, width=2)
-d.text((48, yy + 18), "CONTROLLO QUALITÀ", fill=ACCENT, font=F14)
-for i, c in enumerate(["□ Piano a livello", "□ Non zoppica", "□ Traverse a 80 mm", "□ Viti a filo", "□ Spigoli smussati", "□ Rigidità laterale OK"]):
-    d.text((48, yy + 48 + i * 26), c, fill=BLACK, font=F13)
-
 ct4 = panel(d, 630, y1, 590, h1, "NOTE DIDATTICHE / SICUREZZA")
 notes = [
     "Obiettivo: struttura portante,",
@@ -326,13 +361,25 @@ notes = [
     "• finitura …………… 2",
     "• metodo/sicurezza …… 2",
     "",
-    "Test carico solo con",
-    "docente presente.",
+    "Test carico solo con docente.",
+    "Legno: abete/pino sp. 18 mm.",
+    "Segnare tutte le quote prima di forare.",
 ]
-yy = ct4 + 14
-for n in notes:
-    d.text((650, yy), n, fill=BLACK, font=F13)
-    yy += 24
+yy = ct3 + 10
+steps_end = ct3 + int((FOOT_TOP - ct3) * 0.45)
+sh = max(26, (steps_end - yy) / len(steps))
+for s in steps:
+    d.text((36, yy), s, fill=BLACK, font=F14)
+    yy += sh
+d.rectangle([36, int(yy) + 4, 590, FOOT_TOP - 8], fill=BLUEBOX, outline=BLACK, width=3)
+d.text((48, int(yy) + 14), "CONTROLLO QUALITÀ", fill=BLACK, font=F15b)
+checks = ["□ Piano a livello", "□ Non zoppica", "□ Traverse a 80 mm", "□ Viti a filo", "□ Spigoli smussati", "□ Rigidità laterale OK", "□ Nome sotto il piano"]
+cy0 = int(yy) + 48
+ch = max(28, (FOOT_TOP - 30 - cy0) / len(checks))
+for i, c in enumerate(checks):
+    d.text((48, cy0 + i * ch), c, fill=BLACK, font=F14)
+yy = fill_lines(d, 650, ct4 + 10, FOOT_TOP - 195, notes, F14)
+student_block(d, 650, FOOT_TOP - 188, FOOT_TOP - 8, F13, F14)
 save(img, "02-3a-sgabello.png")
 
 # =========================================================
@@ -521,7 +568,7 @@ rows = [
     ["C2", "Fianchi cassetta", "4", "120", "90", "10", "Altezza utile ≈ 90"],
     ["C3", "Fronte/retro cassetta", "4", "180", "90", "10", "Tra i fianchi"],
 ]
-ty = table(d, 40, ct2 + 8, HDR, rows, [55, 230, 50, 60, 60, 40, 540], 22)
+ty = table(d, 40, ct2 + 8, HDR, rows, [55, 230, 50, 60, 60, 40, 540], 26)
 d.text((40, ty + 10), "Ferramenta: viti 4×40 (×30)  ·  3,5×25 (×24)  ·  ganci a vite (×6)  ·  tasselli Ø8 (×4)", fill=BLACK, font=F12)
 
 y1 = 890
@@ -538,15 +585,6 @@ steps = [
     "8. Tasselli Ø8 e appendere.",
     "9. Carteggiare e rifinire.",
 ]
-yy = ct3 + 12
-for s in steps:
-    d.text((36, yy), s, fill=BLACK, font=F13)
-    yy += 28
-d.rectangle([36, yy + 6, 590, FOOT_TOP - 16], fill=BLUEBOX, outline=ACCENT, width=2)
-d.text((48, yy + 16), "CONTROLLO QUALITÀ", fill=ACCENT, font=F14)
-for i, c in enumerate(["□ Fori B allineati", "□ Mensola a squadra", "□ Cassette salde", "□ Pannello in bolla", "□ Utensili nei fori OK", "□ Niente schegge"]):
-    d.text((48, yy + 44 + i * 26), c, fill=BLACK, font=F13)
-
 ct4 = panel(d, 630, y1, 590, h1, "NOTE DIDATTICHE / SICUREZZA")
 notes = [
     "Obiettivo: progetto officina completo",
@@ -568,11 +606,25 @@ notes = [
     "• montaggio …………… 3",
     "• finitura/ordine ……… 2",
     "• sicurezza/fissaggio …… 2",
+    "",
+    "Usare livella a bolla sul pannello.",
+    "Forare B con dima / passo fisso 40.",
 ]
-yy = ct4 + 12
-for n in notes:
-    d.text((650, yy), n, fill=BLACK, font=F13)
-    yy += 24
+yy = ct3 + 10
+steps_end = ct3 + int((FOOT_TOP - ct3) * 0.42)
+sh = max(26, (steps_end - yy) / len(steps))
+for s in steps:
+    d.text((36, yy), s, fill=BLACK, font=F14)
+    yy += sh
+d.rectangle([36, int(yy) + 4, 590, FOOT_TOP - 8], fill=BLUEBOX, outline=BLACK, width=3)
+d.text((48, int(yy) + 14), "CONTROLLO QUALITÀ", fill=BLACK, font=F15b)
+checks = ["□ Fori B allineati", "□ Mensola a squadra", "□ Cassette salde", "□ Pannello in bolla", "□ Utensili nei fori OK", "□ Niente schegge", "□ Nome sul retro P"]
+cy0 = int(yy) + 48
+ch = max(28, (FOOT_TOP - 30 - cy0) / len(checks))
+for i, c in enumerate(checks):
+    d.text((48, cy0 + i * ch), c, fill=BLACK, font=F14)
+yy = fill_lines(d, 650, ct4 + 10, FOOT_TOP - 195, notes, F14)
+student_block(d, 650, FOOT_TOP - 188, FOOT_TOP - 8, F13, F14)
 save(img, "04-5a-porta-attrezzi.png")
 
 with zipfile.ZipFile(f"{OUT}/progetti-legno-schede.zip", "w") as z:

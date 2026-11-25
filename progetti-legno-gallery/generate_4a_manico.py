@@ -32,14 +32,14 @@ def font(size, bold=False):
     return ImageFont.load_default()
 
 
-FT = font(34, True)
-FS = font(19)
-FH = font(21, True)
-FB = font(17, True)
-FN = font(16)
-FSm = font(15)
-FX = font(14)
-FD = font(15, True)
+FT = font(38, True)
+FS = font(22)
+FH = font(24, True)
+FB = font(21, True)
+FN = font(19)
+FSm = font(19)
+FX = font(17)
+FD = font(19, True)
 
 
 def tw(d, t, f):
@@ -141,7 +141,7 @@ def handle_profile(d, ox, oy, scale=3.4):
 def main():
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
-    d.rectangle((M - 8, M - 8, W - M + 8, H - M + 8), outline=INK, width=2)
+    d.rectangle((10, 10, W - 10, H - 10), outline=INK, width=3)
 
     d.text((M + 8, M + 4), "4ª · Manico per cacciaviti (tornio)", fill=INK, font=FT)
     d.text(
@@ -154,7 +154,7 @@ def main():
     d.rounded_rectangle(badge, radius=8, fill=QC, outline=ACC, width=2)
     d.text((badge[0] + 12, badge[1] + 10), "BARRA DI NYLON Ø35", fill=ACC, font=FB)
 
-    cy = panel(d, (M, 100, W - M, 640), "VISTE QUOTATE / PROFILO DI TORNITURA")
+    cy = panel(d, (M, 100, W - M, 600), "VISTE QUOTATE / PROFILO DI TORNITURA")
 
     d.text((M + 20, cy + 4), "PROFILO LONGITUDINALE — materiale: nylon PA6 (bianco opaco, non plexiglass)", fill=MUTED, font=FSm)
     ox, axis, sc = handle_profile(d, M + 80, cy + 130, scale=3.4)
@@ -200,7 +200,7 @@ def main():
 
     # Cylindrical blank (NOT square wood)
     bx = M + 40
-    by = cy + 300
+    by = cy + 270
     d.text((bx, by), "SBOZZO DI PARTENZA — BARRA TONDA DI NYLON (già cilindrica)", fill=MUTED, font=FSm)
     # isometric-ish cylinder side view
     bl = 300
@@ -222,13 +222,13 @@ def main():
     d.text((bx + bl + br * 2 + 70, by0 + 28), "Montaggio: mandrino o tra punte · centri sulle basi", fill=INK, font=FX)
 
     d.text(
-        (M + 16, 640 - 26),
+        (M + 16, 600 - 26),
         "Il nylon si torna bene a velocità media-bassa; evita surriscaldamento (bruciature / filamenti). Raffredda con aria se serve.",
         fill=MUTED,
         font=FX,
     )
 
-    cy = panel(d, (M, 660, W - M, 920), "DISTINTA PEZZI / MATERIALI")
+    cy = panel(d, (M, 620, W - M, 860), "DISTINTA PEZZI / MATERIALI")
     headers = ["Cod.", "Pezzo / materiale", "Q.tà", "Misure", "Note"]
     cols = [70, 340, 60, 200, 400]
     x = M + 16
@@ -255,29 +255,28 @@ def main():
         y += 26
 
     d.text(
-        (M + 16, 920 - 40),
+        (M + 16, 860 - 40),
         "Utensili: sgorbia / scalpello per plastica · troncatore · calibro · punta da centri · trapano Ø5.",
         fill=INK,
         font=FSm,
     )
     d.text(
-        (M + 16, 920 - 22),
+        (M + 16, 860 - 22),
         "Materiale didattico: NYLON (poliammide). Alternativa ammessa dal docente: POM/Delrin. Non usare plexiglass (si scheggia/fonderà male).",
         fill=MUTED,
         font=FX,
     )
 
-    gap = 16
+    gap = 14
     col_w = (W - 2 * M - gap) // 2
-    lx0, ly0, lx1, ly1 = M, 940, M + col_w, H - M - 28
-    rx0, ry0, rx1, ry1 = lx1 + gap, 940, W - M, H - M - 28
+    lx0, ly0, lx1, ly1 = M, 870, M + col_w, H - 40
+    rx0, ry0, rx1, ry1 = lx1 + gap, 870, W - M, H - 40
 
     cy = panel(d, (lx0, ly0, lx1, ly1), "SEQUENZA AL TORNIO")
     steps = [
-        "1. Tagliare spezzone Ø35 × 130 da barra di nylon.",
+        "1. Tagliare spezzone Ø35 × 130 da barra nylon.",
         "2. Segnare i centri sulle due basi circolari.",
-        "3. Montare tra punte (o in mandrino a tre griffe",
-        "    con protezione, se previsto dal docente).",
+        "3. Montare tra punte (o mandrino protetto).",
         "4. Velocità media-bassa: cilindrare a Ø≈33.",
         "5. Segnare quote (pomello, max, collo, ghiera).",
         "6. Tornire il profilo a template (Ø32 → Ø18).",
@@ -286,16 +285,18 @@ def main():
         "9. Troncare / spianare a L=110; smontare.",
         "10. Forare in asse Ø5 × prof. 50.",
         "11. Calzare ghiera; lama + epoxy; asciugare.",
-        "12. Marchiare nome/classe (punzone o laser lab).",
+        "12. Marchiare nome/classe sul fondo.",
     ]
-    yy = cy + 4
+    yy = cy + 6
+    steps_end = cy + int((ly1 - cy) * 0.48)
+    sh = max(26, (steps_end - yy) / len(steps))
     for line in steps:
         d.text((lx0 + 12, yy), line, fill=INK, font=FSm)
-        yy += 18
+        yy += sh
 
-    qy = yy + 6
-    d.rounded_rectangle((lx0 + 10, qy, lx1 - 10, ly1 - 12), radius=8, fill=QC, outline=ACC, width=2)
-    d.text((lx0 + 22, qy + 8), "CONTROLLO QUALITÀ", fill=ACC, font=FB)
+    qy = int(yy + 4)
+    d.rounded_rectangle((lx0 + 8, qy, lx1 - 8, ly1 - 10), radius=6, fill=QC, outline=INK, width=3)
+    d.text((lx0 + 20, qy + 10), "CONTROLLO QUALITÀ", fill=INK, font=FB)
     checks = [
         "☐  Profilo simmetrico / senza scalini",
         "☐  Ø max 32 ±0,5 · collo Ø18 ±0,5",
@@ -305,37 +306,64 @@ def main():
         "☐  Superficie liscia, niente bruciature",
         "☐  Lama allineata all’asse",
         "☐  Impugnatura comoda in mano",
+        "☐  Nome/classe marcati",
     ]
-    yy = qy + 30
+    cy_c = qy + 40
+    ch = max(26, (ly1 - 14 - cy_c) / len(checks))
     for c in checks:
-        d.text((lx0 + 24, yy), c, fill=INK, font=FSm)
-        yy += 19
+        d.text((lx0 + 22, cy_c), c, fill=INK, font=FSm)
+        cy_c += ch
 
     cy = panel(d, (rx0, ry0, rx1, ry1), "NOTE DIDATTICHE / SICUREZZA TORNIO")
     blocks = [
-        ("Materiale", "NYLON PA6 in barra tonda Ø35 — plastica bianca opaca, non legno e non plexiglass. In magazzino lab spesso etichettata solo «nylon» o «barra bianca»."),
-        ("Obiettivo", "Tornitura su plastica: cilindratura, profilo a quote, controllo Ø, foratura in asse, montaggio lama/ghiera."),
-        ("Errori tipici", "Giri troppo alti → fusione/filamenti; utensile poco affilato; quote non segnate; foro fuori asse; confusione con PMMA."),
-        ("Sicurezza", "Occhiali; capelli raccolti; niente maniche larghe; utensile sul poggia-utensili; fermare il tornio per misurare; attenzione al calore del truciolo di nylon."),
+        ("Materiale", "NYLON PA6 barra tonda Ø35 — bianco opaco. NON legno, NON plexiglass. In lab: «nylon» / «barra bianca». Alt.: POM/Delrin."),
+        ("Obiettivo", "Tornitura plastica: cilindratura, profilo a quote, controllo Ø, foratura in asse, montaggio lama/ghiera."),
+        ("Errori tipici", "Giri alti → fusione; utensile smussato; quote non segnate; foro fuori asse; confusione con PMMA."),
+        ("Sicurezza", "Occhiali; capelli raccolti; niente maniche larghe; utensile sul poggia-utensili; fermare per misurare; truciolo caldo."),
         ("Valutazione /10", "quote/profilo (3) · finitura (3) · foro/montaggio (2) · sicurezza/metodo (2)"),
     ]
-    yy = cy + 2
+    # gather all note lines then stretch
+    note_lines = []
     for title, body in blocks:
-        d.text((rx0 + 14, yy), title, fill=ACC, font=FB)
-        yy += 18
-        for line in wrap(d, body, FSm, rx1 - rx0 - 30):
-            d.text((rx0 + 14, yy), line, fill=INK, font=FSm)
-            yy += 15
-        yy += 7
+        note_lines.append(title)
+        note_lines.extend(wrap(d, body, FSm, rx1 - rx0 - 30))
+        note_lines.append("")
+    note_lines += [
+        "Variante: POM/Delrin stessa geometria.",
+        "Se barra Ø40: cilindrare prima a Ø35.",
+        "Template cartoncino obbligatorio in prova.",
+    ]
+    # student fields reserved at bottom
+    notes_end = ly1 - 200
+    n = max(len(note_lines), 1)
+    step = max(18, (notes_end - (cy + 8)) / n)
+    yy = cy + 8
+    for line in note_lines:
+        # titles bold-ish: already in list as short words
+        f = FB if line in ("Materiale", "Obiettivo", "Errori tipici", "Sicurezza", "Valutazione /10") else FSm
+        d.text((rx0 + 14, yy), line, fill=INK, font=f)
+        yy += step
 
-    d.text((rx0 + 14, yy + 2), "Punteggio: ____ / 10", fill=INK, font=FB)
-    d.text((rx0 + 14, yy + 24), "Variante docente: POM/Delrin stessa geometria.", fill=MUTED, font=FX)
-    d.text((rx0 + 14, yy + 42), "Se la barra è Ø40: cilindrare prima a Ø35.", fill=MUTED, font=FX)
+    # student block
+    d.rectangle((rx0 + 8, notes_end, rx1 - 8, ly1 - 8), outline=INK, width=3, fill=(250,250,250))
+    fields = [
+        "Alunno/a: _________________________________",
+        "Classe: __________   Data: ____ / ____ / ______",
+        "Voto /10: _______   Firma docente: ____________",
+        "Osservazioni docente:",
+        "____________________________________________",
+        "____________________________________________",
+    ]
+    fy = notes_end + 8
+    fh = max(24, (ly1 - 16 - fy) / len(fields))
+    for f in fields:
+        d.text((rx0 + 16, fy), f, fill=INK, font=FB if f.startswith('Alunno') or f.startswith('Voto') or f.startswith('Classe') else FSm)
+        fy += fh
 
     d.text(
-        (M, H - M - 6),
+        (M + 4, H - 28),
         "Quote in mm · Ø ±0,5 · laboratorio · 4ª tornitura plastica — nylon (non legno, non plexiglass)",
-        fill=MUTED,
+        fill=INK,
         font=FX,
     )
 
