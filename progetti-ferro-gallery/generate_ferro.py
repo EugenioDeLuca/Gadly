@@ -320,55 +320,88 @@ def make_2a():
         F12, BLACK, pad=4,
     )
 
-    # ——— PANNELLO DISEGNO (solo profilo + quote + etichette) ———
+    # ——— PANNELLO DISEGNO: profilo CHIARO + legenda numerata ———
     draw_top = 176
-    draw_h = 520
-    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE  (scala 10:1)")
+    draw_h = 560
+    panel(d, 24, draw_top, W - 48, draw_h, "COME È FATTO — vista laterale (scala 9:1)")
     panel_bottom = draw_top + draw_h
 
-    sc = 10.0
-    mid = draw_top + 250
-    ox = 110
+    # Riquadro spiegazione a destra (sempre leggibile)
+    info_x1, info_x2 = 920, RIGHT
+    d.rectangle([info_x1, draw_top + 40, info_x2, panel_bottom - 60], fill=(248, 250, 252), outline=BLACK, width=2)
+    text_in_box(d, info_x1, draw_top + 44, info_x2 - info_x1, 28, "LEGGI QUI", F13, ACCENT, pad=8)
+    for i, (num, col, title, desc) in enumerate(
+        [
+            ("1", STEEL, "CORPO", "manico Ø16 × 50"),
+            ("2", STEEL_D, "TESTA", "Ø18 + foro Ø6"),
+            ("3", ORANGE, "GANCIO", "uncino limato"),
+        ]
+    ):
+        yy = draw_top + 85 + i * 95
+        d.ellipse([info_x1 + 14, yy, info_x1 + 48, yy + 34], fill=col, outline=BLACK, width=2)
+        tw = d.textlength(num, font=F15)
+        d.text((info_x1 + 31 - tw / 2, yy + 5), num, fill=WHITE if i else BLACK, font=F15)
+        d.text((info_x1 + 58, yy + 2), title, fill=BLACK, font=F14)
+        text_in_box(d, info_x1 + 58, yy + 28, info_x2 - info_x1 - 70, 24, desc, F12, GRAY, pad=0)
+
+    d.rectangle([info_x1 + 12, draw_top + 380, info_x2 - 12, draw_top + 490], fill=(255, 235, 230), outline=CAP_RED, width=2)
+    text_in_box(d, info_x1 + 12, draw_top + 388, info_x2 - info_x1 - 24, 40, "BOCCA = zona bianca", F13, CAP_RED, pad=8)
+    text_in_box(d, info_x1 + 12, draw_top + 432, info_x2 - info_x1 - 24, 48, "prende il bordo capsula", F12, CAP_RED, pad=8)
+
+    # Profilo a sinistra (spazio ampio)
+    sc = 9.0
+    mid = draw_top + 270
+    ox = 70
     L_corpo, D_corpo = 50, 16
     L_testa, D_testa = 18, 18
     L_gancio = 12
     x0 = ox
     x1 = x0 + L_corpo * sc
     x2 = x1 + L_testa * sc
-    end_x = x2 + L_gancio * sc  # 110+800=910
+    end_x = x2 + L_gancio * sc
+    g = L_gancio * sc
 
     # CORPO
     cy0, cy1 = mid - D_corpo * sc / 2, mid + D_corpo * sc / 2
     d.rectangle([x0, cy0, x1, cy1], fill=STEEL, outline=BLACK, width=3)
-    d.polygon([(x0, cy0), (x0 + 8, cy0), (x0, cy0 + 8)], fill=WHITE, outline=BLACK)
-    d.polygon([(x0, cy1), (x0 + 8, cy1), (x0, cy1 - 8)], fill=WHITE, outline=BLACK)
+    d.polygon([(x0, cy0), (x0 + 10, cy0), (x0, cy0 + 10)], fill=WHITE, outline=BLACK)
+    d.polygon([(x0, cy1), (x0 + 10, cy1), (x0, cy1 - 10)], fill=WHITE, outline=BLACK)
 
     # TESTA
     ty0, ty1 = mid - D_testa * sc / 2, mid + D_testa * sc / 2
     d.rectangle([x1, ty0, x2, ty1], fill=STEEL_D, outline=BLACK, width=3)
     hole_r = 3 * sc
-    hx = x1 + L_testa * sc * 0.45
+    hx = x1 + L_testa * sc * 0.48
     d.ellipse([hx - hole_r, mid - hole_r, hx + hole_r, mid + hole_r], fill=WHITE, outline=BLACK, width=3)
 
-    # GANCIO con bocca bianca
-    g = L_gancio * sc
+    # GANCIO — forma a uncino leggibile (bocca GRANDE e vuota)
     hook_outer = [
-        (x2, ty0), (x2 + g * 0.9, ty0 + 6), (x2 + g, mid - 8), (x2 + g, mid + 8),
-        (x2 + g * 0.55, ty1 + 16), (x2 + g * 0.15, ty1), (x2, ty1),
+        (x2, ty0),
+        (x2 + g * 0.95, ty0 + 4),
+        (x2 + g, mid - 18),
+        (x2 + g, mid + 22),
+        (x2 + g * 0.35, ty1 + 38),
+        (x2 + g * 0.05, ty1 + 8),
+        (x2, ty1),
     ]
-    d.polygon(hook_outer, fill=ORANGE, outline=BLACK)
+    d.polygon(hook_outer, fill=ORANGE, outline=BLACK, width=3)
+    # Bocca = intaglio bianco a C (molto evidente)
     mouth = [
-        (x2 + g * 0.18, mid), (x2 + g * 0.78, mid - 5), (x2 + g * 0.85, mid + 6),
-        (x2 + g * 0.45, mid + 20), (x2 + g * 0.22, mid + 16),
+        (x2 + g * 0.12, mid - 4),
+        (x2 + g * 0.72, mid - 10),
+        (x2 + g * 0.82, mid + 4),
+        (x2 + g * 0.55, mid + 28),
+        (x2 + g * 0.22, mid + 22),
+        (x2 + g * 0.18, mid + 8),
     ]
-    d.polygon(mouth, fill=WHITE, outline=BLACK)
+    d.polygon(mouth, fill=WHITE, outline=CAP_RED, width=3)
     d.line([(x2, ty0), (x2, ty1)], fill=BLACK, width=3)
 
-    centerline(d, x0 - 20, end_x + 30, mid)
+    centerline(d, x0 - 16, end_x + 20, mid)
 
-    # Quote (restano sopra il pezzo, dentro il pannello)
-    q1 = ty0 - 42
-    q0 = q1 - 44
+    # Quote sopra
+    q1 = ty0 - 40
+    q0 = q1 - 40
     for xx in (x0, x1, x2, end_x):
         ext_tick(d, xx, ty0, q0 - 2)
     dim_h(d, x0, x1, q1, "50")
@@ -376,48 +409,59 @@ def make_2a():
     dim_h(d, x2, end_x, q1, "12")
     dim_h(d, x0, end_x, q0, "80")
 
-    # Diametri DENTRO l’area disegno
-    d.text((x0 + 8, mid - 12), "Ø16", fill=DIM_COL, font=F15)
-    d.text((x1 + 20, ty0 - 26), "Ø18", fill=DIM_COL, font=F15)
-    # Ø6 in riquadro sotto il foro (testo intero)
-    o6 = "Ø6 passante"
-    o6w = d.textlength(o6, font=F14) + 16
-    o6x = max(x1 + 4, min(hx - o6w / 2, x2 - o6w - 4))
-    o6y = ty1 + 8
-    d.rectangle([o6x, o6y, o6x + o6w, o6y + 28], fill=WHITE, outline=DIM_COL, width=1)
-    d.text((o6x + 8, o6y + 4), o6, fill=DIM_COL, font=F14)
+    # Diametri (dentro le zone colorate, niente overflow)
+    d.text((x0 + 14, mid - 12), "Ø16", fill=DIM_COL, font=F15)
+    d.text((x1 + 14, ty0 + 8), "Ø18", fill=WHITE, font=F14)
 
-    # Freccia + riquadro BOCCA (larghezza calcolata sul testo intero)
-    mx = x2 + g * 0.5
-    d.line([mx, mid + 28, mx, ty1 + 48], fill=CAP_RED, width=2)
-    d.polygon([(mx, mid + 26), (mx - 7, mid + 38), (mx + 7, mid + 38)], fill=CAP_RED)
-    t_b1, t_b2 = "BOCCA del gancio", "(entra la capsula)"
-    need_w = max(d.textlength(t_b1, font=F14), d.textlength(t_b2, font=F12)) + 28
-    bx_t = ty1 + 52
-    bx_b = bx_t + 56
-    bx_l = max(LEFT + 4, mx - need_w / 2)
-    bx_r = bx_l + need_w
-    if bx_r > RIGHT - 4:
-        bx_r = RIGHT - 4
-        bx_l = bx_r - need_w
-    d.rectangle([bx_l, bx_t, bx_r, bx_b], fill=(255, 235, 230), outline=CAP_RED, width=2)
-    text_in_box(d, bx_l, bx_t, bx_r - bx_l, 28, t_b1, F14, CAP_RED, pad=10)
-    text_in_box(d, bx_l, bx_t + 28, bx_r - bx_l, 26, t_b2, F12, CAP_RED, pad=10)
+    # Pallini numerati DENTRO ogni pezzo
+    def badge(cx, cy, n):
+        d.ellipse([cx - 16, cy - 16, cx + 16, cy + 16], fill=WHITE, outline=BLACK, width=2)
+        tw = d.textlength(n, font=F15)
+        d.text((cx - tw / 2, cy - 11), n, fill=BLACK, font=F15)
 
-    # Legenda pezzi: tre chip LARGHI UGUALI (testo sempre intero)
+    badge((x0 + x1) / 2, mid, "1")
+    badge((x1 + x2) / 2, mid + hole_r + 26, "2")
+    badge(x2 + g * 0.62, ty0 + 20, "3")
+
+    # Foro: richiamo sotto la testa, box largo abbastanza
+    o6 = "foro Ø6 passante"
+    o6w = d.textlength(o6, font=F13) + 20
+    o6x = max(x1, hx - o6w / 2)
+    if o6x + o6w > x2 + 8:
+        o6x = x2 + 8 - o6w
+    o6y = ty1 + 14
+    d.line([hx, mid + hole_r, hx, o6y], fill=DIM_COL, width=2)
+    d.rectangle([o6x, o6y, o6x + o6w, o6y + 30], fill=WHITE, outline=DIM_COL, width=2)
+    d.text((o6x + 10, o6y + 5), o6, fill=DIM_COL, font=F13)
+
+    # Bocca: freccia + box SOLO sotto il gancio (non sul pezzo)
+    mx = x2 + g * 0.48
+    mouth_y = mid + 26
+    boc_t = max(o6y + 40, ty1 + 55)
+    d.line([mx, mouth_y, mx, boc_t - 4], fill=CAP_RED, width=3)
+    d.polygon([(mx, mouth_y - 4), (mx - 9, mouth_y + 12), (mx + 9, mouth_y + 12)], fill=CAP_RED)
+    boc_w = 260
+    boc_l = min(max(LEFT, mx - boc_w / 2), info_x1 - boc_w - 16)
+    boc_h = 44
+    # non coprire la legenda in basso
+    if boc_t + boc_h > panel_bottom - 56:
+        boc_t = panel_bottom - 56 - boc_h
+    d.rectangle([boc_l, boc_t, boc_l + boc_w, boc_t + boc_h], fill=(255, 235, 230), outline=CAP_RED, width=3)
+    text_in_box(d, boc_l, boc_t, boc_w, boc_h, "BOCCA — ci entra la capsula", F14, CAP_RED, pad=8)
+
+    # Barra legenda in basso (testi corti, chip larghi)
     legend = [
-        ("1 CORPO", STEEL, BLACK),
-        ("2 TESTA", STEEL_D, WHITE),
-        ("3 GANCIO", ORANGE, WHITE),
+        ("1 CORPO (manico)", STEEL, BLACK),
+        ("2 TESTA (foro)", STEEL_D, WHITE),
+        ("3 GANCIO (apre)", ORANGE, WHITE),
     ]
-    tag_y = panel_bottom - 52
-    gap = 12
-    chip_w = (RIGHT - LEFT - 2 * gap) / 3
+    tag_y = panel_bottom - 46
+    gap = 10
+    chip_w = (info_x1 - 16 - LEFT - 2 * gap) / 3
     for i, (lab, fill, tcol) in enumerate(legend):
         xa = LEFT + i * (chip_w + gap)
-        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 36], radius=6, fill=fill, outline=BLACK)
-        tw = d.textlength(lab, font=F13)
-        d.text((xa + (chip_w - tw) / 2, tag_y + 8), lab, fill=tcol, font=F13)
+        d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 32], radius=6, fill=fill, outline=BLACK)
+        text_in_box(d, xa, tag_y, chip_w, 32, lab, F12, tcol, pad=6)
 
     # ——— RIGA SOTTO: PRIMA/DOPO | DETTAGLIO ———
     row_y = panel_bottom + 10
