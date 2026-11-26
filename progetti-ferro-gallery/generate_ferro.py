@@ -458,7 +458,7 @@ def make_2a():
         d,
         [
             "Martello ≈ 100 g: BARRA 16×16 (non cilindro). Solo la testa in ferro.",
-            ("Faccia piatta · foro 8 (in sezione, non cerchio) · penna a cuneo. Manico = DOPO.", GRAY),
+            ("Faccia piatta · foro 8 (in sezione, non cerchio) · penna a cuneo. Solo ferro.", GRAY),
         ],
     )
 
@@ -601,19 +601,14 @@ def make_2a():
     d.text((end_x + 14, mid - 14), "////", fill=CAP_RED, font=F14)
     d.text((end_x + 14, mid + 10), "sezione", fill=CAP_RED, font=F13)
 
-    # Manico sotto (solo rettangolo)
-    stem_w = 10
-    stem_bot = mid + h + 44
-    d.rectangle([hx - stem_w, mid + h, hx + stem_w, stem_bot], fill=(160, 120, 70), outline=BLACK, width=2)
-    d.text((hx + stem_w + 10, mid + h + 10), "manico (dopo)", fill=(120, 70, 20), font=F13)
+    # Niente manico (solo testa in ferro)
 
     def badge(cx, cy, n, bg):
-        # quadrato, mai cerchio
         d.rectangle([cx - 14, cy - 14, cx + 14, cy + 14], fill=bg, outline=BLACK, width=2)
         tw = d.textlength(n, font=F14)
         d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
-    badge_y = stem_bot + 26
+    badge_y = mid + h + 36
     badge((x0 + x1) / 2, badge_y, "1", FACE_C)
     badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
@@ -622,7 +617,7 @@ def make_2a():
     d.text((peen_mid - 24, badge_y + 20), "penna", fill=GRAY, font=F12)
 
     fy = badge_y + 44
-    ftxt = "≈100 g · foro = rettangolo in sezione (NON un cerchio) · //// = taglio"
+    ftxt = "≈100 g · SOLO TESTA · foro = sezione (non cerchio) · //// = taglio"
     ftw = d.textlength(ftxt, font=F13) + 14
     d.rectangle([ox, fy, ox + ftw, fy + 28], fill=(255, 235, 230), outline=CAP_RED, width=2)
     d.text((ox + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
