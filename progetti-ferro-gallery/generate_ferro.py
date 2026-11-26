@@ -478,18 +478,18 @@ def make_2a():
         "□ Massa ≈ 100 g",
         "□ Solo ferro (no manico)",
     ]
-    # Pannelli bassi: stesse dimensioni delle altre schede (3 colonne uguali + stessa altezza)
-    step = 26
-    bh = 40 + max(len(fasi), len(ctrl)) * step + 20
-    bot = FOOT - bh - 8
-    draw_h = bot - draw_top - 8
+    # Pannelli bassi come 5ª: disegno fisso, resto → Fasi/Controllo/Dati (alti)
+    draw_h = 740
+    bot = draw_top + draw_h + 8
+    bh = FOOT - bot - 8
     panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — ortogonale · ≈100 g · sezione occhio (scala 11:1)")
     panel_bottom = draw_top + draw_h
     gap_p = 16
-    col_w = (W - 48 - 2 * gap_p) // 3   # ≈386 — uguali tra loro
+    col_w = (W - 48 - 2 * gap_p) // 3
     x_fasi = 24
     x_ctrl = x_fasi + col_w + gap_p
     x_dati = x_ctrl + col_w + gap_p
+    step = list_step(max(len(fasi), len(ctrl)), bh - 48)
 
     FACE_C = (70, 110, 150)
     IRON = (55, 58, 62)
@@ -650,19 +650,20 @@ def make_2a():
 
     y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
-        text_in_box(d, x_fasi + 8, y + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
+        d.text((x_fasi + 12, y + 2 + i * step), ln, fill=BLACK, font=F12)
 
     y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
     for i, ln in enumerate(ctrl):
-        text_in_box(d, x_ctrl + 8, y2 + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
+        d.text((x_ctrl + 12, y2 + 2 + i * step), ln, fill=BLACK, font=F12)
 
     y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
-    text_in_box(d, x_dati + 12, y3 + 6, col_w - 24, 24, "Alunno/a:", F13, BLACK, pad=2)
-    d.line([x_dati + 12, y3 + 32, x_dati + col_w - 12, y3 + 32], fill=BLACK, width=1)
-    text_in_box(d, x_dati + 12, y3 + 40, col_w - 24, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
-    text_in_box(d, x_dati + 12, y3 + 72, col_w - 24, 24, "Voto /10: ______", F13, BLACK, pad=2)
-    text_in_box(d, x_dati + 12, y3 + 104, col_w - 24, 24, "Firma docente:", F13, BLACK, pad=2)
-    d.line([x_dati + 12, y3 + 132, x_dati + col_w - 12, y3 + 132], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 6), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 30, x_dati + col_w - 12, y3 + 30], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 42), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 102), "Firma docente:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 128, x_dati + col_w - 12, y3 + 128], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 142), "Note: ____________________", fill=BLACK, font=F12)
 
     save(img, "01-2a-testa-martello.png", "STAMPA-2a-testa-martello.png")
 
@@ -700,10 +701,11 @@ def make_3a():
         "□ Spallamenti netti",
         "□ Smussi + satinatura",
     ]
-    step = 26
-    bh = 40 + max(len(fasi), len(ctrl)) * step + 20
-    bot = FOOT - bh - 8
-    draw_h = bot - draw_top - 8
+    # Pannelli bassi come 5ª
+    draw_h = 740
+    bot = draw_top + draw_h + 8
+    bh = FOOT - bot - 8
+    step = list_step(max(len(fasi), len(ctrl)), bh - 48)
     panel(d, 24, draw_top, W - 48, draw_h, "DISEGNO PRINCIPALE — 4 diametri + intacchi (scala 10:1)")
     panel_bottom = draw_top + draw_h
 
@@ -856,19 +858,20 @@ def make_3a():
     x_fasi, x_ctrl, x_dati = 24, 24 + col_w + gap_p, 24 + 2 * (col_w + gap_p)
     y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
-        text_in_box(d, x_fasi + 8, y + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
+        d.text((x_fasi + 12, y + 2 + i * step), ln, fill=BLACK, font=F12)
 
     y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
     for i, ln in enumerate(ctrl):
-        text_in_box(d, x_ctrl + 8, y2 + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
+        d.text((x_ctrl + 12, y2 + 2 + i * step), ln, fill=BLACK, font=F12)
 
     y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
-    text_in_box(d, x_dati + 12, y3 + 6, col_w - 24, 24, "Alunno/a:", F13, BLACK, pad=2)
-    d.line([x_dati + 12, y3 + 32, x_dati + col_w - 12, y3 + 32], fill=BLACK, width=1)
-    text_in_box(d, x_dati + 12, y3 + 40, col_w - 24, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
-    text_in_box(d, x_dati + 12, y3 + 72, col_w - 24, 24, "Voto /10: ______", F13, BLACK, pad=2)
-    text_in_box(d, x_dati + 12, y3 + 104, col_w - 24, 24, "Firma docente:", F13, BLACK, pad=2)
-    d.line([x_dati + 12, y3 + 132, x_dati + col_w - 12, y3 + 132], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 6), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 30, x_dati + col_w - 12, y3 + 30], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 42), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 102), "Firma docente:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 128, x_dati + col_w - 12, y3 + 128], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 142), "Note: ____________________", fill=BLACK, font=F12)
 
     save(img, "02-3a-perno-spallamenti.png", "STAMPA-3a-perno-spallamenti.png")
 
