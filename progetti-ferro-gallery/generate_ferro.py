@@ -478,13 +478,18 @@ def make_2a():
         "□ Massa ≈ 100 g",
         "□ Solo ferro (no manico)",
     ]
-    # stessi pannelli bassi delle altre schede (3ª)
+    # Pannelli bassi: stesse dimensioni delle altre schede (3 colonne uguali + stessa altezza)
     step = 26
     bh = 40 + max(len(fasi), len(ctrl)) * step + 20
     bot = FOOT - bh - 8
     draw_h = bot - draw_top - 8
     panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — ortogonale · ≈100 g · sezione occhio (scala 11:1)")
     panel_bottom = draw_top + draw_h
+    gap_p = 16
+    col_w = (W - 48 - 2 * gap_p) // 3   # ≈386 — uguali tra loro
+    x_fasi = 24
+    x_ctrl = x_fasi + col_w + gap_p
+    x_dati = x_ctrl + col_w + gap_p
 
     FACE_C = (70, 110, 150)
     IRON = (55, 58, 62)
@@ -608,7 +613,9 @@ def make_2a():
         tw = d.textlength(n, font=F14)
         d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
-    badge_y = mid + h + 36
+    # Blocco sotto pezzo ancorato in basso nel pannello (niente vuoto)
+    block_h = 36 + 44 + 36 + 34 + 32 + 8
+    badge_y = panel_bottom - block_h
     badge((x0 + x1) / 2, badge_y, "1", FACE_C)
     badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
@@ -633,29 +640,29 @@ def make_2a():
     d.rectangle([36, tip_y, info_x1 - 16, tip_y + 32], fill=(255, 245, 245), outline=CAP_RED, width=2)
     d.text((48, tip_y + 6), "Occhiali · morsa · foratura foro 8 · L=60 · sez. 16×16 · ≈100 g", fill=BLACK, font=F13)
 
-    right_y = draw_top + 350
     checks = ["□ Solo testa", "□ Sez. 16×16", "□ Foro 8", "□ ≈100 g", "□ L=60 ±0,3"]
     rh = 30 + len(checks) * 24 + 6
+    right_y = panel_bottom - rh - 12
     d.rectangle([info_x1 + 6, right_y, info_x2 - 6, right_y + rh], fill=WHITE, outline=BLACK, width=2)
     d.text((info_x1 + 12, right_y + 6), "CHECK", fill=ACCENT, font=F13)
     for i, ln in enumerate(checks):
         text_in_box(d, info_x1 + 10, right_y + 28 + i * 24, info_x2 - info_x1 - 24, 22, ln, F12, BLACK, pad=2)
 
-    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
+    y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
-        text_in_box(d, 32, y + 2 + i * step, 384, step - 2, ln, F13, BLACK, pad=3)
+        text_in_box(d, x_fasi + 8, y + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
 
-    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
     for i, ln in enumerate(ctrl):
-        text_in_box(d, 448, y2 + 2 + i * step, 364, step - 2, ln, F13, BLACK, pad=3)
+        text_in_box(d, x_ctrl + 8, y2 + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
 
-    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    text_in_box(d, 848, y3 + 6, 340, 24, "Alunno/a:", F13, BLACK, pad=2)
-    d.line([848, y3 + 32, 1190, y3 + 32], fill=BLACK, width=1)
-    text_in_box(d, 848, y3 + 40, 340, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 72, 340, 24, "Voto /10: ______", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 104, 340, 24, "Firma docente:", F13, BLACK, pad=2)
-    d.line([848, y3 + 132, 1190, y3 + 132], fill=BLACK, width=1)
+    y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
+    text_in_box(d, x_dati + 12, y3 + 6, col_w - 24, 24, "Alunno/a:", F13, BLACK, pad=2)
+    d.line([x_dati + 12, y3 + 32, x_dati + col_w - 12, y3 + 32], fill=BLACK, width=1)
+    text_in_box(d, x_dati + 12, y3 + 40, col_w - 24, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
+    text_in_box(d, x_dati + 12, y3 + 72, col_w - 24, 24, "Voto /10: ______", F13, BLACK, pad=2)
+    text_in_box(d, x_dati + 12, y3 + 104, col_w - 24, 24, "Firma docente:", F13, BLACK, pad=2)
+    d.line([x_dati + 12, y3 + 132, x_dati + col_w - 12, y3 + 132], fill=BLACK, width=1)
 
     save(img, "01-2a-testa-martello.png", "STAMPA-2a-testa-martello.png")
 
@@ -844,21 +851,24 @@ def make_3a():
         for i, ln in enumerate(checks3):
             d.text((info_x1 + 16, right_y + 36 + i * 26), ln, fill=BLACK, font=F12)
 
-    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
+    gap_p = 16
+    col_w = (W - 48 - 2 * gap_p) // 3
+    x_fasi, x_ctrl, x_dati = 24, 24 + col_w + gap_p, 24 + 2 * (col_w + gap_p)
+    y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
-        text_in_box(d, 32, y + 2 + i * step, 384, step - 2, ln, F13, BLACK, pad=3)
+        text_in_box(d, x_fasi + 8, y + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
 
-    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
     for i, ln in enumerate(ctrl):
-        text_in_box(d, 448, y2 + 2 + i * step, 364, step - 2, ln, F13, BLACK, pad=3)
+        text_in_box(d, x_ctrl + 8, y2 + 2 + i * step, col_w - 16, step - 2, ln, F13, BLACK, pad=3)
 
-    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    text_in_box(d, 848, y3 + 6, 340, 24, "Alunno/a:", F13, BLACK, pad=2)
-    d.line([848, y3 + 32, 1190, y3 + 32], fill=BLACK, width=1)
-    text_in_box(d, 848, y3 + 40, 340, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 72, 340, 24, "Voto /10: ______", F13, BLACK, pad=2)
-    text_in_box(d, 848, y3 + 104, 340, 24, "Firma docente:", F13, BLACK, pad=2)
-    d.line([848, y3 + 132, 1190, y3 + 132], fill=BLACK, width=1)
+    y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
+    text_in_box(d, x_dati + 12, y3 + 6, col_w - 24, 24, "Alunno/a:", F13, BLACK, pad=2)
+    d.line([x_dati + 12, y3 + 32, x_dati + col_w - 12, y3 + 32], fill=BLACK, width=1)
+    text_in_box(d, x_dati + 12, y3 + 40, col_w - 24, 24, "Classe: ____  Data: __/__/__", F13, BLACK, pad=2)
+    text_in_box(d, x_dati + 12, y3 + 72, col_w - 24, 24, "Voto /10: ______", F13, BLACK, pad=2)
+    text_in_box(d, x_dati + 12, y3 + 104, col_w - 24, 24, "Firma docente:", F13, BLACK, pad=2)
+    d.line([x_dati + 12, y3 + 132, x_dati + col_w - 12, y3 + 132], fill=BLACK, width=1)
 
     save(img, "02-3a-perno-spallamenti.png", "STAMPA-3a-perno-spallamenti.png")
 
@@ -1083,7 +1093,10 @@ def make_5a():
 
     bot = draw_top + draw_h + 8
     bh = FOOT - bot - 8
-    y = panel(d, 24, bot, 400, bh, "FASI DI LAVORO")
+    gap_p = 16
+    col_w = (W - 48 - 2 * gap_p) // 3
+    x_fasi, x_ctrl, x_dati = 24, 24 + col_w + gap_p, 24 + 2 * (col_w + gap_p)
+    y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     fasi5 = [
         "1. Sfacciatura → L = 100",
         "2. Pomolo Ø20 + zigrinatura",
@@ -1094,9 +1107,9 @@ def make_5a():
     ]
     step5 = list_step(len(fasi5), bh - 48)
     for i, ln in enumerate(fasi5):
-        d.text((36, y + 2 + i * step5), ln, fill=BLACK, font=F12)
+        d.text((x_fasi + 12, y + 2 + i * step5), ln, fill=BLACK, font=F12)
 
-    y2 = panel(d, 440, bot, 380, bh, "CONTROLLO")
+    y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
     ctrl5 = [
         "□ L = 100 ± 0,3",
         "□ Zigrinatura regolare",
@@ -1107,16 +1120,16 @@ def make_5a():
     ]
     step5c = list_step(len(ctrl5), bh - 48)
     for i, ln in enumerate(ctrl5):
-        d.text((452, y2 + 2 + i * step5c), ln, fill=BLACK, font=F12)
+        d.text((x_ctrl + 12, y2 + 2 + i * step5c), ln, fill=BLACK, font=F12)
 
-    y3 = panel(d, 836, bot, W - 24 - 836, bh, "DATI ALUNNO")
-    d.text((848, y3 + 6), "Alunno/a:", fill=BLACK, font=F12)
-    d.line([848, y3 + 30, 1185, y3 + 30], fill=BLACK, width=1)
-    d.text((848, y3 + 42), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
-    d.text((848, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
-    d.text((848, y3 + 102), "Firma docente:", fill=BLACK, font=F12)
-    d.line([848, y3 + 128, 1185, y3 + 128], fill=BLACK, width=1)
-    d.text((848, y3 + 142), "Note: ________________________", fill=BLACK, font=F12)
+    y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
+    d.text((x_dati + 12, y3 + 6), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 30, x_dati + col_w - 12, y3 + 30], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 42), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 102), "Firma docente:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 128, x_dati + col_w - 12, y3 + 128], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 142), "Note: ____________________", fill=BLACK, font=F12)
 
     save(img, "04-5a-vite-bloccaggio.png", "STAMPA-5a-vite-bloccaggio.png")
 
