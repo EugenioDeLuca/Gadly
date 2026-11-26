@@ -478,9 +478,9 @@ def make_2a():
         "□ Massa ≈ 100 g",
         "□ Solo ferro (no manico)",
     ]
-    step = 24
-    bh = 36 + max(len(fasi), len(ctrl)) * step + 12
-    # più spazio al disegno (quote grandi)
+    # stessi pannelli bassi delle altre schede (3ª)
+    step = 26
+    bh = 40 + max(len(fasi), len(ctrl)) * step + 20
     bot = FOOT - bh - 8
     draw_h = bot - draw_top - 8
     panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — ortogonale · ≈100 g · sezione occhio (scala 11:1)")
