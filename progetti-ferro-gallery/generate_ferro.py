@@ -973,8 +973,8 @@ def make_4a():
     text_in_box(d, ox, min(ny + 52, max_note_y - 24), W - 80 - ox, 24, "L tot. 100 = 42 + 5 + 18 + 35", F13, GRAY, pad=2)
 
     zg = draw_top + draw_h + 8
-    bot_reserve = 200
-    zg_h = max(220, FOOT - zg - bot_reserve - 8)
+    # pannello lama compatto → resto alle 3 sezioni basse (come 5ª)
+    zg_h = 260
     y = panel(d, 24, zg, W - 48, zg_h, "COME SI FA LA LAMA A TAGLIO (a mano)")
     col1 = [
         "COSA SERVE",
@@ -1012,19 +1012,47 @@ def make_4a():
         f = F14 if ln == "SEQUENZA" else F13
         d.text((640, yy), ln, fill=fill, font=f)
 
+    # Tre sezioni basse come 5ª (Fasi / Controllo / Dati)
     bot = zg + zg_h + 8
     bh = FOOT - bot - 8
-    y = panel(d, 24, bot, 560, bh, "CONTROLLO / DATI")
-    text_in_box(d, 32, y + 4, 540, 26, "□ L=100±0,5  □ Ø18 / Ø12 / Ø8  □ Gola Ø10", F13, BLACK, pad=3)
-    text_in_box(d, 32, y + 32, 540, 26, "□ Lama simmetrica  □ Prova su vite M4 o M5", F13, BLACK, pad=3)
-    text_in_box(d, 32, y + 60, 540, 26, "Alunno/a: ______________  Classe: ______", F13, BLACK, pad=3)
-    text_in_box(d, 32, y + 88, 540, 26, "Data: __/__/____  Voto: ____  Firma: ________", F13, BLACK, pad=3)
+    gap_p = 16
+    col_w = (W - 48 - 2 * gap_p) // 3
+    x_fasi, x_ctrl, x_dati = 24, 24 + col_w + gap_p, 24 + 2 * (col_w + gap_p)
 
-    y2 = panel(d, 600, bot, W - 24 - 600, bh, "DISTINTA")
-    text_in_box(d, 608, y2 + 4, 560, 26, "1 × barra Ø20 × 100 — C40", F13, BLACK, pad=3)
-    text_in_box(d, 608, y2 + 32, 560, 26, "Olio da taglio", F13, BLACK, pad=3)
-    text_in_box(d, 608, y2 + 60, 560, 26, "Lima fina (per il taglio)", F13, BLACK, pad=3)
-    text_in_box(d, 608, y2 + 88, 560, 26, "Vite M4/M5 di prova", F13, BLACK, pad=3)
+    fasi4 = [
+        "1. Sfacciatura → L = 100",
+        "2. Manico Ø18 (liscio)",
+        "3. Gola Ø10 × 5",
+        "4. Gambo Ø12 / Ø8",
+        "5. Lama a taglio (lima)",
+        "6. Sbava + satinatura",
+    ]
+    y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
+    step4 = list_step(len(fasi4), bh - 48)
+    for i, ln in enumerate(fasi4):
+        d.text((x_fasi + 12, y + 2 + i * step4), ln, fill=BLACK, font=F12)
+
+    ctrl4 = [
+        "□ L = 100 ± 0,5",
+        "□ Ø18 / Ø12 / Ø8",
+        "□ Gola Ø10",
+        "□ Lama simmetrica",
+        "□ Prova su vite M4/M5",
+        "□ Manico liscio",
+    ]
+    y2 = panel(d, x_ctrl, bot, col_w, bh, "CONTROLLO")
+    step4c = list_step(len(ctrl4), bh - 48)
+    for i, ln in enumerate(ctrl4):
+        d.text((x_ctrl + 12, y2 + 2 + i * step4c), ln, fill=BLACK, font=F12)
+
+    y3 = panel(d, x_dati, bot, col_w, bh, "DATI ALUNNO")
+    d.text((x_dati + 12, y3 + 6), "Alunno/a:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 30, x_dati + col_w - 12, y3 + 30], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 42), "Classe: ______  Data: __/__/____", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 72), "Voto /10: ______", fill=BLACK, font=F12)
+    d.text((x_dati + 12, y3 + 102), "Firma docente:", fill=BLACK, font=F12)
+    d.line([x_dati + 12, y3 + 128, x_dati + col_w - 12, y3 + 128], fill=BLACK, width=1)
+    d.text((x_dati + 12, y3 + 142), "Note: ____________________", fill=BLACK, font=F12)
 
     save(img, "03-4a-cacciavite.png", "STAMPA-4a-cacciavite.png")
 
