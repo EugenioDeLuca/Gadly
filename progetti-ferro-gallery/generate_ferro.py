@@ -482,7 +482,7 @@ def make_2a():
     draw_h = 740
     bot = draw_top + draw_h + 8
     bh = FOOT - bot - 8
-    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — ortogonale · ≈100 g · sezione occhio (scala 11:1)")
+    panel(d, 24, draw_top, W - 48, draw_h, "VISTA LATERALE — ortogonale · ≈100 g · sezione occhio (scala 10:1)")
     panel_bottom = draw_top + draw_h
     gap_p = 16
     col_w = (W - 48 - 2 * gap_p) // 3
@@ -498,9 +498,14 @@ def make_2a():
     IRON_D = (35, 38, 42)
 
     info_x1, info_x2 = 980, W - 36
-    d.rectangle([info_x1, draw_top + 44, info_x2, draw_top + 340], fill=(248, 250, 252), outline=BLACK, width=2)
-    d.rectangle([info_x1, draw_top + 44, info_x2, draw_top + 76], fill=LIGHT, outline=BLACK, width=2)
-    d.text((info_x1 + 8, draw_top + 50), "LEGGI QUI", fill=ACCENT, font=F13)
+    # LEGGI QUI: card con padding interno, testo non tocca i bordi
+    card_h, card_gap = 78, 10
+    warn_h = 58
+    leggi_top = draw_top + 44
+    leggi_inner = 40 + 3 * (card_h + card_gap) + warn_h + 14
+    d.rectangle([info_x1, leggi_top, info_x2, leggi_top + leggi_inner], fill=(248, 250, 252), outline=BLACK, width=2)
+    d.rectangle([info_x1, leggi_top, info_x2, leggi_top + 32], fill=LIGHT, outline=BLACK, width=2)
+    d.text((info_x1 + 10, leggi_top + 6), "LEGGI QUI", fill=ACCENT, font=F13)
 
     blocks = [
         (FACE_C, "FACCIA", "16 × 16", "Piatta"),
@@ -508,25 +513,28 @@ def make_2a():
         (PEEN_C, "PENNA", "cuneo 16", "A taglio"),
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
-        yy = draw_top + 84 + i * 64
-        d.rounded_rectangle([info_x1 + 6, yy, info_x2 - 6, yy + 56], radius=6, fill=WHITE, outline=col, width=3)
-        d.rectangle([info_x1 + 12, yy + 14, info_x1 + 38, yy + 40], fill=col, outline=BLACK, width=2)
+        yy = leggi_top + 40 + i * (card_h + card_gap)
+        d.rounded_rectangle([info_x1 + 10, yy, info_x2 - 10, yy + card_h], radius=6, fill=WHITE, outline=col, width=3)
+        # icona inset (non tagliata dal bordo)
+        ix0, iy0 = info_x1 + 20, yy + 24
+        d.rectangle([ix0, iy0, ix0 + 28, iy0 + 28], fill=col, outline=BLACK, width=2)
         num = str(i + 1)
         tw = d.textlength(num, font=F13)
-        d.text((info_x1 + 25 - tw / 2, yy + 18), num, fill=WHITE, font=F13)
-        tx = info_x1 + 48
-        d.text((tx, yy + 6), f"{num} {title}", fill=BLACK, font=F12)
-        d.text((tx, yy + 24), line1, fill=GRAY, font=F12)
-        text_in_box(d, tx, yy + 40, info_x2 - 12 - tx, 14, line2, F12, GRAY, pad=0)
+        d.text((ix0 + 14 - tw / 2, iy0 + 4), num, fill=WHITE, font=F13)
+        tx = ix0 + 36
+        d.text((tx, yy + 10), f"{num} {title}", fill=BLACK, font=F12)
+        d.text((tx, yy + 32), line1, fill=GRAY, font=F12)
+        d.text((tx, yy + 54), line2, fill=GRAY, font=F12)
 
-    d.rectangle([info_x1 + 6, draw_top + 280, info_x2 - 6, draw_top + 330], fill=WARN_BG, outline=WARN, width=2)
-    text_in_box(d, info_x1 + 6, draw_top + 284, info_x2 - info_x1 - 20, 20, "È UNA BARRA", F13, WARN, pad=2)
-    text_in_box(d, info_x1 + 6, draw_top + 306, info_x2 - info_x1 - 20, 20, "Non cilindro", F12, WARN, pad=2)
+    warn_y = leggi_top + 40 + 3 * (card_h + card_gap) + 4
+    d.rectangle([info_x1 + 10, warn_y, info_x2 - 10, warn_y + warn_h], fill=WARN_BG, outline=WARN, width=2)
+    text_in_box(d, info_x1 + 14, warn_y + 6, info_x2 - info_x1 - 36, 22, "È UNA BARRA", F13, WARN, pad=2)
+    text_in_box(d, info_x1 + 14, warn_y + 30, info_x2 - info_x1 - 36, 22, "Non cilindro", F12, WARN, pad=2)
 
     # ── VISTA LATERALE ORTOGONALE (niente 3D / niente obliquo) ──
-    sc = 11.0
-    mid = draw_top + 280
-    ox = 70
+    sc = 10.0
+    mid = draw_top + 300
+    ox = 120  # spazio a sinistra per quota 16
     Lf, Lo, Lp = 20, 24, 16
     S = 16
     h = (S / 2) * sc
@@ -575,36 +583,37 @@ def make_2a():
     centerline(d, x0 - 10, hole_l - 4, mid)
     centerline(d, hole_r + 4, end_x + 12, mid)
 
-    # Quote LUNGHEZZE — SOPRA (più in alto per lasciare posto al foro)
+    # Quote LUNGHEZZE — SOPRA, livelli ben separati (niente overlap)
     top = mid - h
-    q_foro = top - 28
-    q1 = top - 70
-    q0 = q1 - 38
+    q_foro = top - 34
+    q1 = q_foro - 42
+    q0 = q1 - 40
     for xx in (x0, x1, x2, end_x):
         ext_tick(d, xx, top, q0 - 2)
-    # larghezza foro (rettangolo di sezione) — sopra il pezzo, sotto le quote L
     d.line([hole_l, top, hole_l, q_foro], fill=BLACK, width=1)
     d.line([hole_r, top, hole_r, q_foro], fill=BLACK, width=1)
     dim_h(d, hole_l, hole_r, q_foro, "8")
-    d.text((hole_r + 10, q_foro - 22), "foro", fill=CAP_RED, font=F13)
     dim_h(d, x0, x1, q1, "20")
     dim_h(d, x1, x2, q1, "24")
     dim_h(d, x2, end_x, q1, "16")
     dim_h(d, x0, end_x, q0, "60")
 
-    # Quota altezza 16 — a SINISTRA
-    hx16 = x0 - 36
+    # Quota altezza 16 — a SINISTRA (dentro il pannello)
+    hx16 = x0 - 48
     d.line([hx16, mid - h, hx16, mid + h], fill=DIM_COL, width=3)
     arrow_v(d, hx16, mid - h, up=True)
     arrow_v(d, hx16, mid + h, up=False)
-    tw16 = d.textlength("16", font=F22)
-    d.rectangle([hx16 - tw16 / 2 - 6, mid - 18, hx16 + tw16 / 2 + 6, mid + 18], fill=WHITE, outline=DIM_COL, width=1)
-    d.text((hx16 - tw16 / 2, mid - 14), "16", fill=DIM_COL, font=F22)
-    d.text((hx16 - 28, mid + h + 10), "16×16", fill=DIM_COL, font=F13)
+    tw16 = d.textlength("16", font=F16)
+    # etichetta a sinistra della linea (non sopra)
+    d.rectangle([hx16 - tw16 - 14, mid - 14, hx16 - 6, mid + 14], fill=WHITE, outline=DIM_COL, width=1)
+    d.text((hx16 - tw16 - 10, mid - 11), "16", fill=DIM_COL, font=F16)
+    # 16×16 sotto il pezzo, con aria
+    d.text((x0 + 4, mid + h + 14), "16×16", fill=DIM_COL, font=F13)
 
-    # Nota tratteggio a destra
-    d.text((end_x + 14, mid - 14), "////", fill=CAP_RED, font=F14)
-    d.text((end_x + 14, mid + 10), "sezione", fill=CAP_RED, font=F13)
+    # Nota tratteggio a destra — con margine dal pezzo
+    if end_x + 78 < info_x1 - 8:
+        d.text((end_x + 16, mid - 14), "////", fill=CAP_RED, font=F14)
+        d.text((end_x + 16, mid + 10), "sezione", fill=CAP_RED, font=F13)
 
     # Niente manico (solo testa in ferro)
 
@@ -613,40 +622,43 @@ def make_2a():
         tw = d.textlength(n, font=F14)
         d.text((cx - tw / 2, cy - 10), n, fill=WHITE, font=F14)
 
-    # Blocco sotto pezzo ancorato in basso nel pannello (niente vuoto)
-    block_h = 36 + 44 + 36 + 34 + 32 + 8
-    badge_y = panel_bottom - block_h
+    # Blocco note sotto pezzo — tre righe separate, niente overlap
+    notes_x0, notes_x1 = 40, info_x1 - 20
+    notes_w = notes_x1 - notes_x0
+    row_h = 32
+    gap_n = 10
+    block_h = 40 + 3 * (row_h + gap_n) + 8
+    badge_y = mid + h + 48
+    if badge_y + block_h > panel_bottom - 8:
+        badge_y = panel_bottom - 8 - block_h
     badge((x0 + x1) / 2, badge_y, "1", FACE_C)
     badge(hx, badge_y, "2", IRON)
     badge(peen_mid, badge_y, "3", PEEN_C)
-    d.text((((x0 + x1) / 2) - 28, badge_y + 20), "faccia", fill=GRAY, font=F12)
-    d.text((hx - 30, badge_y + 20), "occhio", fill=GRAY, font=F12)
-    d.text((peen_mid - 24, badge_y + 20), "penna", fill=GRAY, font=F12)
+    d.text((((x0 + x1) / 2) - 22, badge_y + 18), "faccia", fill=GRAY, font=F12)
+    d.text((hx - 24, badge_y + 18), "occhio", fill=GRAY, font=F12)
+    d.text((peen_mid - 20, badge_y + 18), "penna", fill=GRAY, font=F12)
 
-    fy = badge_y + 44
-    ftxt = "≈100 g · SOLO TESTA · foro = sezione (non cerchio) · //// = taglio"
-    ftw = d.textlength(ftxt, font=F13) + 14
-    d.rectangle([ox, fy, ox + ftw, fy + 28], fill=(255, 235, 230), outline=CAP_RED, width=2)
-    d.text((ox + 7, fy + 4), ftxt, fill=CAP_RED, font=F13)
+    fy = badge_y + 40
+    rows = [
+        ((255, 235, 230), CAP_RED, CAP_RED, "≈100 g · SOLO TESTA · foro = sezione (non cerchio)"),
+        (WHITE, BLACK, BLACK, "BARRA 16×16 · faccia 20 · occhio 24 · penna 16 → L=60 · foro 8"),
+        ((255, 245, 245), CAP_RED, BLACK, "Occhiali · morsa · foratura foro 8 · L=60 · sez. 16×16"),
+    ]
+    for i, (bg, bd, tc, txt) in enumerate(rows):
+        ry = fy + i * (row_h + gap_n)
+        d.rectangle([notes_x0, ry, notes_x1, ry + row_h], fill=bg, outline=bd, width=2)
+        text_in_box(d, notes_x0, ry, notes_w, row_h, txt, F12, tc, pad=6)
 
-    note_y = fy + 36
-    text_in_box(
-        d, ox, note_y, info_x1 - ox - 20, 26,
-        "BARRA 16×16 · faccia 20 · occhio 24 · penna 16 → L=60 · foro 8 passante",
-        F13, BLACK, pad=3,
-    )
-
-    tip_y = note_y + 34
-    d.rectangle([36, tip_y, info_x1 - 16, tip_y + 32], fill=(255, 245, 245), outline=CAP_RED, width=2)
-    d.text((48, tip_y + 6), "Occhiali · morsa · foratura foro 8 · L=60 · sez. 16×16 · ≈100 g", fill=BLACK, font=F13)
-
+    # CHECK sotto LEGGI QUI, dentro i bordi info
     checks = ["□ Solo testa", "□ Sez. 16×16", "□ Foro 8", "□ ≈100 g", "□ L=60 ±0,3"]
-    rh = 30 + len(checks) * 24 + 6
-    right_y = panel_bottom - rh - 12
-    d.rectangle([info_x1 + 6, right_y, info_x2 - 6, right_y + rh], fill=WHITE, outline=BLACK, width=2)
-    d.text((info_x1 + 12, right_y + 6), "CHECK", fill=ACCENT, font=F13)
+    rh = 28 + len(checks) * 24 + 8
+    right_y = leggi_top + leggi_inner + 12
+    if right_y + rh > panel_bottom - 8:
+        right_y = panel_bottom - rh - 8
+    d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
+    d.text((info_x1 + 14, right_y + 6), "CHECK", fill=ACCENT, font=F13)
     for i, ln in enumerate(checks):
-        text_in_box(d, info_x1 + 10, right_y + 28 + i * 24, info_x2 - info_x1 - 24, 22, ln, F12, BLACK, pad=2)
+        text_in_box(d, info_x1 + 12, right_y + 28 + i * 24, info_x2 - info_x1 - 32, 22, ln, F12, BLACK, pad=2)
 
     y = panel(d, x_fasi, bot, col_w, bh, "FASI DI LAVORO")
     for i, ln in enumerate(fasi):
@@ -724,16 +736,15 @@ def make_3a():
     ]
     for i, (col, title, line1, line2) in enumerate(blocks):
         yy = draw_top + 84 + i * 78
-        d.rounded_rectangle([info_x1 + 8, yy, info_x2 - 8, yy + 70], radius=6, fill=WHITE, outline=col, width=3)
-        d.ellipse([info_x1 + 16, yy + 16, info_x1 + 48, yy + 48], fill=col, outline=BLACK, width=2)
+        d.rounded_rectangle([info_x1 + 10, yy, info_x2 - 10, yy + 70], radius=6, fill=WHITE, outline=col, width=3)
+        d.ellipse([info_x1 + 20, yy + 18, info_x1 + 50, yy + 48], fill=col, outline=BLACK, width=2)
         num = str(i + 1)
         tw = d.textlength(num, font=F13)
-        d.text((info_x1 + 32 - tw / 2, yy + 24), num, fill=WHITE, font=F13)
-        tx = info_x1 + 58
-        d.text((tx, yy + 6), f"{num}  {title}", fill=BLACK, font=F13)
-        d.text((tx, yy + 28), line1, fill=GRAY, font=F12)
-        # testo dentro il box (niente overflow sul bordo)
-        text_in_box(d, tx, yy + 46, info_x2 - 16 - tx, 20, line2, F12, ORANGE if "INTACCH" in line2 else GRAY, pad=0)
+        d.text((info_x1 + 35 - tw / 2, yy + 24), num, fill=WHITE, font=F13)
+        tx = info_x1 + 60
+        d.text((tx, yy + 8), f"{num}  {title}", fill=BLACK, font=F13)
+        d.text((tx, yy + 30), line1, fill=GRAY, font=F12)
+        d.text((tx, yy + 50), line2, fill=ORANGE if "INTACCH" in line2 else GRAY, font=F12)
 
     warn_y = draw_top + 84 + 4 * 78 + 8
     d.rectangle([info_x1 + 8, warn_y, info_x2 - 8, warn_y + 90], fill=WARN_BG, outline=WARN, width=2)
@@ -817,41 +828,49 @@ def make_3a():
 
     legend = [
         ("1 Ø18", STEEL_D, WHITE),
-        ("2 Ø16 intacchi", STEEL, BLACK),
+        ("2 Ø16+int.", STEEL, BLACK),
         ("3 Ø14", (100, 160, 190), BLACK),
         ("4 Ø10", (90, 150, 100), WHITE),
     ]
     tag_y = note_y + 58
     gap = 8
-    chip_w = (info_x1 - 40 - 3 * gap) / 4
+    chip_left, chip_right = 36, info_x1 - 20
+    chip_w = (chip_right - chip_left - 3 * gap) / 4
     for i, (lab, fill, tcol) in enumerate(legend):
-        xa = 36 + i * (chip_w + gap)
+        xa = chip_left + i * (chip_w + gap)
         d.rounded_rectangle([xa, tag_y, xa + chip_w, tag_y + 28], radius=6, fill=fill, outline=BLACK, width=2)
-        text_in_box(d, xa, tag_y, chip_w, 28, lab, F12, tcol, pad=3)
+        text_in_box(d, xa, tag_y, chip_w, 28, lab, F12, tcol, pad=4)
 
     tip_y = tag_y + 38
     tips = [
         "ATTENZIONE IN OFFICINA",
         "• Occhiali · pezzo stretto · giri giusti per Ø",
-        "• Intacchi solo sul Ø16 · stessa profondità · NON zigrinatura",
-        "• Controlla ogni spallamento col calibro prima del successivo",
+        "• Intacchi solo Ø16 · stessa profondità · no zigrinatura",
+        "• Controlla ogni spallamento col calibro",
     ]
-    tip_step = 22
+    tip_step = 24
     tip_h = 10 + len(tips) * tip_step + 6
+    tip_box_w = info_x1 - 20 - 36
+    if tip_y + tip_h > panel_bottom - 10:
+        tip_h = max(40, panel_bottom - 10 - tip_y)
     d.rectangle([36, tip_y, info_x1 - 20, tip_y + tip_h], fill=(245, 250, 255), outline=ACCENT, width=2)
     for i, ln in enumerate(tips):
+        if tip_y + 6 + (i + 1) * tip_step > tip_y + tip_h - 2:
+            break
         fill = ACCENT if i == 0 else BLACK
         f = F13 if i == 0 else F12
-        d.text((48, tip_y + 6 + i * tip_step), ln, fill=fill, font=f)
+        text_in_box(d, 44, tip_y + 4 + i * tip_step, tip_box_w - 16, tip_step - 2, ln, f, fill, pad=2)
 
-    right_y = warn_y + 100
+    # CHECK sotto LEGGI QUI, dentro i bordi (niente overflow)
     checks3 = ["□ L = 70", "□ Ø18/16/14/10", "□ Intacchi", "□ Spallamenti", "□ Satinatura"]
-    rh = 36 + len(checks3) * 26 + 10
-    if right_y + rh < panel_bottom - 16:
-        d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
-        d.text((info_x1 + 16, right_y + 8), "CHECK RAPIDO", fill=ACCENT, font=F13)
-        for i, ln in enumerate(checks3):
-            d.text((info_x1 + 16, right_y + 36 + i * 26), ln, fill=BLACK, font=F12)
+    rh = 28 + len(checks3) * 24 + 8
+    right_y = warn_y + 90 + 12
+    if right_y + rh > panel_bottom - 8:
+        right_y = panel_bottom - rh - 8
+    d.rectangle([info_x1 + 8, right_y, info_x2 - 8, right_y + rh], fill=WHITE, outline=BLACK, width=2)
+    d.text((info_x1 + 14, right_y + 6), "CHECK RAPIDO", fill=ACCENT, font=F13)
+    for i, ln in enumerate(checks3):
+        text_in_box(d, info_x1 + 12, right_y + 28 + i * 24, info_x2 - info_x1 - 28, 22, ln, F12, BLACK, pad=2)
 
     gap_p = 16
     col_w = (W - 48 - 2 * gap_p) // 3
